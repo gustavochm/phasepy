@@ -1,0 +1,3 @@
+include LICENSE.txt README.rst
+recursive-include cython *
+recursive-include  *.pyx
