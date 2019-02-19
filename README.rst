@@ -45,7 +45,7 @@ The latest development version of phasepy's sources can be obtained at
 Bug reports
 -----------
 
-To report bugs, please use the thermo's Bug Tracker at:
+To report bugs, please use the phasepy's Bug Tracker at:
 
     https://github.com/gustavochm/phasepy/issues
 
