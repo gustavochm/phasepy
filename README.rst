@@ -21,7 +21,7 @@ If you have an installation of Python with pip, simple install it with:
 
 To get the git version, run:
 
-    $ git clone git://github.com/
+    $ git clone https://github.com/gustavochm/phasepy
 
 Documentation
 -------------
@@ -37,9 +37,9 @@ Getting Started
 Latest source code
 ------------------
 
-The latest development version of thermo's sources can be obtained at
+The latest development version of phasepy's sources can be obtained at
 
-    https://github.com/xxx
+    https://github.com/gustavochm/phasepy
 
 
 Bug reports
@@ -47,7 +47,7 @@ Bug reports
 
 To report bugs, please use the thermo's Bug Tracker at:
 
-    https://github.com/xxx/issues
+    https://github.com/gustavochm/phasepy/issues
 
 
 License information
