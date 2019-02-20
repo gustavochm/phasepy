@@ -40,6 +40,7 @@ The library is designed to work with absolute temperature in Kelvin, pressure in
 volume in cm3/mol. In order to create a mixture pure components have to be defined:
 	
 .. code-block:: python
+
 	>>> from phasepy import component, mixture
 	>>> water = component(name = 'water', Tc = 647.13, Pc = 220.55, Zc = 0.229, Vc = 55.948,
 	>>>	 w = 0.344861, GC = {'H2O':1})
