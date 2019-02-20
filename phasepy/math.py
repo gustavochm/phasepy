@@ -16,7 +16,6 @@ def lobatto(n):
     vect = s0/dif1**2
     vect /= np.sum(vect)
     return roots, vect
-            
 
 def gdem(X, X1, X2, X3):
     dX2 = X - X3

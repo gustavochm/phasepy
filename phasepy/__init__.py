@@ -1,35 +1,33 @@
 ﻿"""
-thermoPy: paquete de equilibrios de fases con Python
+phasepy: package for fluid phase equilibria with Python
 =======================================================
 
-Contenidos
+Contents
 -------------------------------------------------------
 
-thermoPy incluye calculo de equilibrios de fases fluidas,
-utilizando como modelos ecuaciones viriales, ecuaciones 
-cubicas de estadoo o modelos de coeficientes de actividad.
+Available EoS
+-------------
+ Virial Gas: ideal_gas, Tsonopoulos, Abbott
+ Activity Coefficient Models : NRTL, Wilson, UNIFAC, Redlich-Kister
+ Cubic EoS: VdW, PR, PRSV, RK, RKS
+ Mixrules: QMR, MHV
 
-Al utilizar ecuaciones cúbicas para mezclas multicomponentes,
-es posible elegir entre reglado de mezclado clásica (qmr) y reglas
-avanzadas al límite de presión cero (mhv)
+Available equilibrium routines (phasepy.equilibrium)
+    LVE : Liquid Vapour Equilibrium
+    LLE : Liquid Liquid Equilibrium
+    LLVE : Liquid - Liquid - Vapour - Equilibrium
 
-Los equilibrios que es posible calcular son los siguientes:
-    Equilibrio liquido - vapor 
-    Equilibrio liquido - liquido
-    Equilibrio liquido - liquido - vapor 
+Available fitting routines (phasepy.fit)
+    fit_kij : fit kij for qmr mixrule
+    fit_nrtl : fit nrtl parameters
+    fit_wilson : fit Wilson parameters
+    fit_rk : fit Redlich Kister parameters
     
-Este paquete también incluye un subpaquete para el cálculo de tensiones
-interfasiales, mediante el uso de la Teoría del Gradiente de VdW.
-
-
-Subpaquetes
---------------------------------------------------------
-cubicas: Ecuaciones cúbicas, reglas de mezclado, funciones temino atractivo.
-
-equilibrios: Incluye rutinas para calculo de puntos de rocio, burbuja, flash y ELL.
-
-ajustes:  Incluye rutinas para la optimizacion de coeficientes binarios de interacción,
-modelos de de coeficiente de actividad, y optimizacion de parametros de puros.
+Interfacial properties (phasepy.sgt):
+    ten_pure: SGT for pure fluids.
+    ten_beta0 : SGT for mixtures with beta = 0 (Reference component, Path functions,
+                                                linear approximation, spot approximation)
+    
 
 """
 __all__ = [s for s in dir() if not s.startswith('_')]

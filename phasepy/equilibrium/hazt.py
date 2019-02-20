@@ -57,7 +57,7 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
          v0 = [None, None, None], full_output = False):
     
     """
-    Three phase equilibrium (T,P) -> (x, w, y)
+    haz (T,P) -> (x, w, y)
     
     Inputs
     ----------
@@ -69,6 +69,10 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
     P : pressure in bar
     
     model : object created from mixture, eos and mixrule 
+    
+    good_initial: bool, if True skip Gupta's methodand solves full system of equations.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
 
     
     """
@@ -77,7 +81,7 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
     x0 = np.vstack([X0,W0,Y0])
     b0 = np.array([0.33,0.33,0.33,0,0])
     
-    #verificar que la mezcla global no sea un binario
+    #check for binary mixture
     if nonzero == 2:
         index = np.nonzero(Z0)[0]
         sol = np.zeros_like(x0)

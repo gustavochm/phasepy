@@ -8,7 +8,7 @@ def ten_fit(T, model, roots, weigths, P0 = None):
     rol = model.density(T, Psat, 'L')
     rov = model.density(T, Psat, 'V')
     
-    #variables adimensionales
+    #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor = model.sgt_adim_fit(T)
     
     rola = rol * rofactor
@@ -31,10 +31,10 @@ def ten_fit(T, model, roots, weigths, P0 = None):
 
 def ten_pure(T, model, P0 = None, full_output = False, n = 100):
     
-    #puntos y pesos de cuadratura Gauss
+    #roots and weights of Gauss quadrature
     roots, w = gauss(n)
     
-    #equilibrio LV
+    #LVE
     Psat = model.psat(T, P0)
     rol = model.density(T, Psat, 'L')
     rov = model.density(T, Psat, 'V')
@@ -47,10 +47,10 @@ def ten_pure(T, model, P0 = None, full_output = False, n = 100):
     Tad = T * Tfactor
     Pad = Psat * Pfactor
     
-    #potenciales quimicos
+    #Equilibrium chemical potential
     mu0 = model.muad(rova,Tad)
     
-    #Discretizacion de 
+   
     roi = (rola-rova) * roots + rova
     wreal = (rola-rova)*w
     

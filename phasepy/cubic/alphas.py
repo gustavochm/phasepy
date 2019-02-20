@@ -3,14 +3,15 @@ import numpy as np
 def alpha_vdw():
     return 1.
 
+#Redlich Kwong's alphas function
 def alpha_rk(T, Tc):
     return np.sqrt(T/Tc)**-0.5
 
-#funcion de alpha Soave
+#Soaves's alpha function
 def alpha_soave(T, k, Tc):
     return (1+k*(1-np.sqrt(T/Tc)))**2
 
-#funcion a de SV
+#SV's alphas function
 def alpha_sv(T, ksv, Tc):
     ksv = ksv.T
     k0 = ksv[0]

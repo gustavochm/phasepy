@@ -1,5 +1,5 @@
 
-# Parámetros y constantes
+# Constants
 kB = 1.38065e-23  # [J/K] Boltzman's constant
 
 Na = 6.022142e23  # [mol-1] Avogrado's Number

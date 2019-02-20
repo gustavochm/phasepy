@@ -13,7 +13,7 @@ def ten_linear(ro1, ro2, Tsat, Psat, model, n = 50):
         ro1 = ro2.copy()
         ro2 = ro_aux
     
-    #adimensionalizar variables 
+    #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -26,7 +26,7 @@ def ten_linear(ro1, ro2, Tsat, Psat, model, n = 50):
     
     roots, weigths = lobatto(n)
     
-    #perfiles lineales
+    #Linear profiles
     pend = (ro2a - ro1a)
     b = ro1a
     ro = (np.outer(roots, pend) + b).T
@@ -54,7 +54,7 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
         ro1 = ro2.copy()
         ro2 = ro_aux
     
-    #adimensionalizar variables 
+    #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -72,8 +72,8 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
         ros = root(fobj_saddle, ros, args =(mu0, Tsat, model), method = 'lm')
         if ros.success:
             ros = ros.x
-            #segmento1
-            #perfiles lineales
+            #sPath1
+            #Linear Profile
             pend = (ros - ro1a)
             b = ro1a
             ro1 = (np.outer(roots, pend) + b).T
@@ -81,8 +81,8 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
             u1 = pend/np.linalg.norm(pend)
             cijfactor1 = cij@u1@u1
 
-            #segmento2
-            #perfiles lineales
+            #Path2
+            #Linear Profile
             pend = (ro2a - ros)
             b = ros
             ro2 = (np.outer(roots, pend) + b).T
@@ -101,7 +101,7 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
             ten1 = cijfactor1 * integral1
 
             integrer2 = np.nan_to_num(np.sqrt(2*dOm2))
-            integral2 = np.dot(integrer2, weigths)/2 #el dos viene que se supone que ajusto a la mitad de z
+            integral2 = np.dot(integrer2, weigths)/2 
             ten2 = cijfactor2 * integral2
             ten = ten1 + ten2
             ten *= tenfactor

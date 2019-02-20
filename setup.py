@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+﻿from setuptools import setup, Extension
 
 try:
     from Cython.Distutils import build_ext
@@ -30,6 +30,7 @@ setup(
   author_email = 'gustavochaparro@udec.cl',
   url = 'https://github.com/gustavochm/phasepy',
   download_url = 'https://github.com/gustavochm/phasepy.git',
+  long_description=open('README.rst').read(),
   packages = ['phasepy', 'phasepy.cubic', 'phasepy.equilibrium','phasepy.fit', 'phasepy.sgt', 'phasepy.actmodels'],
   cmdclass = cmdclass,
   ext_modules = ext_modules,

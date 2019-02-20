@@ -40,5 +40,5 @@ def rkter_nrtl(x,d):
         q[i] *= np.prod(x2)
     return q
 
-def nrtlter(X,T,g, alpha, g1,D):
-    return nrtl(X, T, g, alpha, g1) + rkter_nrtl(X, D)
+def nrtlter(X,T, alpha,g, g1, D):
+    return nrtl(X, T,alpha, g , g1) + rkter_nrtl(X, D)

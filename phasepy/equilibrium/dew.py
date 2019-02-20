@@ -13,7 +13,7 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
         T=P_T
         P=T_P
     
-    #fugacidades de liquido
+    #Vapour fugacities
     lnphiv, vv0 =eos.logfugef(Y,T,P,'V', vv0)
     
     tol = 1e-8
@@ -27,7 +27,7 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
     while error > tol and itacc < 3:
         niter += 1
         
-        #calculo de fugacidad de la fase vapor
+        #Liquid fugacitiies
         lnphil, vl0 = eos.logfugef(X,T,P,'L', vl0)
         
         lnK = lnphil-lnphiv
@@ -73,9 +73,9 @@ def dew_newton(inc, Y, T_P,tipo, eos, vl0, vv0):
     
     X = Y/K
     
-    #fugacidades de liquido
+    #Liquid fugacitities
     lnphil, vl = eos.logfugef(X,T,P,'L', vl0)
-    #calculo de fugacidad de la fase vapor
+    #vaopur fugacities
     lnphiv, vv = eos.logfugef(Y,T,P,'V', vv0)
     
     f[:-1] = lnK + lnphiv - lnphil
@@ -97,6 +97,9 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
     y : array_like, vapour phase composition
     T : temperaure of the vapour in K
     model : object create from mixture, eos and mixrule 
+    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
     
     """
     
@@ -153,6 +156,9 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
     y : array_like, vapour phase composition
     P : pressure of the liquid in bar
     model : object create from mixture, eos and mixrule 
+    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
     
     """
     global vl, vv

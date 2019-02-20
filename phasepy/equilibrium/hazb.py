@@ -1,6 +1,5 @@
 import numpy as np 
 from scipy.optimize import root
-#from .stability import ell_init
 from .equilibriumresult import EquilibriumResult
 
 def haz_objb(inc, T_P, tipo, modelo, v0):
@@ -28,6 +27,24 @@ def haz_objb(inc, T_P, tipo, modelo, v0):
 
 
 def hazb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_output = False):
+    '''
+    haxb (T,P) -> (x,w,y)
+    
+    Inputs
+    ----------
+    
+    X0 : array_like, guess composition of phase 1
+    W0 : array_like, guess composition of phase 1
+    Y0 : array_like, guess composition of phase 2
+    P_T : absolute temperature or pressure
+    T_P : absolute temperature or pressure
+    spec: 'T' if T_P is temperature or 'P' if pressure.
+
+    model : object created from mixture, eos and mixrule 
+    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
+    '''
     global vx, vw, vy
     sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),args = (T_P, spec, model, v0))
     error = np.linalg.norm(sol1.fun)

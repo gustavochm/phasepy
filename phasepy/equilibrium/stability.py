@@ -13,7 +13,7 @@ def tpd(X, state, Z, T, P, model, v0 = [None, None]):
     Z : array_like,  mole fraction array of overall mixture
     T :  absolute temperature, in K.
     P:  absolute pressure in bar.
-    mezcla : object create from mixture, eos and mixrule
+    model : object create from mixture, eos and mixrule
           
     out: tpd distance
         
@@ -53,6 +53,7 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     model : object create from mixture, eos and mixrule
     stateW : string, 'L' for liquid phase, 'V' for vapour phase
     stateZ : string, 'L' for liquid phase, 'V' for vapour phase
+    vw, vz: initial volume value to compute fugacities of phases.
           
     out: minimized tpd distance
         

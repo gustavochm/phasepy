@@ -20,6 +20,9 @@ def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
     
     model : object created from mixture, eos and mixrule 
     
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
+    
     """
 
     

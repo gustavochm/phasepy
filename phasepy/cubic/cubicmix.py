@@ -28,7 +28,7 @@ class cubicm(object):
                 self.kij = mix.kij
                 self.mixruleparameter = (mix.kij,)
             else: 
-                raise Exception('Matriz Kij no ingresada')
+                raise Exception('Kij nedded')
                 
         elif mixrule == 'mhv_nrtl':
             self.mixrule = mhv_nrtl  
@@ -38,7 +38,7 @@ class cubicm(object):
                 self.mixruleparameter = (self.c1,self.c2, 
                                          mix.alpha, mix.g, mix.g1)
             else: 
-                raise Exception('Parametros NRTL no ingresados')
+                raise Exception('NRTL parameters needed')
                 
         elif mixrule == 'mhv_nrtlt':
             self.mixrule = mhv_nrtlt  
@@ -47,7 +47,7 @@ class cubicm(object):
                 self.mixruleparameter = (self.c1,self.c2,mix.g, 
                                          mix.alpha, mix.g1, mix.rkternario)
             else: 
-                raise Exception('Parametros NRTL/ternarios no ingresados')
+                raise Exception('NRTL/ternary parameters needed')
                 
         elif mixrule == 'mhv_wilson':
             self.mixrule = mhv_wilson  
@@ -56,13 +56,16 @@ class cubicm(object):
                 self.wilson = (mix.Aij, mix.vlrackett)
                 self.mixruleparameter = (self.c1,self.c2, mix.Aij, mix.vlrackett)
             else: 
-                raise Exception('Parametros Wilson no ingresados')
+                raise Exception('Wilson parameters needed')
                 
         elif mixrule == 'mhv_unifac':
             self.mixrule = mhv_unifac  
             if hasattr(mix, 'actmodelp'):
+                mix.unifac()
                 self.unifac = mix.actmodelp
                 self.mixruleparameter = (self.c1,self.c2, *mix.actmodelp)
+            else: 
+                raise Exception('Unifac parameters needed')
         
         elif mixrule == 'mhv_rk':
             self.mixrule = mhv_rk  
@@ -71,7 +74,7 @@ class cubicm(object):
                 self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
                                          mix.combinatoria)
             else:
-                raise Exception('Parametros RK no ingresados')
+                raise Exception('RK parameters needed')
         else: 
             raise Exception('Mixrule not valid')
             
@@ -226,7 +229,6 @@ class cubicm(object):
         lnphi = np.amin(lnphi,axis=0)
     
         return lnphi
-    
     
     def ci(self, T):
 

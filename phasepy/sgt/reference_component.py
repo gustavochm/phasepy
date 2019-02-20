@@ -1,11 +1,10 @@
 import numpy as np
 from scipy.optimize import fsolve
-from ..math import lobatto, colocAB
+from ..math import lobatto, colocA
+from .cijmix_cy import cmix_cy
 
 def fobj_beta0(ro, ro_s, s, T, mu0, sqrtci, model):     
     nc = model.nc
-    # se ingresa el vector densidades adimensionales sin la variable independiente
-    # esta se tiene que agregar
     ro = np.insert(ro, s, ro_s)
     dmu = model.muad(ro, T) - mu0
     
@@ -18,7 +17,7 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
 
     nc = model.nc
     
-    #adimensionalizar variables 
+    #Dimensionless profile
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -31,16 +30,16 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
     
     mu0 = model.muad(ro1a, Tsat)
     
-    #pesos y raices de integracion
+    #roots and weights for Lobatto quadrature 
     roots, weights  = lobatto(n)
 
     
-    ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s] #puntos de integracion 
-    wreal = weights*(ro2a[s]-ro1a[s])#pesos de integracion
+    ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s] # Integration nodes 
+    wreal = weights*(ro2a[s]-ro1a[s]) #Integration weights
     
         
-    #definicion matrices colocaciones A para primera derivada, B para segunda
-    A,B = colocAB(ro_s)
+    #A matrix for derivatives with orthogonal collocation
+    A = colocA(ro_s)
     
     rodep = np.zeros([nc-1, n])
     rodep[:,0] = ro1a[np.arange(nc) !=s]
@@ -49,14 +48,13 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
     ro = np.insert(rodep, s, ro_s, axis = 0)
     dro = rodep@A.T
     dro = np.insert(dro, s, np.ones(n), axis = 0)
-    suma = np.zeros(n)
+    
+    suma = cmix_cy(dro, cij)
+
     dom = np.zeros(n)
-    for k in range(n):
-        for i in range(nc):
-            for j in range(nc):
-                suma[k] += cij[i,j]*dro[i,k]*dro[j,k]
+    for k in range(1,n - 1):
         dom[k] = model.dOm(ro[:,k], Tsat, mu0, Pad)
-    dom[0], dom[-1] = 0., 0.
+
     
     intten=np.nan_to_num(np.sqrt(suma*(2*dom)))
     ten = np.dot (intten, wreal)
@@ -64,7 +62,7 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
     ten*= tenfactor
     
     if full_output:
-        #Resolucion del perfil
+        #Z profile
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0

@@ -35,7 +35,7 @@ def rachfordrice(beta, K, Z):
     return beta, D, singlephase
 
 def Gibbs_obj(v , fases, Z, T, P, modelo, v10, v20):
-    #global v1,v2
+
     '''
     Objective function to minimize Gibbs energy in bifasic flash
     '''
@@ -72,8 +72,10 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
     
     model : object created from mixture, eos and mixrule 
     
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
     """
-    #global v1, v2
+    
     v10, v20 = v0
     
     e1 = 1

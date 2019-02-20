@@ -22,7 +22,7 @@ def rkb(x, T, C, C1):
     Mp = rkb_cy(x, G)
     return Mp
 
-def rk(x, T, C, C1, combinatoria):
+def rk(x, T, C, C1, combinatory):
     '''
     Redlich-Kister activity coefficient model for multicomponent mixtures.
     
@@ -31,6 +31,8 @@ def rk(x, T, C, C1, combinatoria):
     T: float, absolute temperature in K.
     C: array like, polynomial values adim..
     C1: array_like, polynomial values in K.
+    combinatory: array_like, constains info of the order of polynomial coefficients
+                by pairs.
     
     G = C + C1/T
     
@@ -38,7 +40,7 @@ def rk(x, T, C, C1, combinatoria):
     lngama: array_like, natural logarithm of activify coefficient
     '''
     x = np.asarray(x,dtype = np.float64)
-    combinatoria = np.asarray(combinatoria, dtype = np.float64)
+    combinatoria = np.asarray(combinatory, dtype = np.float64)
     G = C + C1 / T
     Mp = rk_cy(x, G, combinatoria)
     return Mp

@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.optimize import fsolve
 from scipy.integrate import cumtrapz
+from .cijmix_cy import cmix_cy
+
 
 def fobj_sk(inc, spath, T, mu0, ci, sqrtci, model):   
     ro = inc[:-1]
@@ -19,7 +21,7 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
         ro2 = ro_aux
     nc = model.nc
     
-    #adimensionalizar variables 
+    #Dimensionless variables 
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -32,7 +34,7 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
     
     mu0 = model.muad(ro1a, Tsat)
     
-    #extremos funcion de recorrido
+    #Path function
     s0 = sqrtci.dot(ro1a)
     s1 = sqrtci.dot(ro2a)
     spath = np.linspace(s0, s1, n)
@@ -53,18 +55,14 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
         alphas[i] = ro0[-1]
         ro[:,i] = ro0[:-1]
         
-    #derivadas respecto a funcion de recorrido
+    #Derivatives
     drods = np.gradient(ro, spath, edge_order = 2, axis = 1)
     
-    suma = np.zeros(n)
+    suma = cmix_cy(drods, cij)
     dom = np.zeros(n)
-    for k in range(n):
-        for i in range(nc):
-            for j in range(nc):
-                suma[k] += cij[i,j]*drods[i,k]*drods[j,k]
+    for k in range(1, n - 1):
         dom[k] = model.dOm(ro[:,k], Tsat, mu0, Pad)
-    dom[0] = 0
-    dom[-1] = 0
+
     
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
     tension = np.trapz(integral, spath)

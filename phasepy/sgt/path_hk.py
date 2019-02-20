@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.optimize import fsolve
 from scipy.integrate import cumtrapz
+from .cijmix_cy import cmix_cy
+
 
 
 def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):     
@@ -27,7 +29,7 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     ro2a = ro2*rofactor
     
     nc = model.nc    
-    mu0 = model.muad(ro1a, T)
+    mu0 = model.muad(ro1a, Tsat)
     
     cij = model.ci(Tsat)
     c1 = cij[0,0]
@@ -64,7 +66,7 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     dro.append(ro2a-ro[-2])
     dro2 = np.asarray(dro).T
     
-    # Error del path
+    # Path error
     Hl = np.sqrt(ci.dot(dro2**2)).sum()
     dH = Hl/(Nsteps + 1)
     dH2 = dH**2
@@ -107,23 +109,20 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     Hi = dH * np.arange(0, Nsteps + 2)
     drodh = np.gradient(ro2, Hi, edge_order = 2, axis = 1)
     
-    suma = np.zeros(Nsteps + 2)
+    suma = cmix_cy(drodh, cij)
     dom = np.zeros(Nsteps + 2)
     for k in range(Nsteps + 2):
-        for i in range(nc):
-            for j in range(nc):
-                suma[k] += cij[i,j]*drodh[i,k]*drodh[j,k]
         dom[k] = model.dOm(ro2[:,k], Tsat, mu0, Pad)
     dom[0] = 0
     dom[-1] = 0
 
-    #Resolucion de la tension
+    #Tension computation
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
     ten = np.trapz(integral, Hi)
     ten *= tenfactor
     
     if full_output:
-    #Resolucion del perfil
+        #Z profile
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0

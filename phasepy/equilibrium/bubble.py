@@ -3,7 +3,6 @@ from scipy.optimize import root
 from ..math import gdem
 from .equilibriumresult import EquilibriumResult
 
-#ELV phi-phi
 def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
     
     if tipo == 'T':
@@ -13,7 +12,7 @@ def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
         T=P_T
         P=T_P
     
-    #fugacidades de liquido
+    #Liquid fugacities
     lnphil, vl =eos.logfugef(X,T,P,'L', vl0)
     
     tol=1e-8
@@ -27,7 +26,7 @@ def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
     while error > tol and itacc < 3:
         niter+=1
         
-        #calculo de fugacidad de la fase vapor
+        #Vapour fugacities 
         lnphiv, vv0 = eos.logfugef(Y,T,P,'V', vv0)
         
         lnK = lnphil-lnphiv
@@ -71,9 +70,9 @@ def bubble_newton(inc,X,T_P,tipo, eos, vl0, vv0):
     
     Y = X*K
     
-    #fugacidades de liquido
+    #Liquid fugacities 
     lnphil, vl = eos.logfugef(X,T,P,'L', vl0)
-    #calculo de fugacidad de la fase vapor
+    #Vapour fugacities 
     lnphiv, vv = eos.logfugef(Y,T,P,'V', vv0)
     
     f[:-1] = lnK + lnphiv - lnphil
@@ -96,6 +95,9 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
     x : array_like, liquid phase composition
     T : absolute temperature of the liquid in K.
     model : object create from mixture, eos and mixrule 
+    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
     
     """
     global vl, vv
@@ -153,7 +155,9 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial = False,
     x : array_like, liquid phase composition
     P : pressure of the liquid in bar
     model : object create from mixture, eos and mixrule 
-    
+    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, if supplied volume used as initial value to compute fugacities
+    full_output: bool, wheter to outputs all calculation info
     """
     global vl, vv
     

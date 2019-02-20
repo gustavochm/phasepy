@@ -9,9 +9,9 @@ from itertools import combinations
 
 class component(object):
     
-    def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0, #parametros cubica
+    def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
                  ksv = [0, 0], Ant = [0,0,0],  GC = None,
-                 m = 0, sigma = 0 , e = 0, kapaAB = 0, eAB = 0, site = [0,0,0]): #parametros saft
+                 m = 0, sigma = 0 , e = 0, kapaAB = 0, eAB = 0, site = [0,0,0]): 
         '''
         class component
         Creates an object with pure component info
@@ -22,9 +22,10 @@ class component(object):
         Critical compresibility (Zc)
         Critical Volume (Vc)
         Acentric factor (w)
-        Interaction coefficient SGT (cii)
-        Parameters alpha cubic eos (if fitted) (k)
+        Influence coefficient SGT (cii)
+        Parameters alpha PRSV eos (if fitted) (ksv)
         Antoine parameters (Ant)
+        Group contribution info (GC)
         
         Methods
         ------
@@ -32,18 +33,17 @@ class component(object):
         tsat
         vlrackett
         ci
-        
         '''
-        self.name=name
-        self.Tc=Tc # Temperatura critica en K
-        self.Pc=Pc #Presion critica en bar
-        self.Zc=Zc #Factor de compresibilidad critico
-        self.Vc=Vc #volumen critico en cm3/mol
-        self.w=w #factor acentrico
-        self.Ant=Ant #coeficientes de antoine, lista o array
-        self.cii=cii #polinomio de factor interaccion SGT, lista o  array
-        self.ksv = ksv
-        self.GC = GC
+        self.name = name
+        self.Tc = Tc #Critical Temperature in K
+        self.Pc = Pc #Critical Pressure in bar
+        self.Zc = Zc #Critical compresibility factor
+        self.Vc = Vc #Critical volume in cm3/mol
+        self.w = w #Acentric Factor
+        self.Ant = Ant #Antoine coefficeint, base e = 2.71 coeficientes de antoine, list or array
+        self.cii = cii #Influence factor SGT, list or array
+        self.ksv = ksv #
+        self.GC = GC # Dict, Group contribution info
         self.nc = 1
         
         #Parametros Saft
@@ -90,13 +90,7 @@ class component(object):
 class mixture(object):
     '''
     class mixture
-    Crean object that cointains info about the a mixture.
-
-    
-    Para inicar se requiere por lo menos una mezcla binaria, 
-    llamando mixture(componente1, componente2)
-    En el caso que la mezcla sea de mas componentesm se debe
-    llamar al metodo add_substance(componentej)
+    Creates an object that cointains info about a mixture.
     
     Methods
     -------
@@ -104,12 +98,12 @@ class mixture(object):
     psat : computes saturation pressure of pures
     tsat: computes saturation temperature of pures
     vlrackett : computes liquid volume of pure
+    copy: returns a copy of the object
     
     kij_cubic : add kij matrix for QMR mixrule
     NRTL : add energy interactions and aleatory factor for NRTL model
     wilson : add energy interactions for wilson model
-    rkb: polynomial parameters for RK G exc model
-    rkt: add ternary term to NRTL model
+    rk: polynomial parameters for RK G exc model
     unifac: read Dortmund data base for the mixture
     ci : computes cij matrix at T for SGT
     '''
@@ -204,7 +198,7 @@ class mixture(object):
         Method that adds NRTL parameters to the mixture.
         Matrix g (in K), main diagonal must be zero.
         Matrix g1 (in 1/K), main diagonal must be zero.
-        matrix alpha: symmetrical and main diagonal must be zero.
+        Matrix alpha: symmetrical and main diagonal must be zero.
         
         tau = ((g + g1*T)/T)
         '''

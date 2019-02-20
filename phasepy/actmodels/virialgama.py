@@ -9,6 +9,10 @@ class virialgama(object):
     Creates a model with mixture using a virial eos to describe vaopur phase
     and an activity coefficient model for liquid phase.
     
+    Methods
+    -------
+    logfugef: computes effective fugacity coefficients
+    
     '''
     
     def __init__(self, mix, virialmodel = Tsonopoulos, actmodel = nrtl):
