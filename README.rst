@@ -42,9 +42,9 @@ volume in cm3/mol. In order to create a mixture pure components have to be defin
 .. code-block:: python
 	>>> from phasepy import component, mixture
 	>>> water = component(name = 'water', Tc = 647.13, Pc = 220.55, Zc = 0.229, Vc = 55.948,
-		 w = 0.344861, GC = {'H2O':1})
+	>>>	 w = 0.344861, GC = {'H2O':1})
 	>>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0,
-		 w = 0.643558, GC = {'CH3':1, 'CH2':1,'OH(P)':1})
+	>>>	 w = 0.643558, GC = {'CH3':1, 'CH2':1,'OH(P)':1})
 	>>> mix = mixture(ethanol, water)
 
 If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320K, we could use
