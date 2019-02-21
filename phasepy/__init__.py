@@ -25,8 +25,8 @@ Available fitting routines (phasepy.fit)
     
 Interfacial properties (phasepy.sgt):
     ten_pure: SGT for pure fluids.
-    ten_beta0 : SGT for mixtures with beta = 0 (Reference component, Path functions,
-                                                linear approximation, spot approximation)
+    ten_beta0 : SGT for mixtures with beta = 0 
+    (Reference component, Path functions,linear approximation, spot approximation)
     
 
 """
