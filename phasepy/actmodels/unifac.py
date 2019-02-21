@@ -2,6 +2,35 @@ import numpy as np
 from .actmodels_cy import lnG_cy
 
 def unifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
+    '''
+    Dortmund UNIFAC activity coefficient model for multicomponent mixtures.
+    
+    Parameters
+    ----------
+    X: array like
+        vector of molar fractions
+    T: float
+        absolute temperature in K
+    qi: array like
+        component surface array
+    ri: array_like
+        component volumes arrays
+    ri34 : array_like
+        component volumen arrays power to 3/4
+    Vk : array_like
+        group volumes array
+    Qk : array_like
+        group surface arrays
+    tethai : array_like
+        surface fraction array
+    a0, a1, a2 : array_like
+        Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2
+    
+    Returns
+    -------
+    lngama: array_like
+        natural logarithm of activify coefficient
+    '''
     
     nc = len(x)
     ng = len(Qk)

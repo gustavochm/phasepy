@@ -9,7 +9,9 @@ pr :  Peng-Robinson EoE
 prsv : Peng-Robinson-Stryjec-Vera EoS
 rk : Redlich-Kwong EoS
 rsv : Redlich-Kwong-Soave EoS
+
 Available mixrules
+------------------
 
 qmr : quadratic mixrule
 mhv_nrtl : Modified Huron Vidal mixrule with NRTL model

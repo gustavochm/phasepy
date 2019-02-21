@@ -10,14 +10,21 @@ def fit_ant(Texp, Pexp, x0 = [0,0,0]):
     """
     fit_ant fit Antoine parameters, base exp
     
-    Inputs
+    Parameters
     ----------
     Texp: experimental temperature in K.
     Pexp : experimental pressure in bar.
-    x0 : initial values.
+    x0 : array_like, optional
+        initial values.
+    
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
+    
     """
-    ajuste = minimize(psat_obj, x0, args = (Pexp, Texp))
-    return ajuste
+    fit = minimize(psat_obj, x0, args = (Pexp, Texp))
+    return fit
 
 def fobj_alpha(k,Texp,Pexp,cubic):
     cubic.k = k
@@ -31,13 +38,23 @@ def fit_ksv(component ,Texp, Pexp, ksv0 = [1,0]):
     """
     fit_ksv fit PRSV alpha 
     
-    Inputs
+    Parameters
     ----------
-    component
-    Texp: experimental temperature in K.
-    Pexp : experimental pressure in bar.
-    ks0 : initial values.
+    component : object
+        created with component class
+    Texp : array_like
+        experimental temperature in K.
+    Pexp : array_like
+        experimental pressure in bar.
+    ks0 : array_like, optional
+        initial values.
+    
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
+    
     """
     cubic = prsv(component)
-    ajuste = minimize(fobj_alpha, ksv0, args = (Texp, Pexp, cubic ))
-    return ajuste
+    fit = minimize(fobj_alpha, ksv0, args = (Texp, Pexp, cubic ))
+    return fit

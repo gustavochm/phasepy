@@ -74,16 +74,29 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
     """
     multiflash (z,T,P) -> (x,w,y,beta)
     
-    Inputs
-    ------
-    X0 : array_like (n_phases, nc) initial guess
-    betatheta : array_like phase fractions and stability array 
-    equilibrium : list, 'L' for liquid, 'V' for vaopur phase. ['L', 'L', 'V'] for LLVE
-    z : array_like, overall system composition
-    T : absolute temperature in K.
-    P : pressure in bar
+    Parameters
+    ----------
+    X0 : array_like
+        (n_phases, nc) initial guess
+    betatheta : array_like
+        phase fractions and stability array 
+    equilibrium : list
+        'L' for liquid, 'V' for vaopur phase. ['L', 'L', 'V'] for LLVE
+    z : array_like
+        overall system composition
+    T : float
+        absolute temperature in K.
+    P : float
+        pressure in bar
+    model : object
+        created from mixture, eos and mixrule 
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
     
-    model : object created from mixture, eos and mixrule 
+    Returns
+    -------
     
     """
     

@@ -7,10 +7,15 @@ def vdw(mix_or_component):
     '''
     van der Waals EoS
     
-    Input
-    -----
+    Parameters
+    ----------
     mix_or_component : object created with component or mixture, in case of mixture
                         object has to have interactions parameters.
+                        
+    Returns
+    -------   
+    eos : object
+        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -23,11 +28,16 @@ def pr(mix_or_component, mixrule = 'qmr'):
     '''
     Peng Robinson EoS
     
-    Input
-    -----
+    Parameters
+    ----------
     mix_or_component : object created with component or mixture, in case of mixture
                         object has to have interactions parameters.
     mixrule : available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk'
+    
+    Returns
+    -------   
+    eos : object
+        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -40,11 +50,16 @@ def prsv(mix_or_component, mixrule = 'qmr'):
     '''
     Peng Robinson EoS
     
-    Input
-    -----
+    Parameters
+    ----------
     mix_or_component : object created with component or mixture, in case of mixture
                         object has to have interactions parameters.
     mixrule : available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk'
+    
+    Returns
+    -------   
+    eos : object
+        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -57,11 +72,16 @@ def rk(mix_or_component, mixrule = 'qmr'):
     '''
     Redlich Kwong EoS
     
-    Input
-    -----
+    Parameters
+    ----------
     mix_or_component : object created with component or mixture, in case of mixture
                         object has to have interactions parameters.
     mixrule : available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk'
+    
+    Returns
+    -------   
+    eos : object
+        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -74,11 +94,16 @@ def rks(mix_or_component, mixrule = 'qmr'):
     '''
     Redlich Kwong Soave EoS
     
-    Input
-    -----
+    Parameters
+    ----------
     mix_or_component : object created with component or mixture, in case of mixture
                         object has to have interactions parameters.
     mixrule : available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk'
+    
+    Returns
+    -------   
+    eos : object
+        eos used for phase equilibrium calculations      
     '''
     nc = mix_or_component.nc
     if nc == 1:

@@ -87,17 +87,34 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
     """
     Bubble point (T, x) -> (P, y)
     
-    Inputs
-    ----------
-    y_guess : array_like, guess of vapour phase composition
-    P_guess : guess of equilibrium pressure in bar.
+    Solves bubble point at given liquid composition and temperature. It uses a
+    combination of accelerated successive sustitution with quasi Newton Method
+    in regular cases and when good initial it's provided the full system of 
+    equations of the phase envelope method is used as objective function.
     
-    x : array_like, liquid phase composition
-    T : absolute temperature of the liquid in K.
-    model : object create from mixture, eos and mixrule 
-    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Parameters
+    ----------
+    y_guess : array_like
+        guess of vapour phase composition
+    P_guess : float
+        guess of equilibrium pressure in bar.
+    x : array_like
+        liquid phase composition
+    T : float
+        absolute temperature of the liquid in K.
+    model : object
+        create from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+     
+    Returns
+    -------
+    Y : array_like, vector of vapour fraction moles
+    P : float, equilibrium pressure in bar
     
     """
     global vl, vv
@@ -147,17 +164,38 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial = False,
     """
     Bubble point (P, x) -> (T, y)
     
-    Inputs
-    ----------
-    y_guess : array_like, guess of vapour phase composition
-    T_guess : guess of equilibrium temperature of the liquid in K.
+    Solves bubble point at given liquid composition and pressure. It uses a
+    combination of accelerated successive sustitution with quasi Newton Method
+    in regular cases and when good initial it's provided the full system of 
+    equations of the phase envelope method is used as objective function.
     
-    x : array_like, liquid phase composition
-    P : pressure of the liquid in bar
-    model : object create from mixture, eos and mixrule 
-    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Parameters
+    ----------
+    y_guess : array_like
+        guess of vapour phase composition
+    T_guess : float
+        guess of equilibrium temperature of the liquid in K.
+    
+    x : array_like
+        liquid phase composition
+    P : float
+        pressure of the liquid in bar
+    model : object
+        create from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    
+    Returns
+    -------
+    Y : array_like
+        vector of vapour fraction moles
+    T : float
+        equilibrium temperature in K
     """
     global vl, vv
     

@@ -31,6 +31,35 @@ cpdef nrtl_cy(double [:] X, double [:,:] tau, double [:, :] G):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+cdef x_auxf(double [:] x, double [:] x_aux, int n):
+    cdef int i
+    for i in range(n):
+        x_aux[i] = x[i]
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def rkter_nrtl_cy(double [:] x, double [:] xd):
+    cdef int n, i, k
+    n = 3
+    cdef double [:] q = np.zeros(n)
+    cdef double [:] x_aux = np.zeros(n)
+    cdef double x1, x2, x3
+    x_auxf(x, x_aux, n)
+    for i in range(n):
+        if x_aux[i] !=0:
+            x_aux[i] = 1.
+        x1, x2, x3 = x_aux[0], x_aux[1], x_aux[2]
+        for k in range(n):
+            if k != i:
+                q[i] -= (-1+3*x[i])*xd[k]
+            else:
+                q[i] += (2-3*x[i])*xd[k]
+        q[i] *= x1*x2*x3
+        x_auxf(x, x_aux, n)
+    return q.base
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def rkb_cy(double [:] x, double [:] G):
     
     cdef int m, i

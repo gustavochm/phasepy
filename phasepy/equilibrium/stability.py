@@ -6,16 +6,27 @@ def tpd(X, state, Z, T, P, model, v0 = [None, None]):
     tpd (x, state, z, T, P, model)
     Michelsen's Adimentional tangent plane function 
     
-    Inputs
-    ---------
-    X : array_like, mole fraction array of trial fase
-    state : string, 'L' for liquid phase, 'V' for vapour phase
-    Z : array_like,  mole fraction array of overall mixture
-    T :  absolute temperature, in K.
-    P:  absolute pressure in bar.
-    model : object create from mixture, eos and mixrule
-          
-    out: tpd distance
+    Parameters
+    ----------
+    X : array_like
+        mole fraction array of trial fase
+    state : string
+        'L' for liquid phase, 'V' for vapour phase
+    Z : array_like
+        mole fraction array of overall mixture
+    T :  float
+        absolute temperature, in K
+    P:  float
+        absolute pressure in bar
+    model : object
+        create from mixture, eos and mixrule
+    v0 : list, optional
+        values to solve fugacity, if supplied
+    
+    Returns
+    -------
+    tpd: float
+        tpd distance
         
     """
     v1, v2 = v0
@@ -44,18 +55,28 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     tpd_min (W, Z, T, P, model, stateW, stateZ)
     Found a minimiun of Michelsen's Adimentional tangent plane function 
     
-    Inputs
-    ---------
-    W : array_like, mole fraction array of trial fase
-    Z : array_like,  mole fraction array of overall mixture
-    T :  absolute temperature, in K.
-    P:  absolute pressure in bar.
+    Parameters
+    ----------
+    W : array_like
+        mole fraction array of trial fase
+    Z : array_like
+        mole fraction array of overall mixture
+    T :  absolute temperature, in K
+    P:  absolute pressure in bar
     model : object create from mixture, eos and mixrule
-    stateW : string, 'L' for liquid phase, 'V' for vapour phase
-    stateZ : string, 'L' for liquid phase, 'V' for vapour phase
-    vw, vz: initial volume value to compute fugacities of phases.
-          
-    out: minimized tpd distance
+    stateW : string
+        'L' for liquid phase, 'V' for vapour phase
+    stateZ : string
+        'L' for liquid phase, 'V' for vapour phase
+    vw, vz: float, optional
+        initial volume value to compute fugacities of phases
+    
+    Returns
+    -------
+    w : array_like
+        molar fraction of minimum      
+    f : float
+        minimized tpd distance
         
     """
     #valores de la fase de global
@@ -79,17 +100,31 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     tpd_minimas (nmin, Z, T, P, model, stateW, stateZ)
     Found nmin minimuns of Michelsen's Adimentional tangent plane function 
     
-    Inputs
-    ---------
-    nmin: number of minimiuns to be founded.
-    Z : array_like,  mole fraction array of overall mixture
-    T :  absolute temperature, in K.
-    P:  absolute pressure in bar.
-    model : object create from mixture, eos and mixrule
-    stateW : string, 'L' for liquid phase, 'V' for vapour phase
-    stateZ : string, 'L' for liquid phase, 'V' for vapour phase
-          
-    out: minimized tpd distance
+    Parameters
+    ----------
+    nmin: int
+        number of minimiuns to be founded
+    Z : array_like
+        mole fraction array of overall mixture
+    T : float
+        absolute temperature, in K
+    P:  float
+        absolute pressure in bar
+    model : object
+        create from mixture, eos and mixrule
+    stateW : string
+        'L' for liquid phase, 'V' for vapour phase
+    stateZ : string
+        'L' for liquid phase, 'V' for vapour phase
+    vw, vz : float, optional
+        if supplied volume used as initial value to compute fugacities
+    
+    Returns
+    -------
+    all_minima: tuple
+        molar fractions arrays of minimums
+    f_minima: tuple
+        minimized tpd distance
         
     """
     
@@ -162,13 +197,23 @@ def ell_init(Z , T, P, model, v0 = None):
     """
     Minimize tpd function to initiate ELL at fixed T and P.
     
-    Inputs
+    Parameters
     ----------
-    z : array_like, overall mol fraction array
-    T : absolute temperature in K
-    P : absolute pressure in bar
-    
-    out: list of two mol fractions arrays
+    z : array_like
+        overall molar fraction array
+    T : float
+        absolute temperature in K
+    P : float
+        absolute pressure in bar
+    model : object
+        created from eos and mixture
+    v0 : float, optional
+        if supplied volume used as initial value to compute fugacities
+
+    Returns
+    -------
+    x0s: tuple
+        Contains two mol fractions arrays
     """
     x0s, tpd0 = tpd_minimas(2, Z, T, P, model, 'L', 'L', v0, v0)
     return x0s

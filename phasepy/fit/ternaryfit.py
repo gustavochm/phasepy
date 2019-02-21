@@ -1,7 +1,7 @@
 import numpy as np
 from ..equilibrium import hazt
 from ..actmodels import virialgama, nrtlter
-from .ajustemulticomponente import fobj_elv, fobj_ell, fobj_hazt
+from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazt
 
 def fobj_nrtlrkt(D,Xexp,Wexp,Yexp,Texp,Pexp,mezcla, good_initial = True):
     

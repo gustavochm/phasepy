@@ -5,17 +5,25 @@ from ..math import gauss
 def fit_cii(tenexp, Texp, model, orden= 2, n = 100 ):
     
     """
-    
     fit_cii fit influence parameters of SGT
     
-    Inputs
+    Parameters
     ----------
-    tenexp: experimental surface tension in mN/m
-    Texp: experimental temperature in K.
-    model: object created from eos and component
-    order: int, order of cii polynomial 
-    n : int, number of integration points in SGT
-
+    tenexp: array_like
+        experimental surface tension in mN/m
+    Texp: array_like
+        experimental temperature in K.
+    model: object
+        created from eos and component
+    order: int, optional
+        order of cii polynomial 
+    n : int, optional
+        number of integration points in SGT
+        
+    Returns
+    -------
+    cii : array_like
+        polynomial coefficients of influence parameters of SGT
     
     """
     roots, weigths = gauss(n)

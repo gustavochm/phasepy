@@ -59,21 +59,41 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
     """
     haz (T,P) -> (x, w, y)
     
-    Inputs
+    Computes liquid liquid equilibrium of multicomponent mixtures at given 
+    temperature. This functions uses a simultaneous method to check stability 
+    and equilibrium, when slow convergence is noted, minimization of Gibbs
+    free energy is performed with BFGS.
+    
+    Parameters
     ----------
-    
-    X0 : array_like, guess composition of liquid 1
-    W0 : array_like, guess composition of liquid 2
-    Y0 : array_like, guess composition of vapour 1
-    T : absolute temperature in K.
-    P : pressure in bar
-    
-    model : object created from mixture, eos and mixrule 
-    
-    good_initial: bool, if True skip Gupta's methodand solves full system of equations.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
 
+    X0 : array_like
+         guess composition of liquid 1
+    W0 : array_like
+         guess composition of liquid 2
+    Y0 : array_like
+         guess composition of vapour 1
+    T : float
+        absolute temperature in K.
+    P : float
+        pressure in bar
+    model : object
+        Created from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip Gupta's methodand solves full system of equations.
+    v0 : list, optional
+         if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    Returns
+    -------
+    X : array_like
+        liquid1 mole fraction vector
+    W : array_like
+        liquid2 mole fraction vector
+    Y : array_like
+        vapour mole fraction fector
     
     """
     Z0 = (X0+Y0+W0)/3

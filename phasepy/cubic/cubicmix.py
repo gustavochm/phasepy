@@ -4,6 +4,52 @@ from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
 
 class cubicm(object):
+    '''
+    Mixture Cubic EoS Object
+    
+    This object have implemeted methods for phase equilibrium 
+    as for iterfacial properties calculations.
+    
+    Parameters
+    ----------
+    mix : object
+        mixture created with mixture class
+    c1, c2 : float
+        constants of cubic EoS
+    oma, omb : float
+        constants of cubic EoS
+    alpha_eos : function
+        function that gives thermal funcionality  to attractive term of EoS
+    mixrule : function
+        computes mixture attactive and cohesive terms
+    
+    Attributes
+    ----------
+    Tc: array_like
+        critical temperture in K
+    Pc: array_like
+        critical pressure in bar
+    w: array_like
+        acentric factor
+    cii : array_like
+        influence factor for SGT
+    nc : int
+        number of components of mixture
+    
+    Methods
+    -------
+    a_eos : computes the attractive term of cubic eos.
+    Zmix : computes the roots of compresibility factor polynomial.
+    density : computes density of mixture.
+    logfugef : computes effective fugacity coefficients.
+    logfugmix : computes mixture fugacity coeficcient;
+    a0ad : computes adimentional Helmholtz density energy
+    muad : computes adimentional chemical potential.
+    dOm : computes adimentional Thermodynamic Grand Potential.
+    ci :  computes influence parameters matrix for SGT.
+    sgt_adim : computes adimentional factors for SGT.
+
+    '''
     
     def __init__(self, mix, c1, c2, oma, omb, alpha_eos, mixrule):
         
@@ -13,10 +59,10 @@ class cubicm(object):
         self.omb = omb
         self.alpha_eos = alpha_eos 
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
-        #parametros de la mezcla
+
         
-        self.Tc = np.array(mix.Tc, ndmin = 1) #temperaturas criticas en K
-        self.Pc = np.array(mix.Pc, ndmin = 1) # presiones criticas en bar
+        self.Tc = np.array(mix.Tc, ndmin = 1) 
+        self.Pc = np.array(mix.Pc, ndmin = 1)
         self.w = np.array(mix.w, ndmin = 1)
         self.cii = np.array(mix.cii, ndmin = 1) 
         self.b = self.omb*R*self.Tc/self.Pc
@@ -79,15 +125,27 @@ class cubicm(object):
             raise Exception('Mixrule not valid')
             
             
-    #metodos cubica    
+    #Cubic EoS methods    
     def a_eos(self,T):
         """ 
-        a_eos(T),
+        a_eos(T)
+        
         Method that computes atractive term of cubic eos at fixed T (in K)
     
+        Parameters
+        ----------
+        
+        T : float
+            absolute temperature in K
+    
+        Returns
+        -------
+        a : array_like
+            atractive term array
         """
         alpha = self.alpha_eos(T,self.k,self.Tc)
-        return self.oma*(R*self.Tc)**2*alpha/self.Pc
+        a  = self.oma*(R*self.Tc)**2*alpha/self.Pc
+        return a
     
     def _Zroot(self,A,B):
         a1 = (self.c1+self.c2-1)*B-1
@@ -99,7 +157,28 @@ class cubicm(object):
         Zroots = Zroots[Zroots>B]
         return Zroots
         
-    def Zmix(self,X,T,P):
+    def Zmix(self, X, T, P):
+        '''
+        Zmix (X, T, P)
+        
+        Method that computes the roots of the compresibility factor polynomial
+        at given mole fractions (X), Temperature (T) and Pressure (P)
+        
+        Parameters
+        ----------
+        
+        X : array_like
+            mole fraction vector
+        T : float
+            absolute temperature in K
+        P : float
+            pressure in bar
+
+        Returns
+        -------        
+        Z : array_like
+            roots of Z polynomial
+        '''
         a = self.a_eos(T)
         am,bm,ep,ap = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
         A = am*P/(R*T)**2
@@ -108,18 +187,26 @@ class cubicm(object):
 
     def density(self, X, T, P, state):
         """ 
+        density(X, T, P, state)
         Method that computes the density of the mixture at X, T, P
 
         
-        Inputs
+        Parameters
         ----------
         
-        x : array_like, mole fraction vector
-        T : absolute temperature in K
-        P : pressure in bar
-        state : 'L' for liquid phase and 'V' for vapour phase
-        
-        Out: array_like, density vector of the mixture
+        X : array_like
+            mole fraction vector
+        T : float
+            absolute temperature in K
+        P : float
+            pressure in bar
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+
+        Returns
+        -------
+        density: array_like
+            density vector of the mixture in moll/cm3
         """
         if state == 'L':
             Z=min(self.Zmix(X,T,P))
@@ -128,6 +215,27 @@ class cubicm(object):
         return X*P/(R*T*Z)
     
     def logfugef(self, X, T, P, state, v0 = None):
+        """ 
+        logfugef(X, T, P, state)
+        
+        Method that computes the effective fugacity coefficients  at given
+        composition, temperature and pressure. 
+
+        Parameters
+        ----------
+        
+        X : array_like, mole fraction vector
+        T : absolute temperature in K
+        P : pressure in bar
+        state : 'L' for liquid phase and 'V' for vapour phase
+        
+        Returns
+        -------
+        logfug: array_like
+            effective fugacity coefficients
+        v0 : float
+            volume of phase, if calculated
+        """
         b = self.b
         a = self.a_eos(T)
         am, bm, ep, ap = self.mixrule(X, T, a, b, *self.mixruleparameter)
@@ -142,13 +250,37 @@ class cubicm(object):
         logfug -= (ep/(self.c2-self.c1))*np.log((Z+self.c2*B)/(Z+self.c1*B))
         return logfug, v0
         
-    def logfugmix(self, X, T, P, estado, v0 = None):
+    def logfugmix(self, X, T, P, state, v0 = None):
+        
+        """ 
+        logfugmix(X, T, P, state)
+        
+        Method that computes the mixture fugacity coefficient at given
+        composition, temperature and pressure. 
+
+        Parameters
+        ----------
+        
+        X : array_like
+            mole fraction vector
+        T : float
+            absolute temperature in K
+        P : float
+            pressure in bar
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        
+        Returns
+        -------
+        lofgfug : array_like
+            effective fugacity coefficients
+        """
 
         a = self.a_eos(T)
         am,bm,ep,ap = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
-        if estado == 'V':
+        if state == 'V':
             Z=max(self.Zmix(X,T,P))
-        elif estado == 'L':
+        elif state == 'L':
             Z=min(self.Zmix(X,T,P))
         
         B=(bm*P)/(R*T)
@@ -158,7 +290,26 @@ class cubicm(object):
     
     def a0ad(self, roa, T):
         
-        #temperatura ingresada en K, densidad ingresada adimensional
+        """ 
+        a0ad(roa, T)
+        
+        Method that computes the adimenstional Helmholtz density energy at given
+        density and temperature.
+
+        Parameters
+        ----------
+        
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------        
+        a0ad: float
+            adimenstional Helmholtz density energy
+        """
+        
         c1 = self.c1
         c2 = self.c2
         ai = self.a_eos(T)
@@ -171,7 +322,6 @@ class cubicm(object):
         Tad = R*T*self.b[0]/a
         ama = am/a
         bma = bm/self.b[0]
-        #bad = self.b/self.b[0]
         
         a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa/ro)))
         a0 += -Tad*ro*np.log(1-bma*ro)
@@ -181,6 +331,26 @@ class cubicm(object):
         return a0
     
     def muad(self, roa, T):
+        
+        """ 
+        muad(roa, T)
+        
+        Method that computes the adimenstional chemical potential at given
+        density and temperature.
+
+        Parameters
+        ----------
+        
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------        
+        muad : array_like
+            adimentional chemical potential vector
+        """
         
         c1 = self.c1
         c2 = self.c2
@@ -209,10 +379,33 @@ class cubicm(object):
     
     
     def dOm(self, roa, T, mu, Psat):
-        #todos los terminos ingresados deben ser adimensionales, excepto temperatura en K
-        return self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
+        """ 
+        dOm(roa, T, mu, Psat)
         
-    def lnphi0(self, T, P):
+        Method that computes the adimenstional Thermodynamic Grand potential at given
+        density and temperature.
+
+        Parameters
+        ----------
+        
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+        mu : array_like
+            adimentional chemical potential at equilibrium
+        Psat : float
+            adimentional pressure at equilibrium
+
+        Returns
+        -------       
+        dom: float
+            Thermodynamic Grand potential
+        """
+        dom = self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
+        return dom
+        
+    def _lnphi0(self, T, P):
         
         nc = self.nc
         a_puros = self.a_eos(T)
@@ -231,6 +424,22 @@ class cubicm(object):
         return lnphi
     
     def ci(self, T):
+        '''
+        ci(T)
+        
+        Method that evaluates the polynomials for the influence parameters used
+        in the SGT theory for surface tension calculations.
+        
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------        
+        cij: array_like
+            matrix of influence parameters with geomtric mixing rule.
+        '''
 
         n=self.nc
         ci=np.zeros(n)
@@ -240,17 +449,42 @@ class cubicm(object):
         return self.cij
     
     def sgt_adim(self, T):
-         a0 = self.a_eos(T)[0]
-         b0 = self.b[0]
-         ci = self.ci(T)[0,0]
-         Tfactor = R*b0/a0
-         Pfactor = b0**2/a0
-         rofactor = b0
-         tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3) #para dejarlo en nM/m
-         zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10 #Para dejarlo en Amstrong
-         return Tfactor, Pfactor, rofactor, tenfactor, zfactor
-         
-# Ecuacion de estado Peng Robinson    
+        '''
+        sgt_adim(T)
+        
+        Method that evaluates adimentional factor for temperature, pressure, 
+        density, tension and distance for interfacial properties computations with
+        SGT.
+        
+        Parameters
+        ----------
+        T : absolute temperature in K
+        
+        Returns
+        -------        
+        Tfactor : float
+            factor to obtain dimentionless temperature (K -> adim)
+        Pfactor : float
+            factor to obtain dimentionless pressure (bar -> adim)
+        rofactor : float
+            factor to obtain dimentionless density (mol/cm3 -> adim)
+        tenfactor : float
+            factor to obtain dimentionless surface tension (mN/m -> adim)
+        zfactor : float
+            factor to obtain dimentionless distance  (Amstrong -> adim)
+        
+        '''
+        a0 = self.a_eos(T)[0]
+        b0 = self.b[0]
+        ci = self.ci(T)[0,0]
+        Tfactor = R*b0/a0
+        Pfactor = b0**2/a0
+        rofactor = b0
+        tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3) 
+        zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10 
+        return Tfactor, Pfactor, rofactor, tenfactor, zfactor
+                 
+# Peng Robinson EoS 
 c1pr = 1-np.sqrt(2)
 c2pr = 1+np.sqrt(2)
 omapr = 0.4572355289213825
@@ -262,7 +496,7 @@ class prmix(cubicm):
         
         self.k =  0.37464 + 1.54226*self.w - 0.26992*self.w**2
         
-
+# Peng Robinson SV EoS 
 class prsvmix(cubicm):   
     def __init__(self, mix, mixrule = 'qmr'):
         cubicm.__init__(self, mix, c1 = c1pr, c2 = c2pr,
@@ -271,9 +505,9 @@ class prsvmix(cubicm):
             self.k = np.zeros([self.nc,2])
             self.k[:,0] = 0.378893+1.4897153*self.w-0.17131838*self.w**2+0.0196553*self.w**3
         else:
-             self.k = np.array(mix.ksv) #parametros utilizado para evaluar la funcion alpha_eos
+             self.k = np.array(mix.ksv) 
 
-# Ecuacion de estado de RK
+# RK - EoS
 c1rk = 0
 c2rk = 1
 omark = 0.42748
@@ -283,7 +517,8 @@ class rksmix(cubicm):
         cubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
               oma = omark, omb = ombrk, alpha_eos = alpha_soave, mixrule = mixrule)
         self.k =  0.47979 + 1.5476*self.w - 0.1925*self.w**2 + 0.025*self.w**3
-        
+      
+#RKS- EoS        
 class rkmix(cubicm):   
     def __init__(self, mix, mixrule = 'qmr'):
         cubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,

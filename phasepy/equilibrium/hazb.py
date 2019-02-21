@@ -30,20 +30,43 @@ def hazb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_outpu
     '''
     haxb (T,P) -> (x,w,y)
     
-    Inputs
+    Solves liquid liquid vapour equilibrium for binary mixtures. 
+    
+    Parameters
     ----------
     
-    X0 : array_like, guess composition of phase 1
-    W0 : array_like, guess composition of phase 1
-    Y0 : array_like, guess composition of phase 2
-    P_T : absolute temperature or pressure
-    T_P : absolute temperature or pressure
-    spec: 'T' if T_P is temperature or 'P' if pressure.
-
-    model : object created from mixture, eos and mixrule 
-    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    X0 : array_like
+        guess composition of phase 1
+    W0 : array_like
+        guess composition of phase 1
+    Y0 : array_like
+        guess composition of phase 2
+    P_T : float
+        absolute temperature or pressure
+    T_P : floar
+        absolute temperature or pressure
+    spec: string
+        'T' if T_P is temperature or 'P' if pressure.
+    model : object
+        created from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    Returns
+    -------
+    
+    X : array_like
+        liquid1 mole fraction vector
+    W : array_like
+        liquid2 mole fraction vector
+    Y : array_like
+        vapour mole fraction fector
+    var: float
+        temperature or pressure, depending of specification
     '''
     global vx, vw, vy
     sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),args = (T_P, spec, model, v0))

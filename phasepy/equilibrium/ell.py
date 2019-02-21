@@ -9,19 +9,37 @@ def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
     """
     Liquid liquid equilibrium (z,T,P) -> (x,w,beta)
     
-    Inputs
+    Solves liquid liquid equilibrium from multicomponent mixtures at given
+    pressure, temperature and overall composition.
+    
+    Parameters
     ----------
     
-    x0 : array_like, initial guess for liquid phase 1
-    w0 : array_like, initial guess for liquid phase 2
-    z : array_like, overal composition of mix
-    T : absolute temperature in K.
-    P : pressure in en bar
+    x0 : array_like
+        initial guess for liquid phase 1
+    w0 : array_like
+        initial guess for liquid phase 2
+    z : array_like
+        overal composition of mix
+    T : float
+        absolute temperature in K.
+    P : float 
+        pressure in en bar
+    model : object
+        created from mixture, eos and mixrule 
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
     
-    model : object created from mixture, eos and mixrule 
-    
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Returns
+    -------
+    X : array_like
+        liquid 1 mole fraction vector
+    W : array_like
+        liquid 2 mole fraction vector
+    beta : float
+        phase fraction of liquid 2
     
     """
 

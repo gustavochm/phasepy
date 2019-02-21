@@ -8,32 +8,69 @@ from itertools import combinations
 
 
 class component(object):
+    '''
+    Creates an object with pure component info
+    
+    Parameters
+    ----------
+    name : string
+        Name of the component
+    Tc : float
+        Critical temperature
+    Pc : float
+        Critical Pressure
+    Zc : float
+        critical compresibility factor
+    Vc : float
+        critical volume
+    w  : float
+        acentric factor
+    cii : list
+        polynomial coefficient for influence parameter in SGT
+    ksv : list
+        parameter for alpha for PRSV EoS, if fitted
+    Ant : list
+        Antoine correlation parameters
+    GC : dict
+        Group contribution info
+
+    
+    Attributes
+    ----------
+    
+    name : string
+        Name of the component
+    Tc : float
+        Critical temperature
+    Pc : float
+        Critical Pressure
+    Zc : float
+        critical compresibility factor
+    Vc : float
+        critical volume
+    w  : float
+        acentric factor
+    cii : list
+        polynomial coefficient for influence parameter in SGT
+    ksv : list
+        parameter for alpha for PRSV EoS, if fitted
+    Ant : list
+        Antoine correlation parameters
+    GC : dict
+        Group contribution info
+    
+    Methods
+    -------
+    psat : computes saturation pressure with Antoine correlation
+    tsat : compues saturation temperature with Antoine correlation
+    vlrackett : computes liquid volume with Rackett correlation
+    ci :  evaluates influence parameter polynomial
+    '''
     
     def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
                  ksv = [0, 0], Ant = [0,0,0],  GC = None,
                  m = 0, sigma = 0 , e = 0, kapaAB = 0, eAB = 0, site = [0,0,0]): 
-        '''
-        class component
-        Creates an object with pure component info
         
-        Name (name)
-        Critical Temperature (Tc)
-        Critical Pressure (Pc)
-        Critical compresibility (Zc)
-        Critical Volume (Vc)
-        Acentric factor (w)
-        Influence coefficient SGT (cii)
-        Parameters alpha PRSV eos (if fitted) (ksv)
-        Antoine parameters (Ant)
-        Group contribution info (GC)
-        
-        Methods
-        ------
-        psat
-        tsat
-        vlrackett
-        ci
-        '''
         self.name = name
         self.Tc = Tc #Critical Temperature in K
         self.Pc = Pc #Critical Pressure in bar
@@ -46,7 +83,7 @@ class component(object):
         self.GC = GC # Dict, Group contribution info
         self.nc = 1
         
-        #Parametros Saft
+        #Saft Parameters
         self.m = m
         self.sigma = 1e-9*sigma*(Na**(1./3)) 
         self.e = e 
@@ -56,41 +93,130 @@ class component(object):
         
         
     def psat(self,T):
-        '''
-        Method that computes saturation pressure at T using Ant eq.
-        '''
+        """ 
+        psat(T)
+        
+        Method that computes saturation pressure at T using Ant eq. Expontential
+        base is used.
+    
+        Parameters
+        ----------
+        
+        T : float
+            absolute temperature in K
+    
+        Returns
+        -------
+        Psat : foat
+            Saturation pressure in bar
+        """
+        
         coef = self.Ant
         return np.exp(coef[0]-coef[1]/(T+coef[2]))
     
     
     def tsat(self, P):
-        '''
+        """ 
+        tsat(T)
+        
         Method that computes the saturation temperature at P using Ant eq.
-        '''
+        Expontential base is used.
+    
+        Parameters
+        ----------
+        Psat : foat
+            Saturation pressure in bar
+            
+        Returns
+        -------
+        
+        T : float
+            absolute temperature in K
+
+        """
+     
         coef =self.Ant
         T = - coef[2] + coef[1] / (coef[0] - np.log(P))
         
         return T
     
     def vlrackett(self,T):
-        '''
+        """ 
+        vlrackett(T)
+        
         Method that computes the liquid volume using Rackett eq.
-        '''
+    
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+            
+        Returns
+        -------
+        
+        vl : float
+            liquid volume in cm3/mol
+
+        """
         Tr=T/self.Tc
         V=self.Vc*self.Zc**((1-Tr)**(2/7))
         return V
     
     def ci(self, T):
-        '''
+        """ 
+        vlrackett(T)
+        
         Method that evaluates the polynomial for cii coeffient of SGT
         cii must be in J m^5 / mol and T in K.
-        '''
+    
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+            
+        Returns
+        -------
+        
+        ci : float
+            influence parameter at given temperature
+
+        """
+
         return np.polyval(self.cii, T)
     
 class mixture(object):
     '''
     class mixture
     Creates an object that cointains info about a mixture.
+
+    Parameters
+    ----------
+    component1, component2 : object
+        component created with component class
+        
+    Attributes
+    ----------
+    
+    name : list
+        Name of the component
+    Tc : list
+        Critical temperature
+    Pc : list
+        Critical Pressure
+    Zc : list
+        critical compresibility factor
+    Vc : list
+        critical volume
+    w  : list
+        acentric factor
+    cii : list
+        polynomial coefficient for influence parameter in SGT
+    ksv : list
+        parameter for alpha for PRSV EoS, if fitted
+    Ant : list
+        Antoine correlation parameters
+    GC : list
+        Group contribution info
     
     Methods
     -------
@@ -99,7 +225,6 @@ class mixture(object):
     tsat: computes saturation temperature of pures
     vlrackett : computes liquid volume of pure
     copy: returns a copy of the object
-    
     kij_cubic : add kij matrix for QMR mixrule
     NRTL : add energy interactions and aleatory factor for NRTL model
     wilson : add energy interactions for wilson model
@@ -150,26 +275,68 @@ class mixture(object):
         self.nc += 1
         
     def psat(self,T):
-        '''
-        Method that computes saturation pressure at T using Ant eq.
-        '''
+        """ 
+        psat(T)
+        
+        Method that computes saturation pressure at T using Ant eq. Expontential
+        base is used.
+    
+        Parameters
+        ----------
+        
+        T : float
+            absolute temperature in K
+    
+        Returns
+        -------
+        Psat : array_like
+            Saturation pressure in bar
+        """
         coef = np.vstack(self.Ant)
         return np.exp(coef[:,0]-coef[:,1]/(T+coef[:,2]))
     
     def tsat(self, P):
-        '''
-        Method that computes saturation temperature at P using Ant eq.
-        '''
+        """ 
+        tsat(T)
+        
+        Method that computes the saturation temperature at P using Ant eq.
+        Expontential base is used.
+    
+        Parameters
+        ----------
+        Psat : foat
+            Saturation pressure in bar
+            
+        Returns
+        -------
+        
+        T : array_like
+            absolute temperature in K
+
+        """
         coef=np.vstack(self.Ant)
         T = - coef[:,2] + coef[:,1] / (coef[:,0] - np.log(P))
         return T
     
     
     def vlrackett(self,T):
-        '''
+        """ 
+        vlrackett(T)
+        
         Method that computes the liquid volume using Rackett eq.
+    
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+            
+        Returns
+        -------
+        
+        vl : float
+            liquid volume in cm3/mol
 
-        '''
+        """
         Tc = np.array(self.Tc)
         Vc = np.array(self.Vc)
         Zc = np.array(self.Zc)
@@ -187,22 +354,39 @@ class mixture(object):
         
     
     def kij_cubic(self,k):
-        ''' 
+        '''
         Method that add kij matrix for QMR mixrule. Matrix must be symmetrical
         and the main diagonal must be zero.
-        '''
+        
+        Parameters
+        ----------
+
+        k: array like
+            matrix of interactions parameters
+
+        ''' 
+
+
         self.kij = k
         
     def NRTL(self, alpha, g , g1 = None):
         '''
-        Method that adds NRTL parameters to the mixture.
-        Matrix g (in K), main diagonal must be zero.
-        Matrix g1 (in 1/K), main diagonal must be zero.
-        Matrix alpha: symmetrical and main diagonal must be zero.
+        Method that adds NRTL parameters to the mixture
         
+        Parameters
+        ----------
+
+        g: array like
+            matrix of energy interactions in K
+        g1: array_like
+            matrix of energy interactions in 1/K
+        alpha: array_like
+            aleatory factor
+            
         tau = ((g + g1*T)/T)
+
         '''
-        #ingresar matriz de parametros g y de aleotoridad de modelo NRTL
+        
         self.g = g
         self.alpha = alpha
         if g1 is None:
@@ -213,6 +397,13 @@ class mixture(object):
     def rkt(self, D):
         '''
         Method that adds a ternary polynomial modification to NRTL model
+        
+        Parameters
+        ----------
+
+        D: array_like
+            ternary interaction parameters values
+
         '''
         self.rkternario = D        
         self.actmodelp = (self.g, self.alpha, self.g1, self.rkternario)
@@ -221,7 +412,15 @@ class mixture(object):
         '''
         Method that adds wilson model parameters to the mixture
         Matrix A main diagonal must be zero. Values in K.
+        
+        Parameters
+        ----------
+
+        A: array_like
+            interaction parameters values
+
         '''
+        
         self.Aij = A
         self.actmodelp = (self.Aij , self.vlrackett)
         
@@ -229,8 +428,17 @@ class mixture(object):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
         excess Gibbs energy.
-        Coefficients are calculated:
+        
+        Parameters
+        ----------
+
+        c: array_like
+            polynomial values adim
+        c1: array_like, optional
+            polynomial values in K
+        
         G = c + c1/T
+        
         '''
         self.rkbinario = c
         if c1 is None:
@@ -242,9 +450,19 @@ class mixture(object):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
         excess Gibbs energy.
-        Coefficients are calculated:
+        
+        Parameters
+        ----------
+
+        c: array_like
+            polynomial values adim
+        c1: array_like, optional
+            polynomial values in K
+        
         G = c + c1/T
+        
         '''
+
         combinatoria = list(combinations(range(self.nc),2))
         c = np.atleast_2d(c)
         self.rkp = c
@@ -256,14 +474,20 @@ class mixture(object):
     
     
     def unifac(self):
+        """ 
+        unifac()
         
-        '''
         Method that read the Dortmund database for UNIFAC model
         After calling this function activity coefficient are ready
         to be calculated.
+
+        """
+        
+        '''
+
         '''
         
-        #lectura de los parametros de UNIFAC
+        #UNIFAC database reading
         database = os.path.join(os.path.dirname(__file__), 'database')
         database +=  '/dortmund.xlsx'
         qkrk = read_excel(database, 'RkQk', index_col = 'Especie')
@@ -274,7 +498,8 @@ class mixture(object):
         a2 = read_excel(database, 'A2', index_col = 'Grupo')
         a2.fillna(0, inplace = True)
         
-        #Lectura de puros y creacion de informacion de grupos de mezcla
+
+        #Reading pure component and mixture group contribution info
         puregc = self.GC
         mix = Counter()
         for i in puregc:
@@ -282,7 +507,8 @@ class mixture(object):
             
         subgroups = list(mix.keys())
         
-        #creacion de diccionarios por especie
+
+        #Dicts created for each component
         vk = []
         dics = []
         for i in puregc:
@@ -298,7 +524,7 @@ class mixture(object):
         b = a1.loc[groups, groups].values
         c = a2.loc[groups, groups].values
         
-        #lectura del volumen de los grupos presentes
+        #Reading info of present groups
         rq = qkrk.loc[subgroups, ['Rk', 'Qk']].values
         Qk = rq[:,1]
         
@@ -314,14 +540,27 @@ class mixture(object):
         
     def ci(self,T):
         
-        '''
+        """ 
+        ci(T)
+        
         Method that computes the matrix of cij interaction parameter for SGT at
         T.
         beta is a modification to the interaction parameters and must be added 
         as a symmetrical matrix with main diagonal set to zero.
-        '''
+    
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+            
+        Returns
+        -------
         
-        #ingresar beta como matriz
+        ci : array_like
+            influence parameter matrix at given temperature
+
+        """
+        
         n = len(self.cii)
         ci = np.zeros(n)
         for i in range(n):
@@ -330,4 +569,17 @@ class mixture(object):
         return self.cij
     
     def copy(self):
+        """ 
+        copy()
+        
+        Method that return a copy of the mixture
+
+            
+        Returns
+        -------
+        
+        mix : object
+            returns a copy a of the mixture
+        """
+        
         return copy(self)

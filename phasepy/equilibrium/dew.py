@@ -89,17 +89,36 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
     """
     Dew point (T, y) -> (P, y)
     
-    Inputs
-    ----------
-    x_guess : array_like, guess of liquid phase composition
-    P_guess : guess of equilibrium pressure of the liquid in bar.
+    Solves dew point at given vapour composition and temperature. It uses a
+    combination of accelerated successive sustitution with quasi Newton Method
+    in regular cases and when good initial it's provided the full system of 
+    equations of the phase envelope method is used as objective function.
     
-    y : array_like, vapour phase composition
-    T : temperaure of the vapour in K
-    model : object create from mixture, eos and mixrule 
-    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Parameters
+    ----------
+    x_guess : array_like
+        guess of liquid phase composition
+    P_guess : float
+        guess of equilibrium pressure of the liquid in bar.
+    y : array_like
+        vapour phase composition
+    T : float
+        temperaure of the vapour in K
+    model : object
+        create from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    Returns
+    -------
+    X : array_like
+        liquid mole fraction vector
+    P : float
+        equilibrium pressure in bar
     
     """
     
@@ -148,17 +167,36 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
     """
     Dew point (T, y) -> (P, y)
     
-    Inputs
-    ----------
-    x_guess : array_like, guess of liquid phase composition
-    T_guess : guess of equilibrium temperature of the liquid in K.
+    Solves dew point at given vapour composition and pressure. It uses a
+    combination of accelerated successive sustitution with quasi Newton Method
+    in regular cases and when good initial it's provided the full system of 
+    equations of the phase envelope method is used as objective function.
     
-    y : array_like, vapour phase composition
-    P : pressure of the liquid in bar
-    model : object create from mixture, eos and mixrule 
-    good_initial: bool, if True skip sucesive sustitution and solves by Newton's Method.
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Parameters
+    ----------
+    x_guess : array_like
+        guess of liquid phase composition
+    T_guess : float
+        guess of equilibrium temperature of the liquid in K.
+    y : array_like
+        vapour phase composition
+    P : float
+        pressure of the liquid in bar
+    model : object
+        create from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip sucesive sustitution and solves by Newton's Method.
+    v0 : list, optional
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    Returns
+    -------
+    X : array_like
+        liquid mole fraction vector
+    T : float
+        equilibrium temperature in K
     
     """
     global vl, vv

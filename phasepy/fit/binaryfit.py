@@ -1,6 +1,6 @@
 import numpy as np
 from ..actmodels import virialgama, wilson, rkb
-from .ajustemulticomponente import fobj_elv, fobj_ell, fobj_hazb
+from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize 
 
 
@@ -20,11 +20,19 @@ def fit_wilson(x0, mix, dataelv):
     """ 
     fit_wilson: attemps to fit wilson parameters to LVE 
     
-    Parametros
+    Parameters
     ----------
-    x0 : array_like, initial values a12, a21 in K
-    mix: object, binary mixture
-    dataelv: tuple, (Xexp, Yelv, Texp, Pexp)
+    x0 : array_like
+        initial values a12, a21 in K
+    mix: object
+        binary mixture
+    dataelv: tuple
+        (Xexp, Yelv, Texp, Pexp)
+    
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
     
     """
     fit = minimize(fobj_wilson, x0, args = (mix, dataelv))
@@ -69,15 +77,22 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
     """ 
     fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE 
     
-    Parametros
+    Parameters
     ----------
-    x0 : array_like, initial values interaction parameters (and aleatory factor) 
-    mix: object, binary mixture
-    dataelv: tuple, (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, (Xexp, Wexp, Yexp, Texp, Pexp)
-    alpha_fit: bool, if True fix aleatory factor to 0.2
-    Tdep: bool, if True parameters are treated as:
+    x0 : array_like
+        initial values interaction parameters (and aleatory factor) 
+    mix: object
+        binary mixture
+    dataelv: tuple, optional
+        (Xexp, Yexp, Texp, Pexp)
+    dataell: tuple, optional
+        (Xexp, Wexp, Texp, Pexp)
+    dataellv: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp)
+    alpha_fit: bool, optional
+        if True fix aleatory factor to 0.2
+    Tdep: bool, optional
+        if True parameters are treated as:
             a12 = a12_1 + a12T * T
             a21 = a21_1 + a21T * T
             
@@ -87,7 +102,11 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
         x0 = [a12, a21, alpha]
     if alpha_fixed False and Tdep False:
         x0 = [a12, a21]
-            
+        
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
     """
     fit = minimize(fobj_nrtl, x0, args = (mix, dataelv, dataell, dataellv,
               alpha_fixed, Tdep))
@@ -113,14 +132,25 @@ def fit_kij(kij0, eos, mix, dataelv = None, dataell = None, dataellv = None):
     """ 
     fit_kij: attemps to fit kij to LVE, LLE, LLVE 
     
-    Parametros
+    Parameters
     ----------
-    kij0 : array_like, initial value for kij
-    eos : cubic eos to fit kij for qmr mixrule
-    mix: object, binary mixture
-    dataelv: tuple, (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, (Xexp, Wexp, Yexp, Texp, Pexp)            
+    kij0 : array_like
+        initial value for kij
+    eos : function
+        cubic eos to fit kij for qmr mixrule
+    mix: object
+        binary mixture
+    dataelv: tuple, optional
+        (Xexp, Yexp, Texp, Pexp)
+    dataell: tuple, optional
+        (Xexp, Wexp, Texp, Pexp)
+    dataellv: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp) 
+
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize          
             
     """
     fit = minimize(fobj_kij, kij0, args = (eos, mix, dataelv, dataell, dataellv))
@@ -150,19 +180,30 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
     """ 
     fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE 
     
-    Parametros
+    Parameters
     ----------
-    inc0 : array_like, initial values to RK parameters
-    mix: object, binary mixture
-    dataelv: tuple, (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, (Xexp, Wexp, Yexp, Texp, Pexp)   
-    Tdep : bool, if true:
+    inc0 : array_like
+        initial values to RK parameters
+    mix: object
+        binary mixture
+    dataelv: tuple, optional
+        (Xexp, Yexp, Texp, Pexp)
+    dataell: tuple, optional
+        (Xexp, Wexp, Texp, Pexp)
+    dataellv: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp)   
+    Tdep : bool,
+        if true:
                     C = C' + C'T
     if Tdep true:
         inc0 = [C'0, C'1, C'2, ..., C'0T, C'1T, C'2T... ]      
     if Tdep flase: 
             inc0 = [C'0, C'1, C'2...]
+            
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
     """
     fit = minimize(fobj_rkb, inc0 ,args = (mix, dataelv, dataell, dataellv, Tdep ))
     return fit

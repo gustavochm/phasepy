@@ -5,16 +5,23 @@ def rkb(x, T, C, C1):
     '''
     Redlich-Kister activity coefficient model for multicomponent mixtures.
     
-    input
-    X: array like, vector of molar fractions
-    T: float, absolute temperature in K.
-    C: array like, polynomial values adim..
-    C1: array_like, polynomial values in K.
+    Parameters
+    ----------
+    X: array_like
+        vector of molar fractions
+    T: float
+        absolute temperature in K
+    C: array_like
+        polynomial values adim
+    C1: array_like
+        polynomial values in K
     
     G = C + C1/T
     
-    output
-    lngama: array_like, natural logarithm of activify coefficient
+    Returns
+    -------
+    lngama: array_like
+        natural logarithm of activify coefficient
     '''
     x = np.asarray(x,dtype = np.float64)
     
@@ -26,18 +33,25 @@ def rk(x, T, C, C1, combinatory):
     '''
     Redlich-Kister activity coefficient model for multicomponent mixtures.
     
-    input
-    X: array like, vector of molar fractions
-    T: float, absolute temperature in K.
-    C: array like, polynomial values adim..
-    C1: array_like, polynomial values in K.
-    combinatory: array_like, constains info of the order of polynomial coefficients
-                by pairs.
+    Parameters
+    ----------
+    X: array_like
+        vector of molar fractions
+    T: float
+        absolute temperature in K
+    C: array_like
+        polynomial values adim
+    C1: array_like
+         polynomial values in K
+    combinatory: array_like
+        contains info of the order of polynomial coefficients by pairs
     
     G = C + C1/T
     
-    output
-    lngama: array_like, natural logarithm of activify coefficient
+    Returns
+    -------
+    lngama: array_like
+        natural logarithm of activify coefficient
     '''
     x = np.asarray(x,dtype = np.float64)
     combinatoria = np.asarray(combinatory, dtype = np.float64)
