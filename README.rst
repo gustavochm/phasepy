@@ -83,7 +83,7 @@ License information
 See ``LICENSE.txt`` for information on the terms & conditions for usage
 of this software, and a DISCLAIMER OF ALL WARRANTIES.
 
-Although not required by the thermo license, if it is convenient for you,
+Although not required by the phasepy license, if it is convenient for you,
 please cite thermo if used in your work. Please also consider contributing
 any changes you make back, and benefit the community.
 

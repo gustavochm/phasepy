@@ -13,7 +13,7 @@ class component(object):
     
     Parameters
     ----------
-    name : string
+    name : str
         Name of the component
     Tc : float
         Critical temperature
@@ -38,7 +38,7 @@ class component(object):
     Attributes
     ----------
     
-    name : string
+    name : str
         Name of the component
     Tc : float
         Critical temperature
@@ -93,15 +93,12 @@ class component(object):
         
         
     def psat(self,T):
-        """ 
-        psat(T)
-        
+        """
         Method that computes saturation pressure at T using Ant eq. Expontential
         base is used.
     
         Parameters
         ----------
-        
         T : float
             absolute temperature in K
     
@@ -117,8 +114,6 @@ class component(object):
     
     def tsat(self, P):
         """ 
-        tsat(T)
-        
         Method that computes the saturation temperature at P using Ant eq.
         Expontential base is used.
     
@@ -129,7 +124,6 @@ class component(object):
             
         Returns
         -------
-        
         T : float
             absolute temperature in K
 
@@ -141,9 +135,7 @@ class component(object):
         return T
     
     def vlrackett(self,T):
-        """ 
-        vlrackett(T)
-        
+        """
         Method that computes the liquid volume using Rackett eq.
     
         Parameters
@@ -153,7 +145,6 @@ class component(object):
             
         Returns
         -------
-        
         vl : float
             liquid volume in cm3/mol
 
@@ -164,8 +155,6 @@ class component(object):
     
     def ci(self, T):
         """ 
-        vlrackett(T)
-        
         Method that evaluates the polynomial for cii coeffient of SGT
         cii must be in J m^5 / mol and T in K.
     
@@ -176,7 +165,6 @@ class component(object):
             
         Returns
         -------
-        
         ci : float
             influence parameter at given temperature
 
@@ -191,12 +179,13 @@ class mixture(object):
 
     Parameters
     ----------
-    component1, component2 : object
+    component1 : object
+        component created with component class
+    component2 : object
         component created with component class
         
     Attributes
     ----------
-    
     name : list
         Name of the component
     Tc : list
@@ -254,6 +243,9 @@ class mixture(object):
         self.site = [component1.site, component2.site]
         
     def add_component(self,component):
+        """
+        Method that add a component to the mixture
+        """
         self.names.append(component.name)
         self.Tc.append(component.Tc)
         self.Pc.append(component.Pc)
@@ -275,15 +267,12 @@ class mixture(object):
         self.nc += 1
         
     def psat(self,T):
-        """ 
-        psat(T)
-        
+        """         
         Method that computes saturation pressure at T using Ant eq. Expontential
         base is used.
     
         Parameters
         ----------
-        
         T : float
             absolute temperature in K
     
@@ -297,8 +286,6 @@ class mixture(object):
     
     def tsat(self, P):
         """ 
-        tsat(T)
-        
         Method that computes the saturation temperature at P using Ant eq.
         Expontential base is used.
     
@@ -309,7 +296,6 @@ class mixture(object):
             
         Returns
         -------
-        
         T : array_like
             absolute temperature in K
 
@@ -320,9 +306,7 @@ class mixture(object):
     
     
     def vlrackett(self,T):
-        """ 
-        vlrackett(T)
-        
+        """         
         Method that computes the liquid volume using Rackett eq.
     
         Parameters
@@ -332,7 +316,6 @@ class mixture(object):
             
         Returns
         -------
-        
         vl : float
             liquid volume in cm3/mol
 
@@ -360,7 +343,6 @@ class mixture(object):
         
         Parameters
         ----------
-
         k: array like
             matrix of interactions parameters
 
@@ -375,7 +357,6 @@ class mixture(object):
         
         Parameters
         ----------
-
         g: array like
             matrix of energy interactions in K
         g1: array_like
@@ -383,6 +364,9 @@ class mixture(object):
         alpha: array_like
             aleatory factor
             
+        Note
+        ----
+        Parameters are evaluated as a function of temperature:
         tau = ((g + g1*T)/T)
 
         '''
@@ -400,7 +384,6 @@ class mixture(object):
         
         Parameters
         ----------
-
         D: array_like
             ternary interaction parameters values
 
@@ -415,7 +398,6 @@ class mixture(object):
         
         Parameters
         ----------
-
         A: array_like
             interaction parameters values
 
@@ -431,11 +413,14 @@ class mixture(object):
         
         Parameters
         ----------
-
         c: array_like
             polynomial values adim
         c1: array_like, optional
             polynomial values in K
+            
+        Note
+        ----
+        Parameters are evaluated as a function of temperature:
         
         G = c + c1/T
         
@@ -458,6 +443,10 @@ class mixture(object):
             polynomial values adim
         c1: array_like, optional
             polynomial values in K
+            
+        Note
+        ----
+        Parameters are evaluated as a function of temperature:
         
         G = c + c1/T
         
@@ -474,18 +463,12 @@ class mixture(object):
     
     
     def unifac(self):
-        """ 
-        unifac()
-        
+        """         
         Method that read the Dortmund database for UNIFAC model
         After calling this function activity coefficient are ready
         to be calculated.
 
         """
-        
-        '''
-
-        '''
         
         #UNIFAC database reading
         database = os.path.join(os.path.dirname(__file__), 'database')
@@ -541,8 +524,6 @@ class mixture(object):
     def ci(self,T):
         
         """ 
-        ci(T)
-        
         Method that computes the matrix of cij interaction parameter for SGT at
         T.
         beta is a modification to the interaction parameters and must be added 
@@ -555,7 +536,6 @@ class mixture(object):
             
         Returns
         -------
-        
         ci : array_like
             influence parameter matrix at given temperature
 
@@ -570,14 +550,11 @@ class mixture(object):
     
     def copy(self):
         """ 
-        copy()
-        
         Method that return a copy of the mixture
 
             
         Returns
         -------
-        
         mix : object
             returns a copy a of the mixture
         """
