@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Cubic Equation of State &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pure Cubic Equation of State Class" href="phasepy.cubicp.html" />
+    <link rel="prev" title="Activity coefficient models" href="phasepy.actmodels.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cubic Equation of State</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubicp.html">Pure Cubic Equation of State Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">van der Waals EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson Stryjec Vera EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong Soave EoS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
+        
+          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
+        
+      <li>Cubic Equation of State</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/models/phasepy.cubic.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cubic-equation-of-state">
+<h1>Cubic Equation of State<a class="headerlink" href="#cubic-equation-of-state" title="Permalink to this headline">¶</a></h1>
+<p>Main Cubic EoS functions of phaspy packages are bases on the following classes:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="phasepy.cubicp.html">Pure Cubic Equation of State Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
+</ul>
+</div>
+<p>This way, one you create an cubic EoS object it would check if you are working with a mixture
+or a pure component. The former case you will need to provide interaction parameters to the mixrule
+of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
+and then how to specify a mixrule.</p>
+<p>For the case of classic quadratic mixrule:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">preos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Kij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.11</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">Kij</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In case of Modified Huron Vidal with NRTL model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.</span>       <span class="p">,</span> <span class="o">-</span><span class="mf">57.6880881</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="p">[</span><span class="mf">668.682368</span> <span class="p">,</span>   <span class="mf">0.</span>       <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.46909821</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mf">0.37982045</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Adding activity model parameters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_nrtl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In case of Modified Huron Vidal with UNIFAC:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span> <span class="c1">#reading UNIFAC database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_unifac&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In case of Modified Huron Vidal with Redlich Kister Expansion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">1.20945699</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.62209997</span><span class="p">,</span>  <span class="mf">3.18919339</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>  <span class="o">-</span><span class="mf">13.271128</span><span class="p">,</span>   <span class="mf">101.837857</span><span class="p">,</span> <span class="o">-</span><span class="mf">1100.29221</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_rk&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson,
+Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:</p>
+<div class="section" id="module-phasepy.cubic.cubic">
+<span id="van-der-waals-eos"></span><h2>van der Waals EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.cubic.cubic.vdweos">
+<code class="descname">vdweos</code><span class="sig-paren">(</span><em>mix_or_component</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#vdweos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.vdweos" title="Permalink to this definition">¶</a></dt>
+<dd><p>van der Waals EoS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
+have interactions parameters.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>eos</strong> – eos used for phase equilibrium calculations</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.cubic.cubic">
+<span id="peng-robinson-eos"></span><h2>Peng Robinson EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.cubic.cubic.preos">
+<code class="descname">preos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#preos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.preos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peng Robinson EoS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
+have interactions parameters.</li>
+<li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
+‘mhv_wilson’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>eos</strong> – eos used for phase equilibrium calculations</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.cubic.cubic">
+<span id="peng-robinson-stryjec-vera-eos"></span><h2>Peng Robinson Stryjec Vera EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.cubic.cubic.prsveos">
+<code class="descname">prsveos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#prsveos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.prsveos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peng Robinson EoS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
+have interactions parameters.</li>
+<li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
+‘mhv_wilson’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>eos</strong> – eos used for phase equilibrium calculations</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.cubic.cubic">
+<span id="redlich-kwong-eos"></span><h2>Redlich Kwong EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.cubic.cubic.rkeos">
+<code class="descname">rkeos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkeos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkeos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redlich Kwong EoS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
+have interactions parameters.</li>
+<li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
+‘mhv_wilson’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>eos</strong> – eos used for phase equilibrium calculations</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.cubic.cubic">
+<span id="redlich-kwong-soave-eos"></span><h2>Redlich Kwong Soave EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.cubic.cubic.rkseos">
+<code class="descname">rkseos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkseos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkseos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redlich Kwong Soave EoS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
+have interactions parameters.</li>
+<li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
+‘mhv_wilson’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>eos</strong> – eos used for phase equilibrium calculations</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="phasepy.cubicp.html" class="btn btn-neutral float-right" title="Pure Cubic Equation of State Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="phasepy.actmodels.html" class="btn btn-neutral float-left" title="Activity coefficient models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

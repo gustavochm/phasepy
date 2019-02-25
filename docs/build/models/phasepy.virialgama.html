@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Virial - Activity coefficient Model &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Virial EoS" href="phasepy.virial.html" />
+    <link rel="prev" title="Models" href="../phasepy.models.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Virial - Activity coefficient Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.actmodels.html">Activity coefficient models</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
+        
+          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
+        
+      <li>Virial - Activity coefficient Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/models/phasepy.virialgama.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="virial-activity-coefficient-model">
+<h1>Virial - Activity coefficient Model<a class="headerlink" href="#virial-activity-coefficient-model" title="Permalink to this headline">¶</a></h1>
+<p>This class is focused from phase equilibrium using a virial correlation for the
+vapour phase and a activity coefficient model for the liquid phase. For the gas phase,
+the virial coefficient can be estimated using Abbott or Tsonopoulos correlations, also
+an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and UNIFAC
+model are available.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.virial.html#module-phasepy.actmodels.virial">Ideal gas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.virial.html#module-phasepy.actmodels.virial">Abbott - Van Ness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.virial.html#module-phasepy.actmodels.virial">Tsonopoulos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phasepy.actmodels.html">Activity coefficient models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.actmodels.html#module-phasepy.actmodels.nrtl">NRTL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.actmodels.html#module-phasepy.actmodels.wilson">Wilson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.actmodels.html#module-phasepy.actmodels.redlichkister">Redlich Kister</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.actmodels.html#module-phasepy.actmodels.unifac">UNIFAC</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Before creating a model object, it is necessary to supply the interactions parameters of the activity
+coefficient model. The object for the mixture of water and ethanol created in the past section, would be
+the following way for the NRTL model.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">nrtl</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.</span>       <span class="p">,</span> <span class="o">-</span><span class="mf">57.6880881</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="mf">668.682368</span> <span class="p">,</span>   <span class="mf">0.</span>       <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.46909821</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="p">[</span><span class="o">-</span><span class="mf">0.37982045</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Adding activity model parameters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating Model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Model parameters are saved in actmodelp attribute</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
+<span class="go">&gt;&gt;&gt;np.all(parameters[0] == alpha), np.all(parameters[1] == g), np.all(parameters[2] == g1)</span>
+<span class="go">(True, True, True)</span>
+</pre></div>
+</div>
+<p>If you would like to use fitted parameters of a Redlich Kister expansion you can do it as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">rk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">1.20945699</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.62209997</span><span class="p">,</span>  <span class="mf">3.18919339</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>  <span class="o">-</span><span class="mf">13.271128</span><span class="p">,</span>   <span class="mf">101.837857</span><span class="p">,</span> <span class="o">-</span><span class="mf">1100.29221</span> <span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Readimg parameters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">C0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">C1</span><span class="p">)</span>
+<span class="go">(True, True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">[(0, 1)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Combinatory created by pairs, in case of mixtures with more componentes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#it would be [(0,1), (0, 2), ..., (0, nc-1), (1, 2), (1, 3), ...]</span>
+</pre></div>
+</div>
+<p>If we would like to use the group contribution model UNIFAC with an ideal gas, the same class is used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">unifac</span><span class="p">,</span> <span class="n">ideal_gas</span>
+<span class="go">#Reading UNIFAC database</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
+<span class="go">#Creating Model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">unifac</span><span class="p">)</span>
+</pre></div>
+</div>
+<span class="target" id="module-phasepy.actmodels.virialgama"></span><dl class="class">
+<dt id="phasepy.actmodels.virialgama.virialgama">
+<em class="property">class </em><code class="descname">virialgama</code><span class="sig-paren">(</span><em>mix</em>, <em>virialmodel=&lt;function Tsonopoulos&gt;</em>, <em>actmodel=&lt;function nrtl&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a model with mixture using a virial eos to describe vapour phase
+and an activity coefficient model for liquid phase.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mix</strong> (<em>object</em>) – mixture created with mixture class</li>
+<li><strong>virialmodel</strong> (<em>function</em>) – function to compute virial coefficients</li>
+<li><strong>actmodel</strong> (<em>function</em>) – function to compute activity coefficients</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt>
+<code class="descname">logfugef: computes effective fugacity coefficients</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="phasepy.actmodels.virialgama.virialgama.logfugef">
+<code class="descname">logfugef</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>P</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.logfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.logfugef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the effective fugacity coefficients  at given
+composition, temperature and pressure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array_like</em><em>, </em><em>mole fraction vector</em>) – </li>
+<li><strong>T</strong> (<em>absolute temperature in K</em>) – </li>
+<li><strong>P</strong> (<em>pressure in bar</em>) – </li>
+<li><strong>state</strong> (<em>'L' for liquid phase and 'V' for vapour phase</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>logfug</strong> (<em>array_like</em>) – effective fugacity coefficients</li>
+<li><strong>v0</strong> (<em>float</em>) – volume of phase, if calculated</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="phasepy.virial.html" class="btn btn-neutral float-right" title="Virial EoS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../phasepy.models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

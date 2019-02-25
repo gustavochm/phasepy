@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Activity coefficient models &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Cubic Equation of State" href="phasepy.cubic.html" />
+    <link rel="prev" title="Virial EoS" href="phasepy.virial.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Activity coefficient models</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
+        
+          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
+        
+          <li><a href="phasepy.virialgama.html">Virial - Activity coefficient Model</a> &raquo;</li>
+        
+      <li>Activity coefficient models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/models/phasepy.actmodels.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="activity-coefficient-models">
+<h1>Activity coefficient models<a class="headerlink" href="#activity-coefficient-models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-phasepy.actmodels.nrtl">
+<span id="nrtl"></span><h2>NRTL<a class="headerlink" href="#module-phasepy.actmodels.nrtl" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.actmodels.nrtl.nrtl">
+<code class="descname">nrtl</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>alpha</em>, <em>g</em>, <em>g1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/nrtl.html#nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.nrtl.nrtl" title="Permalink to this definition">¶</a></dt>
+<dd><p>NRTL activity coefficient model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array like</em>) – vector of molar fractions</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>g</strong> (<em>array like</em>) – matrix of energy interactions in K</li>
+<li><strong>g1</strong> (<em>array_like</em>) – matrix of energy interactions in 1/K</li>
+<li><strong>alpha</strong> (<em>array_like</em>) – aleatory factor.</li>
+<li><strong>=</strong><strong> (</strong><strong>(</strong><strong>g + g1*T</strong><strong>)</strong><strong>/T</strong><strong>)</strong> (<em>tau</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lngama</strong> – natural logarithm of activify coefficient</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.actmodels.wilson">
+<span id="wilson"></span><h2>Wilson<a class="headerlink" href="#module-phasepy.actmodels.wilson" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.actmodels.wilson.wilson">
+<code class="descname">wilson</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>A</em>, <em>vl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/wilson.html#wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.wilson.wilson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wilson activity coefficient model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array like</em>) – vector of molar fractions</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>A</strong> (<em>array like</em>) – matrix of energy interactions in K</li>
+<li><strong>vl</strong> (<em>function</em>) – liquid volume of species in cm3/mol</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lngama</strong> – natural logarithm of activify coefficient</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.actmodels.redlichkister">
+<span id="redlich-kister"></span><h2>Redlich Kister<a class="headerlink" href="#module-phasepy.actmodels.redlichkister" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.actmodels.redlichkister.rk">
+<code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em>, <em>combinatory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redlich-Kister activity coefficient model for multicomponent mixtures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array_like</em>) – vector of molar fractions</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>C</strong> (<em>array_like</em>) – polynomial values adim</li>
+<li><strong>C1</strong> (<em>array_like</em>) – polynomial values in K</li>
+<li><strong>combinatory</strong> (<em>array_like</em>) – contains info of the order of polynomial coefficients by pairs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>G = C + C1/T</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>lngama</strong> – natural logarithm of activify coefficient</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phasepy.actmodels.unifac">
+<span id="unifac"></span><h2>UNIFAC<a class="headerlink" href="#module-phasepy.actmodels.unifac" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phasepy.actmodels.unifac.unifac">
+<code class="descname">unifac</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>qi</em>, <em>ri</em>, <em>ri34</em>, <em>Vk</em>, <em>Qk</em>, <em>tethai</em>, <em>a0</em>, <em>a1</em>, <em>a2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/unifac.html#unifac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.unifac.unifac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dortmund UNIFAC activity coefficient model for multicomponent mixtures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array like</em>) – vector of molar fractions</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>qi</strong> (<em>array like</em>) – component surface array</li>
+<li><strong>ri</strong> (<em>array_like</em>) – component volumes arrays</li>
+<li><strong>ri34</strong> (<em>array_like</em>) – component volumen arrays power to 3/4</li>
+<li><strong>Vk</strong> (<em>array_like</em>) – group volumes array</li>
+<li><strong>Qk</strong> (<em>array_like</em>) – group surface arrays</li>
+<li><strong>tethai</strong> (<em>array_like</em>) – surface fraction array</li>
+<li><strong>a0</strong> (<em>array_like</em>) – </li>
+<li><strong>a1</strong> (<em>array_like</em>) – </li>
+<li><strong>a2</strong> (<em>array_like</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>lngama</strong> – natural logarithm of activify coefficient</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="phasepy.cubic.html" class="btn btn-neutral float-right" title="Cubic Equation of State" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="phasepy.virial.html" class="btn btn-neutral float-left" title="Virial EoS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

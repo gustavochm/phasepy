@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pure Cubic Equation of State Class &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mixture Cubic Equation of State Class" href="phasepy.cubicm.html" />
+    <link rel="prev" title="Cubic Equation of State" href="phasepy.cubic.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Pure Cubic Equation of State Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubic.html#module-phasepy.cubic.cubic">van der Waals EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubic.html#module-phasepy.cubic.cubic">Peng Robinson EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubic.html#module-phasepy.cubic.cubic">Peng Robinson Stryjec Vera EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubic.html#module-phasepy.cubic.cubic">Redlich Kwong EoS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="phasepy.cubic.html#module-phasepy.cubic.cubic">Redlich Kwong Soave EoS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
+        
+          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
+        
+          <li><a href="phasepy.cubic.html">Cubic Equation of State</a> &raquo;</li>
+        
+      <li>Pure Cubic Equation of State Class</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/models/phasepy.cubicp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-phasepy.cubic.cubicpure">
+<span id="pure-cubic-equation-of-state-class"></span><h1>Pure Cubic Equation of State Class<a class="headerlink" href="#module-phasepy.cubic.cubicpure" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="phasepy.cubic.cubicpure.cpure">
+<em class="property">class </em><code class="descname">cpure</code><span class="sig-paren">(</span><em>pure</em>, <em>c1</em>, <em>c2</em>, <em>oma</em>, <em>omb</em>, <em>alpha_eos</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pure component Cubic EoS Object</p>
+<p>This object have implemeted methods for phase equilibrium
+as for iterfacial properties calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pure</strong> (<em>object</em>) – pure component created with component class</li>
+<li><strong>c2</strong> (<em>c1</em><em>,</em>) – constants of cubic EoS</li>
+<li><strong>omb</strong> (<em>oma</em><em>,</em>) – constants of cubic EoS</li>
+<li><strong>alpha_eos</strong> (<em>function</em>) – function that gives thermal funcionality  to attractive term of EoS</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="phasepy.cubic.cubicpure.cpure.Tc">
+<code class="descname">Tc</code><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.Tc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>critical temperture in K</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.cubic.cubicpure.cpure.Pc">
+<code class="descname">Pc</code><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.Pc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>critical pressure in bar</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.cubic.cubicpure.cpure.w">
+<code class="descname">w</code><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.w" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>acentric factor</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.cubic.cubicpure.cpure.cii">
+<code class="descname">cii</code><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.cii" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>influence factor for SGT</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">a_eos : computes the attractive term of cubic eos.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">psat : computes saturation pressure.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">density : computes density of mixture.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">logfug : computes fugacity coefficient.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">a0ad : computes adimentional Helmholtz density energy</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">muad : computes adimentional chemical potential.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">dOm : computes adimentional Thermodynamic Grand Potential.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">ci :  computes influence parameters matrix for SGT.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">sgt_adim : computes adimentional factors for SGT.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.a0ad">
+<code class="descname">a0ad</code><span class="sig-paren">(</span><em>ro</em>, <em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.a0ad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.a0ad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the adimenstional Helmholtz density energy at given
+density and temperature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ro</strong> (<em>float</em>) – adimentional density vector</li>
+<li><strong>T</strong> (<em>float</em>) – absolute adimentional temperature</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>a0ad</strong> – adimenstional Helmholtz density energy</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.a_eos">
+<code class="descname">a_eos</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.a_eos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.a_eos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes atractive term of cubic eos at fixed T (in K)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>a</strong> – atractive term array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.ci">
+<code class="descname">ci</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.ci" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that evaluates the polynomial for the influence parameters used
+in the SGT theory for surface tension calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ci</strong> – influence parameters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.dOm">
+<code class="descname">dOm</code><span class="sig-paren">(</span><em>roa</em>, <em>T</em>, <em>mu</em>, <em>Psat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.dOm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.dOm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the adimenstional Thermodynamic Grand potential at given
+density and temperature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>roa</strong> (<em>float</em>) – adimentional density vector</li>
+<li><strong>T</strong> (<em>floar</em>) – absolute adimentional temperature</li>
+<li><strong>mu</strong> (<em>float</em>) – adimentional chemical potential at equilibrium</li>
+<li><strong>Psat</strong> (<em>float</em>) – adimentional pressure at equilibrium</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Out</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float, Thermodynamic Grand potential</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>T</em>, <em>P</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the density of the mixture at T, P</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>P</strong> (<em>float</em>) – pressure in bar</li>
+<li><strong>state</strong> (<em>string</em>) – ‘L’ for liquid phase and ‘V’ for vapour phase</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>density</strong> – density in moll/cm3</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.logfug">
+<code class="descname">logfug</code><span class="sig-paren">(</span><em>T</em>, <em>P</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.logfug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.logfug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the fugacity coefficient at given
+composition, temperature and pressure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>P</strong> (<em>float</em>) – pressure in bar</li>
+<li><strong>state</strong> (<em>string</em>) – ‘L’ for liquid phase and ‘V’ for vapour phase</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>logfug</strong> – fugacity coefficient</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.muad">
+<code class="descname">muad</code><span class="sig-paren">(</span><em>ro</em>, <em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.muad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.muad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the adimenstional chemical potential at given
+density and temperature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>roa</strong> (<em>float</em>) – adimentional density vector</li>
+<li><strong>T</strong> (<em>float</em>) – absolute adimentional temperature</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>muad</strong> – chemical potential</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.psat">
+<code class="descname">psat</code><span class="sig-paren">(</span><em>T</em>, <em>P0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.psat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes saturation pressure at fixed T</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
+<li><strong>P0</strong> (<em>float</em><em>, </em><em>optional</em>) – initial value to find saturation pressure in bar</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>psat</strong> – saturation pressure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.cubic.cubicpure.cpure.sgt_adim">
+<code class="descname">sgt_adim</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubicpure.html#cpure.sgt_adim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubicpure.cpure.sgt_adim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that evaluates adimentional factor for temperature, pressure,
+density, tension and distance for interfacial properties computations with
+SGT.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>T</strong> (<em>float</em>) – </li>
+<li><strong>temperature in K</strong> (<em>absolute</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Tfactor</strong> (<em>float</em>) – factor to obtain dimentionless temperature (K -&gt; adim)</li>
+<li><strong>Pfactor</strong> (<em>float</em>) – factor to obtain dimentionless pressure (bar -&gt; adim)</li>
+<li><strong>rofactor</strong> (<em>float</em>) – factor to obtain dimentionless density (mol/cm3 -&gt; adim)</li>
+<li><strong>tenfactor</strong> (<em>float</em>) – factor to obtain dimentionless surface tension (mN/m -&gt; adim)</li>
+<li><strong>zfactor</strong> (<em>float</em>) – factor to obtain dimentionless distance  (Amstrong -&gt; adim)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="phasepy.cubicm.html" class="btn btn-neutral float-right" title="Mixture Cubic Equation of State Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="phasepy.cubic.html" class="btn btn-neutral float-left" title="Cubic Equation of State" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

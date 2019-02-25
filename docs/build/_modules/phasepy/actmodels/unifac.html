@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>phasepy.actmodels.unifac &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.html">phasepy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>phasepy.actmodels.unifac</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for phasepy.actmodels.unifac</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="k">import</span> <span class="n">lnG_cy</span>
+
+<div class="viewcode-block" id="unifac"><a class="viewcode-back" href="../../../models/phasepy.actmodels.html#phasepy.actmodels.unifac.unifac">[docs]</a><span class="k">def</span> <span class="nf">unifac</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">qi</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">ri34</span><span class="p">,</span> <span class="n">Vk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">,</span> <span class="n">tethai</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Dortmund UNIFAC activity coefficient model for multicomponent mixtures.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array like</span>
+<span class="sd">        vector of molar fractions</span>
+<span class="sd">    T: float</span>
+<span class="sd">        absolute temperature in K</span>
+<span class="sd">    qi: array like</span>
+<span class="sd">        component surface array</span>
+<span class="sd">    ri: array_like</span>
+<span class="sd">        component volumes arrays</span>
+<span class="sd">    ri34 : array_like</span>
+<span class="sd">        component volumen arrays power to 3/4</span>
+<span class="sd">    Vk : array_like</span>
+<span class="sd">        group volumes array</span>
+<span class="sd">    Qk : array_like</span>
+<span class="sd">        group surface arrays</span>
+<span class="sd">    tethai : array_like</span>
+<span class="sd">        surface fraction array</span>
+<span class="sd">    a0 : array_like</span>
+<span class="sd">    a1 : array_like</span>
+<span class="sd">    a2 : array_like</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lngama: array_like</span>
+<span class="sd">        natural logarithm of activify coefficient</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qk</span><span class="p">)</span>
+
+    <span class="c1">#combinatory part</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ri</span><span class="p">)</span>
+    <span class="n">r34x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ri34</span><span class="p">)</span>
+    <span class="n">qx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">qi</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">ri34</span><span class="o">/</span><span class="n">r34x</span>
+    <span class="n">phi_tetha</span> <span class="o">=</span> <span class="p">(</span><span class="n">ri</span><span class="o">*</span><span class="n">qx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">qi</span><span class="o">*</span><span class="n">rx</span><span class="p">)</span>
+    <span class="n">lngamac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">lngamac</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi</span>
+    <span class="n">lngamac</span> <span class="o">-=</span> <span class="mi">5</span><span class="o">*</span><span class="n">qi</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi_tetha</span><span class="p">)</span><span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi_tetha</span><span class="p">)</span>
+    
+    <span class="n">amn</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">T</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">2</span>
+    
+    <span class="c1">#residual part</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">amn</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Xm</span> <span class="o">=</span> <span class="n">x</span><span class="nd">@Vk</span>
+    <span class="n">Xm</span> <span class="o">=</span> <span class="n">Xm</span><span class="o">/</span><span class="n">Xm</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">tetha</span> <span class="o">=</span>  <span class="n">Xm</span><span class="o">*</span><span class="n">Qk</span>
+    <span class="n">tetha</span> <span class="o">/=</span> <span class="n">tetha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> 
+    <span class="n">Gm</span> <span class="o">=</span> <span class="n">lnG_cy</span><span class="p">(</span><span class="n">tetha</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">Qk</span><span class="p">)</span> 
+    
+    <span class="n">Gi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nc</span><span class="p">,</span> <span class="n">ng</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span> 
+        <span class="n">Gi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lnG_cy</span><span class="p">(</span><span class="n">tethai</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">psi</span><span class="p">,</span> <span class="n">Qk</span><span class="p">)</span>
+    
+    <span class="n">lngamar</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vk</span><span class="o">*</span><span class="p">(</span><span class="n">Gm</span> <span class="o">-</span> <span class="n">Gi</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">lngamac</span> <span class="o">+</span> <span class="n">lngamar</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

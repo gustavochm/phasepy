@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>phasepy.actmodels.virialgama &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.html">phasepy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>phasepy.actmodels.virialgama</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for phasepy.actmodels.virialgama</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.virial</span> <span class="k">import</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">virial</span><span class="p">,</span> <span class="n">Virialmix</span>
+<span class="kn">from</span> <span class="nn">.nrtl</span> <span class="k">import</span> <span class="n">nrtl</span> 
+
+<span class="n">R</span> <span class="o">=</span> <span class="mf">83.14</span> <span class="c1">#bar cm3/mol K </span>
+<div class="viewcode-block" id="virialgama"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama">[docs]</a><span class="k">class</span> <span class="nc">virialgama</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Creates a model with mixture using a virial eos to describe vapour phase</span>
+<span class="sd">    and an activity coefficient model for liquid phase.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mix : object</span>
+<span class="sd">        mixture created with mixture class</span>
+<span class="sd">    virialmodel : function</span>
+<span class="sd">        function to compute virial coefficients</span>
+<span class="sd">    actmodel : function</span>
+<span class="sd">        function to compute activity coefficients</span>
+<span class="sd">    </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    logfugef: computes effective fugacity coefficients</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">psat</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">psat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vl</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">vlrackett</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mezcla</span> <span class="o">=</span> <span class="n">mix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span> <span class="o">=</span> <span class="n">virialmodel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">actmodel</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">actmodelp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">nc</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span> <span class="o">=</span> <span class="n">Virialmix</span><span class="p">(</span><span class="n">mix</span><span class="p">)</span>
+
+<div class="viewcode-block" id="virialgama.logfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama.logfugef">[docs]</a>    <span class="k">def</span> <span class="nf">logfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        logfugef(X, T, P, state)</span>
+<span class="sd">        </span>
+<span class="sd">        Method that computes the effective fugacity coefficients  at given</span>
+<span class="sd">        composition, temperature and pressure. </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        X : array_like, mole fraction vector</span>
+<span class="sd">        T : absolute temperature in K</span>
+<span class="sd">        P : pressure in bar</span>
+<span class="sd">        state : &#39;L&#39; for liquid phase and &#39;V&#39; for vapour phase</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        logfug: array_like</span>
+<span class="sd">            effective fugacity coefficients</span>
+<span class="sd">        v0 : float</span>
+<span class="sd">            volume of phase, if calculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Bi</span><span class="p">,</span><span class="n">Bp</span> <span class="o">=</span> <span class="n">virial</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+            <span class="n">psat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">pointing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vl</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">psat</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">fugPsat</span> <span class="o">=</span> <span class="n">Bi</span><span class="o">*</span><span class="n">psat</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">act</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">psat</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">+</span><span class="n">pointing</span><span class="o">+</span><span class="n">fugPsat</span><span class="p">,</span> <span class="n">v0</span>
+        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Bp</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">),</span> <span class="n">v0</span></div></div>
+    
+            
+            
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

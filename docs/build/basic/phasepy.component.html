@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>phasepy.component &mdash; phasepy 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="phasepy.mixture" href="phasepy.mixture.html" />
+    <link rel="prev" title="phasepy basics" href="phasepy.basics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> phasepy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="phasepy.basics.html">phasepy basics</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">phasepy.component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.mixture.html">phasepy.mixture</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../phasepy.models.html">Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">phasepy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
+        
+          <li><a href="phasepy.basics.html">phasepy basics</a> &raquo;</li>
+        
+      <li>phasepy.component</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/basic/phasepy.component.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="phasepy-component">
+<h1>phasepy.component<a class="headerlink" href="#phasepy-component" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="phasepy.component">
+<em class="property">class </em><code class="descname">component</code><span class="sig-paren">(</span><em>name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, cii=0, ksv=[0, 0], Ant=[0, 0, 0], GC=None, m=0, sigma=0, e=0, kapaAB=0, eAB=0, site=[0, 0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an object with pure component info</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – Name of the component</li>
+<li><strong>Tc</strong> (<em>float</em>) – Critical temperature</li>
+<li><strong>Pc</strong> (<em>float</em>) – Critical Pressure</li>
+<li><strong>Zc</strong> (<em>float</em>) – critical compresibility factor</li>
+<li><strong>Vc</strong> (<em>float</em>) – critical volume</li>
+<li><strong>w</strong> (<em>float</em>) – acentric factor</li>
+<li><strong>cii</strong> (<em>list</em>) – polynomial coefficient for influence parameter in SGT</li>
+<li><strong>ksv</strong> (<em>list</em>) – parameter for alpha for PRSV EoS, if fitted</li>
+<li><strong>Ant</strong> (<em>list</em>) – Antoine correlation parameters</li>
+<li><strong>GC</strong> (<em>dict</em>) – Group contribution info</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="phasepy.component.name">
+<code class="descname">name</code><a class="headerlink" href="#phasepy.component.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – Name of the component</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.Tc">
+<code class="descname">Tc</code><a class="headerlink" href="#phasepy.component.Tc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Critical temperature</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.Pc">
+<code class="descname">Pc</code><a class="headerlink" href="#phasepy.component.Pc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – Critical Pressure</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.Zc">
+<code class="descname">Zc</code><a class="headerlink" href="#phasepy.component.Zc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – critical compresibility factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.Vc">
+<code class="descname">Vc</code><a class="headerlink" href="#phasepy.component.Vc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – critical volume</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.w">
+<code class="descname">w</code><a class="headerlink" href="#phasepy.component.w" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> – acentric factor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.cii">
+<code class="descname">cii</code><a class="headerlink" href="#phasepy.component.cii" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – polynomial coefficient for influence parameter in SGT</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.ksv">
+<code class="descname">ksv</code><a class="headerlink" href="#phasepy.component.ksv" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – parameter for alpha for PRSV EoS, if fitted</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.Ant">
+<code class="descname">Ant</code><a class="headerlink" href="#phasepy.component.Ant" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – Antoine correlation parameters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.GC">
+<code class="descname">GC</code><a class="headerlink" href="#phasepy.component.GC" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> – Group contribution info</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">psat : computes saturation pressure with Antoine correlation</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">tsat : compues saturation temperature with Antoine correlation</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">vlrackett : computes liquid volume with Rackett correlation</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">ci :  evaluates influence parameter polynomial</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="phasepy.component.ci">
+<code class="descname">ci</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.ci" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that evaluates the polynomial for cii coeffient of SGT
+cii must be in J m^5 / mol and T in K.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ci</strong> – influence parameter at given temperature</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.component.psat">
+<code class="descname">psat</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.psat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes saturation pressure at T using Ant eq. Expontential
+base is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>Psat</strong> – Saturation pressure in bar</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">foat</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.component.tsat">
+<code class="descname">tsat</code><span class="sig-paren">(</span><em>P</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.tsat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.tsat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the saturation temperature at P using Ant eq.
+Expontential base is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Psat</strong> (<em>foat</em>) – Saturation pressure in bar</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>T</strong> – absolute temperature in K</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="phasepy.component.vlrackett">
+<code class="descname">vlrackett</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.vlrackett"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.vlrackett" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the liquid volume using Rackett eq.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vl</strong> – liquid volume in cm3/mol</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="phasepy.mixture.html" class="btn btn-neutral float-right" title="phasepy.mixture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="phasepy.basics.html" class="btn btn-neutral float-left" title="phasepy basics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Gustavo Chaparro M.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
