@@ -173,7 +173,7 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
         K = np.exp(lnK)
         error = ((lnK-lnK_old)**2).sum()
 
-    if error > tol and itacc == 4 and ef < 1e-6:
+    if error > tol and itacc == 4 and ef < 1e-6 and np.all(tetha >0):
         global vg
         ind0 = (X.T*beta).T[1:].flatten()
         ind1 = minimize(gibbs_obj, ind0, 

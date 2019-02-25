@@ -1,6 +1,6 @@
 from scipy.optimize import minimize 
 import numpy as np
-from ..cubic import prsv
+from ..cubic import prsveos
 
 def psat_obj(C, Pexp, Texp):
     return np.sum((Pexp-np.exp(C[0]-C[1]/(Texp+C[2])))**2)
@@ -55,6 +55,6 @@ def fit_ksv(component ,Texp, Pexp, ksv0 = [1,0]):
         Result of SciPy minimize
     
     """
-    cubic = prsv(component)
+    cubic = prsveos(component)
     fit = minimize(fobj_alpha, ksv0, args = (Texp, Pexp, cubic ))
     return fit

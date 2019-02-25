@@ -3,7 +3,7 @@ from .mixingrules import qmr, mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_r
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
 
-class cubicm(object):
+class cubicm():
     '''
     Mixture Cubic EoS Object
     

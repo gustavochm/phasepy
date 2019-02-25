@@ -3,7 +3,7 @@ from .virial import Tsonopoulos, virial, Virialmix
 from .nrtl import nrtl 
 
 R = 83.14 #bar cm3/mol K 
-class virialgama(object):
+class virialgama:
     '''
     Creates a model with mixture using a virial eos to describe vapour phase
     and an activity coefficient model for liquid phase.

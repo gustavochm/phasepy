@@ -3,7 +3,7 @@ from .alphas import alpha_soave, alpha_sv, alpha_rk
 from .psatpure import psat 
 from ..constants import R
 
-class cpure(object):
+class cpure():
     
     '''
     Pure component Cubic EoS Object
@@ -320,14 +320,14 @@ class cpure(object):
         Parameters
         ----------
         T : float
-            absolute temperature in K
-            
+        absolute temperature in K
+        
         Returns
         ------- 
         Tfactor : float
             factor to obtain dimentionless temperature (K -> adim)
-         Pfactor : float
-             factor to obtain dimentionless pressure (bar -> adim)
+        Pfactor : float
+            factor to obtain dimentionless pressure (bar -> adim)
         rofactor : float
             factor to obtain dimentionless density (mol/cm3 -> adim)
         tenfactor : float

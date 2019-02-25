@@ -3,7 +3,7 @@ from .mixingrules import qmr
 from .alphas import alpha_vdw
 from ..constants import R
 
-class vdwm(object):
+class vdwm():
     
     '''
     Mixture VdW EoS Object

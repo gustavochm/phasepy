@@ -3,7 +3,7 @@ from .alphas import alpha_vdw
 from .psatpure import psat 
 from ..constants import R
 
-class vdwpure(object):
+class vdwpure():
     '''
     Mixture VdW EoS Object
     

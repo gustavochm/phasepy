@@ -92,7 +92,12 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
     alpha_fit: bool, optional
         if True fix aleatory factor to 0.2
     Tdep: bool, optional
-        if True parameters are treated as:
+        Wheter the energy parameters have a temperature dependence
+    
+    Notes
+    -----
+    
+    if Tdep True parameters are treated as:
             a12 = a12_1 + a12T * T
             a21 = a21_1 + a21T * T
             
@@ -193,12 +198,17 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
     dataellv: tuple, optional
         (Xexp, Wexp, Yexp, Texp, Pexp)   
     Tdep : bool,
-        if true:
+        wheter the parameter will have a temperature dependence
+        
+    Notes
+    -----
+    
+    if Tdep true:
                     C = C' + C'T
     if Tdep true:
         inc0 = [C'0, C'1, C'2, ..., C'0T, C'1T, C'2T... ]      
     if Tdep flase: 
-            inc0 = [C'0, C'1, C'2...]
+            inc0 = [C0, C1, C2...]
             
     Returns
     -------

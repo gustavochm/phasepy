@@ -15,6 +15,9 @@ def rkb(x, T, C, C1):
         polynomial values adim
     C1: array_like
         polynomial values in K
+        
+    Notes
+    -----
     
     G = C + C1/T
     
@@ -45,7 +48,8 @@ def rk(x, T, C, C1, combinatory):
          polynomial values in K
     combinatory: array_like
         contains info of the order of polynomial coefficients by pairs
-    
+    Notes
+    -----
     G = C + C1/T
     
     Returns
@@ -54,7 +58,7 @@ def rk(x, T, C, C1, combinatory):
         natural logarithm of activify coefficient
     '''
     x = np.asarray(x,dtype = np.float64)
-    combinatoria = np.asarray(combinatory, dtype = np.float64)
+    combinatoria = np.asarray(combinatory, dtype = np.int32)
     G = C + C1 / T
     Mp = rk_cy(x, G, combinatoria)
     return Mp

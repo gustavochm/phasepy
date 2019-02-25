@@ -58,22 +58,39 @@ def Gibbs_obj(v , fases, Z, T, P, modelo, v10, v20):
 def flash( x_guess, y_guess, equilibrium, Z, T, P, model, 
           v0 = [None, None], full_output = False):
     """
-    flash (z,T,P) -> (x,y,beta)
+    Isothermic isobaric flash (z,T,P) -> (x,y,beta)
     
-    Inputs
+    Parameters
     ----------
     
-    x_guess : array_like, guess composition of phase 1
-    y_guess : array_like, guess composition of phase 2
-    equilibrium : string, 'LL' for ELL, 'LV' for ELV
-    z : array_like, overall system composition
-    T : absolute temperature in K.
-    P : pressure in bar
+    x_guess : array_like
+        guess composition of phase 1
+    y_guess : array_like
+        guess composition of phase 2
+    equilibrium : string
+        'LL' for ELL, 'LV' for ELV
+    z : array_like
+        overall system composition
+    T : float
+        absolute temperature in K.
+    P : float
+        pressure in bar
     
-    model : object created from mixture, eos and mixrule 
+    model : object 
+        created from mixture, eos and mixrule 
+    v0 : list
+        if supplied volume used as initial value to compute fugacities
+    full_output: bool
+        wheter to outputs all calculation info
     
-    v0 : list, if supplied volume used as initial value to compute fugacities
-    full_output: bool, wheter to outputs all calculation info
+    Returns
+    -------
+    X : array_like
+        phase 1 composition
+    Y : array_like
+        phase 2 composition
+    beta : float
+        phase 2 phase fraction
     """
     
     v10, v20 = v0

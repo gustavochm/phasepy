@@ -23,8 +23,13 @@ def unifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
         group surface arrays
     tethai : array_like
         surface fraction array
-    a0, a1, a2 : array_like
-        Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2
+    a0 : array_like
+    a1 : array_like
+    a2 : array_like
+    
+    Notes
+    -----
+    Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2
     
     Returns
     -------

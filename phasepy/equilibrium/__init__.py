@@ -43,7 +43,7 @@ psat : calculo de presion de saturacion de puro con ecuacion cubica
 __all__ = [s for s in dir() if not s.startswith('_')]
 
 from .bubble import bubblePy, bubbleTy
-from .dew import dewTx, dewTx
+from .dew import dewPx, dewTx
 from .flash import flash
 from .multiflash import multiflash
 from .hazt import haz

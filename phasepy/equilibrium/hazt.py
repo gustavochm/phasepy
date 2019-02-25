@@ -54,10 +54,10 @@ def haz_objt(inc, T, P, model, v0 = [None, None, None]):
     
 
 def haz(X0, W0, Y0, T, P, model, good_initial = False,
-         v0 = [None, None, None], full_output = False):
+        v0 = [None, None, None], full_output = False):
     
     """
-    haz (T,P) -> (x, w, y)
+    Liquid liquid vapour (T,P) -> (x, w, y)
     
     Computes liquid liquid equilibrium of multicomponent mixtures at given 
     temperature. This functions uses a simultaneous method to check stability 

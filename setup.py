@@ -24,7 +24,7 @@ else:
 setup(
   name = 'phasepy',
   license='MIT',
-  version = '0.0.1',
+  version = '0.0.2',
   description = 'Multiphase multicomponent Equilibria',
   author = 'Gustavo Chaparro Maldonado, Andrés Mejía Matallana',
   author_email = 'gustavochaparro@udec.cl',
