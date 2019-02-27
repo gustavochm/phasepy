@@ -1,18 +1,14 @@
 import numpy as np
 from scipy.optimize import root
 from ..math import lobatto
+from .cijmix_cy import cmix_cy
 
 def fobj_saddle(ros, mu0, T, eos):
     mu = eos.muad(ros, T)
     return mu - mu0
 
-def ten_linear(ro1, ro2, Tsat, Psat, model, n = 50):
-    
-    if (ro1 - ro2).sum() > 0:
-        ro_aux = ro1.copy()
-        ro1 = ro2.copy()
-        ro2 = ro_aux
-    
+def ten_linear(ro1, ro2, Tsat, Psat, model, n = 100, full_output = False):
+
     #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
@@ -23,38 +19,43 @@ def ten_linear(ro1, ro2, Tsat, Psat, model, n = 50):
     cij /= cij[0,0]
     
     mu0 = model.muad(ro1a, Tsat)
-    
-    roots, weigths = lobatto(n)
-    
-    #Linear profiles
+    roots, weights = lobatto(n)
+    s = 0 
+    ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s]  # integrations nodes
+    wreal = np.abs(weights*(ro2a[s]-ro1a[s])) #integration weights
+
+    #Linear profile
     pend = (ro2a - ro1a)
     b = ro1a
     ro = (np.outer(roots, pend) + b).T
-
-    dOm = np.zeros(n)
-    for i in range(1, n-1):
-        dOm[i] = model.dOm(ro[:,i], Tsat, mu0, Pad)
-        
-    integrer = np.nan_to_num(np.sqrt(2*dOm))
-    integral = np.dot(integrer, weigths)
-
-    u = ro2a - ro1a
-    u /= np.linalg.norm(ro2a-ro1a)
-
-    cijfactor = cij@u@u
-
-    integral *= np.sqrt(cijfactor)
-    ten = integral * tenfactor
-    return ten
     
-def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
+    #Derivatives respect to component 1
+    dro = np.gradient(ro, ro_s, edge_order = 2, axis = 1)
     
-    if (ro1 - ro2).sum() > 0:
-        ro_aux = ro1.copy()
-        ro1 = ro2.copy()
-        ro2 = ro_aux
+    suma = cmix_cy(dro, cij)
+    dom = np.zeros(n)
+    for k in range(1, n - 1):
+        dom[k] = model.dOm(ro[:,k], Tsat, mu0, Pad)
+
+    integral = np.nan_to_num(np.sqrt(2*dom*suma))
+    tension = np.dot(integral, wreal)
+    tension *= tenfactor
     
-    #Dimensionless variables
+    if full_output:
+        #Z profile
+        with np.errstate(divide='ignore'):
+            intz = (np.sqrt(suma/(2*dom)))
+        intz[np.isinf(intz)] = 0
+        z = np.cumsum(intz*wreal)
+        z /= zfactor
+        ro /= rofactor
+        return tension, ro, z
+    
+    return tension
+    
+def ten_spot(ro1, ro2, Tsat, Psat, model, n = 50, full_output = False):
+    
+    #adimensionalizar variables 
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -63,52 +64,77 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 100):
     cij = model.ci(Tsat)
     cij /= cij[0,0]
     
+    nc = model.nc
+    
     mu0 = model.muad(ro1a, Tsat)
     
-    roots, weigths = lobatto(n)
-    
+    roots, weights = lobatto(n)
+    s = 0 
     try:
         ros = (ro1a + ro2a)/2
         ros = root(fobj_saddle, ros, args =(mu0, Tsat, model), method = 'lm')
         if ros.success:
             ros = ros.x
-            #sPath1
-            #Linear Profile
+            #segment1
+            #Linear profile
             pend = (ros - ro1a)
             b = ro1a
             ro1 = (np.outer(roots, pend) + b).T
 
-            u1 = pend/np.linalg.norm(pend)
-            cijfactor1 = cij@u1@u1
+            ro_s1 = (ros[s]-ro1a[s])*roots + ro1a[s] #integration nodes 
+            wreal1 = np.abs(weights*(ros[s]-ro1a[s])) #integration weights
+            
 
-            #Path2
-            #Linear Profile
+            dro1 = np.gradient(ro1, ro_s1, edge_order = 2, axis = 1)
+
+            #segment2
+            #Linear profile
             pend = (ro2a - ros)
             b = ros
             ro2 = (np.outer(roots, pend) + b).T
+            
+            ro_s2 = (ro2a[s]-ro1a[s])*roots + ro1a[s] #integration nodes
+            wreal2 = np.abs(weights*(ro2a[s]-ro1a[s])) #integration weights
+            
 
-            u2 = pend/np.linalg.norm(pend)
-            cijfactor2 = cij@u2@u2
-            print(ros/rofactor)
-            dOm1 = np.zeros(n)
-            dOm2 = np.zeros(n)
-            for i in range(1,n-1):
-                dOm1[i] = model.dOm(ro1[:,i], Tsat, mu0, Pad)
-                dOm2[i] = model.dOm(ro2[:,i], Tsat, mu0, Pad)
+            dro2 = np.gradient(ro2, ro_s2, edge_order = 2, axis = 1)
 
-            integrer1 = np.nan_to_num(np.sqrt(2*dOm1))
-            integral1 = np.dot(integrer1, weigths)/2
-            ten1 = cijfactor1 * integral1
+            dom1 = np.zeros(n)
+            dom2 = np.zeros(n)
+            for i in range(n):
+                dom1[i] = model.dOm(ro1[:,i], Tsat, mu0, Pad)
+                dom2[i] = model.dOm(ro2[:,i], Tsat, mu0, Pad)
+            dom1[0] = 0.
+            dom2[-1] = 0.
+            
+            suma1 = cmix_cy(dro1, cij)
+            suma2 = cmix_cy(dro2, cij)
+            
+                        
+            integral1 = np.nan_to_num(np.sqrt(2*dom1*suma1))
+            integral2 = np.nan_to_num(np.sqrt(2*dom2*suma2))
+            tension = np.dot(integral1, wreal1)
+            tension += np.dot(integral2, wreal2)
+            tension *= tenfactor
+            out = tension
+            if full_output:
+                with np.errstate(divide='ignore'):
+                    intz1 = np.sqrt(suma1/(2*dom1))
+                    intz2 = np.sqrt(suma2/(2*dom2))
+                intz1[np.isinf(intz1)] = 0
+                intz2[np.isinf(intz2)] = 0
+                z1 = np.cumsum(intz1*wreal1)
+                z2 = z1[-1] + np.cumsum(intz2*wreal2)
+                z = np.hstack([z1,z2])
+                ro = np.hstack([ro1, ro2])
+                z /= zfactor
+                ro /= rofactor
+                out = (tension, ro, z)
 
-            integrer2 = np.nan_to_num(np.sqrt(2*dOm2))
-            integral2 = np.dot(integrer2, weigths)/2 
-            ten2 = cijfactor2 * integral2
-            ten = ten1 + ten2
-            ten *= tenfactor
         else:
-            ten = ten_linear(ro1, ro2, Tsat, Psat, model, n)
+            out = ten_linear(ro1, ro2, Tsat, Psat, model, n, full_output)
     except:
-        ten = ten_linear(ro1, ro2, Tsat, Psat, model, n)
+        out = ten_linear(ro1, ro2, Tsat, Psat, model, n, full_output)
 
-    return ten
+    return out
     

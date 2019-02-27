@@ -17,12 +17,6 @@ def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):
 
 def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     
-    if (ro1 - ro2).sum() > 0:
-        ro_aux = ro1.copy()
-        ro1 = ro2.copy()
-        ro2 = ro_aux
-
-    
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -66,7 +60,7 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     dro.append(ro2a-ro[-2])
     dro2 = np.asarray(dro).T
     
-    # Path error
+    # Path Error
     Hl = np.sqrt(ci.dot(dro2**2)).sum()
     dH = Hl/(Nsteps + 1)
     dH2 = dH**2
@@ -76,11 +70,8 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     while error > 1e-3 and it < 5:
         it += 1
         Hl0 = Hl
-    
-    
         dro = [np.zeros(nc)]
         ro = [ro1a]
-    
         i = 1
         dr0 = deltaro*dH2
         dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat, mu0, ci, sqrtci, model))
@@ -109,16 +100,16 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
     Hi = dH * np.arange(0, Nsteps + 2)
     drodh = np.gradient(ro2, Hi, edge_order = 2, axis = 1)
     
+    
+    
     suma = cmix_cy(drodh, cij)
     dom = np.zeros(Nsteps + 2)
-    for k in range(Nsteps + 2):
+    for k in range(1, Nsteps + 1):
         dom[k] = model.dOm(ro2[:,k], Tsat, mu0, Pad)
-    dom[0] = 0
-    dom[-1] = 0
 
     #Tension computation
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
-    ten = np.trapz(integral, Hi)
+    ten = np.abs(np.trapz(integral, Hi))
     ten *= tenfactor
     
     if full_output:
@@ -126,11 +117,12 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0
-        z = cumtrapz(intz,Hi, initial = 0)
+        z = np.abs(cumtrapz(intz,Hi, initial = 0))
         z /= zfactor
         ro2 /= rofactor
         return ten, ro2, z
-    
+
     return ten
+    
     
     

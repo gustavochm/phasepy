@@ -15,13 +15,9 @@ def fobj_sk(inc, spath, T, mu0, ci, sqrtci, model):
 
 def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
     
-    if (ro1 - ro2).sum() > 0:
-        ro_aux = ro1.copy()
-        ro1 = ro2.copy()
-        ro2 = ro_aux
     nc = model.nc
     
-    #Dimensionless variables 
+    #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = ro1*rofactor
@@ -55,7 +51,7 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
         alphas[i] = ro0[-1]
         ro[:,i] = ro0[:-1]
         
-    #Derivatives
+    #Derivatives respect to path function
     drods = np.gradient(ro, spath, edge_order = 2, axis = 1)
     
     suma = cmix_cy(drods, cij)
@@ -65,16 +61,18 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
 
     
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
-    tension = np.trapz(integral, spath)
+    tension = np.abs(np.trapz(integral, spath))
     tension *= tenfactor
     
     if full_output:
+        #Zprofile
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0
-        z = cumtrapz(intz,spath, initial = 0)
+        z = np.abs(cumtrapz(intz,spath, initial = 0))
         z /= zfactor
         ro /= rofactor
         return tension, ro, z
     
     return tension
+

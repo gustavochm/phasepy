@@ -67,6 +67,7 @@ class cubicm():
         self.cii = np.array(mix.cii, ndmin = 1) 
         self.b = self.omb*R*self.Tc/self.Pc
         self.nc = mix.nc
+        self.beta = np.zeros([self.nc, self.nc])
         
         if mixrule == 'qmr':
             self.mixrule = qmr  
@@ -423,6 +424,9 @@ class cubicm():
     
         return lnphi
     
+    def beta_sgt(self, beta):
+        self.beta = beta
+    
     def ci(self, T):
         '''
         ci(T)
@@ -445,7 +449,7 @@ class cubicm():
         ci=np.zeros(n)
         for i in range(n):
             ci[i]=np.polyval(self.cii[i],T)
-        self.cij=np.sqrt(np.outer(ci,ci))
+        self.cij=np.sqrt(np.outer(ci,ci))*(1-self.beta)
         return self.cij
     
     def sgt_adim(self, T):

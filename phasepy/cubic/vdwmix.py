@@ -56,6 +56,7 @@ class vdwm():
         self.cii = np.array(mix.cii, ndmin = 1) 
         self.b = self.omb*R*self.Tc/self.Pc
         self.nc = mix.nc
+        self.beta = np.zeros([self.nc, self.nc])
         
         self.mixrule = qmr  
         if hasattr(mix, 'kij'):
@@ -357,6 +358,9 @@ class vdwm():
         lnphi = np.amin(lnphi,axis=0)
     
         return lnphi
+    
+    def beta_sgt(self, beta):
+        self.beta = beta
     
     
     def ci(self, T):

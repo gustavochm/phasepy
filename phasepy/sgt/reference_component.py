@@ -35,7 +35,7 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
 
     
     ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s] # Integration nodes 
-    wreal = weights*(ro2a[s]-ro1a[s]) #Integration weights
+    wreal = np.abs(weights*(ro2a[s]-ro1a[s])) #Integration weights
     
         
     #A matrix for derivatives with orthogonal collocation
