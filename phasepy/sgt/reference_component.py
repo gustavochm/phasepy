@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import fsolve
 from ..math import lobatto, colocA
 from .cijmix_cy import cmix_cy
+from .tensionresult import TensionResult
 
 def fobj_beta0(ro, ro_s, s, T, mu0, sqrtci, model):     
     nc = model.nc
@@ -69,6 +70,9 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
         z=np.cumsum(intz*wreal)
         z /= zfactor
         ro /= rofactor
-        return ten, ro, z
+        dictresult = {'tension' : ten, 'ro': ro, 'z' : z,
+        'GPT' : dom}
+        out = TensionResult(dictresult)
+        return out
     
     return ten

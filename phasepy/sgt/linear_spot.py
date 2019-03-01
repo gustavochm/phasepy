@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import root
 from ..math import lobatto
 from .cijmix_cy import cmix_cy
+from .tensionresult import TensionResult
 
 def fobj_saddle(ros, mu0, T, eos):
     mu = eos.muad(ros, T)
@@ -49,7 +50,10 @@ def ten_linear(ro1, ro2, Tsat, Psat, model, n = 100, full_output = False):
         z = np.cumsum(intz*wreal)
         z /= zfactor
         ro /= rofactor
-        return tension, ro, z
+        dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+        'GPT' : np.hstack([0, dom, 0])}
+        out = TensionResult(dictresult)
+        return out
     
     return tension
     
@@ -129,8 +133,9 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 50, full_output = False):
                 ro = np.hstack([ro1, ro2])
                 z /= zfactor
                 ro /= rofactor
-                out = (tension, ro, z)
-
+                dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+                'GPT' : np.hstack([dom1, dom2])}
+                out = TensionResult(dictresult)
         else:
             out = ten_linear(ro1, ro2, Tsat, Psat, model, n, full_output)
     except:

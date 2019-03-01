@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import fsolve
 from scipy.integrate import cumtrapz
 from .cijmix_cy import cmix_cy
-
+from .tensionresult import TensionResult
 
 
 def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):     
@@ -120,8 +120,10 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
         z = np.abs(cumtrapz(intz,Hi, initial = 0))
         z /= zfactor
         ro2 /= rofactor
-        return ten, ro2, z
-
+        dictresult = {'tension' : ten, 'ro': ro2, 'z' : z,
+        'GPT' : dom, 'path': Hi}
+        out = TensionResult(dictresult)
+        return out
     return ten
     
     

@@ -1,5 +1,6 @@
 import numpy as np
 from ..math import gauss
+from .tensionresult import TensionResult
 
 def ten_fit(T, model, roots, weigths, P0 = None):
     
@@ -64,6 +65,11 @@ def ten_pure(T, model, P0 = None, full_output = False, n = 100):
         z = np.cumsum(wreal*zint)
         z *= zfactor
         roi /= rofactor
-        return ten, roi, z
+        dictresult = {'tension' : ten, 'ro': roi, 'z' : z,
+        'GPT' : dOm}
+        out = TensionResult(dictresult)
+        return out
+    
+
     
     return ten

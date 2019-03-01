@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import fsolve
 from scipy.integrate import cumtrapz
 from .cijmix_cy import cmix_cy
+from .tensionresult import TensionResult
 
 
 def fobj_sk(inc, spath, T, mu0, ci, sqrtci, model):   
@@ -72,7 +73,10 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False ):
         z = np.abs(cumtrapz(intz,spath, initial = 0))
         z /= zfactor
         ro /= rofactor
-        return tension, ro, z
+        dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+        'GPT' : dom, 'path': spath, 'alphas' : alphas}
+        out = TensionResult(dictresult)
+        return out
     
     return tension
 
