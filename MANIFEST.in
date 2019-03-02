@@ -1,4 +1,4 @@
-include LICENSE.txt README.rst
+include LICENSE.txt README.rst, long_description.rst
 recursive-include cython *
 recursive-include  *.pyx
 recursive-include  *.c
