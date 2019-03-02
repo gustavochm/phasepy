@@ -1,19 +1,19 @@
-======
+=======
 phasepy
-======
+=======
 
 What is phasepy?
 ----------------
 Phasepy is a open-source scientific python package for fluid phase equilibria computation.
 This package facilitate the calculation of liquid-vapour equilibrium, liquid-liquid equilibrium
 and liquid-liquid-vapour equilibrium. Equilibrium calculations can be perfomed with cubic equations
-of state with clasic or advances mixing rules o with a discontinuous approach using a virial equations
+of state with clasic or advances mixing rules or with a discontinuous approach using a virial equations
 of state for the vapour phase and a activity coefficient model for the liquid phase.
 
-Besides computations it is also possible to fit phase equilibria data, functions to fit quadratic
-mix rule, NRTL Wilson Redlich Kister parameters, are included.
+Besides computations, with this package is also possible to fit phase equilibria data, functions to fit quadratic
+mix rule, NRTL, Wilson and Redlich Kister parameters, are included.
 
-Phasety relys on numpy, scipy and cython extensiion modules, when necessary.
+Phasety relys on numpy, scipy and cython extension modules, when necessary.
 
 Installation
 ------------
@@ -28,6 +28,14 @@ If you have an installation of Python with pip, simple install it with:
 To get the git version, run:
 
     $ git clone https://github.com/gustavochm/phasepy
+
+
+Documentation
+-------------
+
+phasepy's documentation is available on the web:
+
+    https://phasepy.readthedocs.io/en/latest/
 
 
 Getting Started
