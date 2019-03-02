@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from .actmodels_cy import nrtl_cy, rkter_nrtl_cy
 

@@ -1,3 +1,6 @@
+
+
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from .mixingrules import qmr, mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
 from .alphas import alpha_soave, alpha_sv, alpha_rk

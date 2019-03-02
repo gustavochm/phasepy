@@ -1,3 +1,6 @@
+
+
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from .stability import tpd_minimas
 from .flash import flash

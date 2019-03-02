@@ -40,6 +40,8 @@ psat : calculo de presion de saturacion de puro con ecuacion cubica
 """
 
 
+from __future__ import division, print_function, absolute_import
+
 __all__ = [s for s in dir() if not s.startswith('_')]
 
 from .bubble import bubblePy, bubbleTy

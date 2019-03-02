@@ -1,18 +1,24 @@
+
+
+from __future__ import division, print_function, absolute_import
 import numpy as np 
 from ..constants import R
 
 #ajuste parametros alpha de EOS 
 def psat(T, cubic, P0 = None):
     """
-    psat(T, cubic)
-    Funcion que encuentra la presion de saturacion de un puro, utilizando una ecuacion cubica
+    Computes saturation pressure with cubic eos
     
-    Parametros
+    Parameters
     ----------
-    
-    T : temperatura a la que se evalua la presion, en kelvin
-    cubica : object
+    T : float,
+        temperatura a la que se evalua la presion, en kelvin
+    cubic : object
           objeto creado a partir de puro y ecuacion de estado
+    Returns
+    -------   
+    P : float
+       saturation pressure
     """
     a = cubic.a_eos(T)
     b = cubic.b

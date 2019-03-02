@@ -1,3 +1,5 @@
+from __future__ import division, print_function, absolute_import
+
 class TensionResult(dict):
 
     def __getattr__(self, name):

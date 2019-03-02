@@ -1,3 +1,7 @@
+
+
+from __future__ import division, print_function, absolute_import
+
 class EquilibriumResult(dict):
 
     def __getattr__(self, name):

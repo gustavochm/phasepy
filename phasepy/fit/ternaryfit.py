@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..equilibrium import hazt
 from ..actmodels import virialgama, nrtlter

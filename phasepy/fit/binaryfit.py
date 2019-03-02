@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..actmodels import virialgama, wilson, rkb
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb

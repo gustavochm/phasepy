@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 import numpy as np
 from .virial import Tsonopoulos, virial, Virialmix
 from .nrtl import nrtl 

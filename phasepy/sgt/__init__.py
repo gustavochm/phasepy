@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import
 from .sgtpuros import ten_fit, ten_pure
 from .linear_spot import ten_linear, ten_spot
 from .path_sk import ten_beta0_sk
