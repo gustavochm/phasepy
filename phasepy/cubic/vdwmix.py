@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from .mixingrules import qmr
+from .qmr import qmr
 from .alphas import alpha_vdw
 from ..constants import R
 
@@ -121,7 +121,7 @@ class vdwm():
             roots of Z polynomial
         '''
         a = self.a_eos(T)
-        am,bm,ep,ap = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
+        am,bm,ep,ap, bp = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
         A = am*P/(R*T)**2
         B = bm*P/(R*T)
         return self._Zroot(A,B)
@@ -178,7 +178,7 @@ class vdwm():
             volume of phase, if calculated
         """
         a = self.a_eos(T)
-        am, bm, ep, ap = self.mixrule(X, T, a, self.b, *self.mixruleparameter)
+        am, bm, ep, ap, bp = self.mixrule(X, T, a, self.b, *self.mixruleparameter)
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
@@ -186,7 +186,7 @@ class vdwm():
         
         B=(bm*P)/(R*T)
         
-        logfug=(Z-1)*(self.b/bm)-np.log(Z-B)
+        logfug=(Z-1)*(bp/bm)-np.log(Z-B)
         
         logfug -= B*ep/Z
 
@@ -219,7 +219,7 @@ class vdwm():
         """
 
         a = self.a_eos(T)
-        am,bm,ep,ap = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
+        am,bm,ep,ap, bp = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
         if estado == 'V':
             Z=max(self.Zmix(X,T,P))
         elif estado == 'L':
@@ -253,15 +253,17 @@ class vdwm():
         """
         
         ai = self.a_eos(T)
+        bi = self.b
         a = ai[0]
+        b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
         
-        am,bm,ep,ap = self.mixrule(X, T, ai, self.b, *self.mixruleparameter)
-        Prefa=1*self.b[0]**2/a
-        Tad = R*T*self.b[0]/a
+        am,bm,ep,ap, bp = self.mixrule(X, T, ai, bi, *self.mixruleparameter)
+        Prefa=1*b**2/a
+        Tad = R*T*b/a
         ama = am/a
-        bma = bm/self.b[0]
+        bma = bm/b
         
         a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa/ro)))
         a0 += -Tad*ro*np.log(1-bma*ro)
@@ -295,17 +297,19 @@ class vdwm():
         
         
         ai = self.a_eos(T)
+        bi = self.b
         a = ai[0]
+        b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
         
-        am,bm,ep,ap = self.mixrule(X,T, ai, self.b,*self.mixruleparameter)
-        Prefa=1*self.b[0]**2/a
-        Tad = R*T*self.b[0]/a
+        am,bm,ep,ap,bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
+        Prefa=1*b**2/a
+        Tad = R*T*b/a
         apa = ap/a
         ama = am/a
-        bma = bm/self.b[0]
-        bad = self.b/self.b[0]
+        bma = bm/b
+        bad = bp/b
         
         mui = -Tad*np.log(1-bma*ro)
         mui += -Tad*np.log(Prefa/(Tad*roa))+Tad

@@ -1,5 +1,3 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..actmodels import nrtl, wilson, nrtlter, rk, unifac
@@ -68,6 +66,7 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     bm (mixture b term)
     ep (e partial, e = a/(bRT) )
     ap (a partial molar)
+    bp (b partial molar)
     '''
     e = ai/(bi*R*T)
     #Pure component reduced volume
@@ -94,7 +93,7 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     ap = am + em*(bi-bm)*R*T + dedn*bm*R*T
     #partial adimnetional term
     ep = em*(1 + ap/am - bi/bm)
-    return am, bm, ep, ap
+    return am, bm, ep, ap, bi
 
 def mhv_nrtl(X, T, ai, bi, c1, c2, alpha, g, g1):
     '''
@@ -117,8 +116,8 @@ def mhv_nrtl(X, T, ai, bi, c1, c2, alpha, g, g1):
     ap (a partial molar)
     '''
     parameter = (alpha, g, g1)
-    am,bm,ep,ap = mhv(X,T,ai,bi,c1,c2,nrtl,parameter)
-    return am,bm,ep,ap
+    am,bm,ep,ap, bp = mhv(X,T,ai,bi,c1,c2,nrtl,parameter)
+    return am,bm,ep,ap, bp
 
 def mhv_wilson(X, T, ai, bi, c1, c2, Aij, vl):
     '''
@@ -142,8 +141,8 @@ def mhv_wilson(X, T, ai, bi, c1, c2, Aij, vl):
     ap (a partial molar)
     '''
     parameter=(Aij,vl)
-    am,bm,ep,ap = mhv(X,T,ai,bi,c1,c2,wilson,parameter)
-    return am,bm,ep,ap 
+    am,bm,ep,ap, bp = mhv(X,T,ai,bi,c1,c2,wilson,parameter)
+    return am,bm,ep,ap, bp
 
 def mhv_nrtlt(X,T, ai, bi, c1, c2, alpha, g, g1, D):
     '''
@@ -167,8 +166,8 @@ def mhv_nrtlt(X,T, ai, bi, c1, c2, alpha, g, g1, D):
     ap (a partial molar)
     '''
     parameter=(alpha, g, g1, D)
-    am,bm,ep,ap = mhv(X, T, ai, bi, c1, c2, nrtlter, parameter)
-    return am,bm,ep,ap 
+    am,bm,ep,ap, bp = mhv(X, T, ai, bi, c1, c2, nrtlter, parameter)
+    return am,bm,ep,ap, bp
 
 
 
@@ -193,10 +192,11 @@ def mhv_rk(X, T, ai, bi, c1, c2, C, C1, combinatory):
     bm (mixture b term)
     ep (e partial, e = a/(bRT) )
     ap (a partial molar)
+    bp (b partial molar)
     '''
     parameter=(C, C1, combinatory)
-    am,bm,ep,ap = mhv(X, T, ai, bi, c1, c2, rk, parameter)
-    return am,bm,ep,ap
+    am,bm,ep,ap, bp = mhv(X, T, ai, bi, c1, c2, rk, parameter)
+    return am,bm,ep,ap, bp
 
 def mhv_unifac(X,T,ai,bi,c1,c2, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     '''
@@ -218,42 +218,9 @@ def mhv_unifac(X,T,ai,bi,c1,c2, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     bm (mixture b term)
     ep (e partial, e = a/(bRT) )
     ap (a partial molar)
+    bp (b partial molar)
     '''
     parameter = (qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2)
-    am,bm,ep,ap = mhv(X,T,ai,bi,c1,c2, unifac, parameter)
-    return am,bm,ep,ap
+    am,bm,ep,ap, bp = mhv(X,T,ai,bi,c1,c2, unifac, parameter)
+    return am,bm,ep,ap, bp
 
-#Quadratic mixrule      
-def qmr(X, T, ai, bi, Kij):
-    '''
-    Quadratic mixrule QMR
-    
-    Inputs
-    ----------
-    X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
-    ai :  pure component attrative term in bar cm6/mol2
-    bi :  pure component cohesive term in cm3/mol
-    Kij : matrix of interaction parameters
-
-    
-    Out :
-    am (mixture a term)
-    bm (mixture b term)
-    ep (e partial, e = a/(bRT) )
-    ap (a partial molar)
-    '''
-
-    aij=np.sqrt(np.outer(ai,ai))*(1-Kij)
-    
-    ax = aij*X
-    #atractive term of mixture
-    am = np.sum(ax.T*X)
-    #atrative partial term 
-    ap = 2*np.sum(ax, axis=1) - am
-    
-    bm = np.dot(bi,X)
-    em = am/(bm*R*T)
-    ep = em*(1+ap/am-bi/bm)
-    
-    return am,bm,ep,ap

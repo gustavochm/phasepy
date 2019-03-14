@@ -26,7 +26,7 @@ def fobj_elv(model, Xexp, Yexp, Texp, Pexp):
     return error
 
 
-def fobj_ell(model,Xexp,Wexp,Texp,Pexp):
+def fobj_ell(model, Xexp, Wexp, Texp, Pexp, tpd = True):
     """ 
     Objective function to fit parameters for ELL in multicomponent mixtures
     """
@@ -41,8 +41,12 @@ def fobj_ell(model,Xexp,Wexp,Texp,Pexp):
     Z = (Xexp+Wexp)/2
     
     for i in range(n):
-        X0, tpd = tpd_min(Xexp[i],Z[i],Texp[i],Pexp[i],model, 'L', 'L')
-        W0, tpd = tpd_min(Wexp[i],Z[i],Texp[i],Pexp[i],model, 'L', 'L')
+        if tpd:
+            X0, tpd = tpd_min(Xexp[i],Z[i],Texp[i],Pexp[i],model, 'L', 'L')
+            W0, tpd = tpd_min(Wexp[i],Z[i],Texp[i],Pexp[i],model, 'L', 'L')
+        else: 
+            X0 = Xexp[i]
+            W0 = Wexp[i]
         X[i], W[i], beta = ell(X0 ,W0 , Z[i], Texp[i], Pexp[i], model)
     
     error = ((X-Xexp)**2).sum()

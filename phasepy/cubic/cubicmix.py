@@ -2,7 +2,9 @@
 
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from .mixingrules import qmr, mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
+from.qmr import qmr
+from .wongsandler import ws_nrtl, ws_wilson, ws_nrtlt, ws_unifac, ws_rk
+from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
 
@@ -78,7 +80,8 @@ class cubicm():
                 self.kij = mix.kij
                 self.mixruleparameter = (mix.kij,)
             else: 
-                raise Exception('Kij nedded')
+                self.kij = np.zeros([self.nc, self.nc])
+                self.mixruleparameter = (self.kij, )
                 
         elif mixrule == 'mhv_nrtl':
             self.mixrule = mhv_nrtl  
@@ -125,6 +128,67 @@ class cubicm():
                                          mix.combinatoria)
             else:
                 raise Exception('RK parameters needed')
+                
+        elif mixrule == 'ws_nrtl':
+            self.mixrule = ws_nrtl  
+            if hasattr(mix, 'Kijws'):
+                self.Kijws = mix.Kijws
+            else:
+                self.Kijws = np.zeros([self.nc, self.nc]) 
+
+            if hasattr(mix, 'g') and hasattr(mix, 'alpha'):
+                #Este se utiliza con mhv_nrtl
+                c1, c2 = self.c1, self.c2
+                C = np.log((1+c1)/(1+c2))/(c1-c2)
+                self.nrtl = (mix.alpha, mix.g, mix.g1)
+                self.mixruleparameter = (C, self.Kijws, 
+                                         mix.alpha, mix.g, mix.g1)
+            else: 
+                raise Exception('NRTL parameters needed')
+                
+        elif mixrule == 'ws_wilson':
+            self.mixrule = ws_wilson  
+            if hasattr(mix, 'Kijws'):
+                self.Kijws = mix.Kijws
+            else:
+                self.Kijws = np.zeros([self.nc, self.nc]) 
+            if hasattr(mix, 'Aij'):
+                #este se utiliza con mhv_wilson
+                c1, c2 = self.c1, self.c2
+                C = np.log((1+c1)/(1+c2))/(c1-c2)
+                self.wilson = (mix.Aij, mix.vlrackett)
+                self.mixruleparameter = (C, self.Kijws, mix.Aij, mix.vlrackett)
+            else: 
+                raise Exception('Wilson parameters needed')
+                
+        elif mixrule == 'ws_rk':
+            self.mixrule = ws_rk
+            if hasattr(mix, 'Kijws'):
+                self.Kijws = mix.Kijws
+            else:
+                self.Kijws = np.zeros([self.nc, self.nc])
+                
+            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
+                c1, c2 = self.c1, self.c2
+                C = np.log((1+c1)/(1+c2))/(c1-c2)
+                self.rk = (mix.rkp, mix.rkpT, mix.combinatoria)
+                self.mixruleparameter = (C, self.Kijws, mix.rkp, mix.rkpT,
+                                         mix.combinatoria)
+            else:
+                raise Exception('RK parameters needed')
+                
+        elif mixrule == 'ws_unifac':
+            self.mixrule = ws_unifac  
+            if hasattr(mix, 'Kijws'):
+                self.Kijws = mix.Kijws
+            else:
+                self.Kijws = np.zeros([self.nc, self.nc])       
+
+            c1, c2 = self.c1, self.c2
+            C = np.log((1+c1)/(1+c2))/(c1-c2)
+            mix.unifac()
+            self.unifac = mix.actmodelp
+            self.mixruleparameter = (C, self.Kijws,*self.unifac)
         else: 
             raise Exception('Mixrule not valid')
             
@@ -184,7 +248,7 @@ class cubicm():
             roots of Z polynomial
         '''
         a = self.a_eos(T)
-        am,bm,ep,ap = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
+        am, bm, ep, ap, bp = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
         A = am*P/(R*T)**2
         B = bm*P/(R*T)
         return self._Zroot(A,B)
@@ -242,7 +306,7 @@ class cubicm():
         """
         b = self.b
         a = self.a_eos(T)
-        am, bm, ep, ap = self.mixrule(X, T, a, b, *self.mixruleparameter)
+        am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
@@ -250,7 +314,7 @@ class cubicm():
         
         B=(bm*P)/(R*T)
         
-        logfug=(Z-1)*(b/bm) - np.log(Z-B)
+        logfug=(Z-1)*(bp/bm) - np.log(Z-B)
         logfug -= (ep/(self.c2-self.c1))*np.log((Z+self.c2*B)/(Z+self.c1*B))
         return logfug, v0
         
@@ -281,7 +345,7 @@ class cubicm():
         """
 
         a = self.a_eos(T)
-        am,bm,ep,ap = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
+        am, bm, ep, ap, bp = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
@@ -317,15 +381,17 @@ class cubicm():
         c1 = self.c1
         c2 = self.c2
         ai = self.a_eos(T)
+        bi = self.b
         a = ai[0]
+        b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
         
-        am,bm,ep,ap = self.mixrule(X, T, ai, self.b, *self.mixruleparameter)
-        Prefa=1*self.b[0]**2/a
-        Tad = R*T*self.b[0]/a
+        am, bm, ep, ap, bp = self.mixrule(X, T, ai, bi, *self.mixruleparameter)
+        Prefa=1*b**2/a
+        Tad = R*T*b/a
         ama = am/a
-        bma = bm/self.b[0]
+        bma = bm/b
         
         a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa/ro)))
         a0 += -Tad*ro*np.log(1-bma*ro)
@@ -359,17 +425,19 @@ class cubicm():
         c1 = self.c1
         c2 = self.c2
         ai = self.a_eos(T)
+        bi = self.b
         a = ai[0]
+        b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
         
-        am,bm,ep,ap = self.mixrule(X,T, ai, self.b,*self.mixruleparameter)
-        Prefa=1*self.b[0]**2/a
-        Tad = R*T*self.b[0]/a
+        am, bm, ep, ap, bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
+        Prefa=1*b**2/a
+        Tad = R*T*b/a
         apa = ap/a
         ama = am/a
-        bma = bm/self.b[0]
-        bad = self.b/self.b[0]
+        bma = bm/b
+        bad = bp/b
         
         mui = -Tad*np.log(1-bma*ro)
         mui += -Tad*np.log(Prefa/(Tad*roa))+Tad

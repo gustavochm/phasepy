@@ -326,7 +326,10 @@ class mixture(object):
         Zc = np.array(self.Zc)
         Tr=T/Tc
         V=Vc*Zc**((1-Tr)**(2/7))
-        return V    
+        return V 
+    
+    def kij_ws(self, kij):
+        self.Kijws = kij
     
     def kij_saft(self, k):
         self.K = k
