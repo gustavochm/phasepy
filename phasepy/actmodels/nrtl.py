@@ -19,7 +19,9 @@ def nrtl(X, T, alpha, g, g1):
         matrix of energy interactions in 1/K
     alpha: array_like
         aleatory factor.
-    
+        
+    Notes
+    -----
     tau = ((g + g1*T)/T)
     
     Returns

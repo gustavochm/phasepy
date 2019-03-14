@@ -1,24 +1,44 @@
 Cubic Equation of State
 =======================
+Equation of State for modeling vapour and liquid phases. This EoS is explicit in pressure and has the following form:
+
+.. math::
+	P = \frac{RT}{v-b} - \frac{a}{(v+c_1b)(v+c_2b)}
+
+Where :math:`b` and :math:`a` are molecular parameters.
+
 Main Cubic EoS functions of phaspy packages are bases on the following classes:
 
 .. toctree::
 	phasepy.cubicp
 	phasepy.cubicm
 
-This way, one you create an cubic EoS object it would check if you are working with a mixture
-or a pure component. The former case you will need to provide interaction parameters to the mixrule
-of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
+This way, once you create an cubic EoS object it will check if you are working with a mixture or a pure component. The former case you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
 and then how to specify a mixrule.
 
 For the case of classic quadratic mixrule:
+
+.. math::
+	a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} = 	\sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i
 
 >>> from phasepy import preos
 >>> Kij = np.array([[0, -0.11], [-0.11, 0]])
 >>> mix.kij_cubic(Kij)
 >>> pr = preos(mix, mixrule = 'qmr')
 
-In case of Modified Huron Vidal with NRTL model:
+In case of Modified Huron Vidal mixrule, it is necessary to provide information from a activity coefficient model in order to compute mixtures parameters. Covolume is calcuated same way as QMR.
+
+.. math::
+	b_m = \sum_{i=1}^c x_ib_i
+
+While attractive term is an implicit function:
+
+.. math::
+	g^e_{EOS} = g^e_{model}
+
+
+
+With NRTL model:
 
 >>> alpha = np.array([[0.       , 0.5597628],
 ...       [0.5597628, 0.       ]])
@@ -43,8 +63,7 @@ In case of Modified Huron Vidal with Redlich Kister Expansion:
 >>> mix.rk(C0, C1)
 >>> pr = preos(mix, mixrule = 'mhv_rk')
 
-Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson,
-Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:
+Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:
 
 van der Waals EoS
 -----------------

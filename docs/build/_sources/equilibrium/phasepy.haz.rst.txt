@@ -4,6 +4,8 @@ Three phase equilibrium
 Binary mixtures
 ---------------
 
+For degrees of freedom's restriction, a systems of equations has to be solved for three phase equilibrium of binary mixtures. In the following code block a example of how to do it it is shown. 
+
 >>> from phasepy import component, mixture, virialgama, unifac
 >>> from phasepy.equilibrium import hazb
 >>> water = component(name = 'water', Tc = 647.13, Pc = 220.55, Zc = 0.229, Vc = 55.948, w = 0.344861,
@@ -33,6 +35,8 @@ Binary mixtures
 
 Multicomponent mixtures
 -----------------------
+
+When working with multicomponent mixtures (3 or more) a multiflhas has to be perfomed in order to compute three phase equilibrium. This algorithm ensures that a stable phases are computed.
 
 >>> from phasepy import component, mixture, virialgama, unifac
 >>> from phasepy.equilibrium import haz

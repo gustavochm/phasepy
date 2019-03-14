@@ -1,5 +1,10 @@
 Two phase Flash
 ===============
+This is most classical calculation of phase equilibria. Temperature, pressure and global composition of a systems are known. If the mixture is unstable it will split into two o more phases. When trying to compute two phase separation the flash algorithm can be used. 
+
+Usual approach to solve this problem is to solve mass balance and then update composition by sucessive sustitution, then in case of slow convergence a minimization approach can be used.
+
+In the following code block examples for solving vapour liquid and liquid liquid equilibrium are shown: 
 
 >>> from phasepy import component, mixture, preos
 >>> from phasepy.equilibrium import flash

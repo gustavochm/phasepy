@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="phasepy.flash.html">Two phase Flash</a></li>
@@ -171,6 +170,8 @@
             
   <div class="section" id="liquid-liquid-equilibrium">
 <h1>Liquid Liquid Equilibrium<a class="headerlink" href="#liquid-liquid-equilibrium" title="Permalink to this headline">¶</a></h1>
+<p>Two phase flash can be used for solving liquid liquid equilibrium, but it is important to consider stability of the phases. For that reason a algorithm that can compute stability and equilibrium simultaneously was implemented in this packages.</p>
+<p>In the following code block and example of how to solve this problem it is shown.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">ell</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>

@@ -1,6 +1,12 @@
 bubblePy
 ========
 
+In this case a saturated liquid of known composition and temperature is forming a differential size bubble. We need to find composition and pressure of equilibrium.
+
+Usual approach for solving this problem consist in a combined quasi-Newton for solving for Pressure and successive sustituion for composition. In case of having a good initial value of the true equilibrium values a full multidimentional system can be solved. 
+
+In the following code block and example from this computation it is shown.
+
 >>> from phasepy import component, mixture, rkseos
 >>> from phasepy.equilibrium import bubblePy
 >>> butanol = component(name = 'butanol', Tc =563.0, Pc = 44.14, Zc = 0.258, Vc = 274.0, w = 0.589462,

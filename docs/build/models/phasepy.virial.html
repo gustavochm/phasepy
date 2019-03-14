@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
@@ -180,9 +179,12 @@
             
   <div class="section" id="virial-eos">
 <h1>Virial EoS<a class="headerlink" href="#virial-eos" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-phasepy.actmodels.virial">
-<span id="ideal-gas"></span><h2>Ideal gas<a class="headerlink" href="#module-phasepy.actmodels.virial" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="ideal-gas">
+<h2>Ideal gas<a class="headerlink" href="#ideal-gas" title="Permalink to this headline">¶</a></h2>
+<p>Recommended when working at low pressure.</p>
+<div class="math notranslate nohighlight">
+\[Z = \frac{Pv}{RT} = 1\]</div>
+<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
 <dt id="phasepy.actmodels.virial.ideal_gas">
 <code class="descname">ideal_gas</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#ideal_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.ideal_gas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given
@@ -210,9 +212,16 @@ temperature for an ideal gas (Bij = 0)</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-phasepy.actmodels.virial">
-<span id="abbott-van-ness"></span><h2>Abbott - Van Ness<a class="headerlink" href="#module-phasepy.actmodels.virial" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="abbott-van-ness">
+<h2>Abbott - Van Ness<a class="headerlink" href="#abbott-van-ness" title="Permalink to this headline">¶</a></h2>
+<p>Correlation for the first virial coefficient, <cite>B</cite>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{BP_c}{RT_c} = B^{(0)} + \omega B^{(1)}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(B^{(0)}\)</span> and <span class="math notranslate nohighlight">\(B^{(1)}\)</span> are obtained from:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}B^{(0)} &amp;= 0.083 - \frac{0.422}{T_r^{1.6}}\\
+B^{(1)} &amp;= 0.139 + \frac{0.179}{T_r^{4.2}}\end{split}\]</div>
+<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
 <dt id="phasepy.actmodels.virial.Abbott">
 <code class="descname">Abbott</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Abbott"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Abbott" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given
@@ -240,9 +249,16 @@ temperature with Abbott correlation</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-phasepy.actmodels.virial">
-<span id="tsonopoulos"></span><h2>Tsonopoulos<a class="headerlink" href="#module-phasepy.actmodels.virial" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="tsonopoulos">
+<h2>Tsonopoulos<a class="headerlink" href="#tsonopoulos" title="Permalink to this headline">¶</a></h2>
+<p>Correlation for the first virial coefficient, <cite>B</cite>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{BP_c}{RT_c} = B^{(0)} + \omega B^{(1)}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(B^{(0)}\)</span> and <span class="math notranslate nohighlight">\(B^{(1)}\)</span> are obtained from:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}B^{(0)} &amp;= 0.1445 - \frac{0.33}{T_r} - \frac{0.1385}{T_r^       2} - \frac{0.0121}{T_r^3} - \frac{0.000607}{T_r^8} \\
+B^{(1)} &amp;= 0.0637 + \frac{0.331}{T_r^2} - \frac{0.423}{T_r^     3} - \frac{0.008}{T_r^8}\end{split}\]</div>
+<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
 <dt id="phasepy.actmodels.virial.Tsonopoulos">
 <code class="descname">Tsonopoulos</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Tsonopoulos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Tsonopoulos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given

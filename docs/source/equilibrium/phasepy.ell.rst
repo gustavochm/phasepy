@@ -1,5 +1,8 @@
 Liquid Liquid Equilibrium
 =========================
+Two phase flash can be used for solving liquid liquid equilibrium, but it is important to consider stability of the phases. For that reason a algorithm that can compute stability and equilibrium simultaneously was implemented in this packages.
+
+In the following code block and example of how to solve this problem it is shown.
 
 >>> from phasepy import component, mixture, virialgama, unifac
 >>> from phasepy.equilibrium import ell

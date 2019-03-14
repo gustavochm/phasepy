@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
@@ -183,6 +182,10 @@
             
   <div class="section" id="cubic-equation-of-state">
 <h1>Cubic Equation of State<a class="headerlink" href="#cubic-equation-of-state" title="Permalink to this headline">¶</a></h1>
+<p>Equation of State for modeling vapour and liquid phases. This EoS is explicit in pressure and has the following form:</p>
+<div class="math notranslate nohighlight">
+\[P = \frac{RT}{v-b} - \frac{a}{(v+c_1b)(v+c_2b)}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(b\)</span> and <span class="math notranslate nohighlight">\(a\)</span> are molecular parameters.</p>
 <p>Main Cubic EoS functions of phaspy packages are bases on the following classes:</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -190,18 +193,24 @@
 <li class="toctree-l1"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
 </ul>
 </div>
-<p>This way, one you create an cubic EoS object it would check if you are working with a mixture
-or a pure component. The former case you will need to provide interaction parameters to the mixrule
-of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
+<p>This way, once you create an cubic EoS object it will check if you are working with a mixture or a pure component. The former case you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
 and then how to specify a mixrule.</p>
 <p>For the case of classic quadratic mixrule:</p>
+<div class="math notranslate nohighlight">
+\[a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} =     \sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i\]</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">preos</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Kij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.11</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">Kij</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In case of Modified Huron Vidal with NRTL model:</p>
+<p>In case of Modified Huron Vidal mixrule, it is necessary to provide information from a activity coefficient model in order to compute mixtures parameters. Covolume is calcuated same way as QMR.</p>
+<div class="math notranslate nohighlight">
+\[b_m = \sum_{i=1}^c x_ib_i\]</div>
+<p>While attractive term is an implicit function:</p>
+<div class="math notranslate nohighlight">
+\[g^e_{EOS} = g^e_{model}\]</div>
+<p>With NRTL model:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.</span>       <span class="p">,</span> <span class="o">-</span><span class="mf">57.6880881</span><span class="p">],</span>
@@ -226,8 +235,7 @@ and then how to specify a mixrule.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_rk&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson,
-Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:</p>
+<p>Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:</p>
 <div class="section" id="module-phasepy.cubic.cubic">
 <span id="van-der-waals-eos"></span><h2>van der Waals EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">

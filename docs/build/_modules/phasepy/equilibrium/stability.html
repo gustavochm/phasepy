@@ -90,7 +90,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.html">phasepy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
@@ -157,7 +156,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.equilibrium.stability</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span></span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
 
 <span class="k">def</span> <span class="nf">tpd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>

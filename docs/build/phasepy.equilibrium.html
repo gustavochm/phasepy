@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">phasepy.equilibrium</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.flash.html">Two phase Flash</a></li>
@@ -169,28 +168,22 @@
             
   <div class="section" id="phasepy-equilibrium">
 <h1>phasepy.equilibrium<a class="headerlink" href="#phasepy-equilibrium" title="Permalink to this headline">¶</a></h1>
+<p>Phase equilibrium conditions are obtained from a differential entropy balance of a system. The following equationes must be solved:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}T^\alpha = T^\beta = ... &amp;= T^\pi\\
+P^\alpha = P^\beta = ... &amp;= P^\pi\\
+\mu_i^\alpha = \mu_i^\beta = ... &amp;= \mu_i^\pi \quad i =         1,...,c\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(T\)</span>, <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(\mu\)</span> are the temperature, pressure and chemical potencial. When working with EoS usually equilibrium is guaranted by fugacity coefficients:</p>
+<div class="math notranslate nohighlight">
+\[x_i^\alpha\hat{\phi}_i^\alpha = x_i^\beta \hat{\phi}_i^\beta = ... = x_i^\pi \hat{\phi}_i^\pi \quad i = 1,...,c\]</div>
+<p>Usual equilibrium calculations includes vapour liquid equilibrium (flash, bubble point, dew point), liquid liquid equilibrium (flash and stability test) and liquid liquid vapour equilibrium (multiflash and stability test). Those algorithms are described in the following sections:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.flash.html">Two phase Flash</a></li>
-<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.elv.html">Vapour liquid equilibrium</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.bubblePy.html">bubblePy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.bubbleTy.html">bubbleTy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.dewPx.html">dewPx</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.dewTx.html">dewTx</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.elv.html">Vapour liquid equilibrium</a></li>
 <li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.ell.html">Liquid Liquid Equilibrium</a></li>
-<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.haz.html">Three phase equilibrium</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.haz.html#binary-mixtures">Binary mixtures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.haz.html#multicomponent-mixtures">Multicomponent mixtures</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.stability.html">Stability</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.stability.html#minimization-of-tpd-function">Minimization of tpd function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.stability.html#findind-all-minimums">Findind all minimums</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equilibrium/phasepy.stability.html#liquid-liquid-equilibrium-initiation">Liquid liquid equilibrium initiation</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.haz.html">Three phase equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="equilibrium/phasepy.stability.html">Stability</a></li>
 </ul>
 </div>
 </div>

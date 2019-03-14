@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
@@ -180,9 +179,12 @@
             
   <div class="section" id="activity-coefficient-models">
 <h1>Activity coefficient models<a class="headerlink" href="#activity-coefficient-models" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-phasepy.actmodels.nrtl">
-<span id="nrtl"></span><h2>NRTL<a class="headerlink" href="#module-phasepy.actmodels.nrtl" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="nrtl">
+<h2>NRTL<a class="headerlink" href="#nrtl" title="Permalink to this headline">¶</a></h2>
+<p>Non-Random-Two-Liquids model is a a local composition model, widely used to describe liquid vapour, liquid liquid and liquid liquid vapour equilibria.</p>
+<div class="math notranslate nohighlight">
+\[g^e = \sum_{i=1}^c \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}       {\sum_{l=1}^c G_{li}x_l}\]</div>
+<span class="target" id="module-phasepy.actmodels.nrtl"></span><dl class="function">
 <dt id="phasepy.actmodels.nrtl.nrtl">
 <code class="descname">nrtl</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>alpha</em>, <em>g</em>, <em>g1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/nrtl.html#nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.nrtl.nrtl" title="Permalink to this definition">¶</a></dt>
 <dd><p>NRTL activity coefficient model.</p>
@@ -190,30 +192,39 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>X</strong> (<em>array like</em>) – vector of molar fractions</li>
 <li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
 <li><strong>g</strong> (<em>array like</em>) – matrix of energy interactions in K</li>
 <li><strong>g1</strong> (<em>array_like</em>) – matrix of energy interactions in 1/K</li>
 <li><strong>alpha</strong> (<em>array_like</em>) – aleatory factor.</li>
-<li><strong>=</strong><strong> (</strong><strong>(</strong><strong>g + g1*T</strong><strong>)</strong><strong>/T</strong><strong>)</strong> (<em>tau</em>) – </li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lngama</strong> – natural logarithm of activify coefficient</p>
-</td>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>tau = ((g + g1*T)/T)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>lngama</strong> – natural logarithm of activify coefficient</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 </div>
-<div class="section" id="module-phasepy.actmodels.wilson">
-<span id="wilson"></span><h2>Wilson<a class="headerlink" href="#module-phasepy.actmodels.wilson" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="wilson">
+<h2>Wilson<a class="headerlink" href="#wilson" title="Permalink to this headline">¶</a></h2>
+<p>Wilson model is a local composiiton model recommended for vapour liquid equilibria calculation. It doesn’t produce liquid liquid
+equilibrium.</p>
+<div class="math notranslate nohighlight">
+\[g^e = \sum_{i=1}^c x_i \ln ( \sum_{j=1}^c x_j   \Lambda_{ij})\]</div>
+<span class="target" id="module-phasepy.actmodels.wilson"></span><dl class="function">
 <dt id="phasepy.actmodels.wilson.wilson">
 <code class="descname">wilson</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>A</em>, <em>vl</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/wilson.html#wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.wilson.wilson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wilson activity coefficient model</p>
@@ -240,9 +251,12 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-phasepy.actmodels.redlichkister">
-<span id="redlich-kister"></span><h2>Redlich Kister<a class="headerlink" href="#module-phasepy.actmodels.redlichkister" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="redlich-kister">
+<h2>Redlich Kister<a class="headerlink" href="#redlich-kister" title="Permalink to this headline">¶</a></h2>
+<p>Non teorical model. Fit a Gibbs excess energy to a polynomial. It is not recommended to use more than 5 term of the expansion.</p>
+<div class="math notranslate nohighlight">
+\[g^e_{ij} = x_ix_j \sum_{k=0}^m C_k (x_i - x_j)^k\]</div>
+<span class="target" id="module-phasepy.actmodels.redlichkister"></span><dl class="function">
 <dt id="phasepy.actmodels.redlichkister.rk">
 <code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em>, <em>combinatory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redlich-Kister activity coefficient model for multicomponent mixtures.</p>
@@ -276,9 +290,12 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-phasepy.actmodels.unifac">
-<span id="unifac"></span><h2>UNIFAC<a class="headerlink" href="#module-phasepy.actmodels.unifac" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<div class="section" id="unifac">
+<h2>UNIFAC<a class="headerlink" href="#unifac" title="Permalink to this headline">¶</a></h2>
+<p>Group contribution model. It uses Dortmund public database for VLE.</p>
+<div class="math notranslate nohighlight">
+\[\ln \gamma_i = \ln \gamma_i^{comb} + \ln \gamma_i^{res}\]</div>
+<span class="target" id="module-phasepy.actmodels.unifac"></span><dl class="function">
 <dt id="phasepy.actmodels.unifac.unifac">
 <code class="descname">unifac</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>qi</em>, <em>ri</em>, <em>ri34</em>, <em>Vk</em>, <em>Qk</em>, <em>tethai</em>, <em>a0</em>, <em>a1</em>, <em>a2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/unifac.html#unifac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.unifac.unifac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dortmund UNIFAC activity coefficient model for multicomponent mixtures.</p>

@@ -92,7 +92,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="phasepy.flash.html">Two phase Flash</a></li>
@@ -177,6 +176,7 @@
 <h1>Three phase equilibrium<a class="headerlink" href="#three-phase-equilibrium" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="binary-mixtures">
 <h2>Binary mixtures<a class="headerlink" href="#binary-mixtures" title="Permalink to this headline">¶</a></h2>
+<p>For degrees of freedom’s restriction, a systems of equations has to be solved for three phase equilibrium of binary mixtures. In the following code block a example of how to do it it is shown.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">hazb</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
@@ -238,6 +238,7 @@
 </div>
 <div class="section" id="multicomponent-mixtures">
 <h2>Multicomponent mixtures<a class="headerlink" href="#multicomponent-mixtures" title="Permalink to this headline">¶</a></h2>
+<p>When working with multicomponent mixtures (3 or more) a multiflhas has to be perfomed in order to compute three phase equilibrium. This algorithm ensures that a stable phases are computed.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">haz</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>

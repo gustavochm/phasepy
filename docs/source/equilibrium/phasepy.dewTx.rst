@@ -1,6 +1,12 @@
 dewTx
 =====
 
+In this case a saturated vapour of known composition and pressure  is forming a differential size dew. We need to find composition and temperature of equilibrium.
+
+Usual approach for solving this problem consist in a combined quasi-Newton for solving for temperature and successive sustituion for composition. In case of having a good initial value of the true equilibrium values a full multidimentional system can be solved. 
+
+In the following code block and example from this computation it is shown.
+
 >>> from phasepy import component, mixture, prsveos
 >>> from phasepy.equilibrium import dewTx
 >>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0, w = 0.643558,
