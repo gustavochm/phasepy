@@ -6,7 +6,6 @@ Ideal gas
 Recommended when working at low pressure.
 
 .. math::
-
 	Z = \frac{Pv}{RT} = 1
 
 .. automodule:: phasepy.actmodels.virial

@@ -228,7 +228,11 @@ class vdwm():
         B=(bm*P)/(R*T)
         A=(am*P)/(R*T)**2
         
-        return self.logfug(Z,A,B), v0
+        logfug=Z-1-np.log(Z-B)
+        logfug -= A/Z
+        
+        
+        return logfug, v0
     
     def a0ad(self, roa, T):
         

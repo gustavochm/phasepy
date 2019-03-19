@@ -354,7 +354,10 @@ class cubicm():
         B=(bm*P)/(R*T)
         A=(am*P)/(R*T)**2
         
-        return self.logfug(Z,A,B), v0
+        logfug=Z - 1 - np.log(Z-B)
+        logfug -= (A/(self.c2-self.c1)/B)*np.log((Z+self.c2*B)/(Z+self.c1*B))
+        
+        return logfug, v0
     
     def a0ad(self, roa, T):
         
