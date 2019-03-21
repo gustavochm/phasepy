@@ -493,10 +493,12 @@ class cubicm():
             zroot = zroot[zroot>Bi[i]]
             Zs[i,:]=np.array([max(zroot),min(zroot)])
     
-        lnphi = self.logfug(Zs.T,Ai,Bi)
-        lnphi = np.amin(lnphi,axis=0)
+
+        logphi=Zs - 1 - np.log(Zs.T-Bi)
+        logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T+self.c2*Bi)/(Zs.T+self.c1*Bi))
+        logphi = np.amin(logphi,axis=0)
     
-        return lnphi
+        return logphi
     
     def beta_sgt(self, beta):
         self.beta = beta
