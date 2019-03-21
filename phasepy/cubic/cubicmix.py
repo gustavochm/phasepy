@@ -96,9 +96,9 @@ class cubicm():
         elif mixrule == 'mhv_nrtlt':
             self.mixrule = mhv_nrtlt  
             if hasattr(mix, 'g') and hasattr(mix, 'alpha') and hasattr(mix, 'rkternario'):
-                self.nrtlt = (mix.g, mix.alpha, mix.g1, mix.rkternario)
-                self.mixruleparameter = (self.c1,self.c2,mix.g, 
-                                         mix.alpha, mix.g1, mix.rkternario)
+                self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternario)
+                self.mixruleparameter = (self.c1,self.c2, mix.alpha, mix.g,
+                                         mix.g1, mix.rkternario)
             else: 
                 raise Exception('NRTL/ternary parameters needed')
                 
