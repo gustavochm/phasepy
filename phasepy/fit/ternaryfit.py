@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..equilibrium import hazt
+from ..equilibrium import haz
 from ..actmodels import virialgama, nrtlter
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazt
 
@@ -15,7 +15,7 @@ def fobj_nrtlrkt(D,Xexp,Wexp,Yexp,Texp,Pexp,mezcla, good_initial = True):
     y = np.zeros_like(Yexp)
     
     for i in range(n):
-        x[:,i], w[:,i], y[:,i] = hazt(Xexp[:,i],Wexp[:,i],Yexp[:,i],
+        x[:,i], w[:,i], y[:,i] = haz(Xexp[:,i],Wexp[:,i],Yexp[:,i],
                              Texp[i],Pexp[i],
                              vg, good_initial)
     

@@ -393,7 +393,7 @@ class mixture(object):
 
         '''
         self.rkternario = D        
-        self.actmodelp = (self.g, self.alpha, self.g1, self.rkternario)
+        self.actmodelp = (self.alpha, self.g, self.g1, self.rkternario)
     
     def wilson(self,A):
         '''
