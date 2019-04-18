@@ -70,7 +70,8 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         _z0 = ro0.z
         _ro0 = ro0.ro
         z = _z0[-1]
-        rointer = interp1d(_z0, _ro0)(roots * _z0[-1])  
+        rointer = interp1d(_z0, _ro0)(roots * z)  
+        rointer *= rofactor
     elif isinstance(ro0,  np.ndarray):
         #Check dimensiones
         if ro0.shape[0] == nc and ro0.shape[1] == n:
