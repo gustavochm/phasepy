@@ -3,6 +3,7 @@ import numpy as np
 from .tensionresult import TensionResult
 from ..math import gauss, colocAB
 from scipy.optimize import root
+from scipy.interpolate import interp1d
 from .cijmix_cy import cmix_cy
 
 def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
@@ -24,7 +25,8 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
 
 
 def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
-            z0 = 5, dz = 1.5, itmax = 10, n = 20, full_output = False ):
+            z0 = 10, dz = 1.5, itmax = 10, n = 20, full_output = False,
+            ten_tol = 1e-3, fun_tol = 1e-8):
     
     z = z0
     nc = model.nc
@@ -64,6 +66,11 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         thb = np.tanh(2*inter)
         pft = np.outer(thb,(ro2a - ro1a))/2 + (ro1a + ro2a)/2
         rointer = pft.T
+    elif isinstance(ro0,  TensionResult):
+        _z0 = ro0.z
+        _ro0 = ro0.ro
+        z = _z0[-1]
+        rointer = interp1d(_z0, _ro0)(roots * _z0[-1])  
     elif isinstance(ro0,  np.ndarray):
         #Check dimensiones
         if ro0.shape[0] == nc and ro0.shape[1] == n:
@@ -75,7 +82,7 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
     error = 1.
     it = 0
     ten_old = 0.
-    tol = 1e-3
+    tol = ten_tol
     while error > tol and it < itmax:
         it += 1
         zad = z*zfactor
@@ -95,6 +102,10 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         dro11 = np.outer(ro2a, A1) #cte
 
         sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
+                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model))
+        fun_error = np.linalg.norm(sol.fun)
+        if sol.status == 5 or fun_error > fun_tol:
+            sol = root(fobj_z_newton, sol.x, method = 'lm',
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model))
 
         rointer = sol.x
