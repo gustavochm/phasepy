@@ -24,9 +24,9 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     return fo.flatten()
 
 
-def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
+def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z0 = 10, dz = 1.5, itmax = 10, n = 20, full_output = False,
-            ten_tol = 1e-3, fun_tol = 1e-8):
+            ten_tol = 1e-3, fun_tol = 1e-8, solver_opt = None):
     
     z = z0
     nc = model.nc
@@ -34,8 +34,8 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
     #Dimensionless Variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    rho1a = rho1*rofactor
+    rho2a = rho2*rofactor
 
     
     cij = model.ci(Tsat)
@@ -45,7 +45,7 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         raise Exception('Determinant of influence parameters matrix is: {}'.format(dcij))
     
     #Chemical potential
-    mu0 = model.muad(ro1a, Tsat)
+    mu0 = model.muad(rho1a, Tsat)
     
     #Nodes and weights of integration
     roots, weights = gauss(n)
@@ -54,28 +54,28 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
     A, B = colocAB(rootsf)
        
     #Initial profiles
-    if ro0 == 'linear':
+    if rho0 == 'linear':
         #Linear Profile
-        pend = (ro2a - ro1a)
-        b = ro1a
+        pend = (rho2a - rho1a)
+        b = rho1a
         pfl = (np.outer(roots, pend) + b)
         rointer = (pfl.T).copy()
-    elif ro0 == 'hyperbolic':
+    elif rho0 == 'hyperbolic':
         #Hyperbolic profile
         inter = 8*roots - 4
         thb = np.tanh(2*inter)
-        pft = np.outer(thb,(ro2a - ro1a))/2 + (ro1a + ro2a)/2
+        pft = np.outer(thb,(rho2a - rho1a))/2 + (rho1a + rho2a)/2
         rointer = pft.T
-    elif isinstance(ro0,  TensionResult):
-        _z0 = ro0.z
-        _ro0 = ro0.ro
+    elif isinstance(rho0,  TensionResult):
+        _z0 = rho0.z
+        _ro0 = rho0.ro
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
-    elif isinstance(ro0,  np.ndarray):
+    elif isinstance(rho0,  np.ndarray):
         #Check dimensiones
-        if ro0.shape[0] == nc and ro0.shape[1] == n:
-            rointer = ro0.copy()
+        if rho0.shape[0] == nc and rho0.shape[1] == n:
+            rointer = rho0.copy()
             rointer *= rofactor
         else:
             raise Exception('Shape of initial value must be nc x n')
@@ -93,21 +93,23 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         Binter = Br[1:-1, 1:-1]
         B0 = Br[1:-1, 0]
         B1 = Br[1:-1, -1]
-        dro20 = np.outer(ro1a, B0) #cte
-        dro21 = np.outer(ro2a, B1) #cte
+        dro20 = np.outer(rho1a, B0) #cte
+        dro21 = np.outer(rho2a, B1) #cte
 
         Ainter = Ar[1:-1, 1:-1]
         A0 = Ar[1:-1, 0]
         A1 = Ar[1:-1, -1]
-        dro10 = np.outer(ro1a, A0) #cte
-        dro11 = np.outer(ro2a, A1) #cte
+        dro10 = np.outer(rho1a, A0) #cte
+        dro11 = np.outer(rho2a, A1) #cte
 
         sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
-                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model))
-        fun_error = np.linalg.norm(sol.fun)
-        if sol.status == 5 or fun_error > fun_tol:
+                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
+                   options = solver_opt)
+        
+        if sol.status == 5:
             sol = root(fobj_z_newton, sol.x, method = 'lm',
-                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model))
+                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
+                   options = solver_opt)
 
         rointer = sol.x
         rointer = rointer.reshape([nc, n])
@@ -128,19 +130,20 @@ def ten_sgt(ro1, ro2, Tsat, Psat, model, ro0 = 'linear',
         error = np.abs(ten - ten_old)
         ten_old = ten
         z += dz
-    success = sol.success and (error < tol)
+    fun_error = np.linalg.norm(sol.fun)/n/nc    
+    success = (fun_error < fun_tol) and (error < tol)
     
     if full_output: 
 
         znodes = (z-dz) * rootsf
-        ro = np.insert(rointer, 0, ro1a, axis = 1)
-        ro = np.insert(ro, n+1, ro2a, axis = 1)
+        ro = np.insert(rointer, 0, rho1a, axis = 1)
+        ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
         dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
         'success' : success, 
         'message' : sol.message,
-        'fun_norm' : np.linalg.norm(sol.fun),
+        'fun_norm' : fun_error,
         'error':error, 'iter':it}
         out = TensionResult(dictresult)
         return out

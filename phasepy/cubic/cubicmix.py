@@ -603,7 +603,7 @@ class rkmix(cubicm):
     def __init__(self, mix, mixrule = 'qmr'):
         cubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
               oma = omark, omb = ombrk, alpha_eos = alpha_rk, mixrule = mixrule)
-        def a_eos(self,T):
-            alpha=self.alpha_eos(T, self.Tc)
-            return self.oma*(R*self.Tc)**2*alpha/self.Pc
+    def a_eos(self,T):
+        alpha=self.alpha_eos(T, self.Tc)
+        return self.oma*(R*self.Tc)**2*alpha/self.Pc
 
