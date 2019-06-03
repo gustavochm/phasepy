@@ -36,7 +36,7 @@ class virialgama:
         
         self.Tij, self.Pij, self.Zij, self.wij = Virialmix(mix)
 
-    def logfugef(self, X,T,P,state, v0 = None):
+    def logfugef(self, X, T, P, state, v0 = None):
         """ 
         logfugef(X, T, P, state)
         

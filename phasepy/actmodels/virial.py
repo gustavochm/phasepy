@@ -25,6 +25,7 @@ def Virialmix(mix):
         
     '''
     Tc = np.asarray(mix.Tc)
+    Pc = np.asarray(mix.Pc)
     Zc = np.asarray(mix.Zc)
     w = np.asarray(mix.w)
     Vc = np.asarray(mix.Vc)
@@ -36,6 +37,7 @@ def Virialmix(mix):
     wij = np.add.outer(w, w)/2
     Zij = np.add.outer(Zc, Zc)/2
     Pij = Zij*R*Tij/vij
+    np.fill_diagonal(Pij, Pc)
     
     return Tij,Pij,Zij,wij
 
