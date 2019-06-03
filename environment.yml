@@ -1,4 +1,4 @@
-name: example-environment
+name: conda-environment
 channels:
   - conda-forge
 dependencies:
@@ -10,5 +10,6 @@ dependencies:
   - pandas
   - partd
   - bokeh
+  - xlrd
   - dask
   - python-ternary
