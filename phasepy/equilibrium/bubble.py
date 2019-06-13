@@ -120,6 +120,10 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
     P : float, equilibrium pressure in bar
     
     """
+    nc = model.nc
+    if len(y_guess) != nc or len(X) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+
     global vl, vv
     vl0, vv0 = v0
     
@@ -200,6 +204,11 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial = False,
     T : float
         equilibrium temperature in K
     """
+    
+    nc = model.nc
+    if len(y_guess) != nc or len(X) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+        
     global vl, vv
     
     vl0, vv0 = v0

@@ -40,7 +40,7 @@ def rachfordrice(beta, K, Z):
 def Gibbs_obj(v , fases, Z, T, P, modelo, v10, v20):
 
     '''
-    Objective function to minimize Gibbs energy in bifasic flash
+    Objective function to minimize Gibbs energy in biphasic flash
     '''
     l = Z - v
     v[v<1e-8] = 1e-8
@@ -95,6 +95,9 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
     beta : float
         phase 2 phase fraction
     """
+    nc = model.nc
+    if len(x_guess) != nc or len(y_guess) != nc or len(Z) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
     
     v10, v20 = v0
     

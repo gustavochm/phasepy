@@ -1,5 +1,3 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np 
 from scipy.optimize import minimize
@@ -82,6 +80,9 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
         minimized tpd distance
         
     """
+    nc = model.nc
+    if len(W) != nc or len(Z) != nc :
+        raise Exception('Composition vector lenght must be equal to nc')
     #valores de la fase de global
     Z[Z<1e-8] = 1e-8
     logfugZ, vz = model.logfugef(Z,T,P,stateZ, vz)
@@ -130,6 +131,9 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
         minimized tpd distance
         
     """
+    nc = model.nc
+    if len(Z) != nc :
+        raise Exception('Composition vector lenght must be equal to nc')
     
     
     Z[Z < 1e-8] = 1e-8

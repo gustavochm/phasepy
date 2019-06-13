@@ -1,41 +1,28 @@
 ﻿"""
-thermoPy.equilibrios: paquete de equilibrios de fases con Python
+phasepy.equilibrium: phase equiliibria with Python 
 =======================================================
 
-Contenidos
--------------------------------------------------------
-
-thermoPy.quilibrios incluye calculo de equilibrios de fases fluidas,
-utilizando como modelos ecuaciones viriales, ecuaciones 
-cubicas de estado o modelos de coeficientes de actividad.
-
-Al utilizar ecuaciones cúbicas para mezclas multicomponentes,
-es posible elegir entre reglado de mezclado clásica (qmr) y reglas
-avanzadas al límite de presión cero (mhv)
-
-Los equilibrios que es posible calcular son los siguientes:
-    Equilibrio liquido - vapor 
-    Equilibrio liquido - liquido
-    Equilibrio liquido - liquido - vapor 
     
 
-Funciones
+Functions
 ---------
-bubbleTy : punto de burbuja P, x -> T, y
-bubblePy : punto de burbuja T, x -> P, y
-dewTx : punto de rocio P, y -> T, x
-dewTy : punto de rocio T, y -> P, x
-flash : flash isotermico isobarico z, T, P -> x,y,beta
-ell : equilibrio liquido liquido z, T, P -> x, w, beta
-ell_init : encuentra puntos de inicializacion de ell usando minimos de tpd 
-multiflash : encuentra quilibrio de tres fases, 2 liquidos y 1 vapor
-ellv_binary : equilibrio trifasico para mezcla binaria
+bubbleTy : bubble point P, x -> T, y
+bubblePy : bubble point T, x -> P, y
+dewTx : dew point P, y -> T, x
+dewTy : dew point T, y -> P, x
+flash : istohermal isobaric two phase flash z, T, P -> x,y,beta
+ell : liquid liquid equilibrium  z, T, P -> x, w, beta
+ell_init : finds initial guess for ell 
+multiflash : multiflash algorithm that checks stability of the phases
+hazb : heteroazetropic calculation (llve) for binary mixtures
+haz : heteroazetropic calculation (llve) for multicomponent mixtures
+ellv_mf: llve equilibrium perfominf a multiflash
 
-tpd : funcion plano tangente de Michelsen adimensional
-tpd_mim : encuentra el minimo de tpd respeto a punto inicial, incluye restriccoines variables
-tpd_minimas : encuentra los minimos del tpd
+tpd : Michelsen tpd functionfuncion 
+tpd_mim : finds a minimum of tpd function given a iniial guess
+tpd_minimas : tries to find n minimas of tpd function
 
-psat : calculo de presion de saturacion de puro con ecuacion cubica
+
 
 """
 
@@ -48,7 +35,7 @@ from .bubble import bubblePy, bubbleTy
 from .dew import dewPx, dewTx
 from .flash import flash
 from .multiflash import multiflash
-from .hazt import haz
+from .hazt import haz, ellv_mf
 from .hazb import hazb
 from .stability import tpd_min, tpd_minimas, ell_init, gmix
 from .ell import ell

@@ -45,7 +45,9 @@ def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
         phase fraction of liquid 2
     
     """
-
+    nc = model.nc
+    if len(x0) != nc or len(w0) != nc or len(Z) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
     
     
     equilibrio = ['L', 'L']

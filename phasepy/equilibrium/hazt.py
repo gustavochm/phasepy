@@ -60,9 +60,9 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
         v0 = [None, None, None], full_output = False):
     
     """
-    Liquid liquid vapour (T,P) -> (x, w, y)
+    Liquid liquid vapor (T,P) -> (x, w, y)
     
-    Computes liquid liquid equilibrium of multicomponent mixtures at given 
+    Computes liquid liquid vapor equilibrium of multicomponent mixtures at given 
     temperature. This functions uses a simultaneous method to check stability 
     and equilibrium, when slow convergence is noted, minimization of Gibbs
     free energy is performed with BFGS.
@@ -99,6 +99,11 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
         vapour mole fraction fector
     
     """
+    
+    nc = model.nc
+    if len(X0) != nc or len(W0) != nc or len(Y0) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+        
     Z0 = (X0+Y0+W0)/3
     nonzero = np.count_nonzero(Z0)
     x0 = np.vstack([X0,W0,Y0])
@@ -167,4 +172,113 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
 
     return  X, W, Y
 
-__all__ = ['haz']
+def ellv_mf(X0, W0, Y0, Z, T, P, model, v0 = [None, None, None], full_output = False):
+    
+    """
+    Liquid liquid vapor Multiflash (Z, T,P) -> (x, w, y)
+    
+    Computes liquid liquid vapor equilibrium of multicomponent mixtures at given 
+    temperature. This functions uses a simultaneous method to check stability 
+    and equilibrium, when slow convergence is noted, minimization of Gibbs
+    free energy is performed with BFGS.
+    
+    Parameters
+    ----------
+
+    X0 : array_like
+         guess composition of liquid 1
+    W0 : array_like
+         guess composition of liquid 2
+    Y0 : array_like
+         guess composition of vapour 1
+    T : float
+        absolute temperature in K.
+    P : float
+        pressure in bar
+    model : object
+        Created from mixture, eos and mixrule 
+    good_initial: bool, optional
+        if True skip Gupta's methodand solves full system of equations.
+    v0 : list, optional
+         if supplied volume used as initial value to compute fugacities
+    full_output: bool, optional
+        wheter to outputs all calculation info
+    
+    Returns
+    -------
+    X : array_like
+        liquid1 mole fraction vector
+    W : array_like
+        liquid2 mole fraction vector
+    Y : array_like
+        vapour mole fraction fector
+    
+    """
+    
+    nc = model.nc
+    if len(X0) != nc or len(W0) != nc or len(Y0) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+        
+    nonzero = np.count_nonzero(Z)
+    x0 = np.vstack([X0,W0,Y0])
+    b0 = np.array([0.33,0.33,0.33,0,0])
+    
+    #check for binary mixture
+    if nonzero == 2:
+        index = np.nonzero(Z)[0]
+        sol = np.zeros_like(x0)
+        sol[:, index], T = haz_pb(x0[:,index],T,P,'P',model,index, 'LLV', v0)
+        X, W, Y = sol
+        return X, W, Y, T
+    
+
+    out = multiflash(x0, b0, ['L','L','V'], Z, T, P, model, v0, True)
+
+    
+    Xm, beta, tetha, equilibrio = out.X, out.beta, out.tetha, out.states
+    error_inner =  out.error_inner
+    v = out.v
+    
+    if error_inner > 1e-6:
+        order = [2, 0, 1]  #Y, X, W
+        Xm = Xm[order]
+        betatetha = np.hstack([beta[order], tetha])
+        equilibrio = np.asarray(equilibrio)[order]
+        v0 = np.asarray(v)[order]
+        out = multiflash(Xm, betatetha, equilibrio, Z, T, P, model, v0 , full_output = True)
+        order = [1, 2, 0]
+        Xm, beta, tetha, equilibrio = out.X, out.beta, out.tetha, out.states
+        error_inner =  out.error_inner
+        if error_inner > 1e-6:
+            order = [2, 1, 0]  #W, X, Y
+            Xm = Xm[order]
+            betatetha = np.hstack([beta[order], tetha])
+            equilibrio = np.asarray(equilibrio)[order]
+            v0 = np.asarray(out.v)[order]
+            out = multiflash(Xm, betatetha, equilibrio, Z, T, P, model, v0 , full_output = True)
+            order = [1, 0, 2]
+            Xm, beta, tetha, equilibrio = out.X, out.beta, out.tetha, out.states
+            error_inner =  out.error_inner
+        Xm = Xm[order]
+        beta = beta[order]
+        tetha = np.hstack([0., tetha])
+        tetha = tetha[order]
+        v = (out.v)[order]
+    else:
+        tetha = np.hstack([0., tetha])
+
+
+    if full_output:
+        info = {'T' : T, 'P': P, 'error_outer':out.error_outer, 'error_inner': error_inner, 
+                'iter': out.iter, 'beta': beta, 'tetha': tetha,                
+               'X' : Xm, 'v':v, 'states' : ['L','L','V']}
+        out = EquilibriumResult(info)
+        return out
+        
+    tethainestable = tetha > 0.
+    Xm[tethainestable] = None
+    X, W, Y = Xm
+
+    return  X, W, Y
+
+__all__ = ['haz', 'ellv_mf']

@@ -124,6 +124,9 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
         equilibrium pressure in bar
     
     """
+    nc = model.nc
+    if len(x_guess) != nc or len(y) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
     
     global vl, vv
     vl0, vv0 = v0
@@ -202,6 +205,11 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
         equilibrium temperature in K
     
     """
+    
+    nc = model.nc
+    if len(x_guess) != nc or len(y) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+        
     global vl, vv
     vl0, vv0 = v0
     

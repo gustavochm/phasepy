@@ -104,7 +104,14 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
     """
     
 
-    nfase = len(equilibrium)    
+    
+
+    nfase = len(equilibrium)  
+    
+    nc = model.nc
+    if np.all(X0.shape == (nfase, nc)) or len(z) != nc:
+        raise Exception('Composition vector lenght must be equal to nc')
+        
     tol = 1e-10
     error = 1
     it = 0
