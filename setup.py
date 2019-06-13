@@ -1,4 +1,5 @@
 from setuptools import setup, Extension
+
 '''
 try:
     from Cython.Distutils import build_ext
@@ -6,8 +7,7 @@ except ImportError:
     use_cython = False
 else:
     use_cython = True
-'''
-use_cython = False
+
 cmdclass = { }
 ext_modules = [ ]
 
@@ -20,13 +20,18 @@ else:
     ext_modules +=  [Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c']),
                    Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.c']),
                     Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.c'])]
+'''
+ext_modules = [ ]
+ext_modules +=  [Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c']),
+                Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.c']),
+                Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.c'])]
 
 setup(
   name = 'phasepy',
   license='MIT',
-  version = '0.0.13',
+  version = '0.0.14',
   description = 'Multiphase multicomponent Equilibria',
-  author = 'Gustavo Chaparro Maldonado, Andrés Mejía Matallana',
+  author = 'Gustavo Chaparro Maldonado, Andres Mejia Matallana',
   author_email = 'gustavochaparro@udec.cl',
   url = 'https://github.com/gustavochm/phasepy',
   download_url = 'https://github.com/gustavochm/phasepy.git',
