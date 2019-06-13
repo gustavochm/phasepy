@@ -222,10 +222,6 @@ the following way for the NRTL model.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">C0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">C1</span><span class="p">)</span>
 <span class="go">(True, True)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="go">[(0, 1)]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Combinatory created by pairs, in case of mixtures with more componentes</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#it would be [(0,1), (0, 2), ..., (0, nc-1), (1, 2), (1, 3), ...]</span>
 </pre></div>
 </div>
 <p>If we would like to use the group contribution model UNIFAC with an ideal gas, the same class is used.</p>

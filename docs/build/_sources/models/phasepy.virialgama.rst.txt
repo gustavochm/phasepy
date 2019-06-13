@@ -44,10 +44,6 @@ If you would like to use fitted parameters of a Redlich Kister expansion you can
 >>> parameters = model.actmodelp
 >>> np.all(parameters[0] == C0), np.all(parameters[1] == C1)
 (True, True)
->>> parameters[2]
-[(0, 1)] 
->>> #Combinatory created by pairs, in case of mixtures with more componentes
->>> #it would be [(0,1), (0, 2), ..., (0, nc-1), (1, 2), (1, 3), ...]
 
 If we would like to use the group contribution model UNIFAC with an ideal gas, the same class is used.
 
