@@ -1,6 +1,5 @@
 from setuptools import setup, Extension
 
-'''
 try:
     from Cython.Distutils import build_ext
 except ImportError:
@@ -20,11 +19,7 @@ else:
     ext_modules +=  [Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c']),
                    Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.c']),
                     Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.c'])]
-'''
-ext_modules = [ ]
-ext_modules +=  [Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c']),
-                Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.c']),
-                Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.c'])]
+
 
 setup(
   name = 'phasepy',
