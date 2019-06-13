@@ -3,7 +3,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from.qmr import qmr
-from .wongsandler import ws_nrtl, ws_wilson, ws_nrtlt, ws_unifac, ws_rk
+from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk
 from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
@@ -124,9 +124,8 @@ class cubicm():
             if self.nc  == 2:
                 self.mixrule = mhv_rk  
                 if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
-                    self.rk = (mix.rkp, mix.rkpT, mix.combinatoria)
-                    self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
-                                             mix.combinatoria)
+                    self.rk = (mix.rkp, mix.rkpT)
+                    self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT)
                 else:
                     raise Exception('RK parameters needed')
             else:

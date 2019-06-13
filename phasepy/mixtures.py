@@ -421,10 +421,10 @@ class mixture(object):
         G = c + c1/T
         
         '''
-        self.rkbinario = c
+        self.rkp = c
         if c1 is None:
             c1 = np.zeros_like(c)
-        self.rkbinarioT = c1
+        self.rkpT = c1
         self.actmodelp = (c, c1)
     
     
