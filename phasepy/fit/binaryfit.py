@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import virialgama, wilson, rkb
+from ..actmodels import virialgama, wilson, rk
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize 
 
@@ -162,15 +162,15 @@ def fit_kij(kij0, eos, mix, dataelv = None, dataell = None, dataellv = None):
     fit = minimize(fobj_kij, kij0, args = (eos, mix, dataelv, dataell, dataellv))
     return fit
 
-def fobj_rkb(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = False):
+def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = False):
     
     if Tdep:
         c, c1 = np.split(inc,2)
     else:
         c = inc
         c1 = np.zeros_like(c)
-    mix.rkb(c, c1)
-    modelo = virialgama(mix, actmodel = rkb)
+    mix.rk(c, c1)
+    modelo = virialgama(mix, actmodel = rk)
     
     error = 0.
     
@@ -216,7 +216,7 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
     fit : OptimizeResult
         Result of SciPy minimize
     """
-    fit = minimize(fobj_rkb, inc0 ,args = (mix, dataelv, dataell, dataellv, Tdep ))
+    fit = minimize(fobj_rk, inc0 ,args = (mix, dataelv, dataell, dataellv, Tdep ))
     return fit
 
 

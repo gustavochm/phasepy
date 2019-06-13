@@ -1,12 +1,13 @@
-ï»¿from setuptools import setup, Extension
-
+from setuptools import setup, Extension
+'''
 try:
     from Cython.Distutils import build_ext
 except ImportError:
     use_cython = False
 else:
     use_cython = True
-
+'''
+use_cython = False
 cmdclass = { }
 ext_modules = [ ]
 
@@ -23,9 +24,9 @@ else:
 setup(
   name = 'phasepy',
   license='MIT',
-  version = '0.0.12',
+  version = '0.0.13',
   description = 'Multiphase multicomponent Equilibria',
-  author = 'Gustavo Chaparro Maldonado, AndrÃ©s MejÃ­a Matallana',
+  author = 'Gustavo Chaparro Maldonado, Andrés Mejía Matallana',
   author_email = 'gustavochaparro@udec.cl',
   url = 'https://github.com/gustavochm/phasepy',
   download_url = 'https://github.com/gustavochm/phasepy.git',

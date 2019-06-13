@@ -330,14 +330,6 @@ class mixture(object):
     
     def kij_ws(self, kij):
         self.Kijws = kij
-    
-    def kij_saft(self, k):
-        self.K = k
-        
-    def mixrule2_saft(self, K, LA, NU):
-        self.K = K
-        self.LA = LA
-        self.NU = NU
         
     
     def kij_cubic(self,k):
@@ -410,7 +402,7 @@ class mixture(object):
         self.Aij = A
         self.actmodelp = (self.Aij , self.vlrackett)
         
-    def rkb(self, c, c1 = None):
+    def rk(self, c, c1 = None):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
         excess Gibbs energy.
@@ -434,36 +426,6 @@ class mixture(object):
             c1 = np.zeros_like(c)
         self.rkbinarioT = c1
         self.actmodelp = (c, c1)
-        
-    def rk(self, c, c1 = None):
-        '''
-        Method that adds binary Redlich Kister polynomial coefficients for
-        excess Gibbs energy.
-        
-        Parameters
-        ----------
-
-        c: array_like
-            polynomial values adim
-        c1: array_like, optional
-            polynomial values in K
-            
-        Note
-        ----
-        Parameters are evaluated as a function of temperature:
-        
-        G = c + c1/T
-        
-        '''
-
-        combinatoria = list(combinations(range(self.nc),2))
-        c = np.atleast_2d(c)
-        self.rkp = c
-        if c1 is None:
-            c1 = np.zeros_like(c)
-        self.rkpT = c1
-        self.combinatoria = np.array(combinatoria)
-        self.actmodelp = (c, c1, combinatoria)
     
     
     def unifac(self):
