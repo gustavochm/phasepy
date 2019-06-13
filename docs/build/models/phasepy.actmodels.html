@@ -20,21 +20,12 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'0.0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -258,7 +249,7 @@ equilibrium.</p>
 \[g^e_{ij} = x_ix_j \sum_{k=0}^m C_k (x_i - x_j)^k\]</div>
 <span class="target" id="module-phasepy.actmodels.redlichkister"></span><dl class="function">
 <dt id="phasepy.actmodels.redlichkister.rk">
-<code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em>, <em>combinatory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redlich-Kister activity coefficient model for multicomponent mixtures.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -269,7 +260,6 @@ equilibrium.</p>
 <li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
 <li><strong>C</strong> (<em>array_like</em>) – polynomial values adim</li>
 <li><strong>C1</strong> (<em>array_like</em>) – polynomial values in K</li>
-<li><strong>combinatory</strong> (<em>array_like</em>) – contains info of the order of polynomial coefficients by pairs</li>
 </ul>
 </td>
 </tr>

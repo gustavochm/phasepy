@@ -20,21 +20,12 @@
   <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../../../',
-              VERSION:'0.0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../../../_static/jquery.js"></script>
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -158,7 +149,7 @@
   <h1>Source code for phasepy.fit.binaryfit</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..actmodels</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">wilson</span><span class="p">,</span> <span class="n">rkb</span>
+<span class="kn">from</span> <span class="nn">..actmodels</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">wilson</span><span class="p">,</span> <span class="n">rk</span>
 <span class="kn">from</span> <span class="nn">.fitmulticomponent</span> <span class="k">import</span> <span class="n">fobj_elv</span><span class="p">,</span> <span class="n">fobj_ell</span><span class="p">,</span> <span class="n">fobj_hazb</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span> 
 
@@ -320,15 +311,15 @@
     <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_kij</span><span class="p">,</span> <span class="n">kij0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
-<span class="k">def</span> <span class="nf">fobj_rkb</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fobj_rk</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">Tdep</span><span class="p">:</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">inc</span>
         <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="n">mix</span><span class="o">.</span><span class="n">rkb</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
-    <span class="n">modelo</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rkb</span><span class="p">)</span>
+    <span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
+    <span class="n">modelo</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span><span class="p">)</span>
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
     
@@ -374,7 +365,7 @@
 <span class="sd">    fit : OptimizeResult</span>
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_rkb</span><span class="p">,</span> <span class="n">inc0</span> <span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">,</span> <span class="n">Tdep</span> <span class="p">))</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_rk</span><span class="p">,</span> <span class="n">inc0</span> <span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">,</span> <span class="n">Tdep</span> <span class="p">))</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
 

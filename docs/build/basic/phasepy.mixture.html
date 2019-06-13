@@ -20,21 +20,12 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'0.0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -92,7 +83,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="phasepy.basics.html">phasepy basics</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="phasepy.component.html">phasepy.component</a></li>
@@ -194,61 +184,141 @@ Creates an object that cointains info about a mixture.</p>
 <dl class="attribute">
 <dt id="phasepy.mixture.name">
 <code class="descname">name</code><a class="headerlink" href="#phasepy.mixture.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Name of the component</p>
+<dd><p>Name of the component</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.Tc">
 <code class="descname">Tc</code><a class="headerlink" href="#phasepy.mixture.Tc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Critical temperature</p>
+<dd><p>Critical temperature</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.Pc">
 <code class="descname">Pc</code><a class="headerlink" href="#phasepy.mixture.Pc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Critical Pressure</p>
+<dd><p>Critical Pressure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.Zc">
 <code class="descname">Zc</code><a class="headerlink" href="#phasepy.mixture.Zc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – critical compresibility factor</p>
+<dd><p>critical compresibility factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.Vc">
 <code class="descname">Vc</code><a class="headerlink" href="#phasepy.mixture.Vc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – critical volume</p>
+<dd><p>critical volume</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.w">
 <code class="descname">w</code><a class="headerlink" href="#phasepy.mixture.w" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – acentric factor</p>
+<dd><p>acentric factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.cii">
 <code class="descname">cii</code><a class="headerlink" href="#phasepy.mixture.cii" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – polynomial coefficient for influence parameter in SGT</p>
+<dd><p>polynomial coefficient for influence parameter in SGT</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.ksv">
 <code class="descname">ksv</code><a class="headerlink" href="#phasepy.mixture.ksv" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – parameter for alpha for PRSV EoS, if fitted</p>
+<dd><p>parameter for alpha for PRSV EoS, if fitted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.Ant">
 <code class="descname">Ant</code><a class="headerlink" href="#phasepy.mixture.Ant" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Antoine correlation parameters</p>
+<dd><p>Antoine correlation parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.mixture.GC">
 <code class="descname">GC</code><a class="headerlink" href="#phasepy.mixture.GC" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Group contribution info</p>
+<dd><p>Group contribution info</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -410,30 +480,6 @@ base is used.</p>
 <dl class="method">
 <dt id="phasepy.mixture.rk">
 <code class="descname">rk</code><span class="sig-paren">(</span><em>c</em>, <em>c1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that adds binary Redlich Kister polynomial coefficients for
-excess Gibbs energy.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>c</strong> (<em>array_like</em>) – polynomial values adim</li>
-<li><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>Parameters are evaluated as a function of temperature:</p>
-<p class="last">G = c + c1/T</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="phasepy.mixture.rkb">
-<code class="descname">rkb</code><span class="sig-paren">(</span><em>c</em>, <em>c1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds binary Redlich Kister polynomial coefficients for
 excess Gibbs energy.</p>
 <table class="docutils field-list" frame="void" rules="none">

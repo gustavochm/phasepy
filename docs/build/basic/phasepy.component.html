@@ -20,21 +20,12 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'0.0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -92,7 +83,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="phasepy.basics.html">phasepy basics</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">phasepy.component</a></li>
@@ -201,61 +191,141 @@
 <dl class="attribute">
 <dt id="phasepy.component.name">
 <code class="descname">name</code><a class="headerlink" href="#phasepy.component.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – Name of the component</p>
+<dd><p>Name of the component</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.Tc">
 <code class="descname">Tc</code><a class="headerlink" href="#phasepy.component.Tc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Critical temperature</p>
+<dd><p>Critical temperature</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.Pc">
 <code class="descname">Pc</code><a class="headerlink" href="#phasepy.component.Pc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Critical Pressure</p>
+<dd><p>Critical Pressure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.Zc">
 <code class="descname">Zc</code><a class="headerlink" href="#phasepy.component.Zc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – critical compresibility factor</p>
+<dd><p>critical compresibility factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.Vc">
 <code class="descname">Vc</code><a class="headerlink" href="#phasepy.component.Vc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – critical volume</p>
+<dd><p>critical volume</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.w">
 <code class="descname">w</code><a class="headerlink" href="#phasepy.component.w" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – acentric factor</p>
+<dd><p>acentric factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.cii">
 <code class="descname">cii</code><a class="headerlink" href="#phasepy.component.cii" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – polynomial coefficient for influence parameter in SGT</p>
+<dd><p>polynomial coefficient for influence parameter in SGT</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.ksv">
 <code class="descname">ksv</code><a class="headerlink" href="#phasepy.component.ksv" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – parameter for alpha for PRSV EoS, if fitted</p>
+<dd><p>parameter for alpha for PRSV EoS, if fitted</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.Ant">
 <code class="descname">Ant</code><a class="headerlink" href="#phasepy.component.Ant" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – Antoine correlation parameters</p>
+<dd><p>Antoine correlation parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.component.GC">
 <code class="descname">GC</code><a class="headerlink" href="#phasepy.component.GC" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – Group contribution info</p>
+<dd><p>Group contribution info</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

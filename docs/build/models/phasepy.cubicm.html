@@ -20,21 +20,12 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'0.0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -92,7 +83,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Phasepy Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
@@ -210,31 +200,71 @@ as for iterfacial properties calculations.</p>
 <dl class="attribute">
 <dt id="phasepy.cubic.cubicmix.cubicm.Tc">
 <code class="descname">Tc</code><a class="headerlink" href="#phasepy.cubic.cubicmix.cubicm.Tc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array_like</em> – critical temperture in K</p>
+<dd><p>critical temperture in K</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.cubic.cubicmix.cubicm.Pc">
 <code class="descname">Pc</code><a class="headerlink" href="#phasepy.cubic.cubicmix.cubicm.Pc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array_like</em> – critical pressure in bar</p>
+<dd><p>critical pressure in bar</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.cubic.cubicmix.cubicm.w">
 <code class="descname">w</code><a class="headerlink" href="#phasepy.cubic.cubicmix.cubicm.w" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array_like</em> – acentric factor</p>
+<dd><p>acentric factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.cubic.cubicmix.cubicm.cii">
 <code class="descname">cii</code><a class="headerlink" href="#phasepy.cubic.cubicmix.cubicm.cii" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>array_like</em> – influence factor for SGT</p>
+<dd><p>influence factor for SGT</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array_like</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="phasepy.cubic.cubicmix.cubicm.nc">
 <code class="descname">nc</code><a class="headerlink" href="#phasepy.cubic.cubicmix.cubicm.nc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of components of mixture</p>
+<dd><p>number of components of mixture</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
