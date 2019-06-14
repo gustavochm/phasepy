@@ -402,6 +402,31 @@ class mixture(object):
         self.Aij = A
         self.actmodelp = (self.Aij , self.vlrackett)
         
+    def rkb(self, c, c1 = None):
+        '''
+        Method that adds binary Redlich Kister polynomial coefficients for
+        excess Gibbs energy.
+        
+        Parameters
+        ----------
+        c: array_like
+            polynomial values adim
+        c1: array_like, optional
+            polynomial values in K
+            
+        Note
+        ----
+        Parameters are evaluated as a function of temperature:
+        
+        G = c + c1/T
+        
+        '''
+        self.rkb = c
+        if c1 is None:
+            c1 = np.zeros_like(c)
+        self.rkb = c1
+        self.actmodelp = (c, c1)
+        
     def rk(self, c, c1 = None):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
@@ -421,11 +446,15 @@ class mixture(object):
         G = c + c1/T
         
         '''
+        nc = self.nc
+        combinatory = np.array(list(combinations(range(nc),2)), dtype = np.int)
+        self.combinatory = combinatory
+        c = np.atleast_2d(c)
         self.rkp = c
         if c1 is None:
             c1 = np.zeros_like(c)
         self.rkpT = c1
-        self.actmodelp = (c, c1)
+        self.actmodelp = (c, c1, combinatory)
     
     
     def unifac(self):

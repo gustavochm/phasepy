@@ -171,7 +171,7 @@ def mhv_nrtlt(X,T, ai, bi, c1, c2, alpha, g, g1, D):
 
 
 
-def mhv_rk(X, T, ai, bi, c1, c2, C, C1):
+def mhv_rk(X, T, ai, bi, c1, c2, C, C1, combinatory):
     '''
     Modified Huron vidal mixrule with Redlich Kister model
     
@@ -194,7 +194,7 @@ def mhv_rk(X, T, ai, bi, c1, c2, C, C1):
     ap (a partial molar)
     bp (b partial molar)
     '''
-    parameter=(C, C1)
+    parameter=(C, C1, combinatory)
     am,bm,ep,ap, bp = mhv(X, T, ai, bi, c1, c2, rk, parameter)
     return am,bm,ep,ap, bp
 

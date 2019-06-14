@@ -60,7 +60,7 @@ def rkter_nrtl_cy(double [:] x, double [:] xd):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def rk_cy(double [:] x, double [:] G):
+def rkb_cy(double [:] x, double [:] G):
     
     cdef int m, i
     m = G.shape[0]
@@ -78,6 +78,37 @@ def rk_cy(double [:] x, double [:] G):
     Mp[0] = x2**2*(SumA+2*x1*SumB)
     Mp[1] = x1**2*(SumA-2*x2*SumB)
     return Mp.base
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def rk_cy(double [:] x, double [:, :] G, int [:,:] combinatory):
+
+    cdef int ncomb, m, nc, i, j, k, l
+    ncomb = combinatory.shape[0]
+    m = G.shape[1]
+    nc = x.shape[0]
+    cdef double[:] dge = np.zeros(nc)
+    cdef double xi, xj, SumA, SumC, dx, ge, xixj, aux
+    
+    ge = 0.
+    for k in range(ncomb):
+        i = combinatory[k, 0]
+        j = combinatory[k, 1]
+        xi = x[i]
+        xj = x[j]
+        dx = xi - xj
+        SumA = G[k, 0]
+        SumC = 0.
+        for l in range(1, m):
+            SumA += G[k,l]*dx**l
+            SumC += G[k,l]*l*dx**(l-1.)
+        xixj = xi*xj
+        aux = xixj*SumC
+        ge +=  xixj*SumA
+        dge[i] += xj*SumA + aux
+        dge[j] += xi*SumA - aux
+        
+    return ge, dge.base
 
 
 @cython.boundscheck(False)

@@ -124,8 +124,9 @@ class cubicm():
             if self.nc  == 2:
                 self.mixrule = mhv_rk  
                 if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
-                    self.rk = (mix.rkp, mix.rkpT)
-                    self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT)
+                    self.rk = (mix.rkp, mix.rkpT. mix.combinatoria)
+                    self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
+                                             mix.combinatoria)
                 else:
                     raise Exception('RK parameters needed')
             else:

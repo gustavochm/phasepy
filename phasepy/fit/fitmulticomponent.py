@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..equilibrium import bubblePy, ell, tpd_min, hazb, hazt
+from ..equilibrium import bubblePy, ell, tpd_min, hazb, haz
 
 def fobj_elv(model, Xexp, Yexp, Texp, Pexp):
     """ 
@@ -108,10 +108,10 @@ def fobj_hazt(model, Xellv, Wellv, Yellv, Tellv, Pellv):
     error = 0
     for i in range(n):
         try:
-            X[i], W[i], Y[i] = hazt(Xellv[i], Wellv[i], Yellv[i],
+            X[i], W[i], Y[i] = haz(Xellv[i], Wellv[i], Yellv[i],
                                           Tellv[i], Pellv[i], model, True)
         except ValueError: 
-            X[i], W[i], Y[i], T = hazt(Xellv[i], Wellv[i], Yellv[i], Tellv[i], 
+            X[i], W[i], Y[i], T = haz(Xellv[i], Wellv[i], Yellv[i], Tellv[i], 
                                  Pellv[i], model, True)
             error += (T/Tellv[i]-1)**2
         except:

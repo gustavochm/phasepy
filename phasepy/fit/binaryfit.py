@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import virialgama, wilson, rk
+from ..actmodels import virialgama, wilson, rkb
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize 
 
@@ -170,7 +170,7 @@ def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
         c = inc
         c1 = np.zeros_like(c)
     mix.rk(c, c1)
-    modelo = virialgama(mix, actmodel = rk)
+    modelo = virialgama(mix, actmodel = rkb)
     
     error = 0.
     
