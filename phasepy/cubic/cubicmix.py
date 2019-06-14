@@ -121,16 +121,15 @@ class cubicm():
                 raise Exception('Unifac parameters needed')
         
         elif mixrule == 'mhv_rk':
-            if self.nc  == 2:
-                self.mixrule = mhv_rk  
-                if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
-                    self.rk = (mix.rkp, mix.rkpT. mix.combinatoria)
-                    self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
-                                             mix.combinatoria)
-                else:
-                    raise Exception('RK parameters needed')
+
+            self.mixrule = mhv_rk  
+            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
+                self.rk = (mix.rkp, mix.rkpT, mix.combinatory)
+                self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
+                                         mix.combinatory)
             else:
-                raise Exception('RK available for binary mixtures')
+                raise Exception('RK parameters needed')
+
                 
         elif mixrule == 'ws_nrtl':
             self.mixrule = ws_nrtl  
