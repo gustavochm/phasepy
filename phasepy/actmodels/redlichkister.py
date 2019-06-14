@@ -63,7 +63,7 @@ def rk(x, T, C, C1, combinatory):
     x = np.asarray(x,dtype = np.float64)
     
     G = C + C1 / T
-    ge, dge = rk_cy(x, G)
+    ge, dge = rk_cy(x, G, combinatory)
     Mp = ge + dge - np.dot(dge,x)
     return Mp
     
