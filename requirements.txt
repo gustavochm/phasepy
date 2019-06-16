@@ -4,4 +4,3 @@ matplotlib
 pandas
 xlrd
 python-ternary
-phasepy
