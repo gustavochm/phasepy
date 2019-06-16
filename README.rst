@@ -14,6 +14,7 @@ Besides computations, with this package is also possible to fit phase equilibria
 mix rule, NRTL, Wilson and Redlich Kister parameters, are included.
 
 Phasepy relies on numpy, scipy and cython extension modules, when necessary.
+
 Installation
 ------------
 
