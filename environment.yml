@@ -13,3 +13,6 @@ dependencies:
   - xlrd
   - dask
   - python-ternary
+  - pip:
+	- phasepy
+

@@ -4,17 +4,16 @@ phasepy
 
 What is phasepy?
 ----------------
-Phasepy is a open-source scientific python package for fluid phase equilibria computation.
-This package facilitate the calculation of liquid-vapour equilibrium, liquid-liquid equilibrium
-and liquid-liquid-vapour equilibrium. Equilibrium calculations can be perfomed with cubic equations
-of state with clasic or advances mixing rules or with a discontinuous approach using a virial equations
-of state for the vapour phase and a activity coefficient model for the liquid phase.
+Phasepy is an open-source scientific python package for fluid phase equilibria computation.
+This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium
+and liquid-liquid-vapor equilibrium. Equilibrium calculations can be performed with cubic equations
+of state with classic or advances mixing rules or with a discontinuous approach using a virial equation
+of state for the vapor phase and an activity coefficients model for the liquid phase.
 
 Besides computations, with this package is also possible to fit phase equilibria data, functions to fit quadratic
 mix rule, NRTL, Wilson and Redlich Kister parameters, are included.
 
-Phasety relys on numpy, scipy and cython extension modules, when necessary.
-
+Phasepy relies on numpy, scipy and cython extension modules, when necessary.
 Installation
 ------------
 
@@ -41,7 +40,7 @@ phasepy's documentation is available on the web:
 Getting Started
 ---------------
 
-The library is designed to work with absolute temperature in Kelvin, pressure in bar and
+This library is designed to work with absolute temperature in Kelvin, pressure in bar and
 volume in cm3/mol. In order to create a mixture pure components have to be defined:
 	
 .. code-block:: python
@@ -65,7 +64,7 @@ the Peng Robinson EoS with an advanced mix rule with UNIFAC model:
 	>>> y_guess, P_guess = [0.2,0.8] , 1
 	>>> bubblePy(y_guess, P_guess, x = [0.5, 0.5], T = 320, model = eos)
 
-Similarly, liquid-liquid and liquid-liquid-vapour equilibrium can be solved, if were the case,
+Similarly, liquid-liquid and liquid-liquid-vapor equilibrium can be solved, if were the case,
 with the same object, eos.
 
 

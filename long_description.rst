@@ -1,10 +1,10 @@
-Phasepy is a open-source scientific python package for fluid phase equilibria computation.
-This package facilitate the calculation of liquid-vapour equilibrium, liquid-liquid equilibrium
-and liquid-liquid-vapour equilibrium. Equilibrium calculations can be perfomed with cubic equations
-of state with clasic or advances mixing rules or with a discontinuous approach using a virial equations
-of state for the vapour phase and a activity coefficient model for the liquid phase.
+Phasepy is an open-source scientific python package for fluid phase equilibria computation.
+This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium
+and liquid-liquid-vapor equilibrium. Equilibrium calculations can be performed with cubic equations
+of state with classic or advances mixing rules or with a discontinuous approach using a virial equation
+of state for the vapor phase and an activity coefficients model for the liquid phase.
 
 Besides computations, with this package is also possible to fit phase equilibria data, functions to fit quadratic
 mix rule, NRTL, Wilson and Redlich Kister parameters, are included.
 
-Phasety relys on numpy, scipy and cython extension modules, when necessary.
+Phasepy relies on numpy, scipy and cython extension modules, when necessary.
