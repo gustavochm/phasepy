@@ -79,9 +79,13 @@ def rkb_cy(double [:] x, double [:] G):
     Mp[1] = x1**2*(SumA-2*x2*SumB)
     return Mp.base
 
+ctypedef fused int_or_long:
+    cython.int
+    cython.long
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def rk_cy(double [:] x, double [:, :] G, int [:,:] combinatory):
+def rk_cy(double [:] x, double [:, :] G, int_or_long [:,:] combinatory):
 
     cdef int ncomb, m, nc, i, j, k, l
     ncomb = combinatory.shape[0]
