@@ -1,4 +1,4 @@
-from gmie import lngmie, dlngmie_drho, d2lngmie_drho
+from .gmie import lngmie, dlngmie_drho, d2lngmie_drho
 
 def achain(x0, eta, 
           x0_a1, a1sb_a1, da1m_deta,
