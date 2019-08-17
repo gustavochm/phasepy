@@ -1,24 +1,24 @@
 import numpy as np
-from phasepy import gauss
+from .. import gauss
 
-from monomer_aux import Xi, dXi, d2Xi
-from monomer_aux import dkHS, d2kHS, d3kHS
+from .monomer_aux import Xi, dXi, d2Xi
+from .monomer_aux import dkHS, d2kHS, d3kHS
 
-from a1sB_monomer import da1B_eval, d2a1B_eval, d3a1B_eval
-from a1sB_monomer import x0lambda_eval 
+from .a1sB_monomer import da1B_eval, d2a1B_eval, d3a1B_eval
+from .a1sB_monomer import x0lambda_eval 
 
-from pertubaciones_eval import ahs, dahs_deta, d2ahs_deta
-from pertubaciones_eval import a1m
-from pertubaciones_eval import a2m,  da2m_deta, d2a2m_deta
-from pertubaciones_eval import da2m_new_deta, d2a2m_new_deta, d3a2m_new_deta
-from pertubaciones_eval import a3m, da3m_deta, d2a3m_deta
+from .pertubaciones_eval import ahs, dahs_deta, d2ahs_deta
+from .pertubaciones_eval import a1m
+from .pertubaciones_eval import a2m,  da2m_deta, d2a2m_deta
+from .pertubaciones_eval import da2m_new_deta, d2a2m_new_deta, d3a2m_new_deta
+from .pertubaciones_eval import a3m, da3m_deta, d2a3m_deta
 
-from ideal import aideal, daideal_drho, d2aideal_drho
-from monomer import amono, damono_drho, d2amono_drho
-from chain import achain, dachain_drho, d2achain_drho
+from .ideal import aideal, daideal_drho, d2aideal_drho
+from .monomer import amono, damono_drho, d2amono_drho
+from .chain import achain, dachain_drho, d2achain_drho
 
-from density_solver import  density_topliss, density_newton
-from psat_saft import psat
+from .density_solver import  density_topliss, density_newton
+from .psat_saft import psat
 
 #Constants 
 kb = 1.3806488e-23 # K/J

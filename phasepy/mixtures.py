@@ -5,7 +5,7 @@ from pandas import read_excel
 import os
 from copy import copy
 from itertools import combinations
-from saft_forcefield import saft_forcefield
+from .saft_forcefield import saft_forcefield
 
 class component(object):
     '''
