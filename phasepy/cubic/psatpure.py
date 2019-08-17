@@ -51,7 +51,6 @@ def psat(T, cubic, P0 = None):
             P = P.mean()
     else:
         P =  P0 
-
     itmax=20
     for k in range(itmax):
         A=a*P/(R*T)**2
@@ -66,4 +65,6 @@ def psat(T, cubic, P0 = None):
         dP=FO/dFO
         P -= dP
         if abs(dP)<1e-8: break
-    return P
+    vl = Zl*R*T/P
+    vv = Zv*R*T/P
+    return P, vl, vv

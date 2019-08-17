@@ -109,7 +109,8 @@ class cpure():
         psat : float
             saturation pressure
         """
-        return psat(T, self, P0)
+        p0, vl, vv = psat(T, self, P0)
+        return p0, vl, vv 
 
     def _Zroot(self,A,B):
         a1 = (self.c1+self.c2-1)*B-1

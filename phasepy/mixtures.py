@@ -4,9 +4,8 @@ from collections import Counter
 from pandas import read_excel
 import os
 from copy import copy
-from .constants import Na
 from itertools import combinations
-
+from saft_forcefield import saft_forcefield
 
 class component(object):
     '''
@@ -70,7 +69,7 @@ class component(object):
     
     def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
                  ksv = [0, 0], Ant = [0,0,0],  GC = None,
-                 m = 0, sigma = 0 , e = 0, kapaAB = 0, eAB = 0, site = [0,0,0]): 
+                 ms = 0, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.): 
         
         self.name = name
         self.Tc = Tc #Critical Temperature in K
@@ -85,12 +84,14 @@ class component(object):
         self.nc = 1
         
         #Saft Parameters
-        self.m = m
-        self.sigma = 1e-9*sigma*(Na**(1./3)) 
-        self.e = e 
-        self.kapaAB = kapaAB 
-        self.eAB = eAB
-        self.site = site 
+        
+        self.ms = ms
+        self.sigma = sigma
+        self.eps = eps 
+        self.lambda_a = np.asarray(lambda_a)
+        self.lambda_r = np.asarray(lambda_r)
+        self.lambda_ar = self.lambda_r + self.lambda_a
+        
         
         
     def psat(self,T):
@@ -172,6 +173,15 @@ class component(object):
         """
 
         return np.polyval(self.cii, T)
+    
+    def saftvrmie(self, ms, rhol07):
+        lambda_r, lambda_a, ms, eps, sigma = saft_forcefield(ms, self.Tc, self.w, rhol07)
+        self.lambda_a = np.asarray(lambda_a)
+        self.lambda_r = np.asarray(lambda_r)
+        self.lambda_ar = self.lambda_r + self.lambda_a
+        self.ms = ms
+        self.sigma = sigma
+        self.eps = eps
     
 class mixture(object):
     '''
