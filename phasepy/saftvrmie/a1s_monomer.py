@@ -1,5 +1,5 @@
 import numpy as np
-from monomer_aux import  eta_eff, deta_eff,  d2eta_eff,  d3eta_eff
+from .monomer_aux import  eta_eff, deta_eff,  d2eta_eff,  d3eta_eff
 
 #Derivadas respecto a eta
 def a1s(eta, lam, eps):

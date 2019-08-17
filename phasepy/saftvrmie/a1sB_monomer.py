@@ -1,6 +1,6 @@
 import numpy as np
-from B_monomer import B, dB, d2B, d3B
-from a1s_monomer import a1s, da1s, d2a1s, d3a1s
+from .B_monomer import B, dB, d2B, d3B
+from .a1s_monomer import a1s, da1s, d2a1s, d3a1s
 
 #Suma de a1s con B (utilizado para todas la primera y segunda perturbación)
 def a1sB(x0, eta, lam, eps):

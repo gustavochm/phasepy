@@ -1,7 +1,7 @@
 import numpy as np
-from gmie_aux import gdHS, dgdHS_drho, d2gdHS_drho
-from gmie_aux import g1sigma, dg1sigma_drho, d2g1sigma_drho
-from gmie_aux import g2sigma, dg2sigma_drho, d2g2sigma_drho
+from .gmie_aux import gdHS, dgdHS_drho, d2gdHS_drho
+from .gmie_aux import g1sigma, dg1sigma_drho, d2g1sigma_drho
+from .gmie_aux import g2sigma, dg2sigma_drho, d2g2sigma_drho
 
 
 def gmie(x0, eta, 
