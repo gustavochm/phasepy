@@ -1,5 +1,5 @@
 import numpy as np
-from monomer_aux import I_lam, J_lam
+from .monomer_aux import I_lam, J_lam
 
 
 #Derivadas respecto a eta
