@@ -69,7 +69,7 @@ class component(object):
     
     def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
                  ksv = [0, 0], Ant = [0,0,0],  GC = None,
-                 ms = 0, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.): 
+                 ms = 1, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.): 
         
         self.name = name
         self.Tc = Tc #Critical Temperature in K
@@ -246,12 +246,6 @@ class mixture(object):
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]
         
-        self.m = [component1.m, component2.m]
-        self.sigma = [component1.sigma, component2.sigma]
-        self.e = [component1.e, component2.e]
-        self.kapaAB = [component1.kapaAB, component2.kapaAB]
-        self.eAB = [component1.eAB, component2.eAB]
-        self.site = [component1.site, component2.site]
         
     def add_component(self,component):
         """
@@ -267,13 +261,6 @@ class mixture(object):
         self.cii.append(component.cii)
         self.ksv.append(component.ksv)
         self.GC.append(component.GC)
-        
-        self.m.append(component.m)
-        self.sigma.append(component.sigma)
-        self.e.append(component.e)
-        self.kapaAB.append(component.kapaAB)
-        self.eAB.append(component.eAB)
-        self.site.append(component.site)
         
         self.nc += 1
         
