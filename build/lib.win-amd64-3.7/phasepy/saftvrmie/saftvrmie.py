@@ -253,10 +253,10 @@ class saftvrmie_pure():
         return a
     
     def dP_drho(self, rho, T):
-        afcn, dafcn, d2afcn = self.d2afcn_drho(rho, T) 
-        Psaft = rho**2 * dafcn / Na
-        dPsaft = 2 * rho * dafcn + rho**2 * d2afcn
-        dPsaft /= Na
+        rhomolecular = Na * rho
+        afcn, dafcn, d2afcn = self.d2afcn_drho(rhomolecular, T) 
+        Psaft = rhomolecular**2 * dafcn / Na
+        dPsaft = 2 * rhomolecular * dafcn + rhomolecular**2 * d2afcn
         return Psaft, dPsaft
     
     

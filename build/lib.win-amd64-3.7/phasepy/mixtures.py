@@ -69,7 +69,8 @@ class component(object):
     
     def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
                  ksv = [0, 0], Ant = [0,0,0],  GC = None,
-                 ms = 1, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.): 
+                 ms = 1, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.,
+                eAB = 0., rcAB = 1., rdAB = 0.4, sites = [0,0,0]): 
         
         self.name = name
         self.Tc = Tc #Critical Temperature in K
@@ -91,6 +92,11 @@ class component(object):
         self.lambda_a = np.asarray(lambda_a)
         self.lambda_r = np.asarray(lambda_r)
         self.lambda_ar = self.lambda_r + self.lambda_a
+        #Association Parameters
+        self.eAB = eAB
+        self.rcAB = rcAB * sigma
+        self.rdAB = rdAB * sigma
+        self.sites = sites
         
         
         
@@ -246,6 +252,15 @@ class mixture(object):
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]
         
+        self.lr = [component1.lambda_r, component2.lambda_r]
+        self.la = [component1.lambda_a, component2.lambda_a]
+        self.sigma = [component1.sigma, component2.sigma]
+        self.eps = [component1.eps, component2.eps]
+        self.ms = [component1.ms, component2.ms]
+        self.eAB = [component1.eAB, component2.eAB]
+        self.rc = [component1.rcAB, component2.rcAB]
+        self.rd = [component1.rdAB, component2.rdAB]
+        self.sitesmix = [component1.sites, component2.sites]
         
     def add_component(self,component):
         """
@@ -261,6 +276,16 @@ class mixture(object):
         self.cii.append(component.cii)
         self.ksv.append(component.ksv)
         self.GC.append(component.GC)
+        
+        self.lr.append(component.lambda_r)
+        self.la.append(component.lambda_a)
+        self.sigma.append(component.sigma)
+        self.eps.append(component.eps)
+        self.ms.append(component.ms)
+        self.eAB.append(component.eAB)
+        self.rc.append(component.rcAB)
+        self.rd.append(component.rdAB)
+        self.sitesmix.append(component.sites)
         
         self.nc += 1
         
@@ -325,9 +350,11 @@ class mixture(object):
         V=Vc*Zc**((1-Tr)**(2/7))
         return V 
     
+    def kij_saft(self, kij):
+        self.kij_saft = kij
+    
     def kij_ws(self, kij):
         self.Kijws = kij
-        
     
     def kij_cubic(self,k):
         '''

@@ -4,26 +4,27 @@ kb = 1.3806488e-23 # K/J
 Na = 6.02214e23 
 
 def dPsaft_fun(rho, T, saft):
-    _, dafcn, d2afcn = saft.d2afcn_drho(rho, T) 
-    dPsaft = 2 * rho * dafcn + rho**2 * d2afcn 
-    dPsaft /= Na
+    rhomolecular = Na * rho 
+    _, dafcn, d2afcn = saft.d2afcn_drho(rhomolecular, T) 
+    dPsaft = 2 * rhomolecular * dafcn + rhomolecular**2 * d2afcn
     return dPsaft
 
 def Psaft_obj(rho, T, saft, Pspec):
-    _, dafcn,  = saft.dafcn_drho(rho, T) 
-    Psaft = rho**2 * dafcn / Na
+    rhomolecular = Na * rho
+    _, dafcn,  = saft.dafcn_drho(rhomolecular, T) 
+    Psaft = rhomolecular**2 * dafcn / Na
     return Psaft - Pspec
 
 def density_topliss(state, T, P, saft):
     
     #lower boundary a zero density
     rho_lb = 1e-5
-    P_lb = 0.
+    #P_lb = 0.
     dP_lb = Na * kb * T
     
     #upper boundary limit at infinity pressure
     etamax = 0.7405
-    rho_lim = (6 * etamax) / (saft.ms * np.pi * saft.sigma**3)
+    rho_lim = (6 * etamax) / (saft.ms * np.pi * saft.sigma**3) / Na
     #Mejorar esta parte con el maximo valor posible de eta de la densidad
     ub_sucess = False
     rho_ub = 0.4 *  rho_lim
