@@ -6,6 +6,7 @@ import os
 from copy import copy
 from itertools import combinations
 from .saft_forcefield import saft_forcefield
+from .constants import kb
 
 class component(object):
     '''
@@ -87,15 +88,16 @@ class component(object):
         #Saft Parameters
         
         self.ms = ms
-        self.sigma = sigma
-        self.eps = eps 
+        self.sigma = sigma * 1e-10
+        self.eps = eps * kb
         self.lambda_a = np.asarray(lambda_a)
         self.lambda_r = np.asarray(lambda_r)
         self.lambda_ar = self.lambda_r + self.lambda_a
+        
         #Association Parameters
-        self.eAB = eAB
-        self.rcAB = rcAB * sigma
-        self.rdAB = rdAB * sigma
+        self.eAB = eAB * kb
+        self.rcAB = rcAB * self.sigma
+        self.rdAB = rdAB * self.sigma
         self.sites = sites
         
         

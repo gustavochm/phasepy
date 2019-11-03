@@ -15,6 +15,7 @@ def Psaft_obj(rho, T, saft, Pspec):
     Psaft = rhomolecular**2 * dafcn / Na
     return Psaft - Pspec
 
+
 def density_topliss(state, T, P, saft):
     
     #lower boundary a zero density
@@ -36,7 +37,7 @@ def density_topliss(state, T, P, saft):
         ub_sucess = P_ub > P and dP_ub > 0
         
     #Calculo de derivada numerica en densidad nula
-    rho_lb1 = 1e-23 * rho_lim
+    rho_lb1 = 1e-4 * rho_lim
     P_lb1, dP_lb1 = saft.dP_drho(rho_lb1, T)
     d2P_lb1 = (dP_lb1 - dP_lb) / rho_lb1
     if d2P_lb1 > 0:

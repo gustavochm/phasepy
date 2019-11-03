@@ -17,12 +17,14 @@ from .ideal import aideal, daideal_drho, d2aideal_drho
 from .monomer import amono, damono_drho, d2amono_drho
 from .chain import achain, dachain_drho, d2achain_drho
 
+from .association_aux import association_config, Xass_solver, Iab, dIab_drho
+from .association_aux import d2Iab_drho, dXass_drho, d2Xass_drho
+
 from .density_solver import  density_topliss, density_newton
 from .psat_saft import psat
 
-#Constants 
-kb = 1.3806488e-23 # K/J
-Na = 6.02214e23 
+from ..constants import kb, Na
+
 R = Na * kb       
     
         
@@ -67,6 +69,8 @@ class saftvrmie_pure():
         alpha = self.c*(1/(self.lambda_a - 3) - 1/(self.lambda_r - 3))
         self.alpha = alpha
         
+        self.sigma3 = pure.sigma**3
+        
         self.f1 = fi(alpha, 1)
         self.f2 = fi(alpha, 2)
         self.f3 = fi(alpha, 3)
@@ -79,6 +83,21 @@ class saftvrmie_pure():
         self.weights = weights
         
         self.umie = U_mie(1./roots, self.c, self.eps, self.lambda_r, self.lambda_a)
+        
+        #Configuracion asociacion
+        self.eABij = pure.eAB
+        self.rcij = pure.rcAB
+        self.rdij = pure.rdAB
+        self.sites = pure.sites
+        S, DIJ, indexabij, nsites, diagasso = association_config(self)
+        assoc_bool = nsites != 0
+        self.assoc_bool = assoc_bool
+        if assoc_bool:
+            self.S = S
+            self.DIJ = DIJ
+            self.indexabij = indexabij
+            self.nsites = nsites
+            self.diagasso = diagasso
         
         #For SGT Computations
         if pure.cii == 0.:
@@ -149,7 +168,17 @@ class saftvrmie_pure():
 
         #total helmolthz 
         a = a_mono + a_chain
-        return a
+        
+        if self.assoc_bool:
+            iab = Iab(dia, self.rcij, self.rdij, eta,  self.sigma3)
+            Fab = np.exp(beta * self.eABij) - 1 
+            Dab = self.sigma3 * Fab * iab
+            Dabij = np.zeros([self.nsites, self.nsites])
+            Dabij[self.indexabij] = Dab
+            KIJ =  rho * (self.DIJ*Dabij)
+            Xass = Xass_solver(self.nsites, KIJ, self.diagasso, Xass0 = None)
+            a += np.dot(self.S , (np.log(Xass) - Xass/2 + 1/2))
+        return a, Dabij, Xass
     
     def dares_drho(self, rho, T):
         #Constants evaluated at given density and temperatura
@@ -190,6 +219,29 @@ class saftvrmie_pure():
 
         #total helmolthz 
         a = a_mono + a_chain
+        
+        if self.assoc_bool:
+            iab, diab = dIab_drho(dia, self.rcij, self.rdij, eta, deta,  self.sigma3)
+            Fab = np.exp(beta * self.eABij) - 1 
+            Dab = self.sigma3 * Fab * iab
+            dDab = self.sigma3 * Fab * diab
+            Dabij = np.zeros([self.nsites, self.nsites])
+            dDabij_drho = np.zeros([self.nsites, self.nsites])
+            
+            Dabij[self.indexabij] = Dab
+            dDabij_drho[self.indexabij] = dDab
+
+            KIJ =  rho * (self.DIJ*Dabij)
+
+            Xass = Xass_solver(self.nsites, KIJ, self.diagasso, Xass0 = None)
+            CIJ = rho  * Xass**2 * Dabij * self.DIJ
+            CIJ[self.diagasso] += 1.
+
+            dXass = dXass_drho(rho, Xass, self.DIJ, Dabij, dDabij_drho, CIJ)
+            a[0] += np.dot(self.S , (np.log(Xass) - Xass/2 + 1/2))
+            a[1] += np.dot(self.S, (1/Xass - 1/2) * dXass)
+            
+            
         return a
     
     def d2ares_drho(self, rho, T):
@@ -229,6 +281,34 @@ class saftvrmie_pure():
               dia, drho, rho, beta, self.eps, self.c, self.ms)
         #total helmolthz 
         a = a_mono + a_chain
+        
+        if self.assoc_bool:
+            iab, diab, d2iab = d2Iab_drho(dia, self.rcij, self.rdij, eta, deta,  self.sigma3)
+            
+            Fab = np.exp(beta * self.eABij) - 1. 
+            Dab = self.sigma3 * Fab * iab
+            dDab = self.sigma3 * Fab * diab
+            d2Dab = self.sigma3 * Fab * d2iab
+            
+            Dabij = np.zeros([self.nsites, self.nsites])
+            dDabij_drho = np.zeros([self.nsites, self.nsites])
+            d2Dabij_drho = np.zeros([self.nsites, self.nsites])
+            Dabij[self.indexabij] = Dab
+            dDabij_drho[self.indexabij] = dDab
+            d2Dabij_drho[self.indexabij] = d2Dab
+            
+            KIJ =  rho * (self.DIJ*Dabij)
+            Xass = Xass_solver(self.nsites, KIJ, self.diagasso, Xass0 = None)
+            CIJ = rho  * Xass**2 * Dabij * self.DIJ
+            CIJ[self.diagasso] += 1.
+
+            dXass = dXass_drho(rho, Xass, self.DIJ, Dabij, dDabij_drho, CIJ)
+            d2Xass = d2Xass_drho(rho, Xass, dXass, self.DIJ, Dabij,
+                                         dDabij_drho, d2Dabij_drho, CIJ)
+            a[0] += np.dot(self.S , (np.log(Xass) - Xass/2 + 1/2))
+            a[1] += np.dot(self.S, (1/Xass - 1/2) * dXass)
+            a[2] += np.dot(self.S, - (dXass/Xass)**2 + d2Xass * (1/Xass - 1/2))
+            
         return a
     
     def afcn(self, rho, T):
@@ -264,10 +344,11 @@ class saftvrmie_pure():
         if v0 is None:
             rho = self.density(T, P, state, None)
         else:
-            rho0 = Na/v0
+            rho0 = 1./v0
             rho = self.density(T, P, state, rho0)
-        v = Na/rho    
-        ares = self.ares(rho, T)
+        v = 1./rho    
+        rhomolecular = Na * rho
+        ares = self.ares(rhomolecular, T)
         Z = P * v / (R * T)
         lnphi = ares  + (Z - 1.) - np.log(Z)
         return lnphi, v
