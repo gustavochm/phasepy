@@ -84,6 +84,21 @@ class saftvrmie_pure():
         
         self.umie = U_mie(1./roots, self.c, self.eps, self.lambda_r, self.lambda_a)
         
+        c_matrix = np.array([[0.81096, 1.7888, -37.578, 92.284],
+                    [1.0205, -19.341, 151.26, -463.5],
+                    [-1.9057, 22.845, -228.14, 973.92],
+                    [1.0885, -6.1962, 106.98, -677.64]])
+
+        lam_exp = np.array([0, -1, -2, -3])
+        
+        self.cctes_lr = np.matmul(c_matrix, self.lambda_r**lam_exp)
+        self.cctes_la = np.matmul(c_matrix, self.lambda_a**lam_exp)
+        self.cctes_lar = np.matmul(c_matrix, self.lambda_ar**lam_exp)
+        self.cctes_2lr = np.matmul(c_matrix, (2*self.lambda_r)**lam_exp)
+        self.cctes_2la = np.matmul(c_matrix, (2*self.lambda_a)**lam_exp)
+        self.cctes = (self.cctes_la, self.cctes_lr,
+                      self.cctes_2la, self.cctes_2lr, self.cctes_lar)
+        
         #Configuracion asociacion
         self.eABij = pure.eAB
         self.rcij = pure.rcAB
@@ -133,7 +148,7 @@ class saftvrmie_pure():
         return P, vl, vv
     
     def ares(self, rho, T):
-        #Constants evaluated at given density and temperatura
+        #Constants evaluated at given density and temperature
         beta = 1 / (kb*T)
         dia = self.d(beta)
         tetha  = np.exp(beta*self.eps)-1
@@ -143,8 +158,10 @@ class saftvrmie_pure():
         x03 = x0**3
         
         #parameters needed for evaluating the helmothlz contributions
-        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a, self.lambda_r, self.lambda_ar) 
-        a1sb_a1, a1sb_a2 = da1B_eval(x0, eta, self.lambda_a, self.lambda_r, self.lambda_ar, self.eps) #valor y derivada
+        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a,
+                                                      self.lambda_r, self.lambda_ar) 
+        a1sb_a1, a1sb_a2 = da1B_eval(x0, eta, self.lambda_a, self.lambda_r,
+                                     self.lambda_ar, self.cctes, self.eps) #valor y derivada
         dkhs = dkHS(eta) #valor y derivada
         xi = Xi(x03, nsigma, self.f1, self.f2, self.f3) #solo valor
         da2m_new = da2m_new_deta(x0_a2, a1sb_a2,  dkhs, self.c, self.eps) #sol derivada
@@ -178,7 +195,7 @@ class saftvrmie_pure():
             KIJ =  rho * (self.DIJ*Dabij)
             Xass = Xass_solver(self.nsites, KIJ, self.diagasso, Xass0 = None)
             a += np.dot(self.S , (np.log(Xass) - Xass/2 + 1/2))
-        return a, Dabij, Xass
+        return a
     
     def dares_drho(self, rho, T):
         #Constants evaluated at given density and temperatura
@@ -193,8 +210,10 @@ class saftvrmie_pure():
         drho = np.array([1. , deta, deta**2])
         
         #parameters needed for evaluating the helmothlz contributions
-        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a, self.lambda_r, self.lambda_ar) 
-        a1sb_a1, a1sb_a2 = d2a1B_eval(x0, eta, self.lambda_a, self.lambda_r, self.lambda_ar, self.eps) #valor y 1 y 2 derivada
+        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a,
+                                                      self.lambda_r, self.lambda_ar) 
+        a1sb_a1, a1sb_a2 = d2a1B_eval(x0, eta, self.lambda_a, self.lambda_r,
+                                      self.lambda_ar, self.cctes, self.eps) #valor y 1 y 2 derivada
         dkhs = d2kHS(eta) #valor y  1y 2 derivada
         dxi = dXi(x03, nsigma, self.f1, self.f2, self.f3) #valor y derivada
         da2m_new = d2a2m_new_deta(x0_a2, a1sb_a2, dkhs, self.c, self.eps) #1 y 2da derivada
@@ -257,8 +276,10 @@ class saftvrmie_pure():
         drho = np.array([1. , deta, deta**2, deta**3])
         
         #parameters needed for evaluating the helmothlz contributions
-        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a, self.lambda_r, self.lambda_ar) 
-        a1sb_a1, a1sb_a2 = d3a1B_eval(x0, eta, self.lambda_a, self.lambda_r, self.lambda_ar, self.eps) #valor y 1 y 2 derivada
+        x0_a1, x0_a2, x0_a12, x0_a22  = x0lambda_eval(x0, self.lambda_a,
+                                                      self.lambda_r, self.lambda_ar) 
+        a1sb_a1, a1sb_a2 = d3a1B_eval(x0, eta, self.lambda_a, self.lambda_r, 
+                                      self.lambda_ar , self.cctes, self.eps) #valor y 1 y 2 derivada
         dkhs = d3kHS(eta) #valor y  1,2, y 3 derivada
         dxi = d2Xi(x03, nsigma, self.f1, self.f2, self.f3) #valor y derivada
         da2m_new = d3a2m_new_deta(x0_a2, a1sb_a2,  dkhs, self.c, self.eps) #1 y 2da derivada

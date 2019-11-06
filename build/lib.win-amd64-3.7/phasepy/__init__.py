@@ -40,8 +40,8 @@ __all__ = [s for s in dir() if not s.startswith('_')]
 from .mixtures import *
 from .cubic.cubic import *
 from .actmodels import *
-from .saftvrmie import *
-from . import saftvrmie
+#from .saftvrmie import *
+#from . import saftvrmie
 from . import actmodels
 from . import cubic
 from . import equilibrium

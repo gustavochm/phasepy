@@ -1,5 +1,5 @@
 import numpy as np
-
+'''
 #Eq 41
 c_matrix = np.array([[0.81096, 1.7888, -37.578, 92.284],
                     [1.0205, -19.341, 151.26, -463.5],
@@ -10,7 +10,7 @@ lam_exp = np.array([0, -1, -2, -3])
 def c_ctes(lam):
     c_cte = np.matmul(c_matrix, lam**lam_exp)
     return c_cte
-
+'''
 #Eq 28
 def I_lam(x0, lam):
     lam3 = 3. - lam
@@ -71,7 +71,7 @@ def d3kHS(eta):
     d3khs = num4/den**4
     return   khs, dkhs, d2khs , d3khs
 
-
+'''
 #Derivadas respecto a eta
 #Eq 40
 def eta_eff(eta, lam):
@@ -110,28 +110,42 @@ def d3eta_eff(eta, lam):
     
     return d3neff
 
-
-#Second perturbation
-phi16 = np.array([[7.5365557, -37.60463, 71.745953, -46.83552, -2.467982, -0.50272, 8.0956883],
-[-359.44, 1825.6, -3168.0, 1884.2, -0.82376, -3.1935, 3.7090],
-[1550.9, -5070.1, 6534.6, -3288.7, -2.7171, 2.0883, 0],
-[-1.19932, 9.063632, -17.9482, 11.34027, 20.52142, -56.6377, 40.53683],
-[-1911.28, 21390.175, -51320.7, 37064.54, 1103.742, -3264.61, 2556.181],
-[9236.9, -129430., 357230., -315530., 1390.2, -4518.2, 4241.6]])
+'''
+def eta_eff(eta, ci):
+    eta_vec = np.array([eta, eta**2, eta**3, eta**4])
+    #ci = c_ctes(lam)
+    neff = np.dot(ci, eta_vec)
+    return neff
 
 
-nfi = np.arange(0,7)
-nfi_num = nfi[:4]
-nfi_den = nfi[4:]
-#Eq 20
-def fi(alpha, i):
-    phi = phi16[i-1]
-    num = np.dot(phi[nfi_num], np.power(alpha, nfi_num))
-    den = 1 + np.dot(phi[nfi_den], np.power(alpha, nfi_den - 3))
-    return num/den
+def deta_eff(eta, ci):
+    
+    eta_vec = np.array([[eta, eta**2, eta**3, eta**4],
+               [1., 2*eta, 3*eta**2, 4*eta**3]])
+    #ci = c_ctes(lam)
+    dneff = np.matmul(eta_vec, ci)
+    return dneff
 
-#alpha = c*(1/(lambda_a - 3) - 1/(lambda_r - 3))
-#f1, f2, f3, f4, f5, f6 = fi(alpha, 1), fi(alpha, 2), fi(alpha, 3), fi(alpha, 4), fi(alpha, 5), fi(alpha, 6)
+
+def d2eta_eff(eta, ci):
+    
+    eta_vec = np.array([[eta, eta**2, eta**3, eta**4],
+                   [1., 2*eta, 3*eta**2, 4*eta**3],
+                   [0., 2., 6.*eta, 12.*eta**2]])
+    #ci = c_ctes(lam)
+    d2neff = np.matmul(eta_vec, ci)
+    
+    return d2neff
+
+def d3eta_eff(eta, ci):
+    eta_vec = np.array([[eta, eta**2, eta**3, eta**4],
+                       [1., 2*eta, 3*eta**2, 4*eta**3],
+                       [0., 2., 6.*eta, 12.*eta**2],
+                       [0., 0., 6., 24.*eta]])
+    #ci = c_ctes(lam)
+    d3neff = np.matmul(eta_vec, ci)
+    
+    return d3neff
 
 #Eq 17
 def Xi(x03, nsigma, f1, f2, f3):

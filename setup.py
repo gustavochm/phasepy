@@ -32,7 +32,7 @@ setup(
   download_url = 'https://github.com/gustavochm/phasepy.git',
   long_description = open('long_description.rst').read(),
   packages = ['phasepy', 'phasepy.cubic', 'phasepy.equilibrium','phasepy.fit', 'phasepy.sgt',
-              'phasepy.actmodels', 'phasepy.saftvrmie'],
+              'phasepy.actmodels'],
   cmdclass = cmdclass,
   ext_modules = ext_modules,
   install_requires=['numpy','scipy', 'pandas'],

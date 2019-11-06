@@ -1,8 +1,8 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import virialgama, wilson, rkb
+from ..actmodels import virialgama, wilson, rk
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
-from scipy.optimize import minimize 
+from scipy.optimize import minimize, minimize_scalar
 
 
 def fobj_wilson(inc, mix, dataelv):
@@ -120,6 +120,7 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
 
 def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
     
+
     Kij=np.array([[0, kij],[kij,0]])
     mix.kij_cubic(Kij)
     cubica=eos(mix)
@@ -133,7 +134,7 @@ def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
         error += fobj_hazb(cubica, *dataellv)
     return error
 
-def fit_kij(kij0, eos, mix, dataelv = None, dataell = None, dataellv = None):
+def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = None):
     
     """ 
     fit_kij: attemps to fit kij to LVE, LLE, LLVE 
@@ -159,7 +160,7 @@ def fit_kij(kij0, eos, mix, dataelv = None, dataell = None, dataellv = None):
         Result of SciPy minimize          
             
     """
-    fit = minimize(fobj_kij, kij0, args = (eos, mix, dataelv, dataell, dataellv))
+    fit = minimize_scalar(fobj_kij, kij_bounds, args = (eos, mix, dataelv, dataell, dataellv))
     return fit
 
 def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = False):
@@ -170,7 +171,7 @@ def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
         c = inc
         c1 = np.zeros_like(c)
     mix.rk(c, c1)
-    modelo = virialgama(mix, actmodel = rkb)
+    modelo = virialgama(mix, actmodel = rk)
     
     error = 0.
     

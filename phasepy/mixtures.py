@@ -450,7 +450,7 @@ class mixture(object):
         self.rkb = c
         if c1 is None:
             c1 = np.zeros_like(c)
-        self.rkb = c1
+        self.rkbT = c1
         self.actmodelp = (c, c1)
         
     def rk(self, c, c1 = None):
