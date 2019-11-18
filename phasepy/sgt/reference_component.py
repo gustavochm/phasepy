@@ -41,7 +41,8 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
     
         
     #A matrix for derivatives with orthogonal collocation
-    A = colocA(ro_s)
+    A = colocA(roots) / (ro2a[s]-ro1a[s])
+    #A = colocA(ro_s)
     
     rodep = np.zeros([nc-1, n])
     rodep[:,0] = ro1a[np.arange(nc) !=s]
@@ -59,7 +60,7 @@ def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output
 
     
     intten=np.nan_to_num(np.sqrt(suma*(2*dom)))
-    ten = np.dot (intten, wreal)
+    ten = np.dot(intten, wreal)
     
     ten*= tenfactor
     

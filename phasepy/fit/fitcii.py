@@ -3,7 +3,7 @@ import numpy as np
 from ..sgt import ten_fit
 from ..math import gauss
 
-def fit_cii(tenexp, Texp, model, orden= 2, n = 100 ):
+def fit_cii(tenexp, Texp, model, orden= 2, n = 100):
     
     """
     fit_cii fit influence parameters of SGT
