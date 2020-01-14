@@ -62,7 +62,7 @@ def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
     Xm, beta, tetha, v = out.X, out.beta, out.tetha, out.v
     
     if tetha > 0:
-        xes, tpd_min2 = tpd_minimas(2,Xm[0],T,P,model, 'L', 'L', v)
+        xes, tpd_min2 = tpd_minimas(2, Xm[0], T, P, model, 'L', 'L', v[0], v[0])
         X0 = np.asarray(xes)
         beta0 = np.hstack([beta, 0.])
         out = multiflash(X0, beta0, equilibrio, Z, T, P, model, v, True) 
