@@ -16,12 +16,13 @@ def multiflash_obj(inc, Z, K):
     betar = beta[1:]
     Kexp = K.T*np.exp(tetha)
     K1 = Kexp - 1. #nc x P - 1 
-    sum1 = 1. + (K1*betar).T.sum(axis=0) # P - 1
+    sum1 = 1 + K1@betar # P - 1
     Xref = Z/sum1
     
     f1 = beta.sum() - 1.
     f2 = (K1.T*Xref).sum(axis=1)
-    f3 = (betar*tetha) / (betar + tetha)
+    betatetha = (betar + tetha)
+    f3 = (betar*tetha) / betatetha
     f = np.hstack([f1,f2,f3])
     
     
@@ -29,20 +30,24 @@ def multiflash_obj(inc, Z, K):
     Id = np.eye(nbeta-1)
     
     #f1 derivative
-    f1db = np.ones_like(beta)
+    f1db = np.ones(nbeta)
     jac[0,:nbeta] = f1db
     
     #f2 derivative
-    df20 = Z*K1.T/sum1**2
-    jac[1:nbeta,1:nbeta ] = - df20@K1
-    aux = df20*(Kexp*betar).T
-    jac[1:nbeta, nbeta:] = Id*((Kexp.T*Z/sum1).T.sum(axis=0))-aux@aux.T
+    ter1 = Xref/sum1 * K1.T 
+    dfb = - ter1@K1 
+    jac[1:nbeta,1:nbeta ] = dfb
+    dft = Id * (Xref*Kexp.T).sum(axis = 1)
+    ter2 = Kexp*betar
+    dft -= ter1 @ ter2
+    jac[1:nbeta, nbeta:] = dft
 
     #f3 derivative
-    f3db =  (tetha / (betar + tetha))**2
-    f3dt = (betar/(betar + tetha))**2
+    f3db =  (tetha / betatetha)**2
+    f3dt = (betar / betatetha)**2
     jac[nbeta:, 1:nbeta] = Id*f3db
     jac[nbeta:, nbeta:] = Id*f3dt
+    
     
     return f, jac, Kexp, Xref
 

@@ -31,7 +31,7 @@ def fobj_alpha(k,Texp,Pexp,cubic):
     cubic.k = k
     P = np.zeros_like(Pexp)
     for i in range(len(Texp)):
-        P[i] = cubic.psat(Texp[i])
+        P[i], _, _  = cubic.psat(Texp[i])
     return np.sum((P-Pexp)**2)
 
 #fit  SV alpha
