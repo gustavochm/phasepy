@@ -282,7 +282,7 @@ class cubicm():
             Z=min(self.Zmix(X,T,P))
         elif state == 'V':
             Z=max(self.Zmix(X,T,P))
-        return X*P/(R*T*Z)
+        return P/(R*T*Z)
     
     def logfugef(self, X, T, P, state, v0 = None):
         """ 
@@ -313,12 +313,12 @@ class cubicm():
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-        
+        v = (R*T*Z)/P
         B=(bm*P)/(R*T)
         
         logfug=(Z-1)*(bp/bm) - np.log(Z-B)
         logfug -= (ep/(self.c2-self.c1))*np.log((Z+self.c2*B)/(Z+self.c1*B))
-        return logfug, v0
+        return logfug, v
         
     def logfugmix(self, X, T, P, state, v0 = None):
         
@@ -352,14 +352,15 @@ class cubicm():
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-        
+            
+        v = (R*T*Z)/P
         B=(bm*P)/(R*T)
         A=(am*P)/(R*T)**2
         
         logfug=Z - 1 - np.log(Z-B)
         logfug -= (A/(self.c2-self.c1)/B)*np.log((Z+self.c2*B)/(Z+self.c1*B))
         
-        return logfug, v0
+        return logfug, v
     
     def a0ad(self, roa, T):
         
@@ -495,7 +496,6 @@ class cubicm():
             zroot = zroot[zroot>Bi[i]]
             Zs[i,:]=np.array([max(zroot),min(zroot)])
     
-
         logphi=Zs - 1 - np.log(Zs.T-Bi)
         logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T+self.c2*Bi)/(Zs.T+self.c1*Bi))
         logphi = np.amin(logphi,axis=0)

@@ -25,7 +25,7 @@ def rachfordrice(beta, K, Z):
         singlephase = True
     it = 0
     e = 1.
-    while e > 1e-5 and it < 20 and not singlephase:
+    while e > 1e-8 and it < 20 and not singlephase:
         it += 1
         D = 1 + beta*K1
         KD = K1/D
@@ -35,6 +35,7 @@ def rachfordrice(beta, K, Z):
         dbeta = - (2*fo*dfo)/(2*dfo**2-fo*d2fo) 
         beta += dbeta
         e = np.abs(dbeta)
+        
     return beta, D, singlephase
 
 def Gibbs_obj(v , fases, Z, T, P, modelo, v10, v20):
