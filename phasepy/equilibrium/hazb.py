@@ -80,7 +80,9 @@ def hazb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_outpu
         
     if len(X0) != nc or len(W0) != nc or len(Y0) != nc:
         raise Exception('Composition vector lenght must be equal to nc')
+        
     global vx, vw, vy
+    
     sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),args = (T_P, spec, model, v0))
     error = np.linalg.norm(sol1.fun)
     nfev = sol1.nfev

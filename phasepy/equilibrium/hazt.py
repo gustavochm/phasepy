@@ -18,14 +18,16 @@ def haz_objb(inc,T_P,tipo,modelo, index, equilibrio, v0):
         T=P_T
         P=T_P
     
-
+    
     nc = modelo.nc
     X = np.zeros((3, nc))
     X[:,index] = X0
     lnphi = np.zeros_like(X)
     
+    global vg
+    vg = v0.copy()
     for i, estado in enumerate(equilibrio):
-        lnphi[i], _ = modelo.logfugef(X[i], T, P, estado, v0[i])
+        lnphi[i], vg[i] = modelo.logfugef(X[i], T, P, estado, v0[i])
         
     lnK = lnphi[0] - lnphi[1:]
     K = np.exp(lnK)
@@ -113,8 +115,13 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
     if nonzero == 2:
         index = np.nonzero(Z0)[0]
         sol = np.zeros_like(x0)
-        sol[:, index], T = haz_pb(x0[:,index],T,P,'P',model,index, 'LLV', v0)
+        global vg
+        sol[:, index], T = haz_pb(x0[:,index],T, P, 'P', model, index, 'LLV', v0)
         X, W, Y = sol
+        if full_output:
+            info = {'T' : T, 'P': P, 'X' : sol, 'v':vg, 'states' : ['L','L','V']}
+            out = EquilibriumResult(info)
+            return out
         return X, W, Y, T
     
     if not good_initial:
