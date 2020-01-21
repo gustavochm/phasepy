@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from.qmr import qmr
+from .qmr import qmr
 from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk
 from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
 from .alphas import alpha_soave, alpha_sv, alpha_rk

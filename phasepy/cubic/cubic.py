@@ -57,9 +57,9 @@ def preos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
             eos = prpure(mix_or_component)
     else:
         if volume_traslation:
-            eos = vtprmix(mix_or_component)
+            eos = vtprmix(mix_or_component, mixrule)
         else:
-            eos = prmix(mix_or_component)
+            eos = prmix(mix_or_component, mixrule)
     return eos
             
 def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
@@ -91,9 +91,9 @@ def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
             eos = prsvpure(mix_or_component)
     else:
         if volume_traslation:
-            eos = vtprsvmix(mix_or_component)
+            eos = vtprsvmix(mix_or_component, mixrule)
         else:
-            eos = prsvmix(mix_or_component)
+            eos = prsvmix(mix_or_component, mixrule)
     return eos
 
 def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
@@ -123,12 +123,12 @@ def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
             eos = rkpure(mix_or_component)
     else:
         if volume_traslation:
-            eos = vtrkmix(mix_or_component)
+            eos = vtrkmix(mix_or_component, mixrule)
         else:
-            eos = rkmix(mix_or_component)
+            eos = rkmix(mix_or_component, mixrule)
     return eos
 
-def rkseos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
+def rkseos(mix_or_component, mixrule = 'qmr', volume_traslation = False):
     '''
     Redlich Kwong Soave EoS
     
@@ -154,8 +154,8 @@ def rkseos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
             eos = rkspure(mix_or_component)
     else:
         if volume_traslation:
-            eos = vtrksmix(mix_or_component)
+            eos = vtrksmix(mix_or_component, mixrule)
         else:
-            eos = rksmix(mix_or_component)
+            eos = rksmix(mix_or_component, mixrule)
     
     return eos

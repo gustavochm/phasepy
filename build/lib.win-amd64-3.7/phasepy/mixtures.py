@@ -373,7 +373,6 @@ class mixture(object):
 
         ''' 
 
-
         self.kij = k
         
     def NRTL(self, alpha, g , g1 = None):
