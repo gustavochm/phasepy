@@ -139,7 +139,7 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro = np.insert(rointer, 0, rho1a, axis = 1)
         ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
         'success' : success, 
         'message' : sol.message,
@@ -255,7 +255,7 @@ def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro = np.insert(rointer, 0, rho1a, axis = 1)
         ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
         'success' : success, 
         'message' : sol.message,

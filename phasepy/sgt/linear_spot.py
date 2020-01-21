@@ -9,13 +9,13 @@ def fobj_saddle(ros, mu0, T, eos):
     mu = eos.muad(ros, T)
     return mu - mu0
 
-def ten_linear(ro1, ro2, Tsat, Psat, model, n = 100, full_output = False):
+def ten_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
 
     #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     cij = model.ci(Tsat)
     cij /= cij[0,0]
@@ -51,20 +51,20 @@ def ten_linear(ro1, ro2, Tsat, Psat, model, n = 100, full_output = False):
         z = np.cumsum(intz*wreal)
         z /= zfactor
         ro /= rofactor
-        dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+        dictresult = {'tension' : tension, 'rho': ro, 'z' : z,
         'GPT' : np.hstack([0, dom, 0])}
         out = TensionResult(dictresult)
         return out
     
     return tension
     
-def ten_spot(ro1, ro2, Tsat, Psat, model, n = 50, full_output = False):
+def ten_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
     
     #adimensionalizar variables 
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     cij = model.ci(Tsat)
     cij /= cij[0,0]
@@ -134,7 +134,7 @@ def ten_spot(ro1, ro2, Tsat, Psat, model, n = 50, full_output = False):
                 ro = np.hstack([ro1, ro2])
                 z /= zfactor
                 ro /= rofactor
-                dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+                dictresult = {'tension' : tension, 'rho': ro, 'z' : z,
                 'GPT' : np.hstack([dom1, dom2])}
                 out = TensionResult(dictresult)
         else:

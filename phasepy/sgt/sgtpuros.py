@@ -32,7 +32,7 @@ def ten_fit(T, model, roots, weigths, P0 = None):
     
     return ten 
 
-def ten_pure(rov, rol, Tsat, Psat, model, n = 100, full_output = False):
+def ten_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
     
     #roots and weights of Gauss quadrature
     roots, w = gauss(n)
@@ -40,8 +40,8 @@ def ten_pure(rov, rol, Tsat, Psat, model, n = 100, full_output = False):
     #variables adimensionales
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
 
-    rola = rol * rofactor
-    rova = rov * rofactor 
+    rola = rhol * rofactor
+    rova = rhov * rofactor 
     Tad = Tsat * Tfactor
     Pad = Psat * Pfactor   
     

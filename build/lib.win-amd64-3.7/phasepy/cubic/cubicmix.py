@@ -251,8 +251,9 @@ class cubicm():
         '''
         a = self.a_eos(T)
         am, bm, ep, ap, bp = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
-        A = am*P/(R*T)**2
-        B = bm*P/(R*T)
+        RT = R*T
+        A = am*P/RT**2
+        B = bm*P/RT
         return self._Zroot(A,B)
 
     def density(self, X, T, P, state):
@@ -352,12 +353,12 @@ class cubicm():
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-            
-        v = (R*T*Z)/P
-        B=(bm*P)/(R*T)
-        A=(am*P)/(R*T)**2
+        RT = R * T
+        v = (RT*Z)/P
+        B=(bm*P)/(RT)
+        A=(am*P)/(RT)**2
         
-        logfug=Z - 1 - np.log(Z-B)
+        logfug = Z - 1 - np.log(Z-B)
         logfug -= (A/(self.c2-self.c1)/B)*np.log((Z+self.c2*B)/(Z+self.c1*B))
         
         return logfug, v

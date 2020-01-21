@@ -9,3 +9,4 @@ from .ternaryfit import *
 from .fitpsat import *
 from .fitcii import *
 from .fitmulticomponent import *
+from .fitvt import *

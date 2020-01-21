@@ -128,7 +128,7 @@ def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
             eos = rkmix(mix_or_component, mixrule)
     return eos
 
-def rkseos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
+def rkseos(mix_or_component, mixrule = 'qmr', volume_traslation = False):
     '''
     Redlich Kwong Soave EoS
     

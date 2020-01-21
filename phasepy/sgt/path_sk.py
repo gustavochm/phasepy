@@ -15,7 +15,7 @@ def fobj_sk(inc, spath, T, mu0, ci, sqrtci, model):
     obj[-1] = spath - sqrtci.dot(ro)
     return obj
 
-def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False,
+def ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n = 200, full_output = False,
                  alpha0 = None ):
     
     nc = model.nc
@@ -23,8 +23,8 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False,
     #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     cij = model.ci(Tsat)
     cij /= cij[0,0]
@@ -78,7 +78,7 @@ def ten_beta0_sk(ro1, ro2, Tsat, Psat, model, n = 200, full_output = False,
         z = np.abs(cumtrapz(intz,spath, initial = 0))
         z /= zfactor
         ro /= rofactor
-        dictresult = {'tension' : tension, 'ro': ro, 'z' : z,
+        dictresult = {'tension' : tension, 'rho': ro, 'z' : z,
         'GPT' : dom, 'path': spath, 'alphas' : alphas}
         out = TensionResult(dictresult)
         return out
