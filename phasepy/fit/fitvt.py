@@ -10,7 +10,7 @@ def fobj_c(c, eos, Texp, Pexp, rhoexp):
     for i in range(n):
         rho[i] = eos.density(Texp[i], Pexp[i], 'L')
         
-    return np.sum((rho - rhoexp)**2)
+    return np.sum((rho/rhoexp - 1)**2)
 
 def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
     """

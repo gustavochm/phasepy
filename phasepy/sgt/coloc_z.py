@@ -26,7 +26,7 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
 
 def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z0 = 10, dz = 1.5, itmax = 10, n = 20, full_output = False,
-            ten_tol = 1e-3, solver_opt = None):
+            ten_tol = 1e-2, solver_opt = None):
     
     z = z0
     nc = model.nc
