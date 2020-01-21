@@ -251,7 +251,7 @@ class mixture(object):
         self.Ant = [component1.Ant, component2.Ant]
         self.Vc = [component1.Vc, component2.Vc]
         self.cii = [component1.cii, component2.cii]
-        self.c = [component1.c, compoent2.c]
+        self.c = [component1.c, component2.c]
         self.ksv = [component1.ksv, component2.ksv]
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]

@@ -315,24 +315,30 @@ class vtcubicm():
         v0 : float
             volume of phase, if calculated
         """
+        c1 = self.c1
+        c2 = self.c2
+        
+        b = self.b
         a = self.a_eos(T)
-        am, bm, ep, ap, bp = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
         c = self.c
         cm = np.dot(X, c)
+        
+        am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
         
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-        RT = R * T
         
+        RT = R * T    
         v = (RT*Z)/P
-        B = bm*P/RT
-        A = am*P/RT**2
+        B = bm * P/RT
         C = cm*P/RT
+        Cp = c * P/RT
         
-        logfug=Z - 1 - np.log(Z + C -B)
-        logfug -= (A/(self.c2-self.c1)/B)*np.log((Z + C +self.c2*B)/(Z + C +self.c1*B))
+        logfug = (Z + C - 1) * (bp/bm) - np.log(Z + C - B) - Cp
+        logfug -= (ep/(c2-c1))*np.log((Z+C+c2*B)/(Z+C+c1*B))
+
         
         return logfug, v
         
@@ -376,16 +382,16 @@ class vtcubicm():
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-
+            
         RT = R * T
         v = (RT*Z)/P
+        A = am * P / RT**2
         B = bm * P/RT
-        C = cm*P/RT
-        Cp = c * P/RT
+        C = cm * P/RT
 
-        logfug = (Z + C - 1) * (bp/bm) - np.log(Z + C - B) - Cp
-        logfug -= (ep/(c2-c1))*np.log((Z+C+c2*B)/(Z+C+c1*B))
-
+        logfug = Z - 1 - np.log(Z + C -B)
+        logfug -= (A/(c2-c1)/B)*np.log((Z + C +c2*B)/(Z + C +c1*B))
+        
         return logfug, v
     
     def a0ad(self, roa, T):
