@@ -6,6 +6,9 @@ from .vdwmix import vdwm
 from .cubicpure import prpure, prsvpure, rkspure, rkpure
 from .cubicmix import prmix, prsvmix, rksmix, rkmix
 
+from .vtcubicpure import vtprpure, vtprsvpure, vtrkspure, vtrkpure
+from .vtcubicmix import  vtprmix, vtprsvmix, vtrksmix, vtrkmix
+
 def vdweos(mix_or_component):
     '''
     van der Waals EoS
@@ -28,7 +31,7 @@ def vdweos(mix_or_component):
         eos = vdwm(mix_or_component)
     return eos      
             
-def preos(mix_or_component, mixrule = 'qmr'):
+def preos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
     '''
     Peng Robinson EoS
     
@@ -48,12 +51,18 @@ def preos(mix_or_component, mixrule = 'qmr'):
     '''
     nc = mix_or_component.nc
     if nc == 1:
-        eos = prpure(mix_or_component)
+        if volume_traslation:
+            eos = vtprpure(mix_or_component)
+        else:
+            eos = prpure(mix_or_component)
     else:
-        eos = prmix(mix_or_component, mixrule)
+        if volume_traslation:
+            eos = vtprmix(mix_or_component)
+        else:
+            eos = prmix(mix_or_component)
     return eos
             
-def prsveos(mix_or_component, mixrule = 'qmr'):
+def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
     '''
     Peng Robinson EoS
     
@@ -72,13 +81,22 @@ def prsveos(mix_or_component, mixrule = 'qmr'):
         eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
+
+        
+        
     if nc == 1:
-        eos = prsvpure(mix_or_component)
+        if volume_traslation:
+            eos = vtprsvpure(mix_or_component)
+        else:
+            eos = prsvpure(mix_or_component)
     else:
-        eos = prsvmix(mix_or_component, mixrule)
+        if volume_traslation:
+            eos = vtprsvmix(mix_or_component)
+        else:
+            eos = prsvmix(mix_or_component)
     return eos
 
-def rkeos(mix_or_component, mixrule = 'qmr'):
+def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
     '''
     Redlich Kwong EoS
     
@@ -97,13 +115,20 @@ def rkeos(mix_or_component, mixrule = 'qmr'):
         eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
+        
     if nc == 1:
-        eos = rkpure(mix_or_component)
+        if volume_traslation:
+            eos = vtrkpure(mix_or_component)
+        else:
+            eos = rkpure(mix_or_component)
     else:
-        eos = rkmix(mix_or_component, mixrule)
+        if volume_traslation:
+            eos = vtrkmix(mix_or_component)
+        else:
+            eos = rkmix(mix_or_component)
     return eos
 
-def rkseos(mix_or_component, mixrule = 'qmr'):
+def rkseos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
     '''
     Redlich Kwong Soave EoS
     
@@ -123,7 +148,14 @@ def rkseos(mix_or_component, mixrule = 'qmr'):
     '''
     nc = mix_or_component.nc
     if nc == 1:
-        rkspure(mix_or_component)
+        if volume_traslation:
+            eos = vtrkspure(mix_or_component)
+        else:
+            eos = rkspure(mix_or_component)
     else:
-        eos = rksmix(mix_or_component, mixrule)
+        if volume_traslation:
+            eos = vtrksmix(mix_or_component)
+        else:
+            eos = rksmix(mix_or_component)
+    
     return eos

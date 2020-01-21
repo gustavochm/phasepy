@@ -68,8 +68,8 @@ class component(object):
     ci :  evaluates influence parameter polynomial
     '''
     
-    def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, cii = 0,
-                 ksv = [0, 0], Ant = [0,0,0],  GC = None,
+    def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, c = 0,
+                 cii = 0, ksv = [0, 0], Ant = [0,0,0],  GC = None,
                  ms = 1, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.,
                 eAB = 0., rcAB = 1., rdAB = 0.4, sites = [0,0,0]): 
         
@@ -82,6 +82,7 @@ class component(object):
         self.Ant = Ant #Antoine coefficeint, base e = 2.71 coeficientes de antoine, list or array
         self.cii = cii #Influence factor SGT, list or array
         self.ksv = ksv #
+        self.c = c
         self.GC = GC # Dict, Group contribution info
         self.nc = 1
         
@@ -250,6 +251,7 @@ class mixture(object):
         self.Ant = [component1.Ant, component2.Ant]
         self.Vc = [component1.Vc, component2.Vc]
         self.cii = [component1.cii, component2.cii]
+        self.c = [component1.c, compoent2.c]
         self.ksv = [component1.ksv, component2.ksv]
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]
@@ -276,6 +278,7 @@ class mixture(object):
         self.w.append(component.w)
         self.Ant.append(component.Ant)
         self.cii.append(component.cii)
+        self.c.append(component.c)
         self.ksv.append(component.ksv)
         self.GC.append(component.GC)
         
