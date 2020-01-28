@@ -356,7 +356,7 @@ class mixture(object):
         return V 
     
     def kij_saft(self, kij):
-        self.kij_saft = kij
+        self.KIJsaft = kij
     
     def kij_ws(self, kij):
         self.Kijws = kij

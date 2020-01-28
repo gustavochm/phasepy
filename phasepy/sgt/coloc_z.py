@@ -68,7 +68,7 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         rointer = pft.T
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
-        _ro0 = rho0.ro
+        _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
@@ -193,7 +193,7 @@ def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         rointer = pft.T
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
-        _ro0 = rho0.ro
+        _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
