@@ -20,8 +20,8 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
     
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     nc = model.nc    
     mu0 = model.muad(ro1a, Tsat)
