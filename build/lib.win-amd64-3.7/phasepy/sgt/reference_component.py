@@ -15,15 +15,15 @@ def fobj_beta0(ro, ro_s, s, T, mu0, sqrtci, model):
     
     return (f1-f2)[np.arange(nc) != s ]
 
-def ten_beta0_reference(ro1, ro2, Tsat, Psat, model, s = 0, n = 100, full_output = False ):
+def ten_beta0_reference(rho1, rho2, Tsat, Psat, model, s = 0, n = 100, full_output = False ):
 
     nc = model.nc
     
     #Dimensionless profile
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     cij = model.ci(Tsat)
     cij /= cij[0,0]

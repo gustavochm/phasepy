@@ -26,7 +26,7 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
 
 def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z0 = 10, dz = 1.5, itmax = 10, n = 20, full_output = False,
-            ten_tol = 1e-3, solver_opt = None):
+            ten_tol = 1e-2, solver_opt = None):
     
     z = z0
     nc = model.nc
@@ -68,7 +68,7 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         rointer = pft.T
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
-        _ro0 = rho0.ro
+        _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
@@ -139,7 +139,7 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro = np.insert(rointer, 0, rho1a, axis = 1)
         ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
         'success' : success, 
         'message' : sol.message,
@@ -193,7 +193,7 @@ def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         rointer = pft.T
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
-        _ro0 = rho0.ro
+        _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
@@ -255,7 +255,7 @@ def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro = np.insert(rointer, 0, rho1a, axis = 1)
         ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
         'success' : success, 
         'message' : sol.message,

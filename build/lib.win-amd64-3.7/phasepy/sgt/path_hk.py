@@ -16,12 +16,12 @@ def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):
     obj[s] = dh2 - ci.dot(dro**2)
     return obj
 
-def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
+def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
     
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
-    ro1a = ro1*rofactor
-    ro2a = ro2*rofactor
+    ro1a = rho1*rofactor
+    ro2a = rho2*rofactor
     
     nc = model.nc    
     mu0 = model.muad(ro1a, Tsat)
@@ -121,7 +121,7 @@ def ten_beta0_hk(ro1, ro2, Tsat, Psat, model, n = 1000, full_output = False ):
         z = np.abs(cumtrapz(intz,Hi, initial = 0))
         z /= zfactor
         ro2 /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro2, 'z' : z,
+        dictresult = {'tension' : ten, 'rho': ro2, 'z' : z,
         'GPT' : dom, 'path': Hi}
         out = TensionResult(dictresult)
         return out
