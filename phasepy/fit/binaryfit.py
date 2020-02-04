@@ -141,8 +141,8 @@ def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = Non
     
     Parameters
     ----------
-    kij0 : array_like
-        initial value for kij
+    kij_bounds : tuple
+        bounds for kij correction
     eos : function
         cubic eos to fit kij for qmr mixrule
     mix: object

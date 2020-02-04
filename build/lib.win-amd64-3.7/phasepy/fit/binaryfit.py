@@ -17,7 +17,7 @@ def fobj_wilson(inc, mix, dataelv):
     
     return elv
 
-def fit_wilson(x0, mix, dataelv):
+def fit_wilson(x0, mix, dataelv, minimize_options = {}):
     """ 
     fit_wilson: attemps to fit wilson parameters to LVE 
     
@@ -36,7 +36,7 @@ def fit_wilson(x0, mix, dataelv):
         Result of SciPy minimize
     
     """
-    fit = minimize(fobj_wilson, x0, args = (mix, dataelv))
+    fit = minimize(fobj_wilson, x0, args = (mix, dataelv), **minimize_options)
     return fit
 
 
@@ -74,7 +74,7 @@ def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
     return error
 
 def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
-              alpha_fixed = False, Tdep = False):
+              alpha_fixed = False, Tdep = False, minimize_options = {}):
     """ 
     fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE 
     
@@ -104,9 +104,9 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
             
     if alpha_fixed true and Tdep True:
         x0 = [a12, a21, a12T, a21T, alpha]
-    if alpha_fixed true and Tdep False:
+    if alpha_fixed false and Tdep False:
         x0 = [a12, a21, alpha]
-    if alpha_fixed False and Tdep False:
+    if alpha_fixed True and Tdep False:
         x0 = [a12, a21]
         
     Returns
@@ -115,7 +115,7 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
         Result of SciPy minimize
     """
     fit = minimize(fobj_nrtl, x0, args = (mix, dataelv, dataell, dataellv,
-              alpha_fixed, Tdep))
+              alpha_fixed, Tdep), **minimize_options)
     return fit
 
 def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
@@ -160,10 +160,12 @@ def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = Non
         Result of SciPy minimize          
             
     """
-    fit = minimize_scalar(fobj_kij, kij_bounds, args = (eos, mix, dataelv, dataell, dataellv))
+    fit = minimize_scalar(fobj_kij, kij_bounds, 
+                          args = (eos, mix, dataelv, dataell, dataellv))
     return fit
 
-def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = False):
+def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None,
+            Tdep = False):
     
     if Tdep:
         c, c1 = np.split(inc,2)
@@ -183,7 +185,8 @@ def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
         error += fobj_hazb(modelo, *dataellv)
     return error
 
-def fit_rk(inc0, mix, dataelv = None, dataell = None, dataellv = None, Tdep = False):
+def fit_rk(inc0, mix, dataelv = None, dataell = None,
+           dataellv = None, Tdep = False, minimize_options = {}):
     """ 
     fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE 
     
@@ -217,7 +220,8 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None, dataellv = None, Tdep = Fa
     fit : OptimizeResult
         Result of SciPy minimize
     """
-    fit = minimize(fobj_rk, inc0 ,args = (mix, dataelv, dataell, dataellv, Tdep ))
+    fit = minimize(fobj_rk, inc0 ,args = (mix, dataelv, dataell, dataellv,
+                                          Tdep ), **minimize_options)
     return fit
 
 
