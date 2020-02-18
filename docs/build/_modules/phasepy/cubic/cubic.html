@@ -155,6 +155,9 @@
 <span class="kn">from</span> <span class="nn">.cubicpure</span> <span class="k">import</span> <span class="n">prpure</span><span class="p">,</span> <span class="n">prsvpure</span><span class="p">,</span> <span class="n">rkspure</span><span class="p">,</span> <span class="n">rkpure</span>
 <span class="kn">from</span> <span class="nn">.cubicmix</span> <span class="k">import</span> <span class="n">prmix</span><span class="p">,</span> <span class="n">prsvmix</span><span class="p">,</span> <span class="n">rksmix</span><span class="p">,</span> <span class="n">rkmix</span>
 
+<span class="kn">from</span> <span class="nn">.vtcubicpure</span> <span class="k">import</span> <span class="n">vtprpure</span><span class="p">,</span> <span class="n">vtprsvpure</span><span class="p">,</span> <span class="n">vtrkspure</span><span class="p">,</span> <span class="n">vtrkpure</span>
+<span class="kn">from</span> <span class="nn">.vtcubicmix</span> <span class="k">import</span>  <span class="n">vtprmix</span><span class="p">,</span> <span class="n">vtprsvmix</span><span class="p">,</span> <span class="n">vtrksmix</span><span class="p">,</span> <span class="n">vtrkmix</span>
+
 <div class="viewcode-block" id="vdweos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.vdweos">[docs]</a><span class="k">def</span> <span class="nf">vdweos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    van der Waals EoS</span>
@@ -177,7 +180,7 @@
         <span class="n">eos</span> <span class="o">=</span> <span class="n">vdwm</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">eos</span>      </div>
             
-<div class="viewcode-block" id="preos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.preos">[docs]</a><span class="k">def</span> <span class="nf">preos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="preos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.preos">[docs]</a><span class="k">def</span> <span class="nf">preos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">,</span><span class="n">volume_translation</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Peng Robinson EoS</span>
 <span class="sd">    </span>
@@ -188,7 +191,9 @@
 <span class="sd">        have interactions parameters.</span>
 <span class="sd">    mixrule : str</span>
 <span class="sd">        available opitions &#39;qmr&#39;, &#39;mhv_nrtl&#39;, &#39;mhv_unifac&#39;, &#39;mhv_rk&#39;,</span>
-<span class="sd">        &#39;mhv_wilson&#39;</span>
+<span class="sd">        &#39;mhv_wilson&#39;, &#39;ws_nrtl&#39;, &#39;ws_wilson&#39;, &#39;ws_rk&#39;, &#39;ws_unifac&#39;.</span>
+<span class="sd">    volume_translation: bool</span>
+<span class="sd">        If True, the volume translated version of this EoS will be used.</span>
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------   </span>
@@ -197,12 +202,18 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">mix_or_component</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">prpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtprpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">prpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">prmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtprmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">prmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">eos</span></div>
             
-<div class="viewcode-block" id="prsveos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.prsveos">[docs]</a><span class="k">def</span> <span class="nf">prsveos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="prsveos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.prsveos">[docs]</a><span class="k">def</span> <span class="nf">prsveos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span> <span class="p">,</span><span class="n">volume_translation</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Peng Robinson EoS</span>
 <span class="sd">    </span>
@@ -213,7 +224,9 @@
 <span class="sd">        have interactions parameters.</span>
 <span class="sd">    mixrule : str</span>
 <span class="sd">        available opitions &#39;qmr&#39;, &#39;mhv_nrtl&#39;, &#39;mhv_unifac&#39;, &#39;mhv_rk&#39;, </span>
-<span class="sd">        &#39;mhv_wilson&#39;</span>
+<span class="sd">        &#39;mhv_wilson&#39;, &#39;ws_nrtl&#39;, &#39;ws_wilson&#39;, &#39;ws_rk&#39;, &#39;ws_unifac&#39;.</span>
+<span class="sd">    volume_translation: bool</span>
+<span class="sd">        If True, the volume translated version of this EoS will be used.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------   </span>
@@ -221,13 +234,22 @@
 <span class="sd">        eos used for phase equilibrium calculations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">mix_or_component</span><span class="o">.</span><span class="n">nc</span>
+
+        
+        
     <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">prsvpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtprsvpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">prsvpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">prsvmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtprsvmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">prsvmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">eos</span></div>
 
-<div class="viewcode-block" id="rkeos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.rkeos">[docs]</a><span class="k">def</span> <span class="nf">rkeos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="rkeos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.rkeos">[docs]</a><span class="k">def</span> <span class="nf">rkeos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">,</span><span class="n">volume_translation</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Redlich Kwong EoS</span>
 <span class="sd">    </span>
@@ -238,7 +260,10 @@
 <span class="sd">        have interactions parameters.</span>
 <span class="sd">    mixrule : str</span>
 <span class="sd">        available opitions &#39;qmr&#39;, &#39;mhv_nrtl&#39;, &#39;mhv_unifac&#39;, &#39;mhv_rk&#39;,</span>
-<span class="sd">        &#39;mhv_wilson&#39;</span>
+<span class="sd">        &#39;mhv_wilson&#39;, &#39;ws_nrtl&#39;, &#39;ws_wilson&#39;, &#39;ws_rk&#39;, &#39;ws_unifac&#39;.</span>
+<span class="sd">    volume_translation: bool</span>
+<span class="sd">        If True, the volume translated version of this EoS will be used.</span>
+<span class="sd">    </span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------   </span>
@@ -246,13 +271,20 @@
 <span class="sd">        eos used for phase equilibrium calculations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">mix_or_component</span><span class="o">.</span><span class="n">nc</span>
+        
     <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">rkpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtrkpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">rkpure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">rkmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtrkmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">rkmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">eos</span></div>
 
-<div class="viewcode-block" id="rkseos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.rkseos">[docs]</a><span class="k">def</span> <span class="nf">rkseos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="rkseos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.rkseos">[docs]</a><span class="k">def</span> <span class="nf">rkseos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">,</span> <span class="n">volume_translation</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Redlich Kwong Soave EoS</span>
 <span class="sd">    </span>
@@ -263,7 +295,9 @@
 <span class="sd">        have interactions parameters.</span>
 <span class="sd">    mixrule : str</span>
 <span class="sd">        available opitions &#39;qmr&#39;, &#39;mhv_nrtl&#39;, &#39;mhv_unifac&#39;, &#39;mhv_rk&#39;,</span>
-<span class="sd">        &#39;mhv_wilson&#39;</span>
+<span class="sd">        &#39;mhv_wilson&#39;, &#39;ws_nrtl&#39;, &#39;ws_wilson&#39;, &#39;ws_rk&#39;, &#39;ws_unifac&#39;.</span>
+<span class="sd">    volume_translation: bool</span>
+<span class="sd">        If True, the volume translated version of this EoS will be used.</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------   </span>
@@ -272,9 +306,16 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">mix_or_component</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">rkspure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtrkspure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">rkspure</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">eos</span> <span class="o">=</span> <span class="n">rksmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">volume_translation</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">vtrksmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">eos</span> <span class="o">=</span> <span class="n">rksmix</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">,</span> <span class="n">mixrule</span><span class="p">)</span>
+    
     <span class="k">return</span> <span class="n">eos</span></div>
 </pre></div>
 

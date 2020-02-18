@@ -153,14 +153,11 @@
 <h1>Welcome to phasepy’s documentation!<a class="headerlink" href="#welcome-to-phasepy-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-is-phasepy">
 <h2>What is phasepy?<a class="headerlink" href="#what-is-phasepy" title="Permalink to this headline">¶</a></h2>
-<p>Phasepy is a open-source scientific python package for fluid phase equilibria computation.
-This package facilitate the calculation of liquid-vapour equilibrium, liquid-liquid equilibrium
-and liquid-liquid-vapour equilibrium. Equilibrium calculations can be perfomed with cubic equations
-of state with clasic or advances mixing rules o with a discontinuous approach using a virial equations
-of state for the vapour phase and a activity coefficient model for the liquid phase.</p>
-<p>Besides computations it is also possible to fit phase equilibria data, functions to fit quadratic
-mix rule, NRTL Wilson Redlich Kister parameters, are included.</p>
-<p>Phasety relys on numpy, scipy and cython extension modules, when necessary.</p>
+<p>Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
+This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension.
+Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.</p>
+<p>Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.</p>
+<p>Phasepy relies on NumPy, SciPy and Cython extension modules, when necessary.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -188,7 +185,7 @@ volume in cm3/mol. In order to create a mixture pure components have to be defin
 <p>If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320K, we could use
 the Peng Robinson EoS with an advanced mix rule with UNIFAC model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">pr</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">preos</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eos</span> <span class="o">=</span> <span class="n">pr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;mhv_unifac&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="kn">import</span> <span class="n">bubblePy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y_guess</span><span class="p">,</span> <span class="n">P_guess</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">]</span> <span class="p">,</span> <span class="mi">1</span>

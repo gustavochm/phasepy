@@ -84,19 +84,17 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Cubic Equation of State</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="phasepy.cubicp.html">Pure Cubic Equation of State Class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">van der Waals EoS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson EoS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson Stryjec Vera EoS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong EoS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong Soave EoS</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.mixture.html">phasepy.mixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Cubic Equation of State</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.cubicp.html">Pure Cubic Equation of State Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-phasepy.cubic.cubic">van der Waals EoS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson EoS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-phasepy.cubic.cubic">Peng Robinson Stryjec Vera EoS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong EoS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-phasepy.cubic.cubic">Redlich Kwong Soave EoS</a></li>
 </ul>
 </li>
 </ul>
@@ -150,8 +148,6 @@
         
           <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
         
-          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
-        
       <li>Cubic Equation of State</li>
     
     
@@ -173,11 +169,11 @@
             
   <div class="section" id="cubic-equation-of-state">
 <h1>Cubic Equation of State<a class="headerlink" href="#cubic-equation-of-state" title="Permalink to this headline">¶</a></h1>
-<p>Equation of State for modeling vapour and liquid phases. This EoS is explicit in pressure and has the following form:</p>
+<p>Equation of State for modeling vapor and liquid phases. This EoS is explicit in pressure and has the following form:</p>
 <div class="math notranslate nohighlight">
 \[P = \frac{RT}{v-b} - \frac{a}{(v+c_1b)(v+c_2b)}\]</div>
 <p>Where <span class="math notranslate nohighlight">\(b\)</span> and <span class="math notranslate nohighlight">\(a\)</span> are molecular parameters.</p>
-<p>Main Cubic EoS functions of phaspy packages are bases on the following classes:</p>
+<p>Main Cubic EoS functions of phasepy packages are bases on the following classes:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="phasepy.cubicp.html">Pure Cubic Equation of State Class</a></li>
@@ -190,12 +186,14 @@ and then how to specify a mixrule.</p>
 <div class="math notranslate nohighlight">
 \[a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} =     \sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i\]</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">preos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Kij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.11</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.11</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">Kij</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;qmr&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In case of Modified Huron Vidal mixrule, it is necessary to provide information from a activity coefficient model in order to compute mixtures parameters. Covolume is calcuated same way as QMR.</p>
+<p>If no correction <span class="math notranslate nohighlight">\(k_{ij}\)</span> is set, phasepy will consider it as zero.</p>
+<p>In case of Modified Huron Vidal (MHV) and Wong Sandler (WS) mixing rule, it is necessary to provide information from a activity coefficient model in order to compute mixtures parameters. Covolume is calcuated same way as QMR.</p>
 <div class="math notranslate nohighlight">
 \[b_m = \sum_{i=1}^c x_ib_i\]</div>
 <p>While attractive term is an implicit function:</p>
@@ -226,7 +224,8 @@ and then how to specify a mixrule.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_rk&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Phasepy has included the most widely used cubic EoS, as: Van der Waals, Peng Ronbinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera:</p>
+<p>Phasepy has included the most widely known cubic EoS, as: Van der Waals, Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera.</p>
+<p>Additionally, volume translated versions are available for Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera.</p>
 <div class="section" id="module-phasepy.cubic.cubic">
 <span id="van-der-waals-eos"></span><h2>van der Waals EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -253,7 +252,7 @@ have interactions parameters.</td>
 <span id="peng-robinson-eos"></span><h2>Peng Robinson EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="phasepy.cubic.cubic.preos">
-<code class="descname">preos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#preos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.preos" title="Permalink to this definition">¶</a></dt>
+<code class="descname">preos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em>, <em>volume_translation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#preos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.preos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Peng Robinson EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -263,7 +262,8 @@ have interactions parameters.</td>
 <li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
 have interactions parameters.</li>
 <li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
-‘mhv_wilson’</li>
+‘mhv_wilson’, ‘ws_nrtl’, ‘ws_wilson’, ‘ws_rk’, ‘ws_unifac’.</li>
+<li><strong>volume_translation</strong> (<em>bool</em>) – If True, the volume translated version of this EoS will be used.</li>
 </ul>
 </td>
 </tr>
@@ -282,7 +282,7 @@ have interactions parameters.</li>
 <span id="peng-robinson-stryjec-vera-eos"></span><h2>Peng Robinson Stryjec Vera EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="phasepy.cubic.cubic.prsveos">
-<code class="descname">prsveos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#prsveos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.prsveos" title="Permalink to this definition">¶</a></dt>
+<code class="descname">prsveos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em>, <em>volume_translation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#prsveos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.prsveos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Peng Robinson EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -292,7 +292,8 @@ have interactions parameters.</li>
 <li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
 have interactions parameters.</li>
 <li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
-‘mhv_wilson’</li>
+‘mhv_wilson’, ‘ws_nrtl’, ‘ws_wilson’, ‘ws_rk’, ‘ws_unifac’.</li>
+<li><strong>volume_translation</strong> (<em>bool</em>) – If True, the volume translated version of this EoS will be used.</li>
 </ul>
 </td>
 </tr>
@@ -311,7 +312,7 @@ have interactions parameters.</li>
 <span id="redlich-kwong-eos"></span><h2>Redlich Kwong EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="phasepy.cubic.cubic.rkeos">
-<code class="descname">rkeos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkeos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkeos" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rkeos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em>, <em>volume_translation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkeos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkeos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redlich Kwong EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -321,7 +322,8 @@ have interactions parameters.</li>
 <li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
 have interactions parameters.</li>
 <li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
-‘mhv_wilson’</li>
+‘mhv_wilson’, ‘ws_nrtl’, ‘ws_wilson’, ‘ws_rk’, ‘ws_unifac’.</li>
+<li><strong>volume_translation</strong> (<em>bool</em>) – If True, the volume translated version of this EoS will be used.</li>
 </ul>
 </td>
 </tr>
@@ -340,7 +342,7 @@ have interactions parameters.</li>
 <span id="redlich-kwong-soave-eos"></span><h2>Redlich Kwong Soave EoS<a class="headerlink" href="#module-phasepy.cubic.cubic" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="phasepy.cubic.cubic.rkseos">
-<code class="descname">rkseos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkseos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkseos" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rkseos</code><span class="sig-paren">(</span><em>mix_or_component</em>, <em>mixrule='qmr'</em>, <em>volume_translation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/cubic/cubic.html#rkseos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.cubic.cubic.rkseos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redlich Kwong Soave EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -350,7 +352,8 @@ have interactions parameters.</li>
 <li><strong>mix_or_component</strong> (<em>object</em>) – created with component or mixture, in case of mixture object has to
 have interactions parameters.</li>
 <li><strong>mixrule</strong> (<em>str</em>) – available opitions ‘qmr’, ‘mhv_nrtl’, ‘mhv_unifac’, ‘mhv_rk’,
-‘mhv_wilson’</li>
+‘mhv_wilson’, ‘ws_nrtl’, ‘ws_wilson’, ‘ws_rk’, ‘ws_unifac’.</li>
+<li><strong>volume_translation</strong> (<em>bool</em>) – If True, the volume translated version of this EoS will be used.</li>
 </ul>
 </td>
 </tr>

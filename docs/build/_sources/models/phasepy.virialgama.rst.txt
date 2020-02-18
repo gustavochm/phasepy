@@ -1,10 +1,10 @@
 Virial - Activity coefficient Model
 ===================================
 
-This class is focused from phase equilibrium using a virial correlation for the
-vapour phase and a activity coefficient model for the liquid phase. For the gas phase,
+This class is focused for phase equilibrium using a virial correlation for the
+vapor phase and a activity coefficient model for the liquid phase. For the gas phase,
 the virial coefficient can be estimated using Abbott or Tsonopoulos correlations, also 
-an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and UNIFAC
+an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and Modified-UNIFAC
 model are available. 
 
 .. toctree::
@@ -16,6 +16,7 @@ coefficient model. The object for the mixture of water and ethanol created in th
 the following way for the NRTL model.
 
 >>> from phasepy import virialgama, Abbott, nrtl
+>>> mix = mixture(ethanol, water)
 >>> alpha = np.array([[0.       , 0.5597628],
 ...       [0.5597628, 0.       ]])
 >>> g = np.array([[  0.       , -57.6880881],

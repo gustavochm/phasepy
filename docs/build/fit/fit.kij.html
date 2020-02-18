@@ -169,14 +169,14 @@
 <span id="quadratic-mixrule"></span><h1>Quadratic mixrule<a class="headerlink" href="#module-phasepy.fit.binaryfit" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_kij">
-<code class="descname">fit_kij</code><span class="sig-paren">(</span><em>kij0</em>, <em>eos</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_kij"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_kij" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_kij</code><span class="sig-paren">(</span><em>kij_bounds</em>, <em>eos</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_kij"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_kij" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_kij: attemps to fit kij to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kij0</strong> (<em>array_like</em>) – initial value for kij</li>
+<li><strong>kij_bounds</strong> (<em>tuple</em>) – bounds for kij correction</li>
 <li><strong>eos</strong> (<em>function</em>) – cubic eos to fit kij for qmr mixrule</li>
 <li><strong>mix</strong> (<em>object</em>) – binary mixture</li>
 <li><strong>dataelv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Yexp, Texp, Pexp)</li>

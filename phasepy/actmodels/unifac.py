@@ -25,8 +25,11 @@ def unifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     tethai : array_like
         surface fraction array
     a0 : array_like
+        energy interactions polynomial coefficient
     a1 : array_like
+        energy interactions polynomial coefficient
     a2 : array_like
+        energy interactions polynomial coefficient
     
     Notes
     -----

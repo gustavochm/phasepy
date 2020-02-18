@@ -168,7 +168,7 @@
 <span id="redlich-kister"></span><h1>Redlich - Kister<a class="headerlink" href="#module-phasepy.fit.binaryfit" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_rk">
-<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em>, <em>Tdep=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -181,6 +181,7 @@
 <li><strong>dataell</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Texp, Pexp)</li>
 <li><strong>dataellv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Yexp, Texp, Pexp)</li>
 <li><strong>Tdep</strong> (<em>bool</em><em>,</em>) – wheter the parameter will have a temperature dependence</li>
+<li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
 </tr>

@@ -29,9 +29,9 @@ def haz_objb(inc, T_P, tipo, modelo, v0):
     return np.hstack([K1*X-Y,K2*X-W, X.sum()-1, Y.sum()-1,W.sum()-1])
 
 
-def hazb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_output = False):
+def ellvb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_output = False):
     '''
-    haxb (T,P) -> (x,w,y)
+    ellvb (T,P) -> (x,w,y)
     
     Solves liquid liquid vapour equilibrium for binary mixtures. 
     

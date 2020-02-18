@@ -169,7 +169,7 @@
 <span id="nrtl"></span><h1>NRTL<a class="headerlink" href="#module-phasepy.fit.binaryfit" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_nrtl">
-<code class="descname">fit_nrtl</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em>, <em>alpha_fixed=False</em>, <em>Tdep=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_nrtl" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_nrtl</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em>, <em>alpha_fixed=False</em>, <em>alpha0=0.2</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_nrtl" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -181,8 +181,10 @@
 <li><strong>dataelv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Yexp, Texp, Pexp)</li>
 <li><strong>dataell</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Texp, Pexp)</li>
 <li><strong>dataellv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Yexp, Texp, Pexp)</li>
-<li><strong>alpha_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True fix aleatory factor to 0.2</li>
+<li><strong>alpha_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True fix aleatory factor to the value of alpha0</li>
+<li><strong>alpha0</strong> (<em>float</em>) – value of aleatory factor if fixed</li>
 <li><strong>Tdep</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wheter the energy parameters have a temperature dependence</li>
+<li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
 </tr>
@@ -193,11 +195,11 @@
 <dt>if Tdep True parameters are treated as:</dt>
 <dd>a12 = a12_1 + a12T * T
 a21 = a21_1 + a21T * T</dd>
-<dt>if alpha_fixed true and Tdep True:</dt>
+<dt>if alpha_fixed False and Tdep True:</dt>
 <dd>x0 = [a12, a21, a12T, a21T, alpha]</dd>
-<dt>if alpha_fixed true and Tdep False:</dt>
-<dd>x0 = [a12, a21, alpha]</dd>
 <dt>if alpha_fixed False and Tdep False:</dt>
+<dd>x0 = [a12, a21, alpha]</dd>
+<dt>if alpha_fixed True and Tdep False:</dt>
 <dd>x0 = [a12, a21]</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">

@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="phasepy.mixture" href="phasepy.mixture.html" />
-    <link rel="prev" title="phasepy basics" href="phasepy.basics.html" /> 
+    <link rel="prev" title="phasepy" href="../phasepy.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,12 +84,10 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="phasepy.basics.html">phasepy basics</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">phasepy.component</a></li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.mixture.html">phasepy.mixture</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../phasepy.models.html">Models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">phasepy.component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.mixture.html">phasepy.mixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
@@ -141,8 +139,6 @@
         
           <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
         
-          <li><a href="phasepy.basics.html">phasepy basics</a> &raquo;</li>
-        
       <li>phasepy.component</li>
     
     
@@ -164,9 +160,41 @@
             
   <div class="section" id="phasepy-component">
 <h1>phasepy.component<a class="headerlink" href="#phasepy-component" title="Permalink to this headline">¶</a></h1>
+<p>Phasepy <a class="reference internal" href="#phasepy.component" title="phasepy.component"><code class="xref py py-class docutils literal notranslate"><span class="pre">phasepy.component</span></code></a> function creates an object that stores necessary pure component information needed for equilibria and interfacial properties computation. The following parameters are allowed.</p>
+<ul class="simple">
+<li>name : name of the component</li>
+<li>Tc : Critical temperature in Kelvin</li>
+<li>Pc : Critical pressure in bar</li>
+<li>Zc : critical compresibility factor</li>
+<li>Vc : Critical volume in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</li>
+<li>w : Acentric Factor</li>
+<li>c : Volume translation parameter used in cubic EoS in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</li>
+<li>cii : polynomial coefficient for influence parameter in SGT, final units must be in J mol/m <span class="math notranslate nohighlight">\(^5\)</span>.</li>
+<li>ksv : parameters to evaluate alpha functionof PRSV EoS</li>
+<li>Ant : Antoine correlation parameters</li>
+<li>GC : Group contribution information used in Modified-UNIFAC activity coefficient model, a list of possible groups can be found in <a class="reference external" href="http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups">here</a>.</li>
+</ul>
+<p>A component can be created as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Besides storing pure component data, the created object incorporates basics methods for saturation pressure evaluation and liquid volume with Rackett equation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">water</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">373</span><span class="p">)</span>
+<span class="go">1.0072796747419537</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span><span class="o">.</span><span class="n">vlrackett</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">310</span><span class="p">)</span>
+<span class="go">16.46025809309672</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Remember to supply the necessary parameters for the model that you are going to use</p>
+</div>
 <dl class="class">
 <dt id="phasepy.component">
-<em class="property">class </em><code class="descname">component</code><span class="sig-paren">(</span><em>name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, cii=0, ksv=[0, 0], Ant=[0, 0, 0], GC=None, m=0, sigma=0, e=0, kapaAB=0, eAB=0, site=[0, 0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">component</code><span class="sig-paren">(</span><em>name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0, cii=0, ksv=[0, 0], Ant=[0, 0, 0], GC=None, ms=1, sigma=0, eps=0, lambda_r=12.0, lambda_a=6.0, eAB=0.0, rcAB=1.0, rdAB=0.4, sites=[0, 0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an object with pure component info</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -262,6 +290,20 @@
 <dt id="phasepy.component.w">
 <code class="descname">w</code><a class="headerlink" href="#phasepy.component.w" title="Permalink to this definition">¶</a></dt>
 <dd><p>acentric factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.component.c">
+<code class="descname">c</code><a class="headerlink" href="#phasepy.component.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume translation parameter used if cubic EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -438,7 +480,7 @@ Expontential base is used.</p>
         <a href="phasepy.mixture.html" class="btn btn-neutral float-right" title="phasepy.mixture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="phasepy.basics.html" class="btn btn-neutral float-left" title="phasepy basics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../phasepy.html" class="btn btn-neutral float-left" title="phasepy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

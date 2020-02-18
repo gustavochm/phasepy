@@ -51,6 +51,8 @@ class component(object):
         critical volume
     w  : float
         acentric factor
+    c : float
+        volume translation parameter used if cubic EoS
     cii : list
         polynomial coefficient for influence parameter in SGT
     ksv : list
@@ -218,6 +220,8 @@ class mixture(object):
         critical volume
     w  : list
         acentric factor
+    c : list
+        volume translation parameter used if cubic EoS
     cii : list
         polynomial coefficient for influence parameter in SGT
     ksv : list

@@ -233,7 +233,7 @@
     <span class="k">return</span> <span class="n">f</span>
 
 
-<div class="viewcode-block" id="bubblePy"><a class="viewcode-back" href="../../../equilibrium/phasepy.bubblePy.html#phasepy.equilibrium.bubble.bubblePy">[docs]</a><span class="k">def</span> <span class="nf">bubblePy</span><span class="p">(</span><span class="n">y_guess</span><span class="p">,</span> <span class="n">P_guess</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="bubblePy"><a class="viewcode-back" href="../../../equilibrium/phasepy.elv.html#phasepy.equilibrium.bubble.bubblePy">[docs]</a><span class="k">def</span> <span class="nf">bubblePy</span><span class="p">(</span><span class="n">y_guess</span><span class="p">,</span> <span class="n">P_guess</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
              <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     
     <span class="sd">&quot;&quot;&quot;</span>
@@ -257,7 +257,7 @@
 <span class="sd">    model : object</span>
 <span class="sd">        create from mixture, eos and mixrule </span>
 <span class="sd">    good_initial: bool, optional</span>
-<span class="sd">        if True skip sucesive sustitution and solves by Newton&#39;s Method.</span>
+<span class="sd">        if True skip succesive sustitution and solves by Newton&#39;s Method.</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
 <span class="sd">    full_output: bool, optional</span>
@@ -269,6 +269,10 @@
 <span class="sd">    P : float, equilibrium pressure in bar</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
+
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
     <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">v0</span>
     
@@ -311,7 +315,7 @@
     <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="n">P</span></div>
 
 
-<div class="viewcode-block" id="bubbleTy"><a class="viewcode-back" href="../../../equilibrium/phasepy.bubbleTy.html#phasepy.equilibrium.bubble.bubbleTy">[docs]</a><span class="k">def</span> <span class="nf">bubbleTy</span><span class="p">(</span><span class="n">y_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<div class="viewcode-block" id="bubbleTy"><a class="viewcode-back" href="../../../equilibrium/phasepy.elv.html#phasepy.equilibrium.bubble.bubbleTy">[docs]</a><span class="k">def</span> <span class="nf">bubbleTy</span><span class="p">(</span><span class="n">y_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
              <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Bubble point (P, x) -&gt; (T, y)</span>
@@ -335,7 +339,7 @@
 <span class="sd">    model : object</span>
 <span class="sd">        create from mixture, eos and mixrule </span>
 <span class="sd">    good_initial: bool, optional</span>
-<span class="sd">        if True skip sucesive sustitution and solves by Newton&#39;s Method.</span>
+<span class="sd">        if True skip succesive sustitution and solves by Newton&#39;s Method.</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
 <span class="sd">    full_output: bool, optional</span>
@@ -349,6 +353,11 @@
 <span class="sd">    T : float</span>
 <span class="sd">        equilibrium temperature in K</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
+        
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
     
     <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">v0</span>

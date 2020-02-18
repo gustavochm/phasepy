@@ -35,6 +35,6 @@ def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
         Result of SciPy minimize
     
     """
-    cubic = eos(component, volume_traslation = True)
+    cubic = eos(component, volume_translation = True)
     fit = minimize(fobj_c, c0, args = (cubic, Texp, Pexp, rhoexp))
     return fit

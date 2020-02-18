@@ -258,7 +258,8 @@
 <span class="sd">        psat : float</span>
 <span class="sd">            saturation pressure</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">psat</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span></div>
+        <span class="n">p0</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">psat</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">P0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p0</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> </div>
 
     <span class="k">def</span> <span class="nf">_Zroot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
         <span class="n">a1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">B</span><span class="o">-</span><span class="mi">1</span>

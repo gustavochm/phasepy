@@ -8,16 +8,13 @@ Welcome to phasepy's documentation!
 
 What is phasepy?
 ----------------
-Phasepy is a open-source scientific python package for fluid phase equilibria computation.
-This package facilitate the calculation of liquid-vapour equilibrium, liquid-liquid equilibrium
-and liquid-liquid-vapour equilibrium. Equilibrium calculations can be perfomed with cubic equations
-of state with clasic or advances mixing rules o with a discontinuous approach using a virial equations
-of state for the vapour phase and a activity coefficient model for the liquid phase.
+Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
+This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension. 
+Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
 
-Besides computations it is also possible to fit phase equilibria data, functions to fit quadratic
-mix rule, NRTL Wilson Redlich Kister parameters, are included.
+Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
 
-Phasety relys on numpy, scipy and cython extension modules, when necessary.
+Phasepy relies on NumPy, SciPy and Cython extension modules, when necessary.
 
 Installation
 ------------
@@ -55,7 +52,7 @@ the Peng Robinson EoS with an advanced mix rule with UNIFAC model:
 .. code-block:: python
 
 	>>> mix.unifac()
-	>>> from phasepy import pr
+	>>> from phasepy import preos
 	>>> eos = pr(mix, 'mhv_unifac')
 	>>> from phasepy.equilibrium import bubblePy
 	>>> y_guess, P_guess = [0.2,0.8] , 1

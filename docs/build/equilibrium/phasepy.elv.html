@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Vapour liquid equilibrium &mdash; phasepy 0.0.1 documentation</title>
+  <title>Vapor liquid equilibrium &mdash; phasepy 0.0.1 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="bubblePy" href="phasepy.bubblePy.html" />
+    <link rel="next" title="Liquid Liquid Equilibrium" href="phasepy.ell.html" />
     <link rel="prev" title="Two phase Flash" href="phasepy.flash.html" /> 
 </head>
 
@@ -86,11 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="phasepy.flash.html">Two phase Flash</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Vapour liquid equilibrium</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.bubblePy.html">bubblePy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.bubbleTy.html">bubbleTy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.dewPx.html">dewPx</a></li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.dewTx.html">dewTx</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Vapor liquid equilibrium</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bubble-points">bubble points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dew-points">dew points</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="phasepy.ell.html">Liquid Liquid Equilibrium</a></li>
@@ -146,7 +144,7 @@
         
           <li><a href="../phasepy.equilibrium.html">phasepy.equilibrium</a> &raquo;</li>
         
-      <li>Vapour liquid equilibrium</li>
+      <li>Vapor liquid equilibrium</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,16 +163,231 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="vapour-liquid-equilibrium">
-<h1>Vapour liquid equilibrium<a class="headerlink" href="#vapour-liquid-equilibrium" title="Permalink to this headline">¶</a></h1>
-<p>Two phase flash can be used to compute vapout liquid equilibria at fixed temperature and pressure. When dealing with saturated liquids of vapour for types of problems arises, solution methods and routines are explained in the following sections:</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="phasepy.bubblePy.html">bubblePy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phasepy.bubbleTy.html">bubbleTy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phasepy.dewPx.html">dewPx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phasepy.dewTx.html">dewTx</a></li>
+  <div class="section" id="vapor-liquid-equilibrium">
+<h1>Vapor liquid equilibrium<a class="headerlink" href="#vapor-liquid-equilibrium" title="Permalink to this headline">¶</a></h1>
+<p>Two phase flash can be used to compute vapor liquid equilibria at fixed temperature and pressure. When dealing with saturated liquids or vapor four types of problems arises, solution methods and routines are related to an simplification of the Radford-Rice mass balance, as the phase fraction is already known.</p>
+<p>Other option for these situations is to solve the following system of equations:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f_i &amp;= \ln K_i + \ln \hat{\phi}_i^v(\underline{y}, T, P) -\ln \hat{\phi}_i^l(\underline{x}, T, P) \quad i = 1,...,c \\
+f_{c+1} &amp;= \sum_{i=1}^c (y_i-x_i)\end{split}\]</div>
+<div class="section" id="bubble-points">
+<h2>bubble points<a class="headerlink" href="#bubble-points" title="Permalink to this headline">¶</a></h2>
+<p>In this case a saturated liquid of known composition is forming a differential size bubble. If pressure is specified, temperature must be found. Similarly when temperature is specified, equilibrium pressure has to be calculated.</p>
+<p>Usual approach for solving this problem consist in a combined quasi-Newton for solving for temperature or pressure and successive sustituion for composition with the following simplifation of the Radford-Rice equation:.</p>
+<div class="math notranslate nohighlight">
+\[FO = \sum_{i=1}^c x_i (K_i-1) = \sum_{i=1}^c y_i -1 = 0\]</div>
+<p>In case of having a good initial value of the true equilibrium values the full multidimentional system of equations can be solved.</p>
+<p>In the following code block and example from this computation it is shown.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">rkseos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">bubbleTy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">butanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;butanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span><span class="mf">563.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">44.14</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.258</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">274.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.589462</span><span class="p">,</span>
+<span class="gp">... </span>                  <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>  <span class="mf">10.20170373</span><span class="p">,</span> <span class="mf">2939.88668723</span><span class="p">,</span> <span class="o">-</span><span class="mf">102.28265042</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>   <span class="mf">9.16238246</span><span class="p">,</span> <span class="mf">2541.97883529</span><span class="p">,</span>  <span class="o">-</span><span class="mf">50.40534341</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Kij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">mtbe</span><span class="p">,</span> <span class="n">butanol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">Kij</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eos</span> <span class="o">=</span> <span class="n">rkseos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;qmr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#bar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.2</span><span class="p">])</span>
+<span class="go">&gt;&gt;&gt;T0 = 340</span>
+<span class="go">bubbleTy( y0, T0, x, P, eos)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># y, T</span>
+<span class="go">(array([0.90359832, 0.09640168]), 343.8666585139102)</span>
+</pre></div>
+</div>
+<p>In the following case a saturated liquid of known composition and temperature is forming a differential size bubble. We need to find composition and pressure of equilibrium.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">340</span> <span class="c1">#K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bubblePy</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">P0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">eos</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># y , P</span>
+<span class="go">(array([0.90955224, 0.09044776]), 0.8988497535228545)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dew-points">
+<h2>dew points<a class="headerlink" href="#dew-points" title="Permalink to this headline">¶</a></h2>
+<p>In this case a saturated vapour of known composition and temperature is forming a differential size dew. We need to find composition and pressure of equilibrium.</p>
+<p>Usual approach for solving this problem consist in a combined quasi-Newton for solving for Pressure and successive sustituion for composition with the following simplifation of the Radford-Rice equation:</p>
+<div class="math notranslate nohighlight">
+\[FO = 1 - \sum_{i=1}^c \frac{y_i}{K_i} = 1 - \sum_{i=1}^c x_i = 0\]</div>
+<p>In case of having a good initial value of the true equilibrium values a full multidimentional system can be solved.</p>
+<p>In the following code block and example from this computation it is shown for composition and equilibrium pressure.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">prsveos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">dewPx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ethanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">514.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">61.37</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.241</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">168.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.643558</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">ksv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.27092923</span><span class="p">,</span> <span class="mf">0.0440421</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CH2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;OH(P)&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">ksv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.76429651</span><span class="p">,</span> <span class="mf">0.04242646</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;CH3O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">mtbe</span><span class="p">,</span> <span class="n">ethanol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.02635196</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.02855964</span><span class="p">,</span>  <span class="mf">0.01592515</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">312.575789</span>  <span class="p">,</span>  <span class="mf">50.1476555</span> <span class="p">,</span>   <span class="mf">5.13981131</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eos</span> <span class="o">=</span> <span class="n">prsveos</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">mixrule</span> <span class="o">=</span> <span class="s1">&#39;mhv_rk&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mf">340.</span> <span class="c1">#K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dewPx</span><span class="p">(</span> <span class="n">x0</span><span class="p">,</span> <span class="n">P0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">eos</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">P</span>
+<span class="go">array([0.20224128, 0.79775872]), 1.0478247387561512</span>
+</pre></div>
+</div>
+<p>Similarly, the calculation can be done for equilibria comosition and temperature:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T0</span> <span class="o">=</span> <span class="mi">340</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dewTx</span><span class="p">(</span> <span class="n">x0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">P</span> <span class="p">,</span> <span class="n">eos</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># x, T</span>
+<span class="go">array([0.19854812, 0.80145188]), 338.85030223879545</span>
+</pre></div>
+</div>
+<span class="target" id="module-phasepy.equilibrium.bubble"></span><dl class="function">
+<dt id="phasepy.equilibrium.bubble.bubblePy">
+<code class="descname">bubblePy</code><span class="sig-paren">(</span><em>y_guess, P_guess, X, T, model, good_initial=False, v0=[None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/bubble.html#bubblePy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.bubble.bubblePy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bubble point (T, x) -&gt; (P, y)</p>
+<p>Solves bubble point at given liquid composition and temperature. It uses a
+combination of accelerated successive sustitution with quasi Newton Method
+in regular cases and when good initial it’s provided the full system of
+equations of the phase envelope method is used as objective function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y_guess</strong> (<em>array_like</em>) – guess of vapour phase composition</li>
+<li><strong>P_guess</strong> (<em>float</em>) – guess of equilibrium pressure in bar.</li>
+<li><strong>x</strong> (<em>array_like</em>) – liquid phase composition</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature of the liquid in K.</li>
+<li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Y</strong> (<em>array_like, vector of vapour fraction moles</em>)</li>
+<li><strong>P</strong> (<em>float, equilibrium pressure in bar</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-phasepy.equilibrium.bubble"></span><dl class="function">
+<dt id="phasepy.equilibrium.bubble.bubbleTy">
+<code class="descname">bubbleTy</code><span class="sig-paren">(</span><em>y_guess, T_guess, X, P, model, good_initial=False, v0=[None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/bubble.html#bubbleTy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.bubble.bubbleTy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bubble point (P, x) -&gt; (T, y)</p>
+<p>Solves bubble point at given liquid composition and pressure. It uses a
+combination of accelerated successive sustitution with quasi Newton Method
+in regular cases and when good initial it’s provided the full system of
+equations of the phase envelope method is used as objective function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y_guess</strong> (<em>array_like</em>) – guess of vapour phase composition</li>
+<li><strong>T_guess</strong> (<em>float</em>) – guess of equilibrium temperature of the liquid in K.</li>
+<li><strong>x</strong> (<em>array_like</em>) – liquid phase composition</li>
+<li><strong>P</strong> (<em>float</em>) – pressure of the liquid in bar</li>
+<li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>Y</strong> (<em>array_like</em>) – vector of vapour fraction moles</li>
+<li><strong>T</strong> (<em>float</em>) – equilibrium temperature in K</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-phasepy.equilibrium.dew"></span><dl class="function">
+<dt id="phasepy.equilibrium.dew.dewPx">
+<code class="descname">dewPx</code><span class="sig-paren">(</span><em>x_guess, P_guess, y, T, model, good_initial=False, v0=[None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/dew.html#dewPx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.dew.dewPx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dew point (T, y) -&gt; (P, y)</p>
+<p>Solves dew point at given vapour composition and temperature. It uses a
+combination of accelerated successive sustitution with quasi Newton Method
+in regular cases and when good initial it’s provided the full system of
+equations of the phase envelope method is used as objective function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_guess</strong> (<em>array_like</em>) – guess of liquid phase composition</li>
+<li><strong>P_guess</strong> (<em>float</em>) – guess of equilibrium pressure of the liquid in bar.</li>
+<li><strong>y</strong> (<em>array_like</em>) – vapour phase composition</li>
+<li><strong>T</strong> (<em>float</em>) – temperaure of the vapour in K</li>
+<li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>X</strong> (<em>array_like</em>) – liquid mole fraction vector</li>
+<li><strong>P</strong> (<em>float</em>) – equilibrium pressure in bar</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-phasepy.equilibrium.dew"></span><dl class="function">
+<dt id="phasepy.equilibrium.dew.dewTx">
+<code class="descname">dewTx</code><span class="sig-paren">(</span><em>x_guess, T_guess, y, P, model, good_initial=False, v0=[None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/dew.html#dewTx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.dew.dewTx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dew point (T, y) -&gt; (P, y)</p>
+<p>Solves dew point at given vapour composition and pressure. It uses a
+combination of accelerated successive sustitution with quasi Newton Method
+in regular cases and when good initial it’s provided the full system of
+equations of the phase envelope method is used as objective function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_guess</strong> (<em>array_like</em>) – guess of liquid phase composition</li>
+<li><strong>T_guess</strong> (<em>float</em>) – guess of equilibrium temperature of the liquid in K.</li>
+<li><strong>y</strong> (<em>array_like</em>) – vapour phase composition</li>
+<li><strong>P</strong> (<em>float</em>) – pressure of the liquid in bar</li>
+<li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>X</strong> (<em>array_like</em>) – liquid mole fraction vector</li>
+<li><strong>T</strong> (<em>float</em>) – equilibrium temperature in K</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -186,7 +399,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="phasepy.bubblePy.html" class="btn btn-neutral float-right" title="bubblePy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="phasepy.ell.html" class="btn btn-neutral float-right" title="Liquid Liquid Equilibrium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="phasepy.flash.html" class="btn btn-neutral float-left" title="Two phase Flash" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Models" href="../phasepy.models.html" />
+    <link rel="next" title="Virial - Activity coefficient Model" href="../models/phasepy.virialgama.html" />
     <link rel="prev" title="phasepy.component" href="phasepy.component.html" /> 
 </head>
 
@@ -84,12 +84,10 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="phasepy.basics.html">phasepy basics</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="phasepy.component.html">phasepy.component</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">phasepy.mixture</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../phasepy.models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">phasepy.mixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
@@ -141,8 +139,6 @@
         
           <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
         
-          <li><a href="phasepy.basics.html">phasepy basics</a> &raquo;</li>
-        
       <li>phasepy.mixture</li>
     
     
@@ -164,6 +160,69 @@
             
   <div class="section" id="phasepy-mixture">
 <h1>phasepy.mixture<a class="headerlink" href="#phasepy-mixture" title="Permalink to this headline">¶</a></h1>
+<p>Phasepy <a class="reference internal" href="#phasepy.mixture" title="phasepy.mixture"><code class="xref py py-class docutils literal notranslate"><span class="pre">phasepy.mixture</span></code></a> function creates an object that stores necessary pure component information and interaction parameters needed for equilibria and interfacial properties computation. For a mixture creation there is necessary at least two pure components:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ethanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">514.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">61.37</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.241</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">168.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.643558</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>  <span class="mf">11.61809279</span><span class="p">,</span> <span class="mf">3423.0259436</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">56.48094263</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CH2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;OH(P)&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Additional components can be added to the mixture with the method add_component.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>   <span class="mf">9.16238246</span><span class="p">,</span> <span class="mf">2541.97883529</span><span class="p">,</span>  <span class="o">-</span><span class="mf">50.40534341</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;CH3O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">mtbe</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once the total number of components has been added to the mixture interaction parameters can be supplied, depending on the selected model. For quadratic mixing rule used in cubic EoS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">KIJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">k12</span><span class="p">,</span> <span class="n">k13</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">k21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k23</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">KIJ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the NRTL model is selected:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha12</span><span class="p">,</span> <span class="n">alpha13</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">alpha21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha23</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">alpha31</span><span class="p">,</span> <span class="n">alpha32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">g12</span><span class="p">,</span> <span class="n">g13</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">g21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">g23</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">g31</span><span class="p">,</span> <span class="n">g32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">gT12</span><span class="p">,</span> <span class="n">gT13</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">gT21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">gT23</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">gT31</span><span class="p">,</span> <span class="n">gT32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#final parameters are computed as tau = g/T + g1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#if g1 is not given it will be set to zeros.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If Wilson model is selected:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">A12</span><span class="p">,</span> <span class="n">A13</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">A21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">A23</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="p">[</span><span class="n">A31</span><span class="p">,</span> <span class="n">A32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">wilson</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Redlich Kister parameters are set by polynomial by pairs, the order of the pairs must be the following: 1-2, 1-3, …, 1-n, 2-3, …, 2-n, etc.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poly12</span><span class="p">],[</span><span class="n">poly13</span><span class="p">],</span> <span class="p">[</span><span class="n">poly23</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">polyT12</span><span class="p">],[</span><span class="n">polyT13</span><span class="p">],</span> <span class="p">[</span><span class="n">polyT23</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#if C1 is not given it will be set to zeros.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally for Modified-UNIFAC model, Dortmund public database is included in Phasepy.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span> <span class="c1">#Read UNIFAC database</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Remember to supply the necessary parameters for the model that you are going to use</p>
+</div>
 <dl class="class">
 <dt id="phasepy.mixture">
 <em class="property">class </em><code class="descname">mixture</code><span class="sig-paren">(</span><em>component1</em>, <em>component2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture" title="Permalink to this definition">¶</a></dt>
@@ -255,6 +314,20 @@ Creates an object that cointains info about a mixture.</p>
 <dt id="phasepy.mixture.w">
 <code class="descname">w</code><a class="headerlink" href="#phasepy.mixture.w" title="Permalink to this definition">¶</a></dt>
 <dd><p>acentric factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="phasepy.mixture.c">
+<code class="descname">c</code><a class="headerlink" href="#phasepy.mixture.c" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume translation parameter used if cubic EoS</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -502,6 +575,30 @@ excess Gibbs energy.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="phasepy.mixture.rkb">
+<code class="descname">rkb</code><span class="sig-paren">(</span><em>c</em>, <em>c1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that adds binary Redlich Kister polynomial coefficients for
+excess Gibbs energy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>c</strong> (<em>array_like</em>) – polynomial values adim</li>
+<li><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Parameters are evaluated as a function of temperature:</p>
+<p class="last">G = c + c1/T</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="phasepy.mixture.rkt">
 <code class="descname">rkt</code><span class="sig-paren">(</span><em>D</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds a ternary polynomial modification to NRTL model</p>
@@ -587,7 +684,7 @@ Matrix A main diagonal must be zero. Values in K.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../phasepy.models.html" class="btn btn-neutral float-right" title="Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../models/phasepy.virialgama.html" class="btn btn-neutral float-right" title="Virial - Activity coefficient Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="phasepy.component.html" class="btn btn-neutral float-left" title="phasepy.component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Liquid Liquid Equilibrium &mdash; phasepy 0.0.1 documentation</title>
+  <title>Multiphase Flash &mdash; phasepy 0.0.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Three phase equilibrium" href="phasepy.haz.html" />
-    <link rel="prev" title="dewTx" href="phasepy.dewTx.html" /> 
+    <link rel="prev" title="Vapor liquid equilibrium" href="phasepy.elv.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,8 +86,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="phasepy.flash.html">Two phase Flash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.elv.html">Vapour liquid equilibrium</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Liquid Liquid Equilibrium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.elv.html">Vapor liquid equilibrium</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multiphase Flash</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#liquid-liquid-equilibrium">Liquid Liquid Equilibrium</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#three-phase-equilibrium">Three phase equilibrium</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#binary-mixtures">Binary mixtures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multicomponent-mixtures">Multicomponent mixtures</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="phasepy.haz.html">Three phase equilibrium</a></li>
 <li class="toctree-l2"><a class="reference internal" href="phasepy.stability.html">Stability</a></li>
 </ul>
@@ -140,7 +148,7 @@
         
           <li><a href="../phasepy.equilibrium.html">phasepy.equilibrium</a> &raquo;</li>
         
-      <li>Liquid Liquid Equilibrium</li>
+      <li>Multiphase Flash</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,8 +167,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="liquid-liquid-equilibrium">
-<h1>Liquid Liquid Equilibrium<a class="headerlink" href="#liquid-liquid-equilibrium" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="multiphase-flash">
+<h1>Multiphase Flash<a class="headerlink" href="#multiphase-flash" title="Permalink to this headline">¶</a></h1>
+<p>Meta-stable solutions of the isofugacity method is an important concern whel dealing with more than two liquid phases. Stability verification during the equilibria computation must be performed. In phasepy liquid-liquid equilibria a vapor-liquid-liquid equilibra is solved similarly with an modified Radford-Rice mass balance system of equations that allows to verify the stability and equilibria of the phases simultaneously.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sum_{i=1}^c \frac{z_i (K_{ik} \exp{\theta_k}-1)}{1+ \sum\limits^{\pi}_{\substack{j=1 \\ j \neq r}}{\psi_j (K_{ij}} \exp{\theta_j} -1)} = 0 \qquad k = 1,..., \pi,  k \neq r\end{split}\]</div>
+<p>This system of equations was proposed by Gupta et al, and it is a modified Radford-Rice mass balance which introduces stability variables <span class="math notranslate nohighlight">\(\theta\)</span>. This allows to solve the mass balance for phase fraction and stability variables and then update composition similarly as a regular flash. The stability variable gives information about the phase, if it takes a positive value the phase is unstable, on the hand, if it is zero then the phase is stable. The algorithm of successive sustitution and Newton method can be slow in some cases, in that situation the function will attempt to minimize the Gibbs free energy of the system.</p>
+<div class="math notranslate nohighlight">
+\[min \, {G} = \sum_{k=1}^\pi \sum_{i=1}^c F_{ik} \ln \hat{f}_{ik}\]</div>
+<div class="section" id="liquid-liquid-equilibrium">
+<h2>Liquid Liquid Equilibrium<a class="headerlink" href="#liquid-liquid-equilibrium" title="Permalink to this headline">¶</a></h2>
 <p>Two phase flash can be used for solving liquid liquid equilibrium, but it is important to consider stability of the phases. For that reason a algorithm that can compute stability and equilibrium simultaneously was implemented in this packages.</p>
 <p>In the following code block and example of how to solve this problem it is shown.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
@@ -183,6 +199,75 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ell</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">mell</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#x, w, beta</span>
 <span class="go">array([0.15601096, 0.84398904]), array([0.99289324, 0.00710676]), 0.41103635397012755</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="three-phase-equilibrium">
+<h2>Three phase equilibrium<a class="headerlink" href="#three-phase-equilibrium" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="binary-mixtures">
+<h3>Binary mixtures<a class="headerlink" href="#binary-mixtures" title="Permalink to this headline">¶</a></h3>
+<p>For degrees of freedom’s restriction, a systems of equations has to be solved for three phase equilibrium of binary mixtures. In the following code block a example of how to do it it is shown.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">hazb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>   <span class="mf">9.16238246</span><span class="p">,</span> <span class="mf">2541.97883529</span><span class="p">,</span>  <span class="o">-</span><span class="mf">50.40534341</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;CH3O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">water</span><span class="p">,</span> <span class="n">mtbe</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">unifac</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span> <span class="c1">#bar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#initial guess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T0</span> <span class="o">=</span> <span class="mi">320</span> <span class="c1">#K</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.99</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.99</span><span class="p">,</span><span class="mf">0.01</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">w0</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hazb</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">w0</span><span class="p">,</span><span class="n">y0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#X, W, Y, T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">array</span><span class="p">([</span><span class="mf">0.17165664</span><span class="p">,</span> <span class="mf">0.82834336</span><span class="p">])</span> <span class="p">,</span> <span class="n">array</span><span class="p">([</span><span class="mf">0.99256232</span><span class="p">,</span> <span class="mf">0.00743768</span><span class="p">]),</span>
+<span class="gp">... </span><span class="n">array</span><span class="p">([</span><span class="mf">0.15177621</span><span class="p">,</span> <span class="mf">0.84822379</span><span class="p">]),</span>  <span class="n">array</span><span class="p">([</span><span class="mf">327.6066936</span><span class="p">])</span>
+</pre></div>
+</div>
+<span class="target" id="module-phasepy.equilibrium.hazb"></span></div>
+<div class="section" id="multicomponent-mixtures">
+<h3>Multicomponent mixtures<a class="headerlink" href="#multicomponent-mixtures" title="Permalink to this headline">¶</a></h3>
+<p>When working with multicomponent mixtures (3 or more) a multiflhas has to be perfomed in order to compute three phase equilibrium. This algorithm ensures that a stable phases are computed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">unifac</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">haz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>   <span class="mf">9.16238246</span><span class="p">,</span> <span class="mf">2541.97883529</span><span class="p">,</span>  <span class="o">-</span><span class="mf">50.40534341</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;CH3O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ethanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">514.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">61.37</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.241</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">168.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.643558</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>  <span class="mf">11.61809279</span><span class="p">,</span> <span class="mf">3423.0259436</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">56.48094263</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CH2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;OH(P)&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">water</span><span class="p">,</span> <span class="n">mtbe</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">ethanol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">unifac</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span> <span class="c1">#bar</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mf">328.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#initial guess</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">]),</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w0</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span> <span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.05</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">haz</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#T: 328.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#P: 1.01</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#error_outer: 8.153105081394752e-11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#error_inner: 1.7587926210834326e-10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#iter: 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#beta: array([0.4189389 , 0.18145858, 0.39960252])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#tetha: array([0., 0., 0.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#X: array([[0.94674077, 0.01222667, 0.04103255],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#       [0.23284951, 0.67121796, 0.09593252],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#       [0.15295429, 0.78764814, 0.05939758]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#v: [None, None, None]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#states: [&#39;L&#39;, &#39;L&#39;, &#39;V&#39;]</span>
 </pre></div>
 </div>
 <span class="target" id="module-phasepy.equilibrium.ell"></span><dl class="function">
@@ -219,6 +304,81 @@ pressure, temperature and overall composition.</p>
 </table>
 </dd></dl>
 
+<span class="target" id="module-phasepy.equilibrium.hazb"></span><dl class="function">
+<dt id="phasepy.equilibrium.hazb.ellvb">
+<code class="descname">ellvb</code><span class="sig-paren">(</span><em>X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/hazb.html#ellvb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.hazb.ellvb" title="Permalink to this definition">¶</a></dt>
+<dd><p>haxb (T,P) -&gt; (x,w,y)</p>
+<p>Solves liquid liquid vapour equilibrium for binary mixtures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X0</strong> (<em>array_like</em>) – guess composition of phase 1</li>
+<li><strong>W0</strong> (<em>array_like</em>) – guess composition of phase 1</li>
+<li><strong>Y0</strong> (<em>array_like</em>) – guess composition of phase 2</li>
+<li><strong>P_T</strong> (<em>float</em>) – absolute temperature or pressure</li>
+<li><strong>T_P</strong> (<em>floar</em>) – absolute temperature or pressure</li>
+<li><strong>spec</strong> (<em>string</em>) – ‘T’ if T_P is temperature or ‘P’ if pressure.</li>
+<li><strong>model</strong> (<em>object</em>) – created from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip sucesive sustitution and solves by Newton’s Method.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>X</strong> (<em>array_like</em>) – liquid1 mole fraction vector</li>
+<li><strong>W</strong> (<em>array_like</em>) – liquid2 mole fraction vector</li>
+<li><strong>Y</strong> (<em>array_like</em>) – vapour mole fraction fector</li>
+<li><strong>var</strong> (<em>float</em>) – temperature or pressure, depending of specification</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-phasepy.equilibrium.hazt"></span><dl class="function">
+<dt id="phasepy.equilibrium.hazt.ellv">
+<code class="descname">ellv</code><span class="sig-paren">(</span><em>X0, W0, Y0, Z, T, P, model, v0=[None, None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/hazt.html#ellv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.hazt.ellv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Liquid liquid vapor Multiflash (Z, T,P) -&gt; (x, w, y)</p>
+<p>Computes liquid liquid vapor equilibrium of multicomponent mixtures at given
+temperature. This functions uses a simultaneous method to check stability
+and equilibrium, when slow convergence is noted, minimization of Gibbs
+free energy is performed with BFGS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X0</strong> (<em>array_like</em>) – guess composition of liquid 1</li>
+<li><strong>W0</strong> (<em>array_like</em>) – guess composition of liquid 2</li>
+<li><strong>Y0</strong> (<em>array_like</em>) – guess composition of vapour 1</li>
+<li><strong>T</strong> (<em>float</em>) – absolute temperature in K.</li>
+<li><strong>P</strong> (<em>float</em>) – pressure in bar</li>
+<li><strong>model</strong> (<em>object</em>) – Created from mixture, eos and mixrule</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip Gupta’s methodand solves full system of equations.</li>
+<li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>X</strong> (<em>array_like</em>) – liquid1 mole fraction vector</li>
+<li><strong>W</strong> (<em>array_like</em>) – liquid2 mole fraction vector</li>
+<li><strong>Y</strong> (<em>array_like</em>) – vapour mole fraction fector</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
 </div>
 
 
@@ -232,7 +392,7 @@ pressure, temperature and overall composition.</p>
         <a href="phasepy.haz.html" class="btn btn-neutral float-right" title="Three phase equilibrium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="phasepy.dewTx.html" class="btn btn-neutral float-left" title="dewTx" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="phasepy.elv.html" class="btn btn-neutral float-left" title="Vapor liquid equilibrium" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

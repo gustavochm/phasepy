@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Virial EoS" href="phasepy.virial.html" />
-    <link rel="prev" title="Models" href="../phasepy.models.html" /> 
+    <link rel="prev" title="phasepy.mixture" href="../basic/phasepy.mixture.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,16 +84,14 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Virial - Activity coefficient Model</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="phasepy.actmodels.html">Activity coefficient models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.mixture.html">phasepy.mixture</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Virial - Activity coefficient Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="phasepy.actmodels.html">Activity coefficient models</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
@@ -145,8 +143,6 @@
         
           <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
         
-          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
-        
       <li>Virial - Activity coefficient Model</li>
     
     
@@ -168,10 +164,10 @@
             
   <div class="section" id="virial-activity-coefficient-model">
 <h1>Virial - Activity coefficient Model<a class="headerlink" href="#virial-activity-coefficient-model" title="Permalink to this headline">¶</a></h1>
-<p>This class is focused from phase equilibrium using a virial correlation for the
-vapour phase and a activity coefficient model for the liquid phase. For the gas phase,
+<p>This class is focused for phase equilibrium using a virial correlation for the
+vapor phase and a activity coefficient model for the liquid phase. For the gas phase,
 the virial coefficient can be estimated using Abbott or Tsonopoulos correlations, also
-an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and UNIFAC
+an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and Modified-UNIFAC
 model are available.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -194,6 +190,7 @@ model are available.</p>
 coefficient model. The object for the mixture of water and ethanol created in the past section, would be
 the following way for the NRTL model.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">nrtl</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>  <span class="mf">0.</span>       <span class="p">,</span> <span class="o">-</span><span class="mf">57.6880881</span><span class="p">],</span>
@@ -299,7 +296,7 @@ composition, temperature and pressure.</p>
         <a href="phasepy.virial.html" class="btn btn-neutral float-right" title="Virial EoS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../phasepy.models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../basic/phasepy.mixture.html" class="btn btn-neutral float-left" title="phasepy.mixture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

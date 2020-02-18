@@ -178,9 +178,9 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">K1</span><span class="o">*</span><span class="n">X</span><span class="o">-</span><span class="n">Y</span><span class="p">,</span><span class="n">K2</span><span class="o">*</span><span class="n">X</span><span class="o">-</span><span class="n">W</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">W</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="hazb"><a class="viewcode-back" href="../../../equilibrium/phasepy.haz.html#phasepy.equilibrium.hazb.hazb">[docs]</a><span class="k">def</span> <span class="nf">hazb</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">W0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="n">P_T</span><span class="p">,</span> <span class="n">T_P</span><span class="p">,</span> <span class="n">spec</span> <span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ellvb"><a class="viewcode-back" href="../../../equilibrium/phasepy.multiflash.html#phasepy.equilibrium.hazb.ellvb">[docs]</a><span class="k">def</span> <span class="nf">ellvb</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">W0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="n">P_T</span><span class="p">,</span> <span class="n">T_P</span><span class="p">,</span> <span class="n">spec</span> <span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    haxb (T,P) -&gt; (x,w,y)</span>
+<span class="sd">    ellvb (T,P) -&gt; (x,w,y)</span>
 <span class="sd">    </span>
 <span class="sd">    Solves liquid liquid vapour equilibrium for binary mixtures. </span>
 <span class="sd">    </span>
@@ -219,8 +219,19 @@
 <span class="sd">        vapour mole fraction fector</span>
 <span class="sd">    var: float</span>
 <span class="sd">        temperature or pressure, depending of specification</span>
+<span class="sd">        </span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
+    
+    <span class="k">if</span> <span class="n">nc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;3 phase equilibra for binary mixtures&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">W0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
+        
     <span class="k">global</span> <span class="n">vx</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">vy</span>
+    
     <span class="n">sol1</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">haz_objb</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">X0</span><span class="p">,</span> <span class="n">W0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="n">P_T</span><span class="p">]),</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">T_P</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span><span class="p">))</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sol1</span><span class="o">.</span><span class="n">fun</span><span class="p">)</span>
     <span class="n">nfev</span> <span class="o">=</span> <span class="n">sol1</span><span class="o">.</span><span class="n">nfev</span>

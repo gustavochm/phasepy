@@ -36,6 +36,6 @@ from .dew import dewPx, dewTx
 from .flash import flash
 from .multiflash import multiflash
 from .hazt import haz, ellv
-from .hazb import hazb
+from .hazb import ellvb
 from .stability import tpd_min, tpd_minimas, ell_init, gmix
 from .ell import ell

@@ -108,7 +108,7 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
     model : object
         create from mixture, eos and mixrule 
     good_initial: bool, optional
-        if True skip sucesive sustitution and solves by Newton's Method.
+        if True skip succesive sustitution and solves by Newton's Method.
     v0 : list, optional
         if supplied volume used as initial value to compute fugacities
     full_output: bool, optional
@@ -190,7 +190,7 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial = False,
     model : object
         create from mixture, eos and mixrule 
     good_initial: bool, optional
-        if True skip sucesive sustitution and solves by Newton's Method.
+        if True skip succesive sustitution and solves by Newton's Method.
     v0 : list, optional
         if supplied volume used as initial value to compute fugacities
     full_output: bool, optional

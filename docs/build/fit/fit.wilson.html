@@ -169,7 +169,7 @@
 <span id="wilson"></span><h1>Wilson<a class="headerlink" href="#module-phasepy.fit.binaryfit" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_wilson">
-<code class="descname">fit_wilson</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>dataelv</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_wilson" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_wilson</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>dataelv</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_wilson" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_wilson: attemps to fit wilson parameters to LVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -179,6 +179,7 @@
 <li><strong>x0</strong> (<em>array_like</em>) – initial values a12, a21 in K</li>
 <li><strong>mix</strong> (<em>object</em>) – binary mixture</li>
 <li><strong>dataelv</strong> (<em>tuple</em>) – (Xexp, Yelv, Texp, Pexp)</li>
+<li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
 </tr>

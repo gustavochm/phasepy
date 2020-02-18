@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="phasepy basics" href="basic/phasepy.basics.html" />
+    <link rel="next" title="phasepy.component" href="basic/phasepy.component.html" />
     <link rel="prev" title="Welcome to phasepy’s documentation!" href="index.html" /> 
 </head>
 
@@ -84,8 +84,10 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">phasepy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="basic/phasepy.basics.html">phasepy basics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic/phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="basic/phasepy.mixture.html">phasepy.mixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models/phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="phasepy.equilibrium.html">phasepy.equilibrium</a></li>
@@ -156,11 +158,54 @@
             
   <div class="section" id="phasepy">
 <h1>phasepy<a class="headerlink" href="#phasepy" title="Permalink to this headline">¶</a></h1>
-<p>phasepy is a Python package object oriented programmed. In order to help the final user to deal with the minimun quantity of parameters as possible, those are saved as attributes in objects. Objects for creating components and mixtures are available, then this object are used within a EoS to create a final object that is going to be used for phase equilibrium calculations.</p>
+<p>Phasepy is a Python package object oriented programmed. In order to help the final user to deal with the minimun quantity of parameters as possible, those are saved as attributes in objects. Objects for creating components and mixtures are available, then this object are used within a EoS to create a final object that is going to be used for phase equilibrium calculations.</p>
+<p>In order to start with phase equilibrium calculations it is necessary to provided pure component and mixture info. Phasepy is an object oriented python package that implements
+two basics classes for this purpose.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="basic/phasepy.basics.html">phasepy basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phasepy.models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic/phasepy.mixture.html">phasepy.mixture</a></li>
+</ul>
+</div>
+<p>With the class component <a class="reference internal" href="basic/phasepy.component.html#phasepy.component" title="phasepy.component"><code class="xref py py-class docutils literal notranslate"><span class="pre">phasepy.component</span></code></a>, pure component info is saved, this includes
+critical temperature, pressure, volume, acentric factor, antoine coefficients and group contribution
+info. On the other hand, classs <a class="reference internal" href="basic/phasepy.mixture.html#phasepy.mixture" title="phasepy.mixture"><code class="xref py py-class docutils literal notranslate"><span class="pre">phasepy.mixture</span></code></a> saves pure component data and also allows to
+incorporate interactions parameters for the available models as, NRTL, Wilson, Redlich Kister.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ethanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">514.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">61.37</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.241</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">168.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.643558</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>  <span class="mf">11.61809279</span><span class="p">,</span> <span class="mf">3423.0259436</span> <span class="p">,</span>  <span class="o">-</span><span class="mf">56.48094263</span><span class="p">],</span>
+<span class="gp">... </span>       <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CH2&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;OH(P)&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">373</span><span class="p">)</span>
+<span class="go">1.0072796747419537</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">water</span><span class="o">.</span><span class="n">vlrackett</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">310</span><span class="p">)</span>
+<span class="go">16.46025809309672</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">373</span><span class="p">)</span>
+<span class="go">2.233335305328437</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span><span class="o">.</span><span class="n">vlrackett</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">310</span><span class="p">)</span>
+<span class="go">56.32856995891473</span>
+</pre></div>
+</div>
+<p>Now, from two components a mixture can be created:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">mixture</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">names</span>
+<span class="go">[&#39;ethanol&#39;, &#39;water&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">nc</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">373</span><span class="p">)</span>
+<span class="go">array([2.23333531, 1.00727967])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">vlrackett</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">310</span><span class="p">)</span>
+<span class="go">array([56.32856996, 16.46025809])</span>
+</pre></div>
+</div>
+<p>The mixture object can be used within any of the available models in Phasepy. There are two options when choosing a model, a discontinous model where the vapor and liquid deviations are modeled with an virial expansion and a activity coefficient model, respectively. Aditionally, both phases can be modeled with a continous model, using the same equation of state for all the phases. The available options are described bellow:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="models/phasepy.virialgama.html">Virial - Activity coefficient Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models/phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </div>
 </div>
@@ -173,7 +218,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="basic/phasepy.basics.html" class="btn btn-neutral float-right" title="phasepy basics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="basic/phasepy.component.html" class="btn btn-neutral float-right" title="phasepy.component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to phasepy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

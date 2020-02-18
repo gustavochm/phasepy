@@ -31,7 +31,7 @@ def vdweos(mix_or_component):
         eos = vdwm(mix_or_component)
     return eos      
             
-def preos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
+def preos(mix_or_component, mixrule = 'qmr',volume_translation = False):
     '''
     Peng Robinson EoS
     
@@ -42,7 +42,9 @@ def preos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
         have interactions parameters.
     mixrule : str
         available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson'
+        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+    volume_translation: bool
+        If True, the volume translated version of this EoS will be used.
         
     Returns
     -------   
@@ -51,18 +53,18 @@ def preos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
     '''
     nc = mix_or_component.nc
     if nc == 1:
-        if volume_traslation:
+        if volume_translation:
             eos = vtprpure(mix_or_component)
         else:
             eos = prpure(mix_or_component)
     else:
-        if volume_traslation:
+        if volume_translation:
             eos = vtprmix(mix_or_component, mixrule)
         else:
             eos = prmix(mix_or_component, mixrule)
     return eos
             
-def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
+def prsveos(mix_or_component, mixrule = 'qmr' ,volume_translation = False):
     '''
     Peng Robinson EoS
     
@@ -73,7 +75,9 @@ def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
         have interactions parameters.
     mixrule : str
         available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 
-        'mhv_wilson'
+        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+    volume_translation: bool
+        If True, the volume translated version of this EoS will be used.
     
     Returns
     -------   
@@ -85,18 +89,18 @@ def prsveos(mix_or_component, mixrule = 'qmr' ,volume_traslation = False):
         
         
     if nc == 1:
-        if volume_traslation:
+        if volume_translation:
             eos = vtprsvpure(mix_or_component)
         else:
             eos = prsvpure(mix_or_component)
     else:
-        if volume_traslation:
+        if volume_translation:
             eos = vtprsvmix(mix_or_component, mixrule)
         else:
             eos = prsvmix(mix_or_component, mixrule)
     return eos
 
-def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
+def rkeos(mix_or_component, mixrule = 'qmr',volume_translation = False):
     '''
     Redlich Kwong EoS
     
@@ -107,7 +111,10 @@ def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
         have interactions parameters.
     mixrule : str
         available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson'
+        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+    volume_translation: bool
+        If True, the volume translated version of this EoS will be used.
+    
     
     Returns
     -------   
@@ -117,18 +124,18 @@ def rkeos(mix_or_component, mixrule = 'qmr',volume_traslation = False):
     nc = mix_or_component.nc
         
     if nc == 1:
-        if volume_traslation:
+        if volume_translation:
             eos = vtrkpure(mix_or_component)
         else:
             eos = rkpure(mix_or_component)
     else:
-        if volume_traslation:
+        if volume_translation:
             eos = vtrkmix(mix_or_component, mixrule)
         else:
             eos = rkmix(mix_or_component, mixrule)
     return eos
 
-def rkseos(mix_or_component, mixrule = 'qmr', volume_traslation = False):
+def rkseos(mix_or_component, mixrule = 'qmr', volume_translation = False):
     '''
     Redlich Kwong Soave EoS
     
@@ -139,7 +146,9 @@ def rkseos(mix_or_component, mixrule = 'qmr', volume_traslation = False):
         have interactions parameters.
     mixrule : str
         available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson'
+        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+    volume_translation: bool
+        If True, the volume translated version of this EoS will be used.
     
     Returns
     -------   
@@ -148,12 +157,12 @@ def rkseos(mix_or_component, mixrule = 'qmr', volume_traslation = False):
     '''
     nc = mix_or_component.nc
     if nc == 1:
-        if volume_traslation:
+        if volume_translation:
             eos = vtrkspure(mix_or_component)
         else:
             eos = rkspure(mix_or_component)
     else:
-        if volume_traslation:
+        if volume_translation:
             eos = vtrksmix(mix_or_component, mixrule)
         else:
             eos = rksmix(mix_or_component, mixrule)

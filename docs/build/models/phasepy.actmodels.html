@@ -84,16 +84,20 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.html">phasepy</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.basics.html">phasepy basics</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../phasepy.models.html">Models</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Activity coefficient models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.component.html">phasepy.component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basic/phasepy.mixture.html">phasepy.mixture</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="phasepy.virialgama.html">Virial - Activity coefficient Model</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="phasepy.virial.html">Virial EoS</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Activity coefficient models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nrtl">NRTL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wilson">Wilson</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#redlich-kister">Redlich Kister</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unifac">UNIFAC</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
@@ -145,8 +149,6 @@
         
           <li><a href="../phasepy.html">phasepy</a> &raquo;</li>
         
-          <li><a href="../phasepy.models.html">Models</a> &raquo;</li>
-        
           <li><a href="phasepy.virialgama.html">Virial - Activity coefficient Model</a> &raquo;</li>
         
       <li>Activity coefficient models</li>
@@ -172,9 +174,9 @@
 <h1>Activity coefficient models<a class="headerlink" href="#activity-coefficient-models" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="nrtl">
 <h2>NRTL<a class="headerlink" href="#nrtl" title="Permalink to this headline">¶</a></h2>
-<p>Non-Random-Two-Liquids model is a a local composition model, widely used to describe liquid vapour, liquid liquid and liquid liquid vapour equilibria.</p>
+<p>Non-Random-Two-Liquids model is a a local composition model, widely used to describe liquid vapor, liquid liquid and liquid liquid vapor equilibria.</p>
 <div class="math notranslate nohighlight">
-\[g^e = \sum_{i=1}^c \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}       {\sum_{l=1}^c G_{li}x_l}\]</div>
+\[g^e = \sum_{i=1}^c x_i \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}   {\sum_{l=1}^c G_{li}x_l}\]</div>
 <span class="target" id="module-phasepy.actmodels.nrtl"></span><dl class="function">
 <dt id="phasepy.actmodels.nrtl.nrtl">
 <code class="descname">nrtl</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>alpha</em>, <em>g</em>, <em>g1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/nrtl.html#nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.nrtl.nrtl" title="Permalink to this definition">¶</a></dt>
@@ -211,7 +213,7 @@
 </div>
 <div class="section" id="wilson">
 <h2>Wilson<a class="headerlink" href="#wilson" title="Permalink to this headline">¶</a></h2>
-<p>Wilson model is a local composiiton model recommended for vapour liquid equilibria calculation. It doesn’t produce liquid liquid
+<p>Wilson model is a local composition model recommended for vapor liquid equilibria calculation. It cannot predict liquid liquid
 equilibrium.</p>
 <div class="math notranslate nohighlight">
 \[g^e = \sum_{i=1}^c x_i \ln ( \sum_{j=1}^c x_j   \Lambda_{ij})\]</div>
@@ -249,7 +251,7 @@ equilibrium.</p>
 \[g^e_{ij} = x_ix_j \sum_{k=0}^m C_k (x_i - x_j)^k\]</div>
 <span class="target" id="module-phasepy.actmodels.redlichkister"></span><dl class="function">
 <dt id="phasepy.actmodels.redlichkister.rk">
-<code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rk</code><span class="sig-paren">(</span><em>x</em>, <em>T</em>, <em>C</em>, <em>C1</em>, <em>combinatory</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/redlichkister.html#rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.redlichkister.rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redlich-Kister activity coefficient model for multicomponent mixtures.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -260,6 +262,7 @@ equilibrium.</p>
 <li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
 <li><strong>C</strong> (<em>array_like</em>) – polynomial values adim</li>
 <li><strong>C1</strong> (<em>array_like</em>) – polynomial values in K</li>
+<li><strong>combinatory</strong> (<em>array_like</em>) – index by pairs of Redlich Kister Expansion</li>
 </ul>
 </td>
 </tr>
@@ -302,9 +305,9 @@ equilibrium.</p>
 <li><strong>Vk</strong> (<em>array_like</em>) – group volumes array</li>
 <li><strong>Qk</strong> (<em>array_like</em>) – group surface arrays</li>
 <li><strong>tethai</strong> (<em>array_like</em>) – surface fraction array</li>
-<li><strong>a0</strong> (<em>array_like</em>) – </li>
-<li><strong>a1</strong> (<em>array_like</em>) – </li>
-<li><strong>a2</strong> (<em>array_like</em>) – </li>
+<li><strong>a0</strong> (<em>array_like</em>) – energy interactions polynomial coefficient</li>
+<li><strong>a1</strong> (<em>array_like</em>) – energy interactions polynomial coefficient</li>
+<li><strong>a2</strong> (<em>array_like</em>) – energy interactions polynomial coefficient</li>
 </ul>
 </td>
 </tr>
