@@ -21,6 +21,9 @@ def ten_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
     cij /= cij[0,0]
     
     mu0 = model.muad(ro1a, Tsat)
+    mu02 = model.muad(ro2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     roots, weights = lobatto(n)
     s = 0 
     ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s]  # integrations nodes
@@ -68,10 +71,11 @@ def ten_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
     
     cij = model.ci(Tsat)
     cij /= cij[0,0]
-    
-    nc = model.nc
-    
+
     mu0 = model.muad(ro1a, Tsat)
+    mu02 = model.muad(ro2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     
     roots, weights = lobatto(n)
     s = 0 

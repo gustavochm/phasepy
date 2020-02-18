@@ -171,6 +171,9 @@ def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     
     #Chemical potential
     mu0 = model.muad(rho1a, Tsat)
+    mu02 = model.muad(rho2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     
     #Nodes and weights of integration
     roots, weights = gauss(n)

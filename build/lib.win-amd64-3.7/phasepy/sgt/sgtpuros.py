@@ -48,7 +48,10 @@ def ten_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
     #Equilibrium chemical potential
 
     mu0 = model.muad(rova,Tad)
-    
+    mu02 = model.muad(rola, Tad)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
+        
     roi = (rola-rova) * roots + rova
     wreal = (rola-rova)*w
 

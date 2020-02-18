@@ -32,6 +32,9 @@ def ten_beta0_reference(rho1, rho2, Tsat, Psat, model, s = 0, n = 100, full_outp
     
     mu0 = model.muad(ro1a, Tsat)
     
+    mu02 = model.muad(ro2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     #roots and weights for Lobatto quadrature 
     roots, weights  = lobatto(n)
 
@@ -72,7 +75,7 @@ def ten_beta0_reference(rho1, rho2, Tsat, Psat, model, s = 0, n = 100, full_outp
         z=np.cumsum(intz*wreal)
         z /= zfactor
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : z,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : z,
         'GPT' : dom}
         out = TensionResult(dictresult)
         return out

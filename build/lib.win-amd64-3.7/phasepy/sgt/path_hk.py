@@ -25,6 +25,9 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
     
     nc = model.nc    
     mu0 = model.muad(ro1a, Tsat)
+    mu02 = model.muad(ro2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     
     cij = model.ci(Tsat)
     c1 = cij[0,0]

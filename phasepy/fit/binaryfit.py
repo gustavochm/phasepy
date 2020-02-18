@@ -61,7 +61,7 @@ def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
             g12,g21,alpha=inc
             gT = None
         
-    g=np.array([[0,g12],[g21,0]])  
+    g=np.array([[0,g12],[g21,0]])
     mix.NRTL(alpha, g, gT) 
     model = virialgama(mix)
     
@@ -122,7 +122,7 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
         Result of SciPy minimize
     """
     fit = minimize(fobj_nrtl, x0, args = (mix, dataelv, dataell, dataellv,
-              alpha_fixed, Tdep), **minimize_options)
+              alpha_fixed, alpha0, Tdep), **minimize_options)
     return fit
 
 def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):

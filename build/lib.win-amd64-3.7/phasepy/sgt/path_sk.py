@@ -33,6 +33,10 @@ def ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n = 200, full_output = False,
     
     mu0 = model.muad(ro1a, Tsat)
     
+    mu02 = model.muad(ro2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
+    
     #Path function
     s0 = sqrtci.dot(ro1a)
     s1 = sqrtci.dot(ro2a)

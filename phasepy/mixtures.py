@@ -481,6 +481,7 @@ class mixture(object):
         self.rkp = c
         if c1 is None:
             c1 = np.zeros_like(c)
+        c1 = np.atleast_2d(c1)
         self.rkpT = c1
         self.actmodelp = (c, c1, combinatory)
     

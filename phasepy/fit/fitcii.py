@@ -3,7 +3,7 @@ import numpy as np
 from ..sgt import ten_fit
 from ..math import gauss
 
-def fit_cii(tenexp, Texp, model, orden= 2, n = 100):
+def fit_cii(tenexp, Texp, model, order = 2, n = 100):
     
     """
     fit_cii fit influence parameters of SGT
@@ -33,6 +33,6 @@ def fit_cii(tenexp, Texp, model, orden= 2, n = 100):
     for i in range(len(Texp)):
         tena[i]=ten_fit(Texp[i], model, roots, weigths)
         
-    cii=(tenexp/tena)**2
+    cii = (tenexp/tena)**2
     
-    return np.polyfit(Texp,cii,orden)
+    return np.polyfit(Texp,cii,order)

@@ -29,6 +29,8 @@ def fit_wilson(x0, mix, dataelv, minimize_options = {}):
         binary mixture
     dataelv: tuple
         (Xexp, Yelv, Texp, Pexp)
+    minimize_options: dict
+        Dictionary of any additional spefication for scipy minimize
     
     Returns
     -------
@@ -41,10 +43,10 @@ def fit_wilson(x0, mix, dataelv, minimize_options = {}):
 
 
 def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
-              alpha_fixed = False, Tdep = False):
+              alpha_fixed = False, alpha0 = 0.2, Tdep = False):
     
     if alpha_fixed:
-        alpha = 0.2
+        alpha = alpha0
         if Tdep:
             g12,g21,g12T, g21T=inc
             gT=np.array([[0,g12T],[g21T,0]])
@@ -59,7 +61,7 @@ def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
             g12,g21,alpha=inc
             gT = None
         
-    g=np.array([[0,g12],[g21,0]])  
+    g=np.array([[0,g12],[g21,0]])
     mix.NRTL(alpha, g, gT) 
     model = virialgama(mix)
     
@@ -74,7 +76,8 @@ def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
     return error
 
 def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
-              alpha_fixed = False, Tdep = False, minimize_options = {}):
+              alpha_fixed = False, alpha0 = 0.2, Tdep = False, 
+              minimize_options = {}):
     """ 
     fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE 
     
@@ -91,10 +94,14 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
     dataellv: tuple, optional
         (Xexp, Wexp, Yexp, Texp, Pexp)
     alpha_fit: bool, optional
-        if True fix aleatory factor to 0.2
+        if True fix aleatory factor to the value of alpha0
+    alpha0: float
+        value of aleatory factor if fixed
     Tdep: bool, optional
         Wheter the energy parameters have a temperature dependence
-    
+    minimize_options: dict
+        Dictionary of any additional spefication for scipy minimize
+        
     Notes
     -----
     
@@ -102,9 +109,9 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
             a12 = a12_1 + a12T * T
             a21 = a21_1 + a21T * T
             
-    if alpha_fixed true and Tdep True:
+    if alpha_fixed False and Tdep True:
         x0 = [a12, a21, a12T, a21T, alpha]
-    if alpha_fixed false and Tdep False:
+    if alpha_fixed False and Tdep False:
         x0 = [a12, a21, alpha]
     if alpha_fixed True and Tdep False:
         x0 = [a12, a21]
@@ -115,7 +122,7 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
         Result of SciPy minimize
     """
     fit = minimize(fobj_nrtl, x0, args = (mix, dataelv, dataell, dataellv,
-              alpha_fixed, Tdep), **minimize_options)
+              alpha_fixed, alpha0, Tdep), **minimize_options)
     return fit
 
 def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
@@ -141,8 +148,8 @@ def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = Non
     
     Parameters
     ----------
-    kij0 : array_like
-        initial value for kij
+    kij_bounds : tuple
+        bounds for kij correction
     eos : function
         cubic eos to fit kij for qmr mixrule
     mix: object
@@ -204,16 +211,18 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None,
         (Xexp, Wexp, Yexp, Texp, Pexp)   
     Tdep : bool,
         wheter the parameter will have a temperature dependence
+    minimize_options: dict
+        Dictionary of any additional spefication for scipy minimize
         
     Notes
     -----
     
     if Tdep true:
-                    C = C' + C'T
+        C = C' + C'T
     if Tdep true:
         inc0 = [C'0, C'1, C'2, ..., C'0T, C'1T, C'2T... ]      
     if Tdep flase: 
-            inc0 = [C0, C1, C2...]
+        inc0 = [C0, C1, C2...]
             
     Returns
     -------

@@ -139,7 +139,7 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
     
     x = betatetha
     
-    while error > tol and itacc < 4:
+    while error > tol and itacc < 5:
         it += 1
         lnK_old = lnK.copy()
         
@@ -147,7 +147,7 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
         ef = 1
         ex = 1
         
-        while ef > 1e-6 and ex > 1e-6 and itin < 20:
+        while ef > 1e-8 and ex > 1e-8 and itin < 30:
             itin += 1
             f, jac, Kexp, Xref = multiflash_obj(x, z, K)
             dx = np.linalg.solve(jac,-f)
@@ -188,7 +188,7 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
         K = np.exp(lnK)
         error = ((lnK-lnK_old)**2).sum()
 
-    if error > tol and itacc == 4 and ef < 1e-6 and np.all(tetha >0):
+    if error > tol and itacc == 5 and ef < 1e-8 and np.all(tetha >0):
         global vg
         ind0 = (X.T*beta).T[1:].flatten()
         ind1 = minimize(gibbs_obj, ind0, 
