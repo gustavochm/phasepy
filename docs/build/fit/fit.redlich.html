@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="phasepy.sgt" href="../phasepy.sgt.html" />
     <link rel="prev" title="NRTL" href="fit.nrtl.html" /> 
 </head>
 
@@ -85,17 +86,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="fit.psat.html">Vapour pressure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fit.ten.html">Surface tension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fit.pure.html">Pure component data</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="fit.mixtures.html">Equilibrium data</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="fit.kij.html">Quadratic mixrule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fit.wilson.html">Wilson</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fit.nrtl.html">NRTL</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Redlich - Kister</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.mixtures.html#fitting-qmr-mixing-rule">Fitting QMR mixing rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.mixtures.html#fitting-nrtl-parameters">Fitting NRTL parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.mixtures.html#fitting-wilson-s-model-parameters">Fitting Wilson’s model parameters</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="fit.mixtures.html#fitting-redlich-kister-interaction-parameters">Fitting Redlich-Kister interaction parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="fit.kij.html">Quadratic mixrule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fit.wilson.html">Wilson</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fit.nrtl.html">NRTL</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Redlich - Kister</a></li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 </ul>
 
             
@@ -168,7 +175,7 @@
 <span id="redlich-kister"></span><h1>Redlich - Kister<a class="headerlink" href="#module-phasepy.fit.binaryfit" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_rk">
-<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>dataelv=None</em>, <em>dataell=None</em>, <em>dataellv=None</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>datavle=None</em>, <em>datalle=None</em>, <em>datavlle=None</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -177,9 +184,9 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>inc0</strong> (<em>array_like</em>) – initial values to RK parameters</li>
 <li><strong>mix</strong> (<em>object</em>) – binary mixture</li>
-<li><strong>dataelv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Yexp, Texp, Pexp)</li>
-<li><strong>dataell</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Texp, Pexp)</li>
-<li><strong>dataellv</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Yexp, Texp, Pexp)</li>
+<li><strong>datavle</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Yexp, Texp, Pexp)</li>
+<li><strong>datalle</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Texp, Pexp)</li>
+<li><strong>datavlle</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Yexp, Texp, Pexp)</li>
 <li><strong>Tdep</strong> (<em>bool</em><em>,</em>) – wheter the parameter will have a temperature dependence</li>
 <li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
@@ -217,6 +224,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../phasepy.sgt.html" class="btn btn-neutral float-right" title="phasepy.sgt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="fit.nrtl.html" class="btn btn-neutral float-left" title="NRTL" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -83,8 +83,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.html">phasepy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.sgt.html">phasepy.sgt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
             
@@ -155,7 +155,7 @@
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">minimize_scalar</span>
 
 
-<span class="k">def</span> <span class="nf">fobj_wilson</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fobj_wilson</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">):</span>
     
     <span class="n">a12</span><span class="p">,</span> <span class="n">a21</span> <span class="o">=</span> <span class="n">inc</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="n">a12</span><span class="p">],[</span><span class="n">a21</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
@@ -163,11 +163,11 @@
     <span class="n">mix</span><span class="o">.</span><span class="n">wilson</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">wilson</span><span class="p">)</span>
     
-    <span class="n">elv</span> <span class="o">=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">dataelv</span><span class="p">)</span>
+    <span class="n">elv</span> <span class="o">=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">datavle</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">elv</span>
 
-<div class="viewcode-block" id="fit_wilson"><a class="viewcode-back" href="../../../fit/fit.wilson.html#phasepy.fit.binaryfit.fit_wilson">[docs]</a><span class="k">def</span> <span class="nf">fit_wilson</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
+<div class="viewcode-block" id="fit_wilson"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_wilson">[docs]</a><span class="k">def</span> <span class="nf">fit_wilson</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_wilson: attemps to fit wilson parameters to LVE </span>
 <span class="sd">    </span>
@@ -177,7 +177,7 @@
 <span class="sd">        initial values a12, a21 in K</span>
 <span class="sd">    mix: object</span>
 <span class="sd">        binary mixture</span>
-<span class="sd">    dataelv: tuple</span>
+<span class="sd">    datavle: tuple</span>
 <span class="sd">        (Xexp, Yelv, Texp, Pexp)</span>
 <span class="sd">    minimize_options: dict</span>
 <span class="sd">        Dictionary of any additional spefication for scipy minimize</span>
@@ -188,11 +188,11 @@
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_wilson</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_wilson</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
 
-<span class="k">def</span> <span class="nf">fobj_nrtl</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">fobj_nrtl</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">alpha_fixed</span><span class="p">:</span>
@@ -217,15 +217,15 @@
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
     
-    <span class="k">if</span> <span class="n">dataelv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">dataelv</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">dataell</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataellv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">dataellv</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">datavle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datalle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">datalle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavlle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">datavlle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">error</span>
 
-<div class="viewcode-block" id="fit_nrtl"><a class="viewcode-back" href="../../../sgt/sgt.tensgt.html#phasepy.fit.binaryfit.fit_nrtl">[docs]</a><span class="k">def</span> <span class="nf">fit_nrtl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="fit_nrtl"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_nrtl">[docs]</a><span class="k">def</span> <span class="nf">fit_nrtl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
               <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
@@ -237,11 +237,11 @@
 <span class="sd">        initial values interaction parameters (and aleatory factor) </span>
 <span class="sd">    mix: object</span>
 <span class="sd">        binary mixture</span>
-<span class="sd">    dataelv: tuple, optional</span>
+<span class="sd">    datavle: tuple, optional</span>
 <span class="sd">        (Xexp, Yexp, Texp, Pexp)</span>
-<span class="sd">    dataell: tuple, optional</span>
+<span class="sd">    datalle: tuple, optional</span>
 <span class="sd">        (Xexp, Wexp, Texp, Pexp)</span>
-<span class="sd">    dataellv: tuple, optional</span>
+<span class="sd">    datavlle: tuple, optional</span>
 <span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp)</span>
 <span class="sd">    alpha_fit: bool, optional</span>
 <span class="sd">        if True fix aleatory factor to the value of alpha0</span>
@@ -271,11 +271,11 @@
 <span class="sd">    fit : OptimizeResult</span>
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_nrtl</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">,</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_nrtl</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">datalle</span><span class="p">,</span> <span class="n">datavlle</span><span class="p">,</span>
               <span class="n">alpha_fixed</span><span class="p">,</span> <span class="n">alpha0</span><span class="p">,</span> <span class="n">Tdep</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
-<span class="k">def</span> <span class="nf">fobj_kij</span><span class="p">(</span><span class="n">kij</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fobj_kij</span><span class="p">(</span><span class="n">kij</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     
 
     <span class="n">Kij</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">kij</span><span class="p">],[</span><span class="n">kij</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
@@ -283,15 +283,15 @@
     <span class="n">cubica</span><span class="o">=</span><span class="n">eos</span><span class="p">(</span><span class="n">mix</span><span class="p">)</span>
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="k">if</span> <span class="n">dataelv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">dataelv</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">dataell</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataellv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">dataellv</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">datavle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datalle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">datalle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavlle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">cubica</span><span class="p">,</span> <span class="o">*</span><span class="n">datavlle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">error</span>
 
-<div class="viewcode-block" id="fit_kij"><a class="viewcode-back" href="../../../fit/fit.kij.html#phasepy.fit.binaryfit.fit_kij">[docs]</a><span class="k">def</span> <span class="nf">fit_kij</span><span class="p">(</span><span class="n">kij_bounds</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fit_kij"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_kij">[docs]</a><span class="k">def</span> <span class="nf">fit_kij</span><span class="p">(</span><span class="n">kij_bounds</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_kij: attemps to fit kij to LVE, LLE, LLVE </span>
@@ -304,12 +304,12 @@
 <span class="sd">        cubic eos to fit kij for qmr mixrule</span>
 <span class="sd">    mix: object</span>
 <span class="sd">        binary mixture</span>
-<span class="sd">    dataelv: tuple, optional</span>
+<span class="sd">    datavle: tuple, optional</span>
 <span class="sd">        (Xexp, Yexp, Texp, Pexp)</span>
-<span class="sd">    dataell: tuple, optional</span>
+<span class="sd">    datalle: tuple, optional</span>
 <span class="sd">        (Xexp, Wexp, Texp, Pexp)</span>
-<span class="sd">    dataellv: tuple, optional</span>
-<span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp) </span>
+<span class="sd">    datavlle: tuple, optional</span>
+<span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -318,10 +318,10 @@
 <span class="sd">            </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize_scalar</span><span class="p">(</span><span class="n">fobj_kij</span><span class="p">,</span> <span class="n">kij_bounds</span><span class="p">,</span> 
-                          <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">))</span>
+                          <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">datalle</span><span class="p">,</span> <span class="n">datavlle</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
-<span class="k">def</span> <span class="nf">fobj_rk</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">fobj_rk</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">Tdep</span><span class="p">:</span>
@@ -334,16 +334,16 @@
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
     
-    <span class="k">if</span> <span class="n">dataelv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">dataelv</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">dataell</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dataellv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">dataellv</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">datavle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datalle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_ell</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">datalle</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">datavlle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">+=</span> <span class="n">fobj_hazb</span><span class="p">(</span><span class="n">modelo</span><span class="p">,</span> <span class="o">*</span><span class="n">datavlle</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">error</span>
 
-<div class="viewcode-block" id="fit_rk"><a class="viewcode-back" href="../../../fit/fit.redlich.html#phasepy.fit.binaryfit.fit_rk">[docs]</a><span class="k">def</span> <span class="nf">fit_rk</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataell</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-           <span class="n">dataellv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
+<div class="viewcode-block" id="fit_rk"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_rk">[docs]</a><span class="k">def</span> <span class="nf">fit_rk</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE </span>
 <span class="sd">    </span>
@@ -353,12 +353,12 @@
 <span class="sd">        initial values to RK parameters</span>
 <span class="sd">    mix: object</span>
 <span class="sd">        binary mixture</span>
-<span class="sd">    dataelv: tuple, optional</span>
+<span class="sd">    datavle: tuple, optional</span>
 <span class="sd">        (Xexp, Yexp, Texp, Pexp)</span>
-<span class="sd">    dataell: tuple, optional</span>
+<span class="sd">    datalle: tuple, optional</span>
 <span class="sd">        (Xexp, Wexp, Texp, Pexp)</span>
-<span class="sd">    dataellv: tuple, optional</span>
-<span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp)   </span>
+<span class="sd">    datavlle: tuple, optional</span>
+<span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp)  </span>
 <span class="sd">    Tdep : bool,</span>
 <span class="sd">        wheter the parameter will have a temperature dependence</span>
 <span class="sd">    minimize_options: dict</span>
@@ -379,7 +379,7 @@
 <span class="sd">    fit : OptimizeResult</span>
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_rk</span><span class="p">,</span> <span class="n">inc0</span> <span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">dataelv</span><span class="p">,</span> <span class="n">dataell</span><span class="p">,</span> <span class="n">dataellv</span><span class="p">,</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_rk</span><span class="p">,</span> <span class="n">inc0</span> <span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">datalle</span><span class="p">,</span> <span class="n">datavlle</span><span class="p">,</span>
                                           <span class="n">Tdep</span> <span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 

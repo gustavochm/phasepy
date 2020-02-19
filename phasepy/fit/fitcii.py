@@ -6,7 +6,7 @@ from ..math import gauss
 def fit_cii(tenexp, Texp, model, order = 2, n = 100):
     
     """
-    fit_cii fit influence parameters of SGT
+    fit influence parameters of SGT
     
     Parameters
     ----------

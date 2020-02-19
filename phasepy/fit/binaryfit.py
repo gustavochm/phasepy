@@ -5,7 +5,7 @@ from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize, minimize_scalar
 
 
-def fobj_wilson(inc, mix, dataelv):
+def fobj_wilson(inc, mix, datavle):
     
     a12, a21 = inc
     a = np.array([[0,a12],[a21,0]])
@@ -13,11 +13,11 @@ def fobj_wilson(inc, mix, dataelv):
     mix.wilson(a)
     model = virialgama(mix, actmodel = wilson)
     
-    elv = fobj_elv(model, *dataelv)
+    elv = fobj_elv(model, *datavle)
     
     return elv
 
-def fit_wilson(x0, mix, dataelv, minimize_options = {}):
+def fit_wilson(x0, mix, datavle, minimize_options = {}):
     """ 
     fit_wilson: attemps to fit wilson parameters to LVE 
     
@@ -27,7 +27,7 @@ def fit_wilson(x0, mix, dataelv, minimize_options = {}):
         initial values a12, a21 in K
     mix: object
         binary mixture
-    dataelv: tuple
+    datavle: tuple
         (Xexp, Yelv, Texp, Pexp)
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
@@ -38,11 +38,11 @@ def fit_wilson(x0, mix, dataelv, minimize_options = {}):
         Result of SciPy minimize
     
     """
-    fit = minimize(fobj_wilson, x0, args = (mix, dataelv), **minimize_options)
+    fit = minimize(fobj_wilson, x0, args = (mix, datavle), **minimize_options)
     return fit
 
 
-def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
+def fobj_nrtl(inc, mix, datavle = None, datalle = None, datavlle = None,
               alpha_fixed = False, alpha0 = 0.2, Tdep = False):
     
     if alpha_fixed:
@@ -67,15 +67,15 @@ def fobj_nrtl(inc, mix, dataelv = None, dataell = None, dataellv = None,
     
     error = 0.
     
-    if dataelv is not None:
-        error += fobj_elv(model, *dataelv)
-    if dataell is not None:
-        error += fobj_ell(model, *dataell)
-    if dataellv is not None:
-        error += fobj_hazb(model, *dataellv)
+    if datavle is not None:
+        error += fobj_elv(model, *datavle)
+    if datalle is not None:
+        error += fobj_ell(model, *datalle)
+    if datavlle is not None:
+        error += fobj_hazb(model, *datavlle)
     return error
 
-def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
+def fit_nrtl(x0, mix, datavle = None, datalle = None, datavlle = None,
               alpha_fixed = False, alpha0 = 0.2, Tdep = False, 
               minimize_options = {}):
     """ 
@@ -87,11 +87,11 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
         initial values interaction parameters (and aleatory factor) 
     mix: object
         binary mixture
-    dataelv: tuple, optional
+    datavle: tuple, optional
         (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, optional
+    datalle: tuple, optional
         (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, optional
+    datavlle: tuple, optional
         (Xexp, Wexp, Yexp, Texp, Pexp)
     alpha_fit: bool, optional
         if True fix aleatory factor to the value of alpha0
@@ -121,11 +121,11 @@ def fit_nrtl(x0, mix, dataelv = None, dataell = None, dataellv = None,
     fit : OptimizeResult
         Result of SciPy minimize
     """
-    fit = minimize(fobj_nrtl, x0, args = (mix, dataelv, dataell, dataellv,
+    fit = minimize(fobj_nrtl, x0, args = (mix, datavle, datalle, datavlle,
               alpha_fixed, alpha0, Tdep), **minimize_options)
     return fit
 
-def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
+def fobj_kij(kij, eos, mix, datavle = None, datalle = None, datavlle = None):
     
 
     Kij=np.array([[0, kij],[kij,0]])
@@ -133,15 +133,15 @@ def fobj_kij(kij, eos, mix, dataelv = None, dataell = None, dataellv = None):
     cubica=eos(mix)
     
     error = 0.
-    if dataelv is not None:
-        error += fobj_elv(cubica, *dataelv)
-    if dataell is not None:
-        error += fobj_ell(cubica, *dataell)
-    if dataellv is not None:
-        error += fobj_hazb(cubica, *dataellv)
+    if datavle is not None:
+        error += fobj_elv(cubica, *datavle)
+    if datalle is not None:
+        error += fobj_ell(cubica, *datalle)
+    if datavlle is not None:
+        error += fobj_hazb(cubica, *datavlle)
     return error
 
-def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = None):
+def fit_kij(kij_bounds, eos, mix, datavle = None, datalle = None, datavlle = None):
     
     """ 
     fit_kij: attemps to fit kij to LVE, LLE, LLVE 
@@ -154,12 +154,12 @@ def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = Non
         cubic eos to fit kij for qmr mixrule
     mix: object
         binary mixture
-    dataelv: tuple, optional
+    datavle: tuple, optional
         (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, optional
+    datalle: tuple, optional
         (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, optional
-        (Xexp, Wexp, Yexp, Texp, Pexp) 
+    datavlle: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp)
 
     Returns
     -------
@@ -168,10 +168,10 @@ def fit_kij(kij_bounds, eos, mix, dataelv = None, dataell = None, dataellv = Non
             
     """
     fit = minimize_scalar(fobj_kij, kij_bounds, 
-                          args = (eos, mix, dataelv, dataell, dataellv))
+                          args = (eos, mix, datavle, datalle, datavlle))
     return fit
 
-def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None,
+def fobj_rk(inc, mix, datavle = None, datalle = None, datavlle = None,
             Tdep = False):
     
     if Tdep:
@@ -184,16 +184,16 @@ def fobj_rk(inc, mix, dataelv = None, dataell = None, dataellv = None,
     
     error = 0.
     
-    if dataelv is not None:
-        error += fobj_elv(modelo, *dataelv)
-    if dataell is not None:
-        error += fobj_ell(modelo, *dataell)
-    if dataellv is not None:
-        error += fobj_hazb(modelo, *dataellv)
+    if datavle is not None:
+        error += fobj_elv(modelo, *datavle)
+    if datalle is not None:
+        error += fobj_ell(modelo, *datalle)
+    if datavlle is not None:
+        error += fobj_hazb(modelo, *datavlle)
     return error
 
-def fit_rk(inc0, mix, dataelv = None, dataell = None,
-           dataellv = None, Tdep = False, minimize_options = {}):
+def fit_rk(inc0, mix, datavle = None, datalle = None,
+           datavlle = None, Tdep = False, minimize_options = {}):
     """ 
     fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE 
     
@@ -203,12 +203,12 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None,
         initial values to RK parameters
     mix: object
         binary mixture
-    dataelv: tuple, optional
+    datavle: tuple, optional
         (Xexp, Yexp, Texp, Pexp)
-    dataell: tuple, optional
+    datalle: tuple, optional
         (Xexp, Wexp, Texp, Pexp)
-    dataellv: tuple, optional
-        (Xexp, Wexp, Yexp, Texp, Pexp)   
+    datavlle: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp)  
     Tdep : bool,
         wheter the parameter will have a temperature dependence
     minimize_options: dict
@@ -229,7 +229,7 @@ def fit_rk(inc0, mix, dataelv = None, dataell = None,
     fit : OptimizeResult
         Result of SciPy minimize
     """
-    fit = minimize(fobj_rk, inc0 ,args = (mix, dataelv, dataell, dataellv,
+    fit = minimize(fobj_rk, inc0 ,args = (mix, datavle, datalle, datavlle,
                                           Tdep ), **minimize_options)
     return fit
 

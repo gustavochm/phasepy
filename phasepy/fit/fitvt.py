@@ -14,7 +14,7 @@ def fobj_c(c, eos, Texp, Pexp, rhoexp):
 
 def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
     """
-    fit_vt fit Volume Traslation for cubic EoS 
+    fit Volume Translation for cubic EoS 
     
     Parameters
     ----------
@@ -26,7 +26,10 @@ def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
         experimental temperature in K.
     Pexp : array_like
         experimental pressure in bar.
-    ks0 : array_like, optional
+    rhoexp : array_like
+        experimental liquid density at given temperature and
+        pressure in mol/cm3.
+    c0 : float, optional
         initial values.
     
     Returns

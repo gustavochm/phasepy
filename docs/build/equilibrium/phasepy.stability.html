@@ -200,43 +200,6 @@
 <span class="go">array([0.16434071, 0.83565929]), 0.24576563932346407</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="findind-all-minimums">
-<h2>Findind all minimums<a class="headerlink" href="#findind-all-minimums" title="Permalink to this headline">¶</a></h2>
-<p>Sometimes might be usefull to find all the minimas of a given mixture, for that case phasepy will try to find them using different initial guesses until the number of requested minimas is found. In the next example three minimias where requested.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">tpd_minimas</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Search for trial phase</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.99</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">nmin</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimuns found and tpd values</span>
-<span class="go">(array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586]), array([0.99538258, 0.00461742])),</span>
-<span class="go">array([-0.33722905, -0.00592392, -0.33722905])</span>
-</pre></div>
-</div>
-<p>Similar as the first example, all the minimas in vapor phase can be found, in this case there only one minimum.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimuns found and tpd values</span>
-<span class="go">(array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578])),</span>
-<span class="go">array([0.24576564, 0.24576564, 0.24576564]))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="liquid-liquid-equilibrium-initiation">
-<h2>Liquid liquid equilibrium initiation<a class="headerlink" href="#liquid-liquid-equilibrium-initiation" title="Permalink to this headline">¶</a></h2>
-<p>Using the same principles stated above, tpd function can be used to generate initial guesses for liquid liquid equilibra, the function ell_init allows to find two minimas of the mixture.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">ell_init</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ell_init</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1">#initial values for ell computation</span>
-<span class="go">array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])</span>
-</pre></div>
-</div>
 <span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
 <dt id="phasepy.equilibrium.stability.tpd_min">
 <code class="descname">tpd_min</code><span class="sig-paren">(</span><em>W</em>, <em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>stateW</em>, <em>stateZ</em>, <em>vw=None</em>, <em>vz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_min" title="Permalink to this definition">¶</a></dt>
@@ -269,6 +232,30 @@
 </table>
 </dd></dl>
 
+</div>
+<div class="section" id="findind-all-minimums">
+<h2>Findind all minimums<a class="headerlink" href="#findind-all-minimums" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes might be usefull to find all the minimas of a given mixture, for that case phasepy will try to find them using different initial guesses until the number of requested minimas is found. In the next example three minimias where requested.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">tpd_minimas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Search for trial phase</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.99</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nmin</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimuns found and tpd values</span>
+<span class="go">(array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586]), array([0.99538258, 0.00461742])),</span>
+<span class="go">array([-0.33722905, -0.00592392, -0.33722905])</span>
+</pre></div>
+</div>
+<p>Similar as the first example, all the minimas in vapor phase can be found, in this case there only one minimum.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimuns found and tpd values</span>
+<span class="go">(array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578])),</span>
+<span class="go">array([0.24576564, 0.24576564, 0.24576564]))</span>
+</pre></div>
+</div>
 <span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
 <dt id="phasepy.equilibrium.stability.tpd_minimas">
 <code class="descname">tpd_minimas</code><span class="sig-paren">(</span><em>nmin</em>, <em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>stateW</em>, <em>stateZ</em>, <em>vw=None</em>, <em>vz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_minimas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_minimas" title="Permalink to this definition">¶</a></dt>
@@ -301,6 +288,19 @@
 </table>
 </dd></dl>
 
+</div>
+<div class="section" id="liquid-liquid-equilibrium-initiation">
+<h2>Liquid liquid equilibrium initiation<a class="headerlink" href="#liquid-liquid-equilibrium-initiation" title="Permalink to this headline">¶</a></h2>
+<p>Using the same principles stated above, tpd function can be used to generate initial guesses for liquid liquid equilibra, the function ell_init allows to find two minimas of the mixture.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">ell_init</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ell_init</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#initial values for ell computation</span>
+<span class="go">array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])</span>
+</pre></div>
+</div>
 <span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
 <dt id="phasepy.equilibrium.stability.ell_init">
 <code class="descname">ell_init</code><span class="sig-paren">(</span><em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>v0=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#ell_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.ell_init" title="Permalink to this definition">¶</a></dt>

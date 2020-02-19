@@ -45,6 +45,12 @@ bubbleTy( y0, T0, x, P, eos)
 >>> # y, T
 (array([0.90359832, 0.09640168]), 343.8666585139102)
 
+.. automodule:: phasepy.equilibrium.bubble
+    :members: bubbleTy
+    :undoc-members:
+    :show-inheritance:
+
+
 
 In the following case a saturated liquid of known composition and temperature is forming a differential size bubble. We need to find composition and pressure of equilibrium.
 
@@ -56,6 +62,12 @@ In the following case a saturated liquid of known composition and temperature is
 >>> bubblePy(y0, P0, x, T, eos)
 >>> # y , P
 (array([0.90955224, 0.09044776]), 0.8988497535228545)
+
+.. automodule:: phasepy.equilibrium.bubble
+    :members: bubblePy
+    :undoc-members:
+    :show-inheritance:
+
 
 dew points
 ##########
@@ -93,6 +105,12 @@ In the following code block and example from this computation it is shown for co
 >>> x, P
 array([0.20224128, 0.79775872]), 1.0478247387561512
 
+.. automodule:: phasepy.equilibrium.dew
+    :members: dewPx
+    :undoc-members:
+    :show-inheritance:
+
+
 Similarly, the calculation can be done for equilibria comosition and temperature:
 
 >>> y = np.array([0.5,0.5])
@@ -103,23 +121,6 @@ Similarly, the calculation can be done for equilibria comosition and temperature
 >>> # x, T
 array([0.19854812, 0.80145188]), 338.85030223879545
 
-
-
-
-.. automodule:: phasepy.equilibrium.bubble
-    :members: bubblePy
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: phasepy.equilibrium.bubble
-    :members: bubbleTy
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: phasepy.equilibrium.dew
-    :members: dewPx
-    :undoc-members:
-    :show-inheritance:
 
 .. automodule:: phasepy.equilibrium.dew
     :members: dewTx

@@ -43,6 +43,12 @@ In the following code block and example of how to solve this problem it is shown
 >>> #x, w, beta
 array([0.15601096, 0.84398904]), array([0.99289324, 0.00710676]), 0.41103635397012755
 
+.. automodule:: phasepy.equilibrium.ell
+    :members: ell
+    :undoc-members:
+    :show-inheritance:
+
+
 Three phase equilibrium
 #######################
 
@@ -69,6 +75,11 @@ For degrees of freedom's restriction, a systems of equations has to be solved fo
 >>> array([0.17165664, 0.82834336]) , array([0.99256232, 0.00743768]),
 ... array([0.15177621, 0.84822379]),  array([327.6066936])
 
+.. automodule:: phasepy.equilibrium.hazb
+    :members: ellvb
+    :undoc-members:
+    :show-inheritance:
+
 
 
 Multicomponent mixtures
@@ -87,36 +98,24 @@ When working with multicomponent mixtures (3 or more) a multiflhas has to be per
 >>> model = virialgama(mix, actmodel = unifac)
 >>> P = 1.01 #bar
 >>> T = 328.5
+>>> Z = np.array([0.5, 0.44, 0.06])
 >>> #initial guess
 >>> x0 = np.array([0.95, 0.025, 0.025]),
 >>> w0 =  np.array([0.4, 0.5 , 0.1])
 >>> y0 = np.array([0.15,0.8,0.05])
->>> ellv(x0, w0, y0, T, P, model, full_output = True)
+>>> ellv(x0, w0, y0, Z, T, P, model, full_output = True)
 ... T: 328.5
 ... P: 1.01
-... error_outer: 8.153105081394752e-11
-... error_inner: 1.7587926210834326e-10
+... error_outer: 8.996084220393732e-11
+... error_inner: 1.546532851106652e-10
 ... iter: 2
-... beta: array([0.4189389 , 0.18145858, 0.39960252])
+... beta: array([0.41457829, 0.22478609, 0.36063562])
 ... tetha: array([0., 0., 0.])
-... X: array([[0.94674077, 0.01222667, 0.04103255],
-...        [0.23284951, 0.67121796, 0.09593252],
-...        [0.15295429, 0.78764814, 0.05939758]])
+... X: array([[0.946738  , 0.01222701, 0.04103499],
+...       [0.23285379, 0.67120789, 0.09593832],
+...       [0.15295408, 0.78764474, 0.05940118]])
 ... v: [None, None, None]
 ... states: ['L', 'L', 'V']
-
-
-
-
-.. automodule:: phasepy.equilibrium.ell
-    :members: ell
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: phasepy.equilibrium.hazb
-    :members: ellvb
-    :undoc-members:
-    :show-inheritance:
 
 
 .. automodule:: phasepy.equilibrium.hazt

@@ -40,6 +40,11 @@ As the tpd value at the minimum is negative it means that the phase is unstable 
 >>> #composition of minimum found and tpd value
 array([0.16434071, 0.83565929]), 0.24576563932346407
 
+.. automodule:: phasepy.equilibrium.stability
+    :members: tpd_min
+    :undoc-members:
+    :show-inheritance:
+
 
 
 Findind all minimums
@@ -66,6 +71,11 @@ Similar as the first example, all the minimas in vapor phase can be found, in th
 (array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578])),
 array([0.24576564, 0.24576564, 0.24576564]))
 
+.. automodule:: phasepy.equilibrium.stability
+    :members: tpd_minimas
+    :undoc-members:
+    :show-inheritance:
+
 
 Liquid liquid equilibrium initiation
 ------------------------------------
@@ -79,16 +89,6 @@ Using the same principles stated above, tpd function can be used to generate ini
 >>> ell_init(z, T, P, model)
 >>> #initial values for ell computation
 array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])
-
-.. automodule:: phasepy.equilibrium.stability
-    :members: tpd_min
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: phasepy.equilibrium.stability
-    :members: tpd_minimas
-    :undoc-members:
-    :show-inheritance:
 
 
 .. automodule:: phasepy.equilibrium.stability
