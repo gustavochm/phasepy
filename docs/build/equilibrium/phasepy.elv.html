@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Liquid Liquid Equilibrium" href="phasepy.ell.html" />
+    <link rel="next" title="Multiphase Flash" href="phasepy.multiflash.html" />
     <link rel="prev" title="Two phase Flash" href="phasepy.flash.html" /> 
 </head>
 
@@ -91,12 +91,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#dew-points">dew points</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.ell.html">Liquid Liquid Equilibrium</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.haz.html">Three phase equilibrium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.multiflash.html">Multiphase Flash</a></li>
 <li class="toctree-l2"><a class="reference internal" href="phasepy.stability.html">Stability</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 </ul>
 
             
@@ -266,7 +266,7 @@ equations of the phase envelope method is used as objective function.</p>
 <li><strong>x</strong> (<em>array_like</em>) – liquid phase composition</li>
 <li><strong>T</strong> (<em>float</em>) – absolute temperature of the liquid in K.</li>
 <li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
-<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive substitution and solves by Newton’s Method.</li>
 <li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
 <li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
 </ul>
@@ -301,7 +301,7 @@ equations of the phase envelope method is used as objective function.</p>
 <li><strong>x</strong> (<em>array_like</em>) – liquid phase composition</li>
 <li><strong>P</strong> (<em>float</em>) – pressure of the liquid in bar</li>
 <li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
-<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive substitution and solves by Newton’s Method.</li>
 <li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
 <li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
 </ul>
@@ -336,7 +336,7 @@ equations of the phase envelope method is used as objective function.</p>
 <li><strong>y</strong> (<em>array_like</em>) – vapour phase composition</li>
 <li><strong>T</strong> (<em>float</em>) – temperaure of the vapour in K</li>
 <li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
-<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive substitution and solves by Newton’s Method.</li>
 <li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
 <li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
 </ul>
@@ -371,7 +371,7 @@ equations of the phase envelope method is used as objective function.</p>
 <li><strong>y</strong> (<em>array_like</em>) – vapour phase composition</li>
 <li><strong>P</strong> (<em>float</em>) – pressure of the liquid in bar</li>
 <li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
-<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive sustitution and solves by Newton’s Method.</li>
+<li><strong>good_initial</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True skip succesive substitution and solves by Newton’s Method.</li>
 <li><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
 <li><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</li>
 </ul>
@@ -399,7 +399,7 @@ equations of the phase envelope method is used as objective function.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="phasepy.ell.html" class="btn btn-neutral float-right" title="Liquid Liquid Equilibrium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="phasepy.multiflash.html" class="btn btn-neutral float-right" title="Multiphase Flash" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="phasepy.flash.html" class="btn btn-neutral float-left" title="Two phase Flash" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

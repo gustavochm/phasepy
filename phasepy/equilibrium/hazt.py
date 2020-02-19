@@ -85,7 +85,7 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
     model : object
         Created from mixture, eos and mixrule 
     good_initial: bool, optional
-        if True skip Gupta's methodand solves full system of equations.
+        if True skip Gupta's method and solves full system of equations.
     v0 : list, optional
          if supplied volume used as initial value to compute fugacities
     full_output: bool, optional
@@ -205,7 +205,7 @@ def ellv(X0, W0, Y0, Z, T, P, model, v0 = [None, None, None], full_output = Fals
     model : object
         Created from mixture, eos and mixrule 
     good_initial: bool, optional
-        if True skip Gupta's methodand solves full system of equations.
+        if True skip Gupta's method and solves full system of equations.
     v0 : list, optional
          if supplied volume used as initial value to compute fugacities
     full_output: bool, optional

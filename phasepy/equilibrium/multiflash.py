@@ -105,6 +105,12 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None], full_out
     
     Returns
     -------
+    X : array_like
+        composition values matrix
+    beta : array_like
+        phase fraction array
+    theta : array_like
+        stability variables arrays
     
     """
     

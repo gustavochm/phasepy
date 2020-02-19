@@ -30,10 +30,11 @@ def haz_objb(inc, T_P, tipo, modelo, v0):
 
 
 def ellvb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_output = False):
+    
     '''
-    ellvb (T,P) -> (x,w,y)
     
     Solves liquid liquid vapour equilibrium for binary mixtures. 
+    (T,P) -> (x,w,y)
     
     Parameters
     ----------
@@ -52,8 +53,6 @@ def ellvb(X0, W0, Y0, P_T, T_P, spec , model, v0 = [None, None, None], full_outp
         'T' if T_P is temperature or 'P' if pressure.
     model : object
         created from mixture, eos and mixrule 
-    good_initial: bool, optional
-        if True skip sucesive sustitution and solves by Newton's Method.
     v0 : list, optional
         if supplied volume used as initial value to compute fugacities
     full_output: bool, optional

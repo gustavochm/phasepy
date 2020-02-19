@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.html">phasepy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../phasepy.fit.html">phasepy.fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../phasepy.sgt.html">phasepy.sgt</a></li>
 </ul>
 
             
@@ -179,10 +180,11 @@
 
 
 <div class="viewcode-block" id="ellvb"><a class="viewcode-back" href="../../../equilibrium/phasepy.multiflash.html#phasepy.equilibrium.hazb.ellvb">[docs]</a><span class="k">def</span> <span class="nf">ellvb</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">W0</span><span class="p">,</span> <span class="n">Y0</span><span class="p">,</span> <span class="n">P_T</span><span class="p">,</span> <span class="n">T_P</span><span class="p">,</span> <span class="n">spec</span> <span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ellvb (T,P) -&gt; (x,w,y)</span>
 <span class="sd">    </span>
 <span class="sd">    Solves liquid liquid vapour equilibrium for binary mixtures. </span>
+<span class="sd">    (T,P) -&gt; (x,w,y)</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -201,8 +203,6 @@
 <span class="sd">        &#39;T&#39; if T_P is temperature or &#39;P&#39; if pressure.</span>
 <span class="sd">    model : object</span>
 <span class="sd">        created from mixture, eos and mixrule </span>
-<span class="sd">    good_initial: bool, optional</span>
-<span class="sd">        if True skip sucesive sustitution and solves by Newton&#39;s Method.</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
 <span class="sd">    full_output: bool, optional</span>

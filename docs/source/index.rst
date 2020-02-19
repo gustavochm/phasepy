@@ -85,6 +85,8 @@ To report bugs, please use the phasepy's Bug Tracker at:
    phasepy
    phasepy.equilibrium
    phasepy.fit
+   phasepy.sgt
+
 
 Indices and Search
 ==================

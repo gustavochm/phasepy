@@ -1,8 +1,7 @@
 ﻿"""
-phasepy.equilibrium: phase equiliibria with Python 
+phasepy.equilibrium: phase equilibria with Python 
 =======================================================
 
-    
 
 Functions
 ---------
@@ -14,12 +13,11 @@ flash : istohermal isobaric two phase flash z, T, P -> x,y,beta
 ell : liquid liquid equilibrium  z, T, P -> x, w, beta
 ell_init : finds initial guess for ell 
 multiflash : multiflash algorithm that checks stability of the phases
-hazb : heteroazetropic calculation (llve) for binary mixtures
-haz : heteroazetropic calculation (llve) for multicomponent mixtures
-ellv_mf: llve equilibrium perfominf a multiflash
+ellvb : heteroazetropic calculation (VLLE) for binary mixtures
+ellv : heteroazetropic calculation (VLLE) for multicomponent mixtures
 
-tpd : Michelsen tpd functionfuncion 
-tpd_mim : finds a minimum of tpd function given a iniial guess
+tpd : Michelsen tpd function
+tpd_mim : finds a minimum of tpd function given a initial guess
 tpd_minimas : tries to find n minimas of tpd function
 
 

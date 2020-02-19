@@ -4,9 +4,12 @@ from scipy.optimize import minimize
 
 def tpd(X, state, Z, T, P, model, v0 = [None, None]):
     """
-    tpd (x, state, z, T, P, model)
+
     Michelsen's Adimentional tangent plane function 
     
+    tpd (x, state, z, T, P, model)
+        
+        
     Parameters
     ----------
     X : array_like
@@ -53,8 +56,10 @@ def tpd_obj(a, T , P, di, model, state, v0):
 def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     
     """
-    tpd_min (W, Z, T, P, model, stateW, stateZ)
+
     Found a minimiun of Michelsen's Adimentional tangent plane function 
+    
+    tpd_min (W, Z, T, P, model, stateW, stateZ)
     
     Parameters
     ----------
@@ -66,9 +71,9 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     P:  absolute pressure in bar
     model : object create from mixture, eos and mixrule
     stateW : string
-        'L' for liquid phase, 'V' for vapour phase
+        'L' for liquid phase, 'V' for vapor phase
     stateZ : string
-        'L' for liquid phase, 'V' for vapour phase
+        'L' for liquid phase, 'V' for vapor phase
     vw, vz: float, optional
         initial volume value to compute fugacities of phases
     
@@ -101,8 +106,10 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
 def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     
     """
-    tpd_minimas (nmin, Z, T, P, model, stateW, stateZ)
+
     Found nmin minimuns of Michelsen's Adimentional tangent plane function 
+    
+    tpd_minimas (nmin, Z, T, P, model, stateW, stateZ)
     
     Parameters
     ----------
@@ -201,6 +208,7 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     return tuple(all_minima), np.array(f_minima)
 
 def ell_init(Z , T, P, model, v0 = None):
+    
     """
     Minimize tpd function to initiate ELL at fixed T and P.
     
