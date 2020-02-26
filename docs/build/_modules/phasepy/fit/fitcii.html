@@ -153,7 +153,7 @@
 <span class="kn">from</span> <span class="nn">..sgt</span> <span class="k">import</span> <span class="n">ten_fit</span>
 <span class="kn">from</span> <span class="nn">..math</span> <span class="k">import</span> <span class="n">gauss</span>
 
-<div class="viewcode-block" id="fit_cii"><a class="viewcode-back" href="../../../fit/fit.pure.html#phasepy.fit.fitcii.fit_cii">[docs]</a><span class="k">def</span> <span class="nf">fit_cii</span><span class="p">(</span><span class="n">tenexp</span><span class="p">,</span> <span class="n">Texp</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="fit_cii"><a class="viewcode-back" href="../../../fit/fit.pure.html#phasepy.fit.fitcii.fit_cii">[docs]</a><span class="k">def</span> <span class="nf">fit_cii</span><span class="p">(</span><span class="n">tenexp</span><span class="p">,</span> <span class="n">Texp</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">P0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    fit influence parameters of SGT</span>
@@ -170,6 +170,8 @@
 <span class="sd">        order of cii polynomial </span>
 <span class="sd">    n : int, optional</span>
 <span class="sd">        number of integration points in SGT</span>
+<span class="sd">    P0 : array_like , optional</span>
+<span class="sd">        initial guess for saturation pressure</span>
 <span class="sd">        </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -179,9 +181,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">roots</span><span class="p">,</span> <span class="n">weigths</span> <span class="o">=</span> <span class="n">gauss</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="n">tena</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">tenexp</span><span class="p">)</span>
+    <span class="n">neq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Texp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">P0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">psat0</span> <span class="o">=</span> <span class="n">neq</span> <span class="o">*</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">P0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">neq</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;P0 lenght must be the same as Texp&#39;</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Texp</span><span class="p">)):</span>
-        <span class="n">tena</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">ten_fit</span><span class="p">(</span><span class="n">Texp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">model</span><span class="p">,</span> <span class="n">roots</span><span class="p">,</span> <span class="n">weigths</span><span class="p">)</span>
+        <span class="n">tena</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">ten_fit</span><span class="p">(</span><span class="n">Texp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">model</span><span class="p">,</span> <span class="n">roots</span><span class="p">,</span> <span class="n">weigths</span><span class="p">,</span> <span class="n">psat0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         
     <span class="n">cii</span> <span class="o">=</span> <span class="p">(</span><span class="n">tenexp</span><span class="o">/</span><span class="n">tena</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
     

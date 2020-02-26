@@ -1,8 +1,10 @@
-NRTL
-====
+SGT for pure components
+=======================
 
-.. automodule:: phasepy.sgt.ten_pure
-    :members: ten_pure
+
+
+.. automodule:: phasepy.sgt.sgtpuros
+    :members: sgt_pure
     :undoc-members:
     :show-inheritance:
 

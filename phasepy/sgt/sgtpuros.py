@@ -32,7 +32,34 @@ def ten_fit(T, model, roots, weigths, P0 = None):
     
     return ten 
 
-def ten_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
+def sgt_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
+    
+    """
+    SGT for pure component (rhol, rhov, T, P) -> interfacial tension
+    
+    Parameters
+    ----------
+    rhov : float
+        liquid phase density
+    rhol : float
+        vapor phase density
+    Tsat : float
+        saturation temperature
+    Psat : float
+        saturation pressure
+    model : object
+        created with an EoS
+    n : int, optional
+        number of collocation points for IFT integration
+    full_output : bool, optional
+        wheter to outputs all calculation info
+        
+    
+    Returns
+    -------
+    ten : float
+        interfacial tension between the phases
+    """
     
     #roots and weights of Gauss quadrature
     roots, w = gauss(n)
@@ -50,7 +77,7 @@ def ten_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
     mu0 = model.muad(rova,Tad)
     mu02 = model.muad(rola, Tad)
     if not np.allclose(mu0, mu02):
-        raise Exception('Not equilibria compositions, mu1 != mu2')
+        raise Exception('Not equilibria compositions, mul != muv')
         
     roi = (rola-rova) * roots + rova
     wreal = (rola-rova)*w

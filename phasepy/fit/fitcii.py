@@ -3,7 +3,7 @@ import numpy as np
 from ..sgt import ten_fit
 from ..math import gauss
 
-def fit_cii(tenexp, Texp, model, order = 2, n = 100):
+def fit_cii(tenexp, Texp, model, order = 2, n = 100, P0 = None):
     
     """
     fit influence parameters of SGT
@@ -20,6 +20,8 @@ def fit_cii(tenexp, Texp, model, order = 2, n = 100):
         order of cii polynomial 
     n : int, optional
         number of integration points in SGT
+    P0 : array_like , optional
+        initial guess for saturation pressure
         
     Returns
     -------
@@ -29,9 +31,15 @@ def fit_cii(tenexp, Texp, model, order = 2, n = 100):
     """
     roots, weigths = gauss(n)
     tena = np.zeros_like(tenexp)
+    neq = len(Texp)
+    if P0 is None:
+        psat0 = neq * [None]
+    else: 
+        if len(P0) != neq:
+            raise Exception('P0 lenght must be the same as Texp')
     
     for i in range(len(Texp)):
-        tena[i]=ten_fit(Texp[i], model, roots, weigths)
+        tena[i]=ten_fit(Texp[i], model, roots, weigths, psat0[i])
         
     cii = (tenexp/tena)**2
     
