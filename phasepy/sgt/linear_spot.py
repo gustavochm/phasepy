@@ -9,7 +9,34 @@ def fobj_saddle(ros, mu0, T, eos):
     mu = eos.muad(ros, T)
     return mu - mu0
 
-def ten_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
+def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
+    
+    """
+    SGT linear for mixtures and beta = 0 (rho1, rho2, T, P) -> interfacial tension
+    
+    Parameters
+    ----------
+    rho1 : float
+        phase 1 density vector
+    rho2 : float
+        phase 2 density vector
+    Tsat : float
+        saturation temperature
+    Psat : float
+        saturation pressure
+    model : object
+        created with an EoS
+    n : int, optional
+        number points to solve density profiles
+    full_output : bool, optional
+        wheter to outputs all calculation info
+
+    Returns
+    -------
+    ten : float
+        interfacial tension between the phases
+    """
+    
 
     #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
@@ -61,7 +88,33 @@ def ten_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
     
     return tension
     
-def ten_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
+def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
+    
+    """
+    SGT spot for mixtures and beta = 0 (rho1, rho2, T, P) -> interfacial tension
+    
+    Parameters
+    ----------
+    rho1 : float
+        phase 1 density vector
+    rho2 : float
+        phase 2 density vector
+    Tsat : float
+        saturation temperature
+    Psat : float
+        saturation pressure
+    model : object
+        created with an EoS
+    n : int, optional
+        number points to solve density profiles
+    full_output : bool, optional
+        wheter to outputs all calculation info
+
+    Returns
+    -------
+    ten : float
+        interfacial tension between the phases
+    """
     
     #adimensionalizar variables 
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)

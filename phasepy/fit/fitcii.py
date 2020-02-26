@@ -37,6 +37,8 @@ def fit_cii(tenexp, Texp, model, order = 2, n = 100, P0 = None):
     else: 
         if len(P0) != neq:
             raise Exception('P0 lenght must be the same as Texp')
+        else:
+            psat0 = P0
     
     for i in range(len(Texp)):
         tena[i]=ten_fit(Texp[i], model, roots, weigths, psat0[i])

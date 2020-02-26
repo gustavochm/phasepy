@@ -1,4 +1,5 @@
-from .linear_spot import ten_linear, ten_spot
+from __future__ import division, print_function, absolute_import
+import numpy as np
 from .path_sk import ten_beta0_sk
 from .path_hk import ten_beta0_hk
 from .reference_component import ten_beta0_reference
@@ -41,6 +42,14 @@ def sgt_mix_beta0(rho1, rho2, Tsat, Psat, model, n = 100, method = 'reference',
         interfacial tension between the phases
     """
     
+    cij = model.ci(Tsat)
+    cij /= cij[0,0]
+    dcij = np.linalg.det(cij)
+    if not np.isclose(dcij, 0):
+        raise Exception('Influece parameter matrix is not singular probably a beta has been set up.')
+                        
+
+        
     if method == 'reference':
         ten_beta0_reference(rho1, rho2, Tsat, Psat, model, s, n, full_output)
     elif method == 'cornelisse':

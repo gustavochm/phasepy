@@ -24,9 +24,47 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     return fo.flatten()
 
 
-def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
-            z0 = 10, dz = 1.5, itmax = 10, n = 20, full_output = False,
+def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
+            z0 = 10., dz = 1.5, itmax = 10, n = 20, full_output = False,
             ten_tol = 1e-2, solver_opt = None):
+    
+    """
+    SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
+    
+    Parameters
+    ----------
+    rho1 : float
+        phase 1 density vector
+    rho2 : float
+        phase 2 density vector
+    Tsat : float
+        saturation temperature
+    Psat : float
+        saturation pressure
+    model : object
+        created with an EoS
+    rho0 : string, array_like or TensionResult
+        inital values to solve the BVP, avaialable options are 'linear' for
+        linear density profiles, 'hyperbolic' for hyperbolic like density profiles.
+        An array can also be supplied or a TensionResult of a previous calculation. 
+    z0 :  float
+        initial interfacial lenght
+    dz : float
+        increase in interfacial lenght per interation
+    itmax : int
+        maximun number of iterations
+    n : int, optional
+        number points to solve density profiles
+    full_output : bool, optional
+        wheter to outputs all calculation info
+    solver_opt : dict, optional
+        aditional solver options passed to SciPy solver
+    
+    Returns
+    -------
+    ten : float
+        interfacial tension between the phases
+    """
     
     z = z0
     nc = model.nc
@@ -46,6 +84,9 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     
     #Chemical potential
     mu0 = model.muad(rho1a, Tsat)
+    mu02 = model.muad(rho2a, Tsat)
+    if not np.allclose(mu0, mu02):
+        raise Exception('Not equilibria compositions, mu1 != mu2')
     
     #Nodes and weights of integration
     roots, weights = gauss(n)
@@ -151,8 +192,42 @@ def ten_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     return ten
 
 #Function for solving sgt for a fixed interfacial lenght
-def tenzfixed_sgt(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
+def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z = 10, n = 20, full_output = False, solver_opt = None):
+    
+    """
+    SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
+    
+    Parameters
+    ----------
+    rho1 : float
+        phase 1 density vector
+    rho2 : float
+        phase 2 density vector
+    Tsat : float
+        saturation temperature
+    Psat : float
+        saturation pressure
+    model : object
+        created with an EoS
+    rho0 : string, array_like or TensionResult
+        inital values to solve the BVP, avaialable options are 'linear' for
+        linear density profiles, 'hyperbolic' for hyperbolic like density profiles.
+        An array can also be supplied or a TensionResult of a previous calculation. 
+    z :  float
+        initial interfacial lenght
+    n : int, optional
+        number points to solve density profiles
+    full_output : bool, optional
+        wheter to outputs all calculation info
+    solver_opt : dict, optional
+        aditional solver options passed to SciPy solver
+    
+    Returns
+    -------
+    ten : float
+        interfacial tension between the phases
+    """
     
     nc = model.nc
     

@@ -187,6 +187,8 @@
     <span class="k">else</span><span class="p">:</span> 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">P0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">neq</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;P0 lenght must be the same as Texp&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">psat0</span> <span class="o">=</span> <span class="n">P0</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Texp</span><span class="p">)):</span>
         <span class="n">tena</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">ten_fit</span><span class="p">(</span><span class="n">Texp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">model</span><span class="p">,</span> <span class="n">roots</span><span class="p">,</span> <span class="n">weigths</span><span class="p">,</span> <span class="n">psat0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
