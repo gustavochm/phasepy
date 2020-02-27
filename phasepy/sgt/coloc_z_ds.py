@@ -111,7 +111,7 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'hyperbolic',
 
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
-        _ro0 = rho0.ro
+        _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)  
         rointer *= rofactor
@@ -176,7 +176,7 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'hyperbolic',
         ro = np.insert(rointer, 0, rho1a, axis = 1)
         ro = np.insert(ro, n+1, rho2a, axis = 1)
         ro /= rofactor
-        dictresult = {'tension' : ten, 'ro': ro, 'z' : znodes,
+        dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]), 'error':error}
         out = TensionResult(dictresult)
         return out

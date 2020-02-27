@@ -6,6 +6,7 @@ from scipy.optimize import root
 from ..math import gdem
 from .equilibriumresult import EquilibriumResult
 
+'''
 def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
     
     if tipo == 'T':
@@ -25,6 +26,7 @@ def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
     n = 5
     Y_calc=y_guess
     Y=y_guess
+    
 
     while error > tol and itacc < 3:
         niter+=1
@@ -57,6 +59,62 @@ def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
         f0 = np.log(Y_calc.sum())
        
     return f0, Y, lnK, vl, vv0
+'''
+
+def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
+    
+    if tipo == 'T':
+        P=P_T
+        T=T_P
+    elif tipo == 'P':
+        T=P_T
+        P=T_P
+    
+    #Liquid fugacities
+    lnphil, vl =eos.logfugef(X,T,P,'L', vl0)
+    
+    tol=1e-8
+    error=1
+    itacc = 0
+    niter=0
+    n = 5
+    Y_calc=y_guess
+    Y=y_guess
+    
+    #Vapour fugacities 
+    lnphiv, vv = eos.logfugef(Y,T,P,'V', vv0)
+
+
+    while error > tol and itacc < 3:
+        niter+=1
+        
+        lnK = lnphil-lnphiv
+        K=np.exp(lnK)
+        Y_calc_old=Y_calc
+        Y_calc=X*K
+
+        if niter == (n-3):
+            Y3 = Y_calc
+        elif niter == (n-2):
+            Y2 = Y_calc
+        elif niter == (n-1):
+            Y1 = Y_calc
+        elif niter == n:
+            niter = 0 
+            itacc += 1
+            dacc = gdem(Y, Y1, Y2, Y3)
+            Y_calc += dacc
+        error=((Y_calc-Y_calc_old)**2).sum()
+        Y=Y_calc/Y_calc.sum()
+        #Vapour fugacities 
+        lnphiv, vv = eos.logfugef(Y,T,P,'V', vv)
+    
+    if tipo == 'T':
+        f0 = Y_calc.sum() - 1
+    elif tipo == 'P':
+        f0 = np.log(Y_calc.sum())
+       
+    return f0, Y, lnK, vl, vv
 
 def bubble_newton(inc,X,T_P,tipo, eos, vl0, vv0):
     global vl, vv
@@ -138,8 +196,8 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
     
     while error > tol and it <= itmax and not good_initial:
         it += 1
-        f, Y, lnK, vl, vv = bubble_sus(P, X, T, 'T', Y, model, vl, vv)
         f1, Y1, lnK1, vl, vv = bubble_sus( P + h ,X, T,'T',Y, model, vl, vv)
+        f, Y, lnK, vl, vv = bubble_sus(P, X, T, 'T', Y, model, vl, vv)
         df = (f1-f)/h
         P -= f/df
         error = np.abs(f)

@@ -142,8 +142,8 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
     
     while error > tol and it <= itmax and not good_initial:
         it += 1
-        f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', X, model, vl, vv)
         f1, X1, lnK1, vl, vv = dew_sus( P + h , y, T,'T', X, model, vl, vv)
+        f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', X, model, vl, vv)
         df = (f1-f)/h
         P -= f/df
         error = np.abs(f)

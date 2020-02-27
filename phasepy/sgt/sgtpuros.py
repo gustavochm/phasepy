@@ -80,7 +80,7 @@ def sgt_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
         raise Exception('Not equilibria compositions, mul != muv')
         
     roi = (rola-rova) * roots + rova
-    wreal = (rola-rova)*w
+    wreal = np.abs((rola-rova)*w)
 
     dOm = np.zeros(n)
     for i in range(n):
@@ -95,7 +95,7 @@ def sgt_pure(rhov, rhol, Tsat, Psat, model, n = 100, full_output = False):
         z = np.cumsum(wreal*zint)
         z *= zfactor
         roi /= rofactor
-        dictresult = {'tension' : ten, 'ro': roi, 'z' : z,
+        dictresult = {'tension' : ten, 'rho': roi, 'z' : z,
         'GPT' : dOm}
         out = TensionResult(dictresult)
         return out
