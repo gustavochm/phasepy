@@ -1,23 +1,25 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..actmodels import virialgama, wilson, rk
+from ..actmodels import Tsonopoulos
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize, minimize_scalar
 
 
-def fobj_wilson(inc, mix, datavle):
+def fobj_wilson(inc, mix, datavle, virialmodel = Tsonopoulos):
     
     a12, a21 = inc
     a = np.array([[0,a12],[a21,0]])
     
     mix.wilson(a)
-    model = virialgama(mix, actmodel = wilson)
+    model = virialgama(mix, virialmodel = virialmodel, actmodel = wilson)
     
     elv = fobj_elv(model, *datavle)
     
     return elv
 
-def fit_wilson(x0, mix, datavle, minimize_options = {}):
+def fit_wilson(x0, mix, datavle, virialmodel = Tsonopoulos,
+               minimize_options = {}):
     """ 
     fit_wilson: attemps to fit wilson parameters to LVE 
     
@@ -29,6 +31,8 @@ def fit_wilson(x0, mix, datavle, minimize_options = {}):
         binary mixture
     datavle: tuple
         (Xexp, Yelv, Texp, Pexp)
+    virialmodel : function
+        function to compute virial coefficients
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
     
@@ -38,12 +42,14 @@ def fit_wilson(x0, mix, datavle, minimize_options = {}):
         Result of SciPy minimize
     
     """
-    fit = minimize(fobj_wilson, x0, args = (mix, datavle), **minimize_options)
+    fit = minimize(fobj_wilson, x0, args = (mix, datavle, virialmodel),
+                   **minimize_options)
     return fit
 
 
 def fobj_nrtl(inc, mix, datavle = None, datalle = None, datavlle = None,
-              alpha_fixed = False, alpha0 = 0.2, Tdep = False):
+              alpha_fixed = False, alpha0 = 0.2, Tdep = False, 
+              virialmodel = Tsonopoulos):
     
     if alpha_fixed:
         alpha = alpha0
@@ -63,7 +69,7 @@ def fobj_nrtl(inc, mix, datavle = None, datalle = None, datavlle = None,
         
     g=np.array([[0,g12],[g21,0]])
     mix.NRTL(alpha, g, gT) 
-    model = virialgama(mix)
+    model = virialgama(mix, virialmodel = virialmodel)
     
     error = 0.
     
@@ -77,7 +83,7 @@ def fobj_nrtl(inc, mix, datavle = None, datalle = None, datavlle = None,
 
 def fit_nrtl(x0, mix, datavle = None, datalle = None, datavlle = None,
               alpha_fixed = False, alpha0 = 0.2, Tdep = False, 
-              minimize_options = {}):
+              virialmodel = Tsonopoulos, minimize_options = {}):
     """ 
     fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE 
     
@@ -99,6 +105,8 @@ def fit_nrtl(x0, mix, datavle = None, datalle = None, datavlle = None,
         value of aleatory factor if fixed
     Tdep: bool, optional
         Wheter the energy parameters have a temperature dependence
+    virialmodel : function
+        function to compute virial coefficients
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
         
@@ -122,7 +130,7 @@ def fit_nrtl(x0, mix, datavle = None, datalle = None, datavlle = None,
         Result of SciPy minimize
     """
     fit = minimize(fobj_nrtl, x0, args = (mix, datavle, datalle, datavlle,
-              alpha_fixed, alpha0, Tdep), **minimize_options)
+              alpha_fixed, alpha0, Tdep, virialmodel), **minimize_options)
     return fit
 
 def fobj_kij(kij, eos, mix, datavle = None, datalle = None, datavlle = None):
@@ -172,7 +180,7 @@ def fit_kij(kij_bounds, eos, mix, datavle = None, datalle = None, datavlle = Non
     return fit
 
 def fobj_rk(inc, mix, datavle = None, datalle = None, datavlle = None,
-            Tdep = False):
+            Tdep = False, virialmodel = Tsonopoulos):
     
     if Tdep:
         c, c1 = np.split(inc,2)
@@ -180,7 +188,7 @@ def fobj_rk(inc, mix, datavle = None, datalle = None, datavlle = None,
         c = inc
         c1 = np.zeros_like(c)
     mix.rk(c, c1)
-    modelo = virialgama(mix, actmodel = rk)
+    modelo = virialgama(mix, virialmodel = virialmodel, actmodel = rk)
     
     error = 0.
     
@@ -193,7 +201,8 @@ def fobj_rk(inc, mix, datavle = None, datalle = None, datavlle = None,
     return error
 
 def fit_rk(inc0, mix, datavle = None, datalle = None,
-           datavlle = None, Tdep = False, minimize_options = {}):
+           datavlle = None, Tdep = False, 
+           virialmodel = Tsonopoulos, minimize_options = {}):
     """ 
     fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE 
     
@@ -211,6 +220,8 @@ def fit_rk(inc0, mix, datavle = None, datalle = None,
         (Xexp, Wexp, Yexp, Texp, Pexp)  
     Tdep : bool,
         wheter the parameter will have a temperature dependence
+    virialmodel : function
+        function to compute virial coefficients
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
         
@@ -230,7 +241,7 @@ def fit_rk(inc0, mix, datavle = None, datalle = None,
         Result of SciPy minimize
     """
     fit = minimize(fobj_rk, inc0 ,args = (mix, datavle, datalle, datavlle,
-                                          Tdep ), **minimize_options)
+                                          Tdep, virialmodel), **minimize_options)
     return fit
 
 

@@ -11,12 +11,12 @@ Where the subscript :math:`r` refers to the reference component and :math:`j` to
 .. math::
 	(dh)^2 = \sum_i  c_{i} d\rho_i^2
 
-Which increased monotonically from una phase to another. One of the disadvantages is that final lenght of the path function is not known and a iterative procedure with nested for loops is needed. For some of these reasons, Liang proposed the following path function: 
+Which increased monotonically from one phase to another. One of the disadvantages of this path function is that its final lenght is not known beforehand and an iterative procedure with nested for loops is needed. For some of these reasons, Liang proposed the following path function: 
 
 .. math::
 	h = \sum_i \sqrt{c_i} \rho_i
 
-This path function has a known value when the equilibrium densities are available. Also the solution procedure allows to formulate a auxiliar variable :math:`\alpha = (\mu_i - \mu_i^0)/\sqrt{c_i}`. This variable gives information about wether the geometric mean rule is suitable for the mixture. 
+This path function has a known value when the equilibrium densities are available. Also the solution procedure allows to formulate a auxiliar variable :math:`\alpha = (\mu_i - \mu_i^0)/\sqrt{c_i}`. This variable gives information about whether the geometric mean rule is suitable for the mixture. 
 
 
 The ``sgt_mix_beta0`` function allows to compute interfacial tension and density profiles using SGT and :math:`\beta_{ij} = 0`, its use is showed in the following code block:

@@ -12,6 +12,13 @@ Besides equilibria and interfacial computations, with Phasepy it is possible to 
 
 Phasepy relies on NumPy, SciPy and Cython extension modules, when necessary.
 
+Installation Prerequisites
+--------------------------
+- numpy
+- scipy
+- pandas
+- C/C++ Compiler for Cython extension modules
+
 Installation
 ------------
 
@@ -25,6 +32,8 @@ If you have an installation of Python with pip, simple install it with:
 To get the git version, run:
 
     $ git clone https://github.com/gustavochm/phasepy
+
+
 
 
 Documentation

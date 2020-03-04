@@ -156,6 +156,61 @@
 <span class="kn">from</span> <span class="nn">..math</span> <span class="k">import</span> <span class="n">gdem</span>
 <span class="kn">from</span> <span class="nn">.equilibriumresult</span> <span class="k">import</span> <span class="n">EquilibriumResult</span>
 
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):</span>
+<span class="sd">    </span>
+<span class="sd">    if tipo == &#39;T&#39;:</span>
+<span class="sd">        P=P_T</span>
+<span class="sd">        T=T_P</span>
+<span class="sd">    elif tipo == &#39;P&#39;:</span>
+<span class="sd">        T=P_T</span>
+<span class="sd">        P=T_P</span>
+<span class="sd">    </span>
+<span class="sd">    #Liquid fugacities</span>
+<span class="sd">    lnphil, vl =eos.logfugef(X,T,P,&#39;L&#39;, vl0)</span>
+<span class="sd">    </span>
+<span class="sd">    tol=1e-8</span>
+<span class="sd">    error=1</span>
+<span class="sd">    itacc = 0</span>
+<span class="sd">    niter=0</span>
+<span class="sd">    n = 5</span>
+<span class="sd">    Y_calc=y_guess</span>
+<span class="sd">    Y=y_guess</span>
+<span class="sd">    </span>
+
+<span class="sd">    while error &gt; tol and itacc &lt; 3:</span>
+<span class="sd">        niter+=1</span>
+<span class="sd">        </span>
+<span class="sd">        #Vapour fugacities </span>
+<span class="sd">        lnphiv, vv0 = eos.logfugef(Y,T,P,&#39;V&#39;, vv0)</span>
+<span class="sd">        </span>
+<span class="sd">        lnK = lnphil-lnphiv</span>
+<span class="sd">        K=np.exp(lnK)</span>
+<span class="sd">        Y_calc_old=Y_calc</span>
+<span class="sd">        Y_calc=X*K</span>
+
+<span class="sd">        if niter == (n-3):</span>
+<span class="sd">            Y3 = Y_calc</span>
+<span class="sd">        elif niter == (n-2):</span>
+<span class="sd">            Y2 = Y_calc</span>
+<span class="sd">        elif niter == (n-1):</span>
+<span class="sd">            Y1 = Y_calc</span>
+<span class="sd">        elif niter == n:</span>
+<span class="sd">            niter = 0 </span>
+<span class="sd">            itacc += 1</span>
+<span class="sd">            dacc = gdem(Y, Y1, Y2, Y3)</span>
+<span class="sd">            Y_calc += dacc</span>
+<span class="sd">        error=((Y_calc-Y_calc_old)**2).sum()</span>
+<span class="sd">        Y=Y_calc/Y_calc.sum()</span>
+<span class="sd">    </span>
+<span class="sd">    if tipo == &#39;T&#39;:</span>
+<span class="sd">        f0 = Y_calc.sum() - 1</span>
+<span class="sd">    elif tipo == &#39;P&#39;:</span>
+<span class="sd">        f0 = np.log(Y_calc.sum())</span>
+<span class="sd">       </span>
+<span class="sd">    return f0, Y, lnK, vl, vv0</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
 <span class="k">def</span> <span class="nf">bubble_sus</span><span class="p">(</span><span class="n">P_T</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">T_P</span><span class="p">,</span><span class="n">tipo</span><span class="p">,</span><span class="n">y_guess</span><span class="p">,</span><span class="n">eos</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
@@ -175,12 +230,13 @@
     <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
     <span class="n">Y_calc</span><span class="o">=</span><span class="n">y_guess</span>
     <span class="n">Y</span><span class="o">=</span><span class="n">y_guess</span>
+    
+    <span class="c1">#Vapour fugacities </span>
+    <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
+
 
     <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">niter</span><span class="o">+=</span><span class="mi">1</span>
-        
-        <span class="c1">#Vapour fugacities </span>
-        <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
         
         <span class="n">lnK</span> <span class="o">=</span> <span class="n">lnphil</span><span class="o">-</span><span class="n">lnphiv</span>
         <span class="n">K</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
@@ -200,13 +256,15 @@
             <span class="n">Y_calc</span> <span class="o">+=</span> <span class="n">dacc</span>
         <span class="n">error</span><span class="o">=</span><span class="p">((</span><span class="n">Y_calc</span><span class="o">-</span><span class="n">Y_calc_old</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">Y</span><span class="o">=</span><span class="n">Y_calc</span><span class="o">/</span><span class="n">Y_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="c1">#Vapour fugacities </span>
+        <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="n">f0</span> <span class="o">=</span> <span class="n">Y_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
         <span class="n">f0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Y_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
        
-    <span class="k">return</span> <span class="n">f0</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv0</span>
+    <span class="k">return</span> <span class="n">f0</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
 
 <span class="k">def</span> <span class="nf">bubble_newton</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span><span class="n">X</span><span class="p">,</span><span class="n">T_P</span><span class="p">,</span><span class="n">tipo</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
@@ -288,8 +346,8 @@
     
     <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">it</span> <span class="o">&lt;=</span> <span class="n">itmax</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">good_initial</span><span class="p">:</span>
         <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">f</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">bubble_sus</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
         <span class="n">f1</span><span class="p">,</span> <span class="n">Y1</span><span class="p">,</span> <span class="n">lnK1</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">bubble_sus</span><span class="p">(</span> <span class="n">P</span> <span class="o">+</span> <span class="n">h</span> <span class="p">,</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">bubble_sus</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">f1</span><span class="o">-</span><span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="n">h</span>
         <span class="n">P</span> <span class="o">-=</span> <span class="n">f</span><span class="o">/</span><span class="n">df</span>
         <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
