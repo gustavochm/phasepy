@@ -102,7 +102,7 @@ def bubble_sus(P_T,X,T_P,tipo,y_guess,eos, vl0, vv0):
         elif niter == n:
             niter = 0 
             itacc += 1
-            dacc = gdem(Y, Y1, Y2, Y3)
+            dacc = gdem(Y_calc, Y1, Y2, Y3)
             Y_calc += dacc
         error=((Y_calc-Y_calc_old)**2).sum()
         Y=Y_calc/Y_calc.sum()
@@ -199,7 +199,10 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial = False,
         f1, Y1, lnK1, vl, vv = bubble_sus( P + h ,X, T,'T',Y, model, vl, vv)
         f, Y, lnK, vl, vv = bubble_sus(P, X, T, 'T', Y, model, vl, vv)
         df = (f1-f)/h
-        P -= f/df
+        dP = f / df
+        if dP > P:
+            dP = 0.4 * P
+        P -= dP
         error = np.abs(f)
     
     if error > tol:       

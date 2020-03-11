@@ -47,7 +47,7 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
         elif niter == n:
             niter = 0 
             itacc += 1
-            dacc = gdem(X, X1, X2, X3)
+            dacc = gdem(X_calc, X1, X2, X3)
             X_calc += dacc
         error=((X_calc-X_calc_old)**2).sum()
         X = X_calc/X_calc.sum()
@@ -145,7 +145,10 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
         f1, X1, lnK1, vl, vv = dew_sus( P + h , y, T,'T', X, model, vl, vv)
         f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', X, model, vl, vv)
         df = (f1-f)/h
-        P -= f/df
+        dP = f / df
+        if dP > P:
+            dP = 0.4 * P
+        P -= dP
         error = np.abs(f)
     
     if error > tol:       
