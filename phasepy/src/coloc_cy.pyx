@@ -39,7 +39,6 @@ def jcobi_roots(int n, int N0, int N1, int Al, int Be):
     #determinacion de las raices del polinomio de Jacobi
     
     x = 0.0
-    itmax = 200
     for i in range(n):
         success = False
         while not success:
@@ -57,7 +56,7 @@ def jcobi_roots(int n, int N0, int N1, int Al, int Be):
             zc = 1.0
             z = xn/xn1
             if not (i == 0):
-                for j in range(1,n):
+                for j in range(1,i+1):
                     zc -=  z / (x - root[j-1])
             z /= zc
             x -= z

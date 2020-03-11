@@ -16,6 +16,7 @@ The density profiles between the bulk phases are mean to minimize the energy of 
 .. math::
 	\rho(z \rightarrow -\infty) = \rho^\alpha \qquad \rho(z \rightarrow \infty) = \rho^\beta
 
+
 Here :math:`\mu` represent the chemical potential and the superscript indicates its value evaluated at the bulk phase. :math:`\alpha` and :math:`\beta` are the bulk phases index.
 
 Once the density profiles were solved the interfacial tension, :math:`\sigma` between the phases can be computed as:

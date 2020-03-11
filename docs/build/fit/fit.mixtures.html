@@ -36,7 +36,6 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="phasepy.sgt" href="../phasepy.sgt.html" />
     <link rel="prev" title="Pure component data" href="fit.pure.html" /> 
 </head>
 
@@ -85,6 +84,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="fit.pure.html">Pure component data</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Equilibrium data</a><ul>
@@ -96,7 +96,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 </ul>
 
             
@@ -251,6 +250,18 @@ As an example the parameters for the system of ethanol and water will be fitted,
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="o">-</span><span class="mf">84.77530335</span><span class="p">,</span> <span class="mf">648.78439102</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>By default bubble points using activity coefficient models use Tsonopoulos virial correlation, if desired ideal gas or Abbott correlation can be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">ideal_gas</span><span class="p">,</span> <span class="n">Abbott</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#Initial guess of A12, A21</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nrtl0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">80.</span><span class="p">,</span>  <span class="mf">650.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit_nrtl</span><span class="p">(</span><span class="n">nrtl0</span><span class="p">,</span> <span class="n">mixnrtl</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#optimized values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="o">-</span><span class="mf">86.22483806</span><span class="p">,</span> <span class="mf">647.6320968</span> <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit_nrtl</span><span class="p">(</span><span class="n">nrtl0</span><span class="p">,</span> <span class="n">mixnrtl</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Abbott</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#optimized values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="o">-</span><span class="mf">84.81672981</span><span class="p">,</span> <span class="mf">648.75311712</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>By default the aleatory factor is set to 0.2, this value ca be changed by passing another value to <code class="docutils literal notranslate"><span class="pre">alpha0</span></code> to the fitting function.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit_nrtl</span><span class="p">(</span><span class="n">nrtl0</span><span class="p">,</span> <span class="n">mixnrtl</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#optimized values</span>
@@ -282,7 +293,7 @@ A21 = A21_0 + A21_1  T\end{split}\]</div>
 </div>
 <span class="target" id="module-phasepy.fit.binaryfit"></span><dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_nrtl">
-<code class="descname">fit_nrtl</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>datavle=None</em>, <em>datalle=None</em>, <em>datavlle=None</em>, <em>alpha_fixed=False</em>, <em>alpha0=0.2</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_nrtl" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_nrtl</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>datavle=None</em>, <em>datalle=None</em>, <em>datavlle=None</em>, <em>alpha_fixed=False</em>, <em>alpha0=0.2</em>, <em>Tdep=False</em>, <em>virialmodel=&lt;function Tsonopoulos&gt;</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_nrtl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_nrtl" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -297,6 +308,7 @@ A21 = A21_0 + A21_1  T\end{split}\]</div>
 <li><strong>alpha_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True fix aleatory factor to the value of alpha0</li>
 <li><strong>alpha0</strong> (<em>float</em>) – value of aleatory factor if fixed</li>
 <li><strong>Tdep</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wheter the energy parameters have a temperature dependence</li>
+<li><strong>virialmodel</strong> (<em>function</em>) – function to compute virial coefficients</li>
 <li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
@@ -340,9 +352,15 @@ a21 = a21_1 + a21T * T</dd>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mf">163.79243953</span><span class="p">,</span> <span class="mf">497.05518499</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Tsonopoulos virial correlation is used by default, if desired ideal gas or Abbott correlation can be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit_wilson</span><span class="p">(</span><span class="n">wilson0</span><span class="p">,</span> <span class="n">mixwilson</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#optimized value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mf">105.42279401</span><span class="p">,</span> <span class="mf">517.2221969</span> <span class="p">]</span>
+</pre></div>
+</div>
 <span class="target" id="module-phasepy.fit.binaryfit"></span><dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_wilson">
-<code class="descname">fit_wilson</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>datavle</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_wilson" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_wilson</code><span class="sig-paren">(</span><em>x0</em>, <em>mix</em>, <em>datavle</em>, <em>virialmodel=&lt;function Tsonopoulos&gt;</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_wilson" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_wilson: attemps to fit wilson parameters to LVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -352,6 +370,7 @@ a21 = a21_1 + a21T * T</dd>
 <li><strong>x0</strong> (<em>array_like</em>) – initial values a12, a21 in K</li>
 <li><strong>mix</strong> (<em>object</em>) – binary mixture</li>
 <li><strong>datavle</strong> (<em>tuple</em>) – (Xexp, Yelv, Texp, Pexp)</li>
+<li><strong>virialmodel</strong> (<em>function</em>) – function to compute virial coefficients</li>
 <li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
@@ -379,14 +398,19 @@ a21 = a21_1 + a21T * T</dd>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="mf">1.1759649</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.44487888</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Temperature dependent parameters can be fitted in which case the initial guess will be splitted into two array.</p>
+<p>Temperature dependent parameters can be fitted in which case the initial guess will be splitted into two arrays.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">rk0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Finally the parameters are computed as <span class="math notranslate nohighlight">\(G = c + c1/T\)</span>.</p>
+<p>Similarly as NRTl and Wilson’s model, virial correlation can be changed by passing the desired function to the <code class="docutils literal notranslate"><span class="pre">virialmodel</span></code> argument.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fit_rk</span><span class="p">(</span><span class="n">rk0</span><span class="p">,</span> <span class="n">mixrk</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span>  <span class="kc">False</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span> <span class="mf">1.16854714</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.43874371</span><span class="p">]</span>
+</pre></div>
+</div>
 <span class="target" id="module-phasepy.fit.binaryfit"></span><dl class="function">
 <dt id="phasepy.fit.binaryfit.fit_rk">
-<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>datavle=None</em>, <em>datalle=None</em>, <em>datavlle=None</em>, <em>Tdep=False</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_rk</code><span class="sig-paren">(</span><em>inc0</em>, <em>mix</em>, <em>datavle=None</em>, <em>datalle=None</em>, <em>datavlle=None</em>, <em>Tdep=False</em>, <em>virialmodel=&lt;function Tsonopoulos&gt;</em>, <em>minimize_options={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/fit/binaryfit.html#fit_rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.fit.binaryfit.fit_rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -399,6 +423,7 @@ a21 = a21_1 + a21T * T</dd>
 <li><strong>datalle</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Texp, Pexp)</li>
 <li><strong>datavlle</strong> (<em>tuple</em><em>, </em><em>optional</em>) – (Xexp, Wexp, Yexp, Texp, Pexp)</li>
 <li><strong>Tdep</strong> (<em>bool</em><em>,</em>) – wheter the parameter will have a temperature dependence</li>
+<li><strong>virialmodel</strong> (<em>function</em>) – function to compute virial coefficients</li>
 <li><strong>minimize_options</strong> (<em>dict</em>) – Dictionary of any additional spefication for scipy minimize</li>
 </ul>
 </td>
@@ -441,8 +466,6 @@ a21 = a21_1 + a21T * T</dd>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../phasepy.sgt.html" class="btn btn-neutral float-right" title="phasepy.sgt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="fit.pure.html" class="btn btn-neutral float-left" title="Pure component data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

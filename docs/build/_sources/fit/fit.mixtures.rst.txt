@@ -74,6 +74,18 @@ As an array is been fitted, multidimentional optimization alogirthms are used, t
 >>> #optimized values
 >>> [-84.77530335, 648.78439102]
 
+By default bubble points using activity coefficient models use Tsonopoulos virial correlation, if desired ideal gas or Abbott correlation can be used.
+
+>>> from phasepy import ideal_gas, Abbott
+>>> #Initial guess of A12, A21
+>>> nrtl0 = np.array([-80.,  650.])
+>>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = ideal_gas)
+>>> #optimized values
+>>> [-86.22483806, 647.6320968 ]
+>>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = Abbott)
+>>> #optimized values
+>>> [-84.81672981, 648.75311712]
+
 By default the aleatory factor is set to 0.2, this value ca be changed by passing another value to ``alpha0`` to the fitting function.
 
 >>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, alpha0 = 0.3)
@@ -126,6 +138,12 @@ As an array is been fitted, multidimentional optimization alogirthms are used, t
 >>> #optimized values
 >>> [163.79243953, 497.05518499]
 
+Tsonopoulos virial correlation is used by default, if desired ideal gas or Abbott correlation can be used.
+
+>>> fit_wilson(wilson0, mixwilson, datavle, virialmodel = ideal_gas)
+>>> #optimized value
+>>> [105.42279401, 517.2221969 ]
+
 .. automodule:: phasepy.fit.binaryfit
     :members: fit_wilson
     :undoc-members:
@@ -148,11 +166,16 @@ If rk0 is an scalar it reduced to Porter model, if it is array of size 2 it redu
 >>> #optimized values
 >>> [ 1.1759649 , -0.44487888]
 
-Temperature dependent parameters can be fitted in which case the initial guess will be splitted into two array.
+Temperature dependent parameters can be fitted in which case the initial guess will be splitted into two arrays.
 
 >>> c, c1 = np.split(rk0, 2) 
 
 Finally the parameters are computed as :math:`G = c + c1/T`.
+
+Similarly as NRTl and Wilson's model, virial correlation can be changed by passing the desired function to the ``virialmodel`` argument. 
+
+>>> fit_rk(rk0, mixrk, datavle, Tdep =  False, virialmodel = ideal_gas)
+>>> [ 1.16854714, -0.43874371]
 
 .. automodule:: phasepy.fit.binaryfit
     :members: fit_rk

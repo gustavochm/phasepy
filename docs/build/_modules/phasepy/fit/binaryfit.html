@@ -151,23 +151,25 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">..actmodels</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">wilson</span><span class="p">,</span> <span class="n">rk</span>
+<span class="kn">from</span> <span class="nn">..actmodels</span> <span class="k">import</span> <span class="n">Tsonopoulos</span>
 <span class="kn">from</span> <span class="nn">.fitmulticomponent</span> <span class="k">import</span> <span class="n">fobj_elv</span><span class="p">,</span> <span class="n">fobj_ell</span><span class="p">,</span> <span class="n">fobj_hazb</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">minimize_scalar</span>
 
 
-<span class="k">def</span> <span class="nf">fobj_wilson</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fobj_wilson</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">):</span>
     
     <span class="n">a12</span><span class="p">,</span> <span class="n">a21</span> <span class="o">=</span> <span class="n">inc</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="n">a12</span><span class="p">],[</span><span class="n">a21</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
     
     <span class="n">mix</span><span class="o">.</span><span class="n">wilson</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">wilson</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">virialmodel</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">wilson</span><span class="p">)</span>
     
     <span class="n">elv</span> <span class="o">=</span> <span class="n">fobj_elv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">datavle</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">elv</span>
 
-<div class="viewcode-block" id="fit_wilson"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_wilson">[docs]</a><span class="k">def</span> <span class="nf">fit_wilson</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
+<div class="viewcode-block" id="fit_wilson"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_wilson">[docs]</a><span class="k">def</span> <span class="nf">fit_wilson</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">,</span>
+               <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_wilson: attemps to fit wilson parameters to LVE </span>
 <span class="sd">    </span>
@@ -179,6 +181,8 @@
 <span class="sd">        binary mixture</span>
 <span class="sd">    datavle: tuple</span>
 <span class="sd">        (Xexp, Yelv, Texp, Pexp)</span>
+<span class="sd">    virialmodel : function</span>
+<span class="sd">        function to compute virial coefficients</span>
 <span class="sd">    minimize_options: dict</span>
 <span class="sd">        Dictionary of any additional spefication for scipy minimize</span>
 <span class="sd">    </span>
@@ -188,12 +192,14 @@
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_wilson</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_wilson</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">virialmodel</span><span class="p">),</span>
+                   <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
 
 <span class="k">def</span> <span class="nf">fobj_nrtl</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+              <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+              <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">alpha_fixed</span><span class="p">:</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha0</span>
@@ -213,7 +219,7 @@
         
     <span class="n">g</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="n">g12</span><span class="p">],[</span><span class="n">g21</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
     <span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">gT</span><span class="p">)</span> 
-    <span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">virialmodel</span><span class="p">)</span>
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
     
@@ -227,7 +233,7 @@
 
 <div class="viewcode-block" id="fit_nrtl"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_nrtl">[docs]</a><span class="k">def</span> <span class="nf">fit_nrtl</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">alpha_fixed</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">alpha0</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
-              <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
+              <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_nrtl: attemps to fit nrtl parameters to LVE, LLE, LLVE </span>
 <span class="sd">    </span>
@@ -249,6 +255,8 @@
 <span class="sd">        value of aleatory factor if fixed</span>
 <span class="sd">    Tdep: bool, optional</span>
 <span class="sd">        Wheter the energy parameters have a temperature dependence</span>
+<span class="sd">    virialmodel : function</span>
+<span class="sd">        function to compute virial coefficients</span>
 <span class="sd">    minimize_options: dict</span>
 <span class="sd">        Dictionary of any additional spefication for scipy minimize</span>
 <span class="sd">        </span>
@@ -272,7 +280,7 @@
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_nrtl</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">datalle</span><span class="p">,</span> <span class="n">datavlle</span><span class="p">,</span>
-              <span class="n">alpha_fixed</span><span class="p">,</span> <span class="n">alpha0</span><span class="p">,</span> <span class="n">Tdep</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
+              <span class="n">alpha_fixed</span><span class="p">,</span> <span class="n">alpha0</span><span class="p">,</span> <span class="n">Tdep</span><span class="p">,</span> <span class="n">virialmodel</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
 <span class="k">def</span> <span class="nf">fobj_kij</span><span class="p">(</span><span class="n">kij</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -322,7 +330,7 @@
     <span class="k">return</span> <span class="n">fit</span></div>
 
 <span class="k">def</span> <span class="nf">fobj_rk</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">):</span>
     
     <span class="k">if</span> <span class="n">Tdep</span><span class="p">:</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
@@ -330,7 +338,7 @@
         <span class="n">c</span> <span class="o">=</span> <span class="n">inc</span>
         <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
-    <span class="n">modelo</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span><span class="p">)</span>
+    <span class="n">modelo</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">virialmodel</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span><span class="p">)</span>
     
     <span class="n">error</span> <span class="o">=</span> <span class="mf">0.</span>
     
@@ -343,7 +351,8 @@
     <span class="k">return</span> <span class="n">error</span>
 
 <div class="viewcode-block" id="fit_rk"><a class="viewcode-back" href="../../../fit/fit.mixtures.html#phasepy.fit.binaryfit.fit_rk">[docs]</a><span class="k">def</span> <span class="nf">fit_rk</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datalle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-           <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
+           <span class="n">datavlle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+           <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{}):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    fit_rk: attemps to fit RK parameters to LVE, LLE, LLVE </span>
 <span class="sd">    </span>
@@ -361,6 +370,8 @@
 <span class="sd">        (Xexp, Wexp, Yexp, Texp, Pexp)  </span>
 <span class="sd">    Tdep : bool,</span>
 <span class="sd">        wheter the parameter will have a temperature dependence</span>
+<span class="sd">    virialmodel : function</span>
+<span class="sd">        function to compute virial coefficients</span>
 <span class="sd">    minimize_options: dict</span>
 <span class="sd">        Dictionary of any additional spefication for scipy minimize</span>
 <span class="sd">        </span>
@@ -380,7 +391,7 @@
 <span class="sd">        Result of SciPy minimize</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj_rk</span><span class="p">,</span> <span class="n">inc0</span> <span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">datalle</span><span class="p">,</span> <span class="n">datavlle</span><span class="p">,</span>
-                                          <span class="n">Tdep</span> <span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
+                                          <span class="n">Tdep</span><span class="p">,</span> <span class="n">virialmodel</span><span class="p">),</span> <span class="o">**</span><span class="n">minimize_options</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fit</span></div>
 
 
