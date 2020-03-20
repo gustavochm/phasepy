@@ -207,7 +207,7 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw = None, vz = None):
     
     return tuple(all_minima), np.array(f_minima)
 
-def ell_init(Z , T, P, model, v0 = None):
+def lle_init(Z , T, P, model, v0 = None):
     
     """
     Minimize tpd function to initiate ELL at fixed T and P.

@@ -23,7 +23,7 @@ Two phase flash can be used for solving liquid liquid equilibrium, but it is imp
 In the following code block and example of how to solve this problem it is shown.
 
 >>> from phasepy import component, mixture, virialgama, unifac
->>> from phasepy.equilibrium import ell
+>>> from phasepy.equilibrium import lle
 >>> water = component(name = 'water', Tc = 647.13, Pc = 220.55, Zc = 0.229, Vc = 55.948, w = 0.344861,
 ...                Ant =  [  11.64785144, 3797.41566067,  -46.77830444],
 ...                GC = {'H2O':1})
@@ -39,12 +39,12 @@ In the following code block and example of how to solve this problem it is shown
 >>> #initial guess
 >>> x0 = np.array([0.01,0.99])
 >>> w0 = np.array([0.99,0.01])
->>> ell(x0, w0, Z, T, P, mell)
+>>> lle(x0, w0, Z, T, P, mell)
 >>> #x, w, beta
 array([0.15601096, 0.84398904]), array([0.99289324, 0.00710676]), 0.41103635397012755
 
 .. automodule:: phasepy.equilibrium.ell
-    :members: ell
+    :members: lle
     :undoc-members:
     :show-inheritance:
 
@@ -60,7 +60,7 @@ Binary mixtures
 For degrees of freedom's restriction, a systems of equations has to be solved for three phase equilibrium of binary mixtures. In the following code block a example of how to do it it is shown. 
 
 >>> from phasepy import component, mixture, virialgama, unifac
->>> from phasepy.equilibrium import ellvb
+>>> from phasepy.equilibrium import vlleb
 >>> mix = mixture(water, mtbe)
 >>> mix.unifac()
 >>> model = virialgama(mix, actmodel = unifac)
@@ -70,13 +70,13 @@ For degrees of freedom's restriction, a systems of equations has to be solved fo
 >>> x0 = np.array([0.01,0.99])
 >>> w0 = np.array([0.99,0.01])
 >>> y0 = (x0 + w0)/2
->>> ellvb(x0,w0,y0, T0, P, 'P', model)
+>>> vlleb(x0,w0,y0, T0, P, 'P', model)
 >>> #X, W, Y, T
 >>> array([0.17165664, 0.82834336]) , array([0.99256232, 0.00743768]),
 ... array([0.15177621, 0.84822379]),  array([327.6066936])
 
 .. automodule:: phasepy.equilibrium.hazb
-    :members: ellvb
+    :members: vlleb
     :undoc-members:
     :show-inheritance:
 
@@ -88,7 +88,7 @@ Multicomponent mixtures
 When working with multicomponent mixtures (3 or more) a multiflhas has to be perfomed in order to compute three phase equilibrium. This algorithm ensures that a stable phases are computed.
 
 >>> from phasepy import component, mixture, virialgama, unifac
->>> from phasepy.equilibrium import ellv
+>>> from phasepy.equilibrium import vlle
 >>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0, w = 0.643558,
 ...                Ant = [  11.61809279, 3423.0259436 ,  -56.48094263],
 ...                GC = {'CH3':1, 'CH2':1,'OH(P)':1})
@@ -103,7 +103,7 @@ When working with multicomponent mixtures (3 or more) a multiflhas has to be per
 >>> x0 = np.array([0.95, 0.025, 0.025]),
 >>> w0 =  np.array([0.4, 0.5 , 0.1])
 >>> y0 = np.array([0.15,0.8,0.05])
->>> ellv(x0, w0, y0, Z, T, P, model, full_output = True)
+>>> vlle(x0, w0, y0, Z, T, P, model, full_output = True)
 ... T: 328.5
 ... P: 1.01
 ... error_outer: 8.996084220393732e-11
@@ -119,6 +119,6 @@ When working with multicomponent mixtures (3 or more) a multiflhas has to be per
 
 
 .. automodule:: phasepy.equilibrium.hazt
-    :members: ellv
+    :members: vlle
     :undoc-members:
     :show-inheritance:
