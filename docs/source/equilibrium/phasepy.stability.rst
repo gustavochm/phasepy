@@ -82,11 +82,11 @@ Liquid liquid equilibrium initiation
 
 Using the same principles stated above, tpd function can be used to generate initial guesses for liquid liquid equilibra, the function ell_init allows to find two minimas of the mixture.
 
->>> from phasepy.equilibrium import ell_init
+>>> from phasepy.equilibrium import lle_init
 >>> T = 320
 >>> P = 1.01
 >>> z = np.array([0.5,0.5])
->>> ell_init(z, T, P, model)
+>>> lle_init(z, T, P, model)
 >>> #initial values for ell computation
 array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])
 
