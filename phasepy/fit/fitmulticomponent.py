@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..equilibrium import bubblePy, ell, tpd_min, hazb, haz
+from ..equilibrium import bubblePy, lle, tpd_min, vlleb, haz
 
 def fobj_elv(model, Xexp, Yexp, Texp, Pexp):
     """ 
@@ -47,7 +47,7 @@ def fobj_ell(model, Xexp, Wexp, Texp, Pexp, tpd = True):
         else: 
             X0 = Xexp[i]
             W0 = Wexp[i]
-        X[i], W[i], beta = ell(X0 ,W0 , Z[i], Texp[i], Pexp[i], model)
+        X[i], W[i], beta = lle(X0 ,W0 , Z[i], Texp[i], Pexp[i], model)
     
     error = ((X-Xexp)**2).sum()
     error += ((W-Wexp)**2).sum()
@@ -75,7 +75,7 @@ def fobj_hazb(model, Xellv, Wellv, Yellv, Tellv, Pellv,  info = [1,1,1]):
         try:
             X0, tpd = tpd_min(Xellv[i],Zll[i],Tellv[i],Pellv[i],model, 'L', 'L')
             W0, tpd = tpd_min(Wellv[i],Zll[i],Tellv[i],Pellv[i],model, 'L', 'L')
-            X[i], W[i], Y[i] ,P[i] = hazb(X0, W0, Yellv[i], 
+            X[i], W[i], Y[i] ,P[i] = vlleb(X0, W0, Yellv[i], 
              Pellv[i], Tellv[i], 'T', model)
         except: 
             pass

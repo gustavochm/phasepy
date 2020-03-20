@@ -179,7 +179,7 @@ def haz(X0, W0, Y0, T, P, model, good_initial = False,
 
     return  X, W, Y
 
-def ellv(X0, W0, Y0, Z, T, P, model, v0 = [None, None, None], full_output = False):
+def vlle(X0, W0, Y0, Z, T, P, model, v0 = [None, None, None], full_output = False):
     
     """
     Liquid liquid vapor Multiflash (Z, T,P) -> (x, w, y)
@@ -288,4 +288,4 @@ def ellv(X0, W0, Y0, Z, T, P, model, v0 = [None, None, None], full_output = Fals
 
     return  X, W, Y
 
-__all__ = ['haz', 'ellv']
+__all__ = ['haz', 'vlle']

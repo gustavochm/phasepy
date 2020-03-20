@@ -7,7 +7,7 @@ from .flash import flash
 from .multiflash import multiflash
         
 
-def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
+def lle(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
     
     """
     Liquid liquid equilibrium (z,T,P) -> (x,w,beta)
@@ -77,7 +77,7 @@ def ell(x0, w0, Z, T, P, model, v0 = [None, None], full_output = False):
         
     return X, W, beta[1]
 
-__all__ = ['ell']
+__all__ = ['lle']
         
 
 

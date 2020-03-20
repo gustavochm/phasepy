@@ -33,7 +33,7 @@ from .bubble import bubblePy, bubbleTy
 from .dew import dewPx, dewTx
 from .flash import flash
 from .multiflash import multiflash
-from .hazt import haz, ellv
-from .hazb import ellvb
+from .hazt import haz, vlle
+from .hazb import vlleb
 from .stability import tpd_min, tpd_minimas, ell_init, gmix
 from .ell import ell
