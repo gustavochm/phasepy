@@ -29,7 +29,7 @@ the following way for the NRTL model.
 >>> model = virialgama(mix, virialmodel = Abbott, actmodel = nrtl )
 >>> #Model parameters are saved in actmodelp attribute
 >>> parameters = model.actmodelp
->>>np.all(parameters[0] == alpha), np.all(parameters[1] == g), np.all(parameters[2] == g1)
+>>> np.all(parameters[0] == alpha), np.all(parameters[1] == g), np.all(parameters[2] == g1)
 (True, True, True)
 
 If you would like to use fitted parameters of a Redlich Kister expansion you can do it as follows:

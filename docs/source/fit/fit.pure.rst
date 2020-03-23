@@ -116,10 +116,14 @@ Beware that influence parameter in cubic EoS absorbs density deviations from exp
 >>> #fitted influence parameter polynomial with volume translation
 >>> [2.74008872e-26, 1.23088986e-23, 3.05681188e-21]
 
-
 .. automodule:: phasepy.fit.fitcii
     :members: fit_cii
     :undoc-members:
     :show-inheritance:
+
+
+The perfomance of the fitted interaction parameters can be compared against the experimental data (dots), the following figure shows the behavior of the cubic EoS for the saturation pressure, liquid density and interfacial tension (oranges lines).
+
+.. image:: purefit.jpg
 
 

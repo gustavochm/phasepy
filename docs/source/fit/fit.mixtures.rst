@@ -45,7 +45,7 @@ After the experimental data is available, the mixture with the components is cre
 Fitting QMR mixing rule
 -----------------------
 
-As an scalar is been fitted, SciPy recommends to give a certain interval where the minimum could be found, the function ``fit_kij`` handles this optimization. as follows:
+As an scalar is been fitted, SciPy recommends to give a certain interval where the minimum could be found, the function ``fit_kij`` handles this optimization as follows:
 
 >>> from phasepy.fit import fit_kij
 >>> mixkij = mix.copy()
@@ -62,7 +62,7 @@ As an scalar is been fitted, SciPy recommends to give a certain interval where t
 Fitting NRTL parameters
 -----------------------
 
-As an array is been fitted, multidimentional optimization alogirthms are used, the function ```fit_nrtl``` handles this optimization with several options available. If a fixed value of the aleatory factor is used the initial guess has the following form:
+As an array is been fitted, multidimentional optimization alogirthms are used, the function ``fit_nrtl`` handles this optimization with several options available. If a fixed value of the aleatory factor is used the initial guess has the following form:
 
 >>> nrtl0 = np.array([A12, A21])
 
@@ -183,10 +183,15 @@ Similarly as NRTl and Wilson's model, virial correlation can be changed by passi
     :show-inheritance:
 
 
-Multidimentional minimization in SciPy are perfomed with minimize function, aditional command can be passed to this function in order to change tolerance, number of function evaluations or mimization method. This is done by passing a dictionary with the settings to ``minimize_options`` in ``fit_nrtl``, ``fit_wilson`` or ``fit_rk``. For example:
+Multidimentional minimization in SciPy are perfomed with ``minimize`` function, aditional command can be passed to this function in order to change tolerance, number of function evaluations or mimization method. This is done by passing a dictionary with the settings to ``minimize_options`` in ``fit_nrtl``, ``fit_wilson`` or ``fit_rk``. For example:
 
->>> changing the minimization method
+>>> #changing the minimization method
 >>> minimize_options = {'method' : 'Powell'}
+>>> fit_rk(rk0, mixrk, datavle, Tdep =  False, minimize_options = minimize_options )
+
+The fitted parameters can be compared against the equilibrium data for each model. The following figure shows the perfomance of QMR, NRTL model, Wilson model and Redlich Kister expansion.
+
+.. image:: binaryfit.jpg
 
 
 

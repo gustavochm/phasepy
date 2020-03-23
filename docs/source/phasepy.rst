@@ -1,10 +1,9 @@
 phasepy
 =======
 
-Phasepy is a Python package object oriented programmed. In order to help the final user to deal with the minimun quantity of parameters as possible, those are saved as attributes in objects. Objects for creating components and mixtures are available, then this object are used within a EoS to create a final object that is going to be used for phase equilibrium calculations.
+Phasepy is a object oriented programmed Python package . In order to help the final user to deal with the minimun quantity of parameters as possible, those are saved as attributes in objects. Objects for creating components and mixtures are available, then this object are used within a EoS to create a final object that is going to be used for fluid phase equilibrium calculations.
 
-In order to start with phase equilibrium calculations it is necessary to provided pure component and mixture info. Phasepy is an object oriented python package that implements 
-two basics classes for this purpose.
+In order to start with phase equilibrium calculations it is necessary to provide pure component and mixture info. Phasepy is an object oriented python package that implements two basics classes for this purpose.
 
 .. toctree::
    	./basic/phasepy.component

@@ -9,7 +9,7 @@ Welcome to phasepy's documentation!
 What is phasepy?
 ----------------
 Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
-This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension. 
+This package facilitates the calculation of vapor-liquid equilibrium, liquid-liquid equilibrium and vapor-liquid-liquid equilibrium as well as density profiles and interfacial tension. 
 Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
 
 Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
@@ -42,8 +42,7 @@ To get the git version, run:
 Getting Started
 ---------------
 
-The library is designed to work with absolute temperature in Kelvin, pressure in bar and
-volume in cm3/mol. In order to create a mixture pure components have to be defined:
+The library is designed to work with absolute temperature in Kelvin, pressure in bar and volume in cm3/mol. In order to create a mixture pure components have to be defined:
 	
 .. code-block:: python
 
@@ -54,7 +53,7 @@ volume in cm3/mol. In order to create a mixture pure components have to be defin
 	>>>	 w = 0.643558, GC = {'CH3':1, 'CH2':1,'OH(P)':1})
 	>>> mix = mixture(ethanol, water)
 
-If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320K, we could use
+If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320 K, we could use
 the Peng Robinson EoS with an advanced mix rule with UNIFAC model:
 	
 .. code-block:: python
@@ -66,8 +65,7 @@ the Peng Robinson EoS with an advanced mix rule with UNIFAC model:
 	>>> y_guess, P_guess = [0.2,0.8] , 1
 	>>> bubblePy(y_guess, P_guess, x = [0.5, 0.5], T = 320, model = eos)
 
-Similarly, liquid-liquid and liquid-liquid-vapour equilibrium can be solved, if were the case,
-with the same object, eos.
+Similarly, liquid-liquid and vapor-liquid-liquid equilibrium can be solved, if were the case, with the same object (eos).
 
 
 Latest source code

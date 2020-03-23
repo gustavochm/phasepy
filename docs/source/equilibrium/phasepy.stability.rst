@@ -31,7 +31,7 @@ As this is an iterative process, in order to find a minimum a initial guess of i
 >>> #Search for trial phase
 >>> w = np.array([0.01,0.99])
 >>> tpd_min(w, z, T, P, model, stateW = 'L', stateZ = 'L')
->>>#composition of minimum found and tpd value
+>>> #composition of minimum found and tpd value
 array([0.3068438, 0.6931562]), -0.005923914972662647
 
 As the tpd value at the minimum is negative it means that the phase is unstable at will split into two liquids. Similarly the relative stability can be tested against a vapor phase, in which case is found that the original phase was more stable than the vapor.
@@ -92,6 +92,6 @@ array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])
 
 
 .. automodule:: phasepy.equilibrium.stability
-    :members: ell_init
+    :members: lle_init
     :undoc-members:
     :show-inheritance:

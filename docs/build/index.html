@@ -155,7 +155,7 @@
 <div class="section" id="what-is-phasepy">
 <h2>What is phasepy?<a class="headerlink" href="#what-is-phasepy" title="Permalink to this headline">¶</a></h2>
 <p>Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
-This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension.
+This package facilitates the calculation of vapor-liquid equilibrium, liquid-liquid equilibrium and vapor-liquid-liquid equilibrium as well as density profiles and interfacial tension.
 Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.</p>
 <p>Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.</p>
 <p>Phasepy relies on NumPy, SciPy and Cython extension modules, when necessary.</p>
@@ -182,8 +182,7 @@ Equilibrium calculations can be performed with cubic equations of state (EoS) wi
 </div>
 <div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>The library is designed to work with absolute temperature in Kelvin, pressure in bar and
-volume in cm3/mol. In order to create a mixture pure components have to be defined:</p>
+<p>The library is designed to work with absolute temperature in Kelvin, pressure in bar and volume in cm3/mol. In order to create a mixture pure components have to be defined:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span> <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
@@ -192,7 +191,7 @@ volume in cm3/mol. In order to create a mixture pure components have to be defin
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320K, we could use
+<p>If, for example, we need the bubble point of the of x = 0.5 of ethanol at 320 K, we could use
 the Peng Robinson EoS with an advanced mix rule with UNIFAC model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">preos</span>
@@ -202,8 +201,7 @@ the Peng Robinson EoS with an advanced mix rule with UNIFAC model:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bubblePy</span><span class="p">(</span><span class="n">y_guess</span><span class="p">,</span> <span class="n">P_guess</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">320</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">eos</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Similarly, liquid-liquid and liquid-liquid-vapour equilibrium can be solved, if were the case,
-with the same object, eos.</p>
+<p>Similarly, liquid-liquid and vapor-liquid-liquid equilibrium can be solved, if were the case, with the same object (eos).</p>
 </div>
 <div class="section" id="latest-source-code">
 <h2>Latest source code<a class="headerlink" href="#latest-source-code" title="Permalink to this headline">¶</a></h2>

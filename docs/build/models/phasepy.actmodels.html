@@ -101,6 +101,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
@@ -174,7 +175,7 @@
 <h1>Activity coefficient models<a class="headerlink" href="#activity-coefficient-models" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="nrtl">
 <h2>NRTL<a class="headerlink" href="#nrtl" title="Permalink to this headline">¶</a></h2>
-<p>Non-Random-Two-Liquids model is a a local composition model, widely used to describe liquid vapor, liquid liquid and liquid liquid vapor equilibria.</p>
+<p>Non-Random-Two-Liquids model is a a local composition model, widely used to describe vapor-liquid, liquid-liquid and vapor-liquid-liquid equilibria.</p>
 <div class="math notranslate nohighlight">
 \[g^e = \sum_{i=1}^c x_i \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}   {\sum_{l=1}^c G_{li}x_l}\]</div>
 <span class="target" id="module-phasepy.actmodels.nrtl"></span><dl class="function">
@@ -213,7 +214,7 @@
 </div>
 <div class="section" id="wilson">
 <h2>Wilson<a class="headerlink" href="#wilson" title="Permalink to this headline">¶</a></h2>
-<p>Wilson model is a local composition model recommended for vapor liquid equilibria calculation. It cannot predict liquid liquid
+<p>Wilson model is a local composition model recommended for vapor-liquid equilibria calculation. It cannot predict liquid liquid
 equilibrium.</p>
 <div class="math notranslate nohighlight">
 \[g^e = \sum_{i=1}^c x_i \ln ( \sum_{j=1}^c x_j   \Lambda_{ij})\]</div>

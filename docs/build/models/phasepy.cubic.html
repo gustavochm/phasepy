@@ -100,6 +100,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
@@ -180,7 +181,41 @@
 <li class="toctree-l1"><a class="reference internal" href="phasepy.cubicm.html">Mixture Cubic Equation of State Class</a></li>
 </ul>
 </div>
-<p>This way, once you create an cubic EoS object it will check if you are working with a mixture or a pure component. The former case you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
+<p>This way, once you create an cubic EoS object it will check if you are working with a pure component or a mixture. In the former case</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">preos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eos</span>  <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">ethanol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#computes saturation pressure</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mf">350.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#saturation pressure, liquid volume and vapor volume</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#(array([0.98800647]), array([66.75754804]),array([28799.31921623]))</span>
+</pre></div>
+</div>
+<p>Additionally, density can be computed given the aggregation state.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#liquid density</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">350</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#0.01497960198094922</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#vapor density</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">350</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#3.515440899573752e-05</span>
+</pre></div>
+</div>
+<p>A volume translation can be considered from any of the cubic eos. The attribute <code class="docutils literal notranslate"><span class="pre">c</span></code> has to be supplied to the pure component and the option <code class="docutils literal notranslate"><span class="pre">volume_translation</span></code> has to be set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. The volume translation doesn’t change equilibrium and tries to improve the behavior of liquid density predicted by the EoS.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ethanol</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;ethanol&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">514.0</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">61.37</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.241</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">168.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.643558</span><span class="p">,</span>
+<span class="go">                c = 5.35490936, Ant = [  11.61809279, 3423.0259436 ,  -56.48094263],</span>
+<span class="go">                GC = {&#39;CH3&#39;:1, &#39;CH2&#39;:1,&#39;OH(P)&#39;:1})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span> <span class="o">=</span> <span class="n">preos</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">volume_translation</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#computes saturation pressure</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mf">350.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#(array([0.98800647]), array([61.40263868]), array([28793.96430687]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#liquid density</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">350</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#0.01628597159790686</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#vapor density</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pr</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mi">350</span><span class="p">,</span> <span class="n">P</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="s1">&#39;V&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#3.5161028012629526e-05</span>
+</pre></div>
+</div>
+<p>When working with mixture you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
 and then how to specify a mixrule.</p>
 <p>For the case of classic quadratic mixrule:</p>
 <div class="math notranslate nohighlight">

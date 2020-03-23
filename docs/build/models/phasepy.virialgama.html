@@ -95,6 +95,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
@@ -203,7 +204,7 @@ the following way for the NRTL model.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Model parameters are saved in actmodelp attribute</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
-<span class="go">&gt;&gt;&gt;np.all(parameters[0] == alpha), np.all(parameters[1] == g), np.all(parameters[2] == g1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">g1</span><span class="p">)</span>
 <span class="go">(True, True, True)</span>
 </pre></div>
 </div>

@@ -13,9 +13,9 @@ Available EoS
  Mixrules: QMR, MHV
 
 Available equilibrium routines (phasepy.equilibrium)
-    LVE : Liquid Vapour Equilibrium
+    VLE : Liquid Vapour Equilibrium
     LLE : Liquid Liquid Equilibrium
-    LLVE : Liquid - Liquid - Vapour - Equilibrium
+    VLLE : Vapor - Liquid - Liquid  - Equilibrium
 
 Available fitting routines (phasepy.fit)
     fit_kij : fit kij for qmr mixrule
@@ -24,9 +24,11 @@ Available fitting routines (phasepy.fit)
     fit_rk : fit Redlich Kister parameters
     
 Interfacial properties (phasepy.sgt):
-    ten_pure: SGT for pure fluids.
-    ten_beta0 : SGT for mixtures with beta = 0 
+    sgt_pure: SGT for pure fluids.
+    sgt_mix_beta0 : SGT for mixtures with beta = 0 
     (Reference component, Path functions,linear approximation, spot approximation)
+    sgt_mix : SGT for mixtures with beta != 0
+    msgt_mix : modified SGT for mixtures with beta != 0
     
 
 """
@@ -35,13 +37,11 @@ Interfacial properties (phasepy.sgt):
 
 from __future__ import division, print_function, absolute_import
 
-__all__ = [s for s in dir() if not s.startswith('_')]
+#__all__ = [s for s in dir() if not s.startswith('_')]
 
 from .mixtures import *
 from .cubic.cubic import *
 from .actmodels import *
-#from .saftvrmie import *
-#from . import saftvrmie
 from . import actmodels
 from . import cubic
 from . import equilibrium

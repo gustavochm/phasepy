@@ -3,7 +3,7 @@ Activity coefficient models
 
 NRTL 
 ----
-Non-Random-Two-Liquids model is a a local composition model, widely used to describe liquid vapor, liquid liquid and liquid liquid vapor equilibria. 
+Non-Random-Two-Liquids model is a a local composition model, widely used to describe vapor-liquid, liquid-liquid and vapor-liquid-liquid equilibria. 
 
 .. math::
 	g^e = \sum_{i=1}^c x_i \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}	{\sum_{l=1}^c G_{li}x_l}
@@ -18,7 +18,7 @@ Non-Random-Two-Liquids model is a a local composition model, widely used to desc
 Wilson
 ------
 
-Wilson model is a local composition model recommended for vapor liquid equilibria calculation. It cannot predict liquid liquid
+Wilson model is a local composition model recommended for vapor-liquid equilibria calculation. It cannot predict liquid liquid
 equilibrium.
 
 .. math::

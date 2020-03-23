@@ -60,6 +60,8 @@ If the ``full_output`` option is set to ``True``, all the computated information
 
 >>> sol = sgt_mix(rhol, rhov, T, P, eos, z0 = 10.,  rho0 = 'hyperbolic', full_output = False)
 >>> sol.tension
+... 14.36781328594585 #IFT in mN/m 
+>>> #density profiles and spatial coordiante access
 >>> sol.rho
 >>> sol.z 
 
@@ -81,9 +83,15 @@ The second solution method is based on a modified SGT system of equations, propo
 This differential equation is advanced in time until no further changes is found on the density profiles. Then the interfacial tension is computed. 
 Its use is similar as the method described above, with the ``msgt_mix`` function.
 
-solm = msgt_mix(rhol, rhov, T, P, eos, z = 20, rho0 = sol, full_output = True)
+>>> solm = msgt_mix(rhol, rhov, T, P, eos, z = 20, rho0 = sol, full_output = True)
+>>> solm.tension
+... 14.367827924919165 #IFT in mN/m
 
+The density profiles obtained from each method are show in the following figure. The dashed line was computed solving the original BVP with increasing interfacial length and the dots were computed with the modified system.
 
+.. image:: sgt.jpg
+   :width: 60 %
+   :align: center
 
 
 

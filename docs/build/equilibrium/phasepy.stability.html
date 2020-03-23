@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="phasepy.fit" href="../phasepy.fit.html" />
+    <link rel="next" title="phasepy.sgt" href="../phasepy.sgt.html" />
     <link rel="prev" title="Multiphase Flash" href="phasepy.multiflash.html" /> 
 </head>
 
@@ -96,8 +96,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
             
@@ -190,7 +190,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Search for trial phase</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.99</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stateW</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">stateZ</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;#composition of minimum found and tpd value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimum found and tpd value</span>
 <span class="go">array([0.3068438, 0.6931562]), -0.005923914972662647</span>
 </pre></div>
 </div>
@@ -292,18 +292,18 @@
 <div class="section" id="liquid-liquid-equilibrium-initiation">
 <h2>Liquid liquid equilibrium initiation<a class="headerlink" href="#liquid-liquid-equilibrium-initiation" title="Permalink to this headline">¶</a></h2>
 <p>Using the same principles stated above, tpd function can be used to generate initial guesses for liquid liquid equilibra, the function ell_init allows to find two minimas of the mixture.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">ell_init</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">lle_init</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ell_init</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lle_init</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#initial values for ell computation</span>
 <span class="go">array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])</span>
 </pre></div>
 </div>
 <span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
-<dt id="phasepy.equilibrium.stability.ell_init">
-<code class="descname">ell_init</code><span class="sig-paren">(</span><em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>v0=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#ell_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.ell_init" title="Permalink to this definition">¶</a></dt>
+<dt id="phasepy.equilibrium.stability.lle_init">
+<code class="descname">lle_init</code><span class="sig-paren">(</span><em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>v0=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#lle_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.lle_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize tpd function to initiate ELL at fixed T and P.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -339,7 +339,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../phasepy.fit.html" class="btn btn-neutral float-right" title="phasepy.fit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../phasepy.sgt.html" class="btn btn-neutral float-right" title="phasepy.sgt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="phasepy.multiflash.html" class="btn btn-neutral float-left" title="Multiphase Flash" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

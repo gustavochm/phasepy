@@ -198,7 +198,7 @@ As an example the parameters for the system of ethanol and water will be fitted,
 </div>
 <div class="section" id="fitting-qmr-mixing-rule">
 <h2>Fitting QMR mixing rule<a class="headerlink" href="#fitting-qmr-mixing-rule" title="Permalink to this headline">¶</a></h2>
-<p>As an scalar is been fitted, SciPy recommends to give a certain interval where the minimum could be found, the function <code class="docutils literal notranslate"><span class="pre">fit_kij</span></code> handles this optimization. as follows:</p>
+<p>As an scalar is been fitted, SciPy recommends to give a certain interval where the minimum could be found, the function <code class="docutils literal notranslate"><span class="pre">fit_kij</span></code> handles this optimization as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.fit</span> <span class="k">import</span> <span class="n">fit_kij</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mixkij</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fit_kij</span><span class="p">((</span><span class="o">-</span><span class="mf">0.15</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">),</span> <span class="n">prsveos</span><span class="p">,</span> <span class="n">mixkij</span><span class="p">,</span> <span class="n">datavle</span><span class="p">)</span>
@@ -237,7 +237,7 @@ As an example the parameters for the system of ethanol and water will be fitted,
 </div>
 <div class="section" id="fitting-nrtl-parameters">
 <h2>Fitting NRTL parameters<a class="headerlink" href="#fitting-nrtl-parameters" title="Permalink to this headline">¶</a></h2>
-<p>As an array is been fitted, multidimentional optimization alogirthms are used, the function <code class="docutils literal notranslate"><span class="pre">`fit_nrtl`</span></code> handles this optimization with several options available. If a fixed value of the aleatory factor is used the initial guess has the following form:</p>
+<p>As an array is been fitted, multidimentional optimization alogirthms are used, the function <code class="docutils literal notranslate"><span class="pre">fit_nrtl</span></code> handles this optimization with several options available. If a fixed value of the aleatory factor is used the initial guess has the following form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nrtl0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">A12</span><span class="p">,</span> <span class="n">A21</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -451,11 +451,14 @@ a21 = a21_1 + a21T * T</dd>
 </table>
 </dd></dl>
 
-<p>Multidimentional minimization in SciPy are perfomed with minimize function, aditional command can be passed to this function in order to change tolerance, number of function evaluations or mimization method. This is done by passing a dictionary with the settings to <code class="docutils literal notranslate"><span class="pre">minimize_options</span></code> in <code class="docutils literal notranslate"><span class="pre">fit_nrtl</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_wilson</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_rk</span></code>. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">changing</span> <span class="n">the</span> <span class="n">minimization</span> <span class="n">method</span>
+<p>Multidimentional minimization in SciPy are perfomed with <code class="docutils literal notranslate"><span class="pre">minimize</span></code> function, aditional command can be passed to this function in order to change tolerance, number of function evaluations or mimization method. This is done by passing a dictionary with the settings to <code class="docutils literal notranslate"><span class="pre">minimize_options</span></code> in <code class="docutils literal notranslate"><span class="pre">fit_nrtl</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_wilson</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_rk</span></code>. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#changing the minimization method</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">minimize_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span> <span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fit_rk</span><span class="p">(</span><span class="n">rk0</span><span class="p">,</span> <span class="n">mixrk</span><span class="p">,</span> <span class="n">datavle</span><span class="p">,</span> <span class="n">Tdep</span> <span class="o">=</span>  <span class="kc">False</span><span class="p">,</span> <span class="n">minimize_options</span> <span class="o">=</span> <span class="n">minimize_options</span> <span class="p">)</span>
 </pre></div>
 </div>
+<p>The fitted parameters can be compared against the equilibrium data for each model. The following figure shows the perfomance of QMR, NRTL model, Wilson model and Redlich Kister expansion.</p>
+<img alt="../_images/binaryfit.jpg" src="../_images/binaryfit.jpg" />
 </div>
 </div>
 

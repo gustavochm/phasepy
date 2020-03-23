@@ -13,7 +13,43 @@ Main Cubic EoS functions of phasepy packages are bases on the following classes:
 	phasepy.cubicp
 	phasepy.cubicm
 
-This way, once you create an cubic EoS object it will check if you are working with a mixture or a pure component. The former case you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
+
+This way, once you create an cubic EoS object it will check if you are working with a pure component or a mixture. In the former case
+
+
+>>> from phasepy import preos
+>>> eos  = preos(ethanol)
+>>> #computes saturation pressure
+>>> pr.psat(T = 350.)
+>>> #saturation pressure, liquid volume and vapor volume
+>>> #(array([0.98800647]), array([66.75754804]),array([28799.31921623]))
+
+Additionally, density can be computed given the aggregation state.
+
+>>> #liquid density
+>>> pr.density(T = 350, P = 1., state = 'L')
+>>> #0.01497960198094922
+>>> #vapor density
+>>> pr.density(T = 350, P = 1., state = 'V')
+>>> #3.515440899573752e-05
+
+A volume translation can be considered from any of the cubic eos. The attribute ``c`` has to be supplied to the pure component and the option ``volume_translation`` has to be set to ``True``. The volume translation doesn't change equilibrium and tries to improve the behavior of liquid density predicted by the EoS.
+
+>>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0, w = 0.643558,
+                c = 5.35490936, Ant = [  11.61809279, 3423.0259436 ,  -56.48094263],
+                GC = {'CH3':1, 'CH2':1,'OH(P)':1})
+>>> pr = preos(ethanol, volume_translation = True)
+>>> #computes saturation pressure
+>>> pr.psat(T = 350.)
+>>> #(array([0.98800647]), array([61.40263868]), array([28793.96430687]))
+>>> #liquid density
+>>> pr.density(T = 350, P = 1., state = 'L')
+>>> #0.01628597159790686
+>>> #vapor density
+>>> pr.density(T = 350, P = 1., state = 'V')
+>>> #3.5161028012629526e-05
+
+When working with mixture you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
 and then how to specify a mixrule.
 
 For the case of classic quadratic mixrule:
@@ -39,7 +75,6 @@ While attractive term is an implicit function:
 
 .. math::
 	g^e_{EOS} = g^e_{model}
-
 
 
 With NRTL model:

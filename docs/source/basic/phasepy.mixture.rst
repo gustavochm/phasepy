@@ -15,7 +15,7 @@ Phasepy :class:`phasepy.mixture` function creates an object that stores necessar
 	>>> mix = mixture(ethanol, water)
 
 
-Additional components can be added to the mixture with the method add_component.
+Additional components can be added to the mixture with the method ``add_component``.
 
 .. code-block:: python
 
