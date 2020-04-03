@@ -56,3 +56,17 @@ The mixture object can be used within any of the available models in Phasepy. Th
    	./models/phasepy.virialgama
 	./models/phasepy.cubic
 
+The coded models were tested to pass molar partial property test and Gibbs-Duhem consistency, in the case of activity coefficient model the following equations were tested:
+
+.. math::
+	\frac{G^E}{RT} - \sum_{i=1}^c x_i \ln \gamma_i = 0\\
+	\sum_{i=1}^c x_i d\ln \gamma_i = 0
+
+where, :math:`G^E` refers to the Gibbs excess energy, :math:`R` is the ideal gas constant, :math:`T` is the absolute temperature, and :math:`x_i` and :math:`\gamma_i` are the mole fraction and activity coefficient of component :math:`i`. And in the case of cubic EoS:
+
+.. math::
+	\ln \phi - \sum_{i=1}^c x_i \ln \hat{\phi_i}  = 0 \\
+	\frac{d \ln \phi}{dP} - \frac{Z - 1}{P} = 0 \\ 	
+	\sum_{i=1}^c x_i d \ln \hat{\phi_i} = 0
+
+Here, :math:`\phi` is the fugacity coefficient of the mixture,  :math:`x_i` and :math:`\hat{\phi_i}` are the mole fraction and fugacity coefficient of component :math:`i`, :math:`P` refers to pressure and :math:`Z` to the compressibility factor.

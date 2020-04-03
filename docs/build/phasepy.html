@@ -208,6 +208,16 @@ incorporate interactions parameters for the available models as, NRTL, Wilson, R
 <li class="toctree-l1"><a class="reference internal" href="models/phasepy.cubic.html">Cubic Equation of State</a></li>
 </ul>
 </div>
+<p>The coded models were tested to pass molar partial property test and Gibbs-Duhem consistency, in the case of activity coefficient model the following equations were tested:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{G^E}{RT} - \sum_{i=1}^c x_i \ln \gamma_i = 0\\
+\sum_{i=1}^c x_i d\ln \gamma_i = 0\end{split}\]</div>
+<p>where, <span class="math notranslate nohighlight">\(G^E\)</span> refers to the Gibbs excess energy, <span class="math notranslate nohighlight">\(R\)</span> is the ideal gas constant, <span class="math notranslate nohighlight">\(T\)</span> is the absolute temperature, and <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(\gamma_i\)</span> are the mole fraction and activity coefficient of component <span class="math notranslate nohighlight">\(i\)</span>. And in the case of cubic EoS:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\ln \phi - \sum_{i=1}^c x_i \ln \hat{\phi_i}  = 0 \\
+\frac{d \ln \phi}{dP} - \frac{Z - 1}{P} = 0 \\
+\sum_{i=1}^c x_i d \ln \hat{\phi_i} = 0\end{split}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(\phi\)</span> is the fugacity coefficient of the mixture,  <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(\hat{\phi_i}\)</span> are the mole fraction and fugacity coefficient of component <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(P\)</span> refers to pressure and <span class="math notranslate nohighlight">\(Z\)</span> to the compressibility factor.</p>
 </div>
 
 

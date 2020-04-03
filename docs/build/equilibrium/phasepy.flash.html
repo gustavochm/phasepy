@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Vapour liquid equilibrium" href="phasepy.elv.html" />
+    <link rel="next" title="Vapor liquid equilibrium" href="phasepy.elv.html" />
     <link rel="prev" title="phasepy.equilibrium" href="../phasepy.equilibrium.html" /> 
 </head>
 
@@ -86,12 +86,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.html">phasepy</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../phasepy.equilibrium.html">phasepy.equilibrium</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Two phase Flash</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.elv.html">Vapour liquid equilibrium</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.ell.html">Liquid Liquid Equilibrium</a></li>
-<li class="toctree-l2"><a class="reference internal" href="phasepy.haz.html">Three phase equilibrium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.elv.html">Vapor liquid equilibrium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="phasepy.multiflash.html">Multiphase Flash</a></li>
 <li class="toctree-l2"><a class="reference internal" href="phasepy.stability.html">Stability</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../phasepy.sgt.html">phasepy.sgt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../phasepy.fit.html">phasepy.fit</a></li>
 </ul>
 
@@ -169,7 +169,7 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
 <div class="math notranslate nohighlight">
 \[min \, {G(\underline{F}^\alpha, \underline{F}^\beta)} = \sum_{i=1}^c (F_i^\alpha \ln \hat{f}_i^\alpha + F_i^\beta \ln \hat{f}_i^\beta)\]</div>
 <p>Where, <span class="math notranslate nohighlight">\(F\)</span> is the mole number and <span class="math notranslate nohighlight">\(\hat{f}\)</span> is the effective fugacity.</p>
-<p>In the following code block examples for solving vapor liquid is  shown:</p>
+<p>In the following code block a flash calulation for vapor liquid equilibria it is  shown:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">preos</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">flash</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
@@ -255,7 +255,7 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="phasepy.elv.html" class="btn btn-neutral float-right" title="Vapour liquid equilibrium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="phasepy.elv.html" class="btn btn-neutral float-right" title="Vapor liquid equilibrium" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../phasepy.equilibrium.html" class="btn btn-neutral float-left" title="phasepy.equilibrium" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

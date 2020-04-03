@@ -13,7 +13,7 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
 
 Where, :math:`F` is the mole number and :math:`\hat{f}` is the effective fugacity.
 
-In the following code block examples for solving vapor liquid is  shown: 
+In the following code block a flash calulation for vapor liquid equilibria it is  shown: 
 
 
 >>> from phasepy import component, mixture, preos
