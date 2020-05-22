@@ -14,11 +14,11 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
         dmu[i] = model.muad(rointer[:,i], T)
     dmu -= mu0
     dmu = dmu.T
-    
+
     dro2 = np.matmul(rointer,Binter.T)
-    dro2 += dro20 
+    dro2 += dro20
     dro2 += dro21
-    
+
     ter1 = np.matmul(cij,dro2)
     fo = ter1 - dmu
     return fo.flatten()
@@ -27,10 +27,10 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
 def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z0 = 10., dz = 1.5, itmax = 10, n = 20, full_output = False,
             ten_tol = 1e-2, solver_opt = None):
-    
+
     """
     SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
-    
+
     Parameters
     ----------
     rho1 : float
@@ -46,7 +46,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     rho0 : string, array_like or TensionResult
         inital values to solve the BVP, avaialable options are 'linear' for
         linear density profiles, 'hyperbolic' for hyperbolic like density profiles.
-        An array can also be supplied or a TensionResult of a previous calculation. 
+        An array can also be supplied or a TensionResult of a previous calculation.
     z0 :  float
         initial interfacial lenght
     dz : float
@@ -59,41 +59,41 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         wheter to outputs all calculation info
     solver_opt : dict, optional
         aditional solver options passed to SciPy solver
-    
+
     Returns
     -------
     ten : float
         interfacial tension between the phases
     """
-    
+
     z = z0
     nc = model.nc
-    
+
     #Dimensionless Variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     rho1a = rho1*rofactor
     rho2a = rho2*rofactor
 
-    
+
     cij = model.ci(Tsat)
     cij /= cij[0,0]
     dcij = np.linalg.det(cij)
     if np.isclose(dcij, 0):
         raise Exception('Determinant of influence parameters matrix is: {}'.format(dcij))
-    
+
     #Chemical potential
     mu0 = model.muad(rho1a, Tsat)
     mu02 = model.muad(rho2a, Tsat)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
-    
+
     #Nodes and weights of integration
     roots, weights = gauss(n)
     rootsf = np.hstack([0. ,roots, 1.])
     #Coefficent matrix for derivatives
     A, B = colocAB(rootsf)
-       
+
     #Initial profiles
     if rho0 == 'linear':
         #Linear Profile
@@ -111,7 +111,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         _z0 = rho0.z
         _ro0 = rho0.rho
         z = _z0[-1]
-        rointer = interp1d(_z0, _ro0)(roots * z)  
+        rointer = interp1d(_z0, _ro0)(roots * z)
         rointer *= rofactor
     elif isinstance(rho0,  np.ndarray):
         #Check dimensiones
@@ -146,7 +146,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                    options = solver_opt)
-        
+
         if sol.status == 5:
             sol = root(fobj_z_newton, sol.x, method = 'lm',
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
@@ -156,9 +156,9 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         rointer = rointer.reshape([nc, n])
 
         dro = np.matmul(rointer,Ainter.T)
-        dro += dro10 
+        dro += dro10
         dro += dro11
-        
+
         suma = cmix_cy(dro, cij)
         dom = np.zeros(n)
         for k in range(n):
@@ -171,10 +171,10 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         error = np.abs(ten - ten_old)
         ten_old = ten
         z += dz
-    fun_error = np.linalg.norm(sol.fun)/n/nc    
+    fun_error = np.linalg.norm(sol.fun)/n/nc
     success = sol.success  and (error < tol)
-    
-    if full_output: 
+
+    if full_output:
 
         znodes = (z-dz) * rootsf
         ro = np.insert(rointer, 0, rho1a, axis = 1)
@@ -182,22 +182,22 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro /= rofactor
         dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
-        'success' : success, 
+        'success' : success,
         'message' : sol.message,
         'fun_norm' : fun_error,
         'error':error, 'iter':it}
         out = TensionResult(dictresult)
         return out
-    
+
     return ten
 
 #Function for solving sgt for a fixed interfacial lenght
 def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z = 10, n = 20, full_output = False, solver_opt = None):
-    
+
     """
     SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
-    
+
     Parameters
     ----------
     rho1 : float
@@ -213,7 +213,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     rho0 : string, array_like or TensionResult
         inital values to solve the BVP, avaialable options are 'linear' for
         linear density profiles, 'hyperbolic' for hyperbolic like density profiles.
-        An array can also be supplied or a TensionResult of a previous calculation. 
+        An array can also be supplied or a TensionResult of a previous calculation.
     z :  float
         initial interfacial lenght
     n : int, optional
@@ -222,40 +222,40 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         wheter to outputs all calculation info
     solver_opt : dict, optional
         aditional solver options passed to SciPy solver
-    
+
     Returns
     -------
     ten : float
         interfacial tension between the phases
     """
-    
+
     nc = model.nc
-    
+
     #Dimensionless Variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     rho1a = rho1*rofactor
     rho2a = rho2*rofactor
 
-    
+
     cij = model.ci(Tsat)
     cij /= cij[0,0]
     dcij = np.linalg.det(cij)
     if np.isclose(dcij, 0):
         raise Exception('Determinant of influence parameters matrix is: {}'.format(dcij))
-    
+
     #Chemical potential
     mu0 = model.muad(rho1a, Tsat)
     mu02 = model.muad(rho2a, Tsat)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
-    
+
     #Nodes and weights of integration
     roots, weights = gauss(n)
     rootsf = np.hstack([0. ,roots, 1.])
     #Coefficent matrix for derivatives
     A, B = colocAB(rootsf)
-    
+
         #Initial profiles
     if rho0 == 'linear':
         #Linear Profile
@@ -273,7 +273,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         _z0 = rho0.z
         _ro0 = rho0.rho
         z = _z0[-1]
-        rointer = interp1d(_z0, _ro0)(roots * z)  
+        rointer = interp1d(_z0, _ro0)(roots * z)
         rointer *= rofactor
     elif isinstance(rho0,  np.ndarray):
         #Check dimensiones
@@ -282,7 +282,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             rointer *= rofactor
         else:
             raise Exception('Shape of initial value must be nc x n')
-            
+
     zad = z*zfactor
     Ar = A/zad
     Br = B/zad**2
@@ -302,7 +302,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
                args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                options = solver_opt)
-    
+
     if sol.status == 5:
         sol = root(fobj_z_newton, sol.x, method = 'lm',
                args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
@@ -312,9 +312,9 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     rointer = rointer.reshape([nc, n])
 
     dro = np.matmul(rointer,Ainter.T)
-    dro += dro10 
+    dro += dro10
     dro += dro11
-    
+
     suma = cmix_cy(dro, cij)
     dom = np.zeros(n)
     for k in range(n):
@@ -324,10 +324,10 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     ten = np.dot(intten, weights)
     ten *= zad
     ten *= tenfactor
-    fun_error = np.linalg.norm(sol.fun)/n/nc    
+    fun_error = np.linalg.norm(sol.fun)/n/nc
     success = sol.success
-    
-    if full_output: 
+
+    if full_output:
 
         znodes = z * rootsf
         ro = np.insert(rointer, 0, rho1a, axis = 1)
@@ -335,10 +335,10 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro /= rofactor
         dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
         'GPT' : np.hstack([0, dom, 0]),
-        'success' : success, 
+        'success' : success,
         'message' : sol.message,
         'fun_norm' : fun_error}
         out = TensionResult(dictresult)
         return out
-    
+
     return ten

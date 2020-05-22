@@ -10,10 +10,10 @@ def fobj_saddle(ros, mu0, T, eos):
     return mu - mu0
 
 def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
-    
+
     """
     SGT linear for mixtures and beta = 0 (rho1, rho2, T, P) -> interfacial tension
-    
+
     Parameters
     ----------
     rho1 : float
@@ -36,23 +36,23 @@ def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
     ten : float
         interfacial tension between the phases
     """
-    
+
 
     #Dimensionless variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = rho1*rofactor
     ro2a = rho2*rofactor
-    
+
     cij = model.ci(Tsat)
     cij /= cij[0,0]
-    
+
     mu0 = model.muad(ro1a, Tsat)
     mu02 = model.muad(ro2a, Tsat)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
     roots, weights = lobatto(n)
-    s = 0 
+    s = 0
     ro_s = (ro2a[s]-ro1a[s])*roots + ro1a[s]  # integrations nodes
     wreal = np.abs(weights*(ro2a[s]-ro1a[s])) #integration weights
 
@@ -60,10 +60,10 @@ def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
     pend = (ro2a - ro1a)
     b = ro1a
     ro = (np.outer(roots, pend) + b).T
-    
+
     #Derivatives respect to component 1
     dro = np.gradient(ro, ro_s, edge_order = 2, axis = 1)
-    
+
     suma = cmix_cy(dro, cij)
     dom = np.zeros(n)
     for k in range(1, n - 1):
@@ -72,7 +72,7 @@ def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
     tension = np.dot(integral, wreal)
     tension *= tenfactor
-    
+
     if full_output:
         #Z profile
         with np.errstate(divide='ignore'):
@@ -85,14 +85,14 @@ def sgt_linear(rho1, rho2, Tsat, Psat, model, n = 100, full_output = False):
         'GPT' : np.hstack([0, dom, 0])}
         out = TensionResult(dictresult)
         return out
-    
+
     return tension
-    
+
 def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
-    
+
     """
     SGT spot for mixtures and beta = 0 (rho1, rho2, T, P) -> interfacial tension
-    
+
     Parameters
     ----------
     rho1 : float
@@ -115,13 +115,13 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
     ten : float
         interfacial tension between the phases
     """
-    
-    #adimensionalizar variables 
+
+    #adimensionalizar variables
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
     ro1a = rho1*rofactor
     ro2a = rho2*rofactor
-    
+
     cij = model.ci(Tsat)
     cij /= cij[0,0]
 
@@ -129,9 +129,9 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
     mu02 = model.muad(ro2a, Tsat)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
-    
+
     roots, weights = lobatto(n)
-    s = 0 
+    s = 0
     try:
         ros = (ro1a + ro2a)/2
         ros = root(fobj_saddle, ros, args =(mu0, Tsat, model), method = 'lm')
@@ -143,9 +143,9 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
             b = ro1a
             ro1 = (np.outer(roots, pend) + b).T
 
-            ro_s1 = (ros[s]-ro1a[s])*roots + ro1a[s] #integration nodes 
+            ro_s1 = (ros[s]-ro1a[s])*roots + ro1a[s] #integration nodes
             wreal1 = np.abs(weights*(ros[s]-ro1a[s])) #integration weights
-            
+
 
             dro1 = np.gradient(ro1, ro_s1, edge_order = 2, axis = 1)
 
@@ -154,10 +154,10 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
             pend = (ro2a - ros)
             b = ros
             ro2 = (np.outer(roots, pend) + b).T
-            
+
             ro_s2 = (ro2a[s]-ro1a[s])*roots + ro1a[s] #integration nodes
             wreal2 = np.abs(weights*(ro2a[s]-ro1a[s])) #integration weights
-            
+
 
             dro2 = np.gradient(ro2, ro_s2, edge_order = 2, axis = 1)
 
@@ -168,11 +168,11 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
                 dom2[i] = model.dOm(ro2[:,i], Tsat, mu0, Pad)
             dom1[0] = 0.
             dom2[-1] = 0.
-            
+
             suma1 = cmix_cy(dro1, cij)
             suma2 = cmix_cy(dro2, cij)
-            
-                        
+
+
             integral1 = np.nan_to_num(np.sqrt(2*dom1*suma1))
             integral2 = np.nan_to_num(np.sqrt(2*dom2*suma2))
             tension = np.dot(integral1, wreal1)
@@ -200,4 +200,3 @@ def sgt_spot(rho1, rho2, Tsat, Psat, model, n = 50, full_output = False):
         out = ten_linear(ro1, ro2, Tsat, Psat, model, n, full_output)
 
     return out
-    
