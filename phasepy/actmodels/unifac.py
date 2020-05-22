@@ -113,6 +113,8 @@ def dunifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     -------
     lngama: array_like
         natural logarithm of activify coefficient
+    dlngama: array_like
+        derivative of natural logarithm of activify coefficient
     '''
 
     nc = len(x)
@@ -127,6 +129,11 @@ def dunifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     lngamac = np.log(phi)
     lngamac += 1 - phi
     lngamac -= 5*qi*(np.log(phi_tetha)+ 1 - phi_tetha)
+
+    dphi = - np.outer(ri34,ri34) / r34x**2
+    dphi_tetha = np.outer(ri/qi, rx*qi - ri*qx) / rx**2
+    dlngamac = (dphi * (1/phi - 1)).T
+    dlngamac -= 5*qi*(dphi_tetha.T * (1/phi_tetha - 1))
 
     amn = a0 + a1 * T + a2 * T**2
 
