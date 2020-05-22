@@ -2,19 +2,17 @@
 
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from .qmr import qmr
-from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk
-from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
+from .mixingrules import mixingrule_fcn
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
 
 class vtcubicm():
     '''
     Mixture Cubic EoS Object
-    
-    This object have implemeted methods for phase equilibrium 
+
+    This object have implemeted methods for phase equilibrium
     as for iterfacial properties calculations.
-    
+
     Parameters
     ----------
     mix : object
@@ -27,7 +25,7 @@ class vtcubicm():
         function that gives thermal funcionality  to attractive term of EoS
     mixrule : function
         computes mixture attactive and cohesive terms
-    
+
     Attributes
     ----------
     Tc: array_like
@@ -40,7 +38,7 @@ class vtcubicm():
         influence factor for SGT
     nc : int
         number of components of mixture
-    
+
     Methods
     -------
     a_eos : computes the attractive term of cubic eos.
@@ -55,160 +53,41 @@ class vtcubicm():
     sgt_adim : computes adimentional factors for SGT.
 
     '''
-    
+
     def __init__(self, mix, c1, c2, oma, omb, alpha_eos, mixrule):
-        
+
         self.c1 = c1
         self.c2 = c2
         self.oma = oma
         self.omb = omb
-        self.alpha_eos = alpha_eos 
+        self.alpha_eos = alpha_eos
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
-        
-        self.Tc = np.array(mix.Tc, ndmin = 1) 
+
+        self.Tc = np.array(mix.Tc, ndmin = 1)
         self.Pc = np.array(mix.Pc, ndmin = 1)
         self.w = np.array(mix.w, ndmin = 1)
-        self.cii = np.array(mix.cii, ndmin = 1) 
+        self.cii = np.array(mix.cii, ndmin = 1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.c =np.array(mix.c, ndmin = 1)
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
-        
-        if mixrule == 'qmr':
-            self.mixrule = qmr  
-            if hasattr(mix, 'kij'):
-                self.kij = mix.kij
-                self.mixruleparameter = (mix.kij,)
-            else: 
-                self.kij = np.zeros([self.nc, self.nc])
-                self.mixruleparameter = (self.kij, )
-                
-        elif mixrule == 'mhv_nrtl':
-            self.mixrule = mhv_nrtl  
-            if hasattr(mix, 'g') and hasattr(mix, 'alpha'):
-                #Este se utiliza con mhv_nrtl
-                self.nrtl = (mix.alpha, mix.g, mix.g1)
-                self.mixruleparameter = (self.c1,self.c2, 
-                                         mix.alpha, mix.g, mix.g1)
-            else: 
-                raise Exception('NRTL parameters needed')
-                
-        elif mixrule == 'mhv_nrtlt':
-            self.mixrule = mhv_nrtlt  
-            if hasattr(mix, 'g') and hasattr(mix, 'alpha') and hasattr(mix, 'rkternario'):
-                self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternario)
-                self.mixruleparameter = (self.c1,self.c2, mix.alpha, mix.g,
-                                         mix.g1, mix.rkternario)
-            else: 
-                raise Exception('NRTL/ternary parameters needed')
-                
-        elif mixrule == 'mhv_wilson':
-            self.mixrule = mhv_wilson  
-            if hasattr(mix, 'Aij'):
-                #este se utiliza con mhv_wilson
-                self.wilson = (mix.Aij, mix.vlrackett)
-                self.mixruleparameter = (self.c1,self.c2, mix.Aij, mix.vlrackett)
-            else: 
-                raise Exception('Wilson parameters needed')
-                
-        elif mixrule == 'mhv_unifac':
-            self.mixrule = mhv_unifac  
-            if hasattr(mix, 'actmodelp'):
-                mix.unifac()
-                self.unifac = mix.actmodelp
-                self.mixruleparameter = (self.c1,self.c2, *mix.actmodelp)
-            else: 
-                raise Exception('Unifac parameters needed')
-        
-        elif mixrule == 'mhv_rk':
+        mixingrule_fcn(self, mix, mixrule)
 
-            self.mixrule = mhv_rk  
-            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
-                self.rk = (mix.rkp, mix.rkpT, mix.combinatory)
-                self.mixruleparameter = (self.c1,self.c2, mix.rkp, mix.rkpT,
-                                         mix.combinatory)
-            else:
-                raise Exception('RK parameters needed')
 
-                
-        elif mixrule == 'ws_nrtl':
-            self.mixrule = ws_nrtl  
-            if hasattr(mix, 'Kijws'):
-                self.Kijws = mix.Kijws
-            else:
-                self.Kijws = np.zeros([self.nc, self.nc]) 
-
-            if hasattr(mix, 'g') and hasattr(mix, 'alpha'):
-                #Este se utiliza con mhv_nrtl
-                c1, c2 = self.c1, self.c2
-                C = np.log((1+c1)/(1+c2))/(c1-c2)
-                self.nrtl = (mix.alpha, mix.g, mix.g1)
-                self.mixruleparameter = (C, self.Kijws, 
-                                         mix.alpha, mix.g, mix.g1)
-            else: 
-                raise Exception('NRTL parameters needed')
-                
-        elif mixrule == 'ws_wilson':
-            self.mixrule = ws_wilson  
-            if hasattr(mix, 'Kijws'):
-                self.Kijws = mix.Kijws
-            else:
-                self.Kijws = np.zeros([self.nc, self.nc]) 
-            if hasattr(mix, 'Aij'):
-                #este se utiliza con mhv_wilson
-                c1, c2 = self.c1, self.c2
-                C = np.log((1+c1)/(1+c2))/(c1-c2)
-                self.wilson = (mix.Aij, mix.vlrackett)
-                self.mixruleparameter = (C, self.Kijws, mix.Aij, mix.vlrackett)
-            else: 
-                raise Exception('Wilson parameters needed')
-                
-        elif mixrule == 'ws_rk':
-            self.mixrule = ws_rk
-            if hasattr(mix, 'Kijws'):
-                self.Kijws = mix.Kijws
-            else:
-                self.Kijws = np.zeros([self.nc, self.nc])
-                
-            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):
-                c1, c2 = self.c1, self.c2
-                C = np.log((1+c1)/(1+c2))/(c1-c2)
-                self.rk = (mix.rkp, mix.rkpT, mix.combinatoria)
-                self.mixruleparameter = (C, self.Kijws, mix.rkp, mix.rkpT,
-                                         mix.combinatoria)
-            else:
-                raise Exception('RK parameters needed')
-                
-        elif mixrule == 'ws_unifac':
-            self.mixrule = ws_unifac  
-            if hasattr(mix, 'Kijws'):
-                self.Kijws = mix.Kijws
-            else:
-                self.Kijws = np.zeros([self.nc, self.nc])       
-
-            c1, c2 = self.c1, self.c2
-            C = np.log((1+c1)/(1+c2))/(c1-c2)
-            mix.unifac()
-            self.unifac = mix.actmodelp
-            self.mixruleparameter = (C, self.Kijws,*self.unifac)
-        else: 
-            raise Exception('Mixrule not valid')
-            
-            
-    #Cubic EoS methods    
+    #Cubic EoS methods
     def a_eos(self,T):
-        """ 
+        """
         a_eos(T)
-        
+
         Method that computes atractive term of cubic eos at fixed T (in K)
-    
+
         Parameters
         ----------
-        
+
         T : float
             absolute temperature in K
-    
+
         Returns
         -------
         a : array_like
@@ -217,30 +96,30 @@ class vtcubicm():
         alpha = self.alpha_eos(T,self.k,self.Tc)
         a  = self.oma*(R*self.Tc)**2*alpha/self.Pc
         return a
-    
+
     def _Zroot(self, A, B, C):
-    
+
         a1 = (self.c1+self.c2-1)*B-1 + 3 * C
         a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
         a2 += 3*C**2 + 2*C*(-1 + B*(-1 + self.c1 + self.c2))
         a3 = A*(-B + C) + (-1-B+C)* (C +self.c1 * B)*(C+self.c2*B)
-        
+
         Zpol=[1,a1,a2,a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots>(B - C)]
         return Zroots
-        
+
     def Zmix(self, X, T, P):
         '''
         Zmix (X, T, P)
-        
+
         Method that computes the roots of the compresibility factor polynomial
         at given mole fractions (X), Temperature (T) and Pressure (P)
-        
+
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -249,7 +128,7 @@ class vtcubicm():
             pressure in bar
 
         Returns
-        -------        
+        -------
         Z : array_like
             roots of Z polynomial
         '''
@@ -261,18 +140,18 @@ class vtcubicm():
         A = am*P/RT**2
         B = bm*P/RT
         C = cm*P/RT
-        
+
         return self._Zroot(A,B,C)
 
     def density(self, X, T, P, state):
-        """ 
+        """
         density(X, T, P, state)
         Method that computes the density of the mixture at X, T, P
 
-        
+
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -292,22 +171,22 @@ class vtcubicm():
         elif state == 'V':
             Z=max(self.Zmix(X,T,P))
         return P/(R*T*Z)
-    
+
     def logfugef(self, X, T, P, state, v0 = None):
-        """ 
+        """
         logfugef(X, T, P, state)
-        
+
         Method that computes the effective fugacity coefficients  at given
-        composition, temperature and pressure. 
+        composition, temperature and pressure.
 
         Parameters
         ----------
-        
+
         X : array_like, mole fraction vector
         T : absolute temperature in K
         P : pressure in bar
         state : 'L' for liquid phase and 'V' for vapour phase
-        
+
         Returns
         -------
         logfug: array_like
@@ -317,42 +196,42 @@ class vtcubicm():
         """
         c1 = self.c1
         c2 = self.c2
-        
+
         b = self.b
         a = self.a_eos(T)
         c = self.c
         cm = np.dot(X, c)
-        
+
         am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
-        
+
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-        
-        RT = R * T    
+
+        RT = R * T
         v = (RT*Z)/P
         B = bm * P/RT
         C = cm*P/RT
         Cp = c * P/RT
-        
+
         logfug = (Z + C - 1) * (bp/bm) - np.log(Z + C - B) - Cp
         logfug -= (ep/(c2-c1))*np.log((Z+C+c2*B)/(Z+C+c1*B))
 
-        
+
         return logfug, v
-        
+
     def logfugmix(self, X, T, P, state, v0 = None):
-        
-        """ 
+
+        """
         logfugmix(X, T, P, state)
-        
+
         Method that computes the mixture fugacity coefficient at given
-        composition, temperature and pressure. 
+        composition, temperature and pressure.
 
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -361,7 +240,7 @@ class vtcubicm():
             pressure in bar
         state : string
             'L' for liquid phase and 'V' for vapour phase
-        
+
         Returns
         -------
         lofgfug : array_like
@@ -370,19 +249,19 @@ class vtcubicm():
 
         c1 = self.c1
         c2 = self.c2
-        
+
         b = self.b
         a = self.a_eos(T)
         c = self.c
         cm = np.dot(X, c)
-        
+
         am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
-        
+
         if state == 'V':
             Z=max(self.Zmix(X,T,P))
         elif state == 'L':
             Z=min(self.Zmix(X,T,P))
-            
+
         RT = R * T
         v = (RT*Z)/P
         A = am * P / RT**2
@@ -391,31 +270,31 @@ class vtcubicm():
 
         logfug = Z - 1 - np.log(Z + C -B)
         logfug -= (A/(c2-c1)/B)*np.log((Z + C +c2*B)/(Z + C +c1*B))
-        
+
         return logfug, v
-    
+
     def a0ad(self, roa, T):
-        
-        """ 
+
+        """
         a0ad(roa, T)
-        
+
         Method that computes the adimenstional Helmholtz density energy at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         a0ad: float
             adimenstional Helmholtz density energy
         """
-        
+
         c1 = self.c1
         c2 = self.c2
         ai = self.a_eos(T)
@@ -425,9 +304,9 @@ class vtcubicm():
         b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
-        
-        
-        
+
+
+
         am, bm, ep, ap, bp = self.mixrule(X, T, ai, bi, *self.mixruleparameter)
         cm = np.dot(X, ci)
         Prefa=1*b**2/a
@@ -435,40 +314,40 @@ class vtcubicm():
         ama = am/a
         bma = bm/b
         cma = cm/b
-        
+
         sum0 = 1-bma*ro + cma*ro
         sum1 = 1+c1*ro*bma+ro*cma
         sum2 = 1+c2*ro*bma+ro*cma
-        
+
         a0 = np.sum(np.nan_to_num(Tad*roa*np.log(X)))
         a0 += -Tad*ro*np.log(sum0)
         a0 += -Tad*ro*np.log(Prefa/(Tad*ro))
         a0 += -ama*ro*np.log(sum2/sum1)/((c2-c1)*bma)
-        
+
         return a0
-    
+
     def muad(self, roa, T):
-        
-        """ 
+
+        """
         muad(roa, T)
-        
+
         Method that computes the adimenstional chemical potential at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         muad : array_like
             adimentional chemical potential vector
         """
-        
+
         c1 = self.c1
         c2 = self.c2
         ai = self.a_eos(T)
@@ -478,7 +357,7 @@ class vtcubicm():
         b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
-        
+
         am, bm, ep, ap, bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
         cm = np.dot(X, ci)
         Prefa=1*b**2/a
@@ -489,32 +368,32 @@ class vtcubicm():
         bad = bp/b
         cma = cm/b
         cad = ci/b
-        
+
         sum0 = 1-bma*ro + cma*ro
         sum1 = 1+c1*ro*bma+ro*cma
         sum2 = 1+c2*ro*bma+ro*cma
-        
+
         mui = -Tad*np.log(Prefa/(Tad*roa))+Tad
         mui -= Tad*np.log(sum0)
         mui += (bad - cad)*Tad*ro/(sum0)
-        
+
         mui -= (ama+apa) * np.log(sum2/sum1) / ((c2-c1)*bma)
         mui += bad*ama * np.log(sum2/sum1) / ((c2-c1)*bma**2)
         mui -= ama*ro*((1+cma*ro)*bad - bma*ro*cad) / (sum2*sum1*bma)
-        
+
         return mui
-    
-    
+
+
     def dOm(self, roa, T, mu, Psat):
-        """ 
+        """
         dOm(roa, T, mu, Psat)
-        
+
         Method that computes the adimenstional Thermodynamic Grand potential at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
@@ -525,15 +404,15 @@ class vtcubicm():
             adimentional pressure at equilibrium
 
         Returns
-        -------       
+        -------
         dom: float
             Thermodynamic Grand potential
         """
         dom = self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
         return dom
-        
+
     def _lnphi0(self, T, P):
-        
+
         nc = self.nc
         a_puros = self.a_eos(T)
         Ai = a_puros*P/(R*T)**2
@@ -544,30 +423,30 @@ class vtcubicm():
             zroot = np.roots(np.hstack([1,pols[:,i]]))
             zroot = zroot[zroot>Bi[i]]
             Zs[i,:]=np.array([max(zroot),min(zroot)])
-    
+
         logphi=Zs - 1 - np.log(Zs.T-Bi)
         logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T+self.c2*Bi)/(Zs.T+self.c1*Bi))
         logphi = np.amin(logphi,axis=0)
-    
+
         return logphi
-    
+
     def beta_sgt(self, beta):
         self.beta = beta
-    
+
     def ci(self, T):
         '''
         ci(T)
-        
+
         Method that evaluates the polynomials for the influence parameters used
         in the SGT theory for surface tension calculations.
-        
+
         Parameters
         ----------
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         cij: array_like
             matrix of influence parameters with geomtric mixing rule.
         '''
@@ -578,21 +457,21 @@ class vtcubicm():
             ci[i]=np.polyval(self.cii[i],T)
         self.cij=np.sqrt(np.outer(ci,ci))*(1-self.beta)
         return self.cij
-    
+
     def sgt_adim(self, T):
         '''
         sgt_adim(T)
-        
-        Method that evaluates adimentional factor for temperature, pressure, 
+
+        Method that evaluates adimentional factor for temperature, pressure,
         density, tension and distance for interfacial properties computations with
         SGT.
-        
+
         Parameters
         ----------
         T : absolute temperature in K
-        
+
         Returns
-        -------        
+        -------
         Tfactor : float
             factor to obtain dimentionless temperature (K -> adim)
         Pfactor : float
@@ -603,7 +482,7 @@ class vtcubicm():
             factor to obtain dimentionless surface tension (mN/m -> adim)
         zfactor : float
             factor to obtain dimentionless distance  (Amstrong -> adim)
-        
+
         '''
         a0 = self.a_eos(T)[0]
         b0 = self.b[0]
@@ -611,11 +490,11 @@ class vtcubicm():
         Tfactor = R*b0/a0
         Pfactor = b0**2/a0
         rofactor = b0
-        tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3) 
-        zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10 
+        tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3)
+        zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10
         return Tfactor, Pfactor, rofactor, tenfactor, zfactor
-                 
-# Peng Robinson EoS 
+
+# Peng Robinson EoS
 c1pr = 1-np.sqrt(2)
 c2pr = 1+np.sqrt(2)
 omapr = 0.4572355289213825
@@ -624,10 +503,10 @@ class vtprmix(vtcubicm):
     def __init__(self, mix, mixrule = 'qmr'):
         vtcubicm.__init__(self, mix,c1 = c1pr, c2 = c2pr,
               oma = omapr, omb = ombpr, alpha_eos = alpha_soave, mixrule = mixrule )
-        
+
         self.k =  0.37464 + 1.54226*self.w - 0.26992*self.w**2
-        
-# Peng Robinson SV EoS 
+
+# Peng Robinson SV EoS
 class vtprsvmix(vtcubicm):
     def __init__(self, mix, mixrule = 'qmr'):
         vtcubicm.__init__(self, mix, c1 = c1pr, c2 = c2pr,
@@ -636,7 +515,7 @@ class vtprsvmix(vtcubicm):
             self.k = np.zeros([self.nc,2])
             self.k[:,0] = 0.378893+1.4897153*self.w-0.17131838*self.w**2+0.0196553*self.w**3
         else:
-             self.k = np.array(mix.ksv) 
+             self.k = np.array(mix.ksv)
 
 # RKS - EoS
 c1rk = 0
@@ -648,8 +527,8 @@ class vtrksmix(vtcubicm):
         vtcubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
               oma = omark, omb = ombrk, alpha_eos = alpha_soave, mixrule = mixrule)
         self.k =  0.47979 + 1.5476*self.w - 0.1925*self.w**2 + 0.025*self.w**3
-      
-#RK - EoS        
+
+#RK - EoS
 class vtrkmix(vtcubicm):
     def __init__(self, mix, mixrule = 'qmr'):
         vtcubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
@@ -657,4 +536,3 @@ class vtrkmix(vtcubicm):
     def a_eos(self,T):
         alpha=self.alpha_eos(T, self.Tc)
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
-

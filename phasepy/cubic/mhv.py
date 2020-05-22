@@ -1,6 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..actmodels import nrtl, wilson, nrtlter, rk, unifac
+from ..actmodels import dnrtl, dwilson, dnrtlter, drk, dunifac
 from ..constants import R
 
 
@@ -10,11 +11,11 @@ from ..constants import R
 def U_mhv(em,c1,c2):
     ter1 = em-c1-c2
     ter2 = c1*c2+em
-
-    Umhv = ter1 - np.sqrt(ter1**2 - 4*ter2)
+    ter3 = np.sqrt(ter1**2 - 4*ter2)
+    Umhv = ter1 - ter3
     Umhv /= 2
 
-    dUmhv = 1 - 0.5*(ter1**2 - 4*ter2)**-0.5*(-2*ter1-4)
+    dUmhv = 1 + (2 - ter1) /ter3
     dUmhv /= 2
 
     return Umhv, dUmhv
@@ -24,10 +25,12 @@ def f0_mhv(em,zm,c1,c2):
 
     Umhv, dUmhv = U_mhv(em,c1,c2)
 
-    f0 = (-1-np.log(Umhv-1)-(em/(c1-c2)) * np.log((Umhv + c1)/(Umhv + c2)))
+    logaux = np.log((Umhv + c1)/(Umhv + c2))
+
+    f0 = (-1-np.log(Umhv-1)-(em/(c1-c2)) * logaux)
     f0 -= zm
 
-    df0 = -dUmhv/(Umhv-1)-(1/(c1-c2))*np.log((Umhv+c1)/(Umhv+c2))
+    df0 = -dUmhv/(Umhv-1)-(1./(c1-c2)) * logaux
     df0 += dUmhv*em/((Umhv+c1)*(Umhv+c2))
     return f0, df0
 
@@ -37,7 +40,7 @@ def em_solver(X, e, zm,c1,c2):
     it = 0.
     f0, df0 = f0_mhv(em,zm,c1,c2)
     error = 1.
-    while error > 1e-6 and it < 30:
+    while error > 1e-6 and it < 10:
         it += 1
         de = f0 / df0
         em -= de
@@ -92,7 +95,7 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     #partial attractive term
     ap = am + em*(bi-bm)*R*T + dedn*bm*R*T
     #partial adimnetional term
-    ep = em*(1 + ap/am - bi/bm)
+    ep = em*(1. + ap/am - bi/bm)
     return am, bm, ep, ap, bi
 
 def mhv_nrtl(X, T, ai, bi, c1, c2, alpha, g, g1):
