@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,11 +150,11 @@
   <h1>Source code for phasepy.equilibrium.flash</h1><div class="highlight"><pre>
 <span></span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..math</span> <span class="k">import</span> <span class="n">gdem</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
-<span class="kn">from</span> <span class="nn">.equilibriumresult</span> <span class="k">import</span> <span class="n">EquilibriumResult</span>
+<span class="kn">from</span> <span class="nn">..math</span> <span class="kn">import</span> <span class="n">gdem</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">.equilibriumresult</span> <span class="kn">import</span> <span class="n">EquilibriumResult</span>
 
 <span class="k">def</span> <span class="nf">rachfordrice</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -164,7 +164,7 @@
     <span class="n">g0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span>
     <span class="n">g1</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">K</span><span class="p">)</span>
     <span class="n">singlephase</span> <span class="o">=</span> <span class="kc">False</span>
-    
+
     <span class="k">if</span> <span class="n">g0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
@@ -182,13 +182,13 @@
         <span class="n">fo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">KD</span><span class="p">)</span>
         <span class="n">dfo</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">KD</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">d2fo</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">KD</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">dbeta</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fo</span><span class="o">*</span><span class="n">dfo</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dfo</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">fo</span><span class="o">*</span><span class="n">d2fo</span><span class="p">)</span> 
+        <span class="n">dbeta</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fo</span><span class="o">*</span><span class="n">dfo</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dfo</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">fo</span><span class="o">*</span><span class="n">d2fo</span><span class="p">)</span>
         <span class="n">beta</span> <span class="o">+=</span> <span class="n">dbeta</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dbeta</span><span class="p">)</span>
-        
+
     <span class="k">return</span> <span class="n">beta</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">singlephase</span>
 
-<span class="k">def</span> <span class="nf">Gibbs_obj</span><span class="p">(</span><span class="n">v</span> <span class="p">,</span> <span class="n">fases</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">modelo</span><span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="n">v20</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">Gibbs_obj</span><span class="p">(</span><span class="n">v</span> <span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="n">v20</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Objective function to minimize Gibbs energy in biphasic flash</span>
@@ -198,25 +198,66 @@
     <span class="n">l</span><span class="p">[</span><span class="n">l</span><span class="o">&lt;</span><span class="mf">1e-8</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-8</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">l</span><span class="o">/</span><span class="n">l</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">v</span><span class="o">/</span><span class="n">v</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    
-    <span class="n">lnfugl</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">modelo</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">fases</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v10</span><span class="p">)</span>
-    <span class="n">lnfugv</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">modelo</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="n">fases</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v20</span><span class="p">)</span>
+
+    <span class="n">lnfugl</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">phases</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v10</span><span class="p">)</span>
+    <span class="n">lnfugv</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">phases</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v20</span><span class="p">)</span>
     <span class="n">fugl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">lnfugl</span>
     <span class="n">fugv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">+</span> <span class="n">lnfugv</span>
     <span class="n">fo</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="n">fugv</span> <span class="o">+</span> <span class="n">l</span><span class="o">*</span><span class="n">fugl</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">fo</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fo</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">fugv</span> <span class="o">-</span> <span class="n">fugl</span>
     <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span>
 
 
-<div class="viewcode-block" id="flash"><a class="viewcode-back" href="../../../equilibrium/phasepy.flash.html#phasepy.equilibrium.flash.flash">[docs]</a><span class="k">def</span> <span class="nf">flash</span><span class="p">(</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> 
-          <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dGibbs_obj</span><span class="p">(</span><span class="n">v</span> <span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="n">v20</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Objective function to minimize Gibbs energy in biphasic flash when second</span>
+<span class="sd">    order derivatives are available</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">l</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">-</span> <span class="n">v</span>
+    <span class="n">v</span><span class="p">[</span><span class="n">v</span><span class="o">&lt;</span><span class="mf">1e-8</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-8</span>
+    <span class="n">l</span><span class="p">[</span><span class="n">l</span><span class="o">&lt;</span><span class="mf">1e-8</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-8</span>
+    <span class="n">vt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">lt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">l</span><span class="o">/</span><span class="n">lt</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">v</span><span class="o">/</span><span class="n">vt</span>
+    <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="n">eye</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+
+    <span class="n">lnfugl</span><span class="p">,</span> <span class="n">dlnfugl</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">dlogfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">phases</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v10</span><span class="p">)</span>
+    <span class="n">lnfugv</span><span class="p">,</span> <span class="n">dlnfugv</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">dlogfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">phases</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v20</span><span class="p">)</span>
+
+    <span class="n">fugl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">lnfugl</span>
+    <span class="n">fugv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">+</span> <span class="n">lnfugv</span>
+    <span class="n">fo</span> <span class="o">=</span> <span class="n">v</span><span class="o">*</span><span class="n">fugv</span> <span class="o">+</span> <span class="n">l</span><span class="o">*</span><span class="n">fugl</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">fo</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">fugv</span> <span class="o">-</span> <span class="n">fugl</span>
+
+    <span class="k">global</span> <span class="n">dfugv</span><span class="p">,</span> <span class="n">dfugl</span>
+    <span class="n">dfugv</span> <span class="o">=</span> <span class="n">eye</span><span class="o">/</span><span class="n">v</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">vt</span> <span class="o">+</span> <span class="n">dlnfugv</span><span class="o">/</span><span class="n">vt</span>
+    <span class="n">dfugl</span> <span class="o">=</span> <span class="n">eye</span><span class="o">/</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">lt</span> <span class="o">+</span> <span class="n">dlnfugl</span><span class="o">/</span><span class="n">lt</span>
+
+    <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">dGibbs_hess</span><span class="p">(</span><span class="n">v</span> <span class="p">,</span> <span class="n">phases</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span> <span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="n">v20</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Hessian to minimize Gibbs energy in biphasic flash when second</span>
+<span class="sd">    order derivatives are available</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">dfugv</span><span class="p">,</span> <span class="n">dfugl</span>
+    <span class="n">d2fo</span> <span class="o">=</span> <span class="n">dfugv</span> <span class="o">+</span> <span class="n">dfugl</span>
+    <span class="k">return</span> <span class="n">d2fo</span>
+
+<div class="viewcode-block" id="flash"><a class="viewcode-back" href="../../../equilibrium/phasepy.flash.html#phasepy.equilibrium.flash.flash">[docs]</a><span class="k">def</span> <span class="nf">flash</span><span class="p">(</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span>
+          <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">K_tol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Isothermic isobaric flash (z,T,P) -&gt; (x,y,beta)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
+
 <span class="sd">    x_guess : array_like</span>
 <span class="sd">        guess composition of phase 1</span>
 <span class="sd">    y_guess : array_like</span>
@@ -229,14 +270,16 @@
 <span class="sd">        absolute temperature in K.</span>
 <span class="sd">    P : float</span>
 <span class="sd">        pressure in bar</span>
-<span class="sd">    </span>
-<span class="sd">    model : object </span>
-<span class="sd">        created from mixture, eos and mixrule </span>
-<span class="sd">    v0 : list</span>
+
+<span class="sd">    model : object</span>
+<span class="sd">        created from mixture, eos and mixrule</span>
+<span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
-<span class="sd">    full_output: bool</span>
+<span class="sd">    K_tol : float, optional</span>
+<span class="sd">        Desired accuracy of K (= Y/X) vector</span>
+<span class="sd">    full_output: bool, optional</span>
 <span class="sd">        wheter to outputs all calculation info</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    X : array_like</span>
@@ -249,40 +292,40 @@
     <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
-    
+
     <span class="n">v10</span><span class="p">,</span> <span class="n">v20</span> <span class="o">=</span> <span class="n">v0</span>
-    
+
     <span class="n">e1</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">itacc</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">it2</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="n">it2</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
-    
+    <span class="n">nacc</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">x_guess</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">y_guess</span>
-            
+
     <span class="n">fugl</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v10</span><span class="p">)</span>
     <span class="n">fugv</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v20</span><span class="p">)</span>
     <span class="n">lnK</span> <span class="o">=</span> <span class="n">fugl</span> <span class="o">-</span> <span class="n">fugv</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
-    
+
     <span class="n">bmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([((</span><span class="n">K</span><span class="o">*</span><span class="n">Z</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">K</span><span class="o">-</span><span class="mf">1.</span><span class="p">))[</span><span class="n">K</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">],</span><span class="mf">0.</span><span class="p">]))</span>
     <span class="n">bmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([((</span><span class="mf">1.</span><span class="o">-</span><span class="n">Z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">K</span><span class="p">))[</span><span class="n">K</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">],</span><span class="mf">1.</span><span class="p">]))</span>
-    <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmin</span> <span class="o">+</span> <span class="n">bmax</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> 
-    
-    <span class="k">while</span> <span class="n">e1</span> <span class="o">&gt;</span> <span class="mf">1e-8</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmin</span> <span class="o">+</span> <span class="n">bmax</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="k">while</span> <span class="n">e1</span> <span class="o">&gt;</span> <span class="n">K_tol</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">&lt;</span> <span class="n">nacc</span><span class="p">:</span>
         <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">it2</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">lnK_old</span> <span class="o">=</span> <span class="n">lnK</span>
-        <span class="n">beta</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">singlephase</span> <span class="o">=</span>  <span class="n">rachfordrice</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>  
-        
+        <span class="n">beta</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">singlephase</span> <span class="o">=</span>  <span class="n">rachfordrice</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+
         <span class="n">X</span> <span class="o">=</span> <span class="n">Z</span><span class="o">/</span><span class="n">D</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="n">X</span><span class="o">*</span><span class="n">K</span>
         <span class="n">X</span> <span class="o">/=</span> <span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">Y</span> <span class="o">/=</span> <span class="n">Y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">fugl</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">)</span>
         <span class="n">fugv</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v2</span><span class="p">)</span>
-        
+
         <span class="n">lnK</span> <span class="o">=</span> <span class="n">fugl</span><span class="o">-</span><span class="n">fugv</span>
         <span class="k">if</span> <span class="n">it</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">3</span><span class="p">):</span>
             <span class="n">lnK3</span> <span class="o">=</span> <span class="n">lnK</span>
@@ -291,18 +334,31 @@
         <span class="k">elif</span> <span class="n">it</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">lnK1</span> <span class="o">=</span> <span class="n">lnK</span>
         <span class="k">elif</span> <span class="n">it</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
-            <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span> 
+            <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">itacc</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">dacc</span> <span class="o">=</span> <span class="n">gdem</span><span class="p">(</span><span class="n">lnK</span><span class="p">,</span> <span class="n">lnK1</span><span class="p">,</span> <span class="n">lnK2</span><span class="p">,</span> <span class="n">lnK3</span><span class="p">)</span>
             <span class="n">lnK</span> <span class="o">+=</span> <span class="n">dacc</span>
         <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
         <span class="n">e1</span> <span class="o">=</span> <span class="p">((</span><span class="n">lnK</span><span class="o">-</span><span class="n">lnK_old</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        
-    <span class="k">if</span> <span class="n">e1</span> <span class="o">&gt;</span> <span class="mf">1e-8</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">singlephase</span><span class="p">:</span>
-        <span class="n">vsol</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">Gibbs_obj</span><span class="p">,</span> <span class="n">beta</span><span class="o">*</span><span class="n">Y</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">equilibrium</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span>
-                        <span class="n">jac</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;BFGS&#39;</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">e1</span> <span class="o">&gt;</span>  <span class="n">K_tol</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">==</span> <span class="n">nacc</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">singlephase</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">secondorder</span><span class="p">:</span>
+            <span class="n">fobj</span> <span class="o">=</span> <span class="n">dGibbs_obj</span>
+            <span class="n">jac</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">hess</span> <span class="o">=</span> <span class="n">dGibbs_hess</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;trust-ncg&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fobj</span> <span class="o">=</span> <span class="n">Gibbs_obj</span>
+            <span class="n">jac</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">hess</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;BFGS&#39;</span>
+
+        <span class="n">vsol</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">fobj</span><span class="p">,</span> <span class="n">beta</span><span class="o">*</span><span class="n">Y</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">equilibrium</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">),</span>
+                        <span class="n">jac</span> <span class="o">=</span> <span class="n">jac</span><span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="p">,</span> <span class="n">hess</span> <span class="o">=</span> <span class="n">hess</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="n">K_tol</span><span class="p">)</span>
+
         <span class="n">it2</span> <span class="o">+=</span> <span class="n">vsol</span><span class="o">.</span><span class="n">nit</span>
-        <span class="n">e1</span> <span class="o">=</span> <span class="n">vsol</span><span class="o">.</span><span class="n">fun</span>
+        <span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vsol</span><span class="o">.</span><span class="n">jac</span><span class="p">)</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">vsol</span><span class="o">.</span><span class="n">x</span>
         <span class="n">l</span> <span class="o">=</span> <span class="n">Z</span> <span class="o">-</span> <span class="n">v</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -311,19 +367,19 @@
         <span class="n">Y</span> <span class="o">=</span> <span class="n">v</span> <span class="o">/</span> <span class="n">beta</span>
         <span class="n">Y</span> <span class="o">/=</span> <span class="n">Y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">l</span><span class="o">/</span><span class="n">l</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    
+
     <span class="k">if</span> <span class="n">beta</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">beta</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">Y</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    
+
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;T&#39;</span> <span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">e1</span><span class="p">,</span> <span class="s1">&#39;iter&#39;</span><span class="p">:</span><span class="n">it2</span><span class="p">,</span>
                <span class="s1">&#39;X&#39;</span> <span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="s1">&#39;v1&#39;</span><span class="p">:</span> <span class="n">v1</span><span class="p">,</span> <span class="s1">&#39;state1&#39;</span> <span class="p">:</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                <span class="s1">&#39;Y&#39;</span> <span class="p">:</span> <span class="n">Y</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span> <span class="n">v2</span><span class="p">,</span> <span class="s1">&#39;state2&#39;</span> <span class="p">:</span> <span class="n">equilibrium</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">EquilibriumResult</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>   
-    
+        <span class="k">return</span> <span class="n">out</span>
+
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">beta</span></div>
 </pre></div>
 

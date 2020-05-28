@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,14 +150,14 @@
   <h1>Source code for phasepy.cubic.cubic</h1><div class="highlight"><pre>
 <span></span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">.vdwpure</span> <span class="k">import</span> <span class="n">vdwpure</span>
-<span class="kn">from</span> <span class="nn">.vdwmix</span> <span class="k">import</span> <span class="n">vdwm</span>
-<span class="kn">from</span> <span class="nn">.cubicpure</span> <span class="k">import</span> <span class="n">prpure</span><span class="p">,</span> <span class="n">prsvpure</span><span class="p">,</span> <span class="n">rkspure</span><span class="p">,</span> <span class="n">rkpure</span>
-<span class="kn">from</span> <span class="nn">.cubicmix</span> <span class="k">import</span> <span class="n">prmix</span><span class="p">,</span> <span class="n">prsvmix</span><span class="p">,</span> <span class="n">rksmix</span><span class="p">,</span> <span class="n">rkmix</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">.vdwpure</span> <span class="kn">import</span> <span class="n">vdwpure</span>
+<span class="kn">from</span> <span class="nn">.vdwmix</span> <span class="kn">import</span> <span class="n">vdwm</span>
+<span class="kn">from</span> <span class="nn">.cubicpure</span> <span class="kn">import</span> <span class="n">prpure</span><span class="p">,</span> <span class="n">prsvpure</span><span class="p">,</span> <span class="n">rkspure</span><span class="p">,</span> <span class="n">rkpure</span>
+<span class="kn">from</span> <span class="nn">.cubicmix</span> <span class="kn">import</span> <span class="n">prmix</span><span class="p">,</span> <span class="n">prsvmix</span><span class="p">,</span> <span class="n">rksmix</span><span class="p">,</span> <span class="n">rkmix</span>
 
-<span class="kn">from</span> <span class="nn">.vtcubicpure</span> <span class="k">import</span> <span class="n">vtprpure</span><span class="p">,</span> <span class="n">vtprsvpure</span><span class="p">,</span> <span class="n">vtrkspure</span><span class="p">,</span> <span class="n">vtrkpure</span>
-<span class="kn">from</span> <span class="nn">.vtcubicmix</span> <span class="k">import</span>  <span class="n">vtprmix</span><span class="p">,</span> <span class="n">vtprsvmix</span><span class="p">,</span> <span class="n">vtrksmix</span><span class="p">,</span> <span class="n">vtrkmix</span>
+<span class="kn">from</span> <span class="nn">.vtcubicpure</span> <span class="kn">import</span> <span class="n">vtprpure</span><span class="p">,</span> <span class="n">vtprsvpure</span><span class="p">,</span> <span class="n">vtrkspure</span><span class="p">,</span> <span class="n">vtrkpure</span>
+<span class="kn">from</span> <span class="nn">.vtcubicmix</span> <span class="kn">import</span>  <span class="n">vtprmix</span><span class="p">,</span> <span class="n">vtprsvmix</span><span class="p">,</span> <span class="n">vtrksmix</span><span class="p">,</span> <span class="n">vtrkmix</span>
 
 <div class="viewcode-block" id="vdweos"><a class="viewcode-back" href="../../../models/phasepy.cubic.html#phasepy.cubic.cubic.vdweos">[docs]</a><span class="k">def</span> <span class="nf">vdweos</span><span class="p">(</span><span class="n">mix_or_component</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

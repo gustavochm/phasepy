@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -148,14 +148,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.actmodels.unifac</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="k">import</span> <span class="n">lnG_cy</span>
 
 <div class="viewcode-block" id="unifac"><a class="viewcode-back" href="../../../models/phasepy.actmodels.html#phasepy.actmodels.unifac.unifac">[docs]</a><span class="k">def</span> <span class="nf">unifac</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">qi</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">ri34</span><span class="p">,</span> <span class="n">Vk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">,</span> <span class="n">tethai</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Dortmund UNIFAC activity coefficient model for multicomponent mixtures.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    X: array like</span>
@@ -180,17 +179,17 @@
 <span class="sd">        energy interactions polynomial coefficient</span>
 <span class="sd">    a2 : array_like</span>
 <span class="sd">        energy interactions polynomial coefficient</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    lngama: array_like</span>
 <span class="sd">        natural logarithm of activify coefficient</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    
+
     <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">ng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qk</span><span class="p">)</span>
 
@@ -203,25 +202,126 @@
     <span class="n">lngamac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
     <span class="n">lngamac</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi</span>
     <span class="n">lngamac</span> <span class="o">-=</span> <span class="mi">5</span><span class="o">*</span><span class="n">qi</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi_tetha</span><span class="p">)</span><span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi_tetha</span><span class="p">)</span>
-    
+
     <span class="n">amn</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">T</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">2</span>
-    
+
     <span class="c1">#residual part</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">amn</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
     <span class="n">Xm</span> <span class="o">=</span> <span class="n">x</span><span class="nd">@Vk</span>
     <span class="n">Xm</span> <span class="o">=</span> <span class="n">Xm</span><span class="o">/</span><span class="n">Xm</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">tetha</span> <span class="o">=</span>  <span class="n">Xm</span><span class="o">*</span><span class="n">Qk</span>
-    <span class="n">tetha</span> <span class="o">/=</span> <span class="n">tetha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> 
-    <span class="n">Gm</span> <span class="o">=</span> <span class="n">lnG_cy</span><span class="p">(</span><span class="n">tetha</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">Qk</span><span class="p">)</span> 
-    
-    <span class="n">Gi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nc</span><span class="p">,</span> <span class="n">ng</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span> 
-        <span class="n">Gi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lnG_cy</span><span class="p">(</span><span class="n">tethai</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">psi</span><span class="p">,</span> <span class="n">Qk</span><span class="p">)</span>
-    
+    <span class="n">tetha</span> <span class="o">/=</span> <span class="n">tetha</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">SumA</span> <span class="o">=</span> <span class="n">tetha</span><span class="nd">@psi</span>
+    <span class="n">SumB</span> <span class="o">=</span>  <span class="p">(</span><span class="n">psi</span><span class="o">*</span><span class="n">tetha</span><span class="p">)</span><span class="o">@</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">SumA</span><span class="p">)</span>
+    <span class="n">Gm</span> <span class="o">=</span> <span class="n">Qk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">SumA</span><span class="p">)</span> <span class="o">-</span> <span class="n">SumB</span><span class="p">)</span>
+
+    <span class="n">SumAi</span> <span class="o">=</span> <span class="n">tethai</span><span class="nd">@psi</span>
+    <span class="n">SumBi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tensordot</span><span class="p">((</span><span class="n">tethai</span><span class="o">/</span><span class="n">SumAi</span><span class="p">),</span> <span class="n">psi</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">Gi</span> <span class="o">=</span> <span class="n">Qk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">SumAi</span><span class="p">)</span> <span class="o">-</span> <span class="n">SumBi</span><span class="p">)</span>
+
     <span class="n">lngamar</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vk</span><span class="o">*</span><span class="p">(</span><span class="n">Gm</span> <span class="o">-</span> <span class="n">Gi</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">lngamac</span> <span class="o">+</span> <span class="n">lngamar</span></div>
 
+
+<span class="k">def</span> <span class="nf">dunifac</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">qi</span><span class="p">,</span> <span class="n">ri</span><span class="p">,</span> <span class="n">ri34</span><span class="p">,</span> <span class="n">Vk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">,</span> <span class="n">tethai</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Derivatives of Dortmund UNIFAC activity coefficient model</span>
+<span class="sd">    for multicomponent mixtures.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array like</span>
+<span class="sd">        vector of molar fractions</span>
+<span class="sd">    T: float</span>
+<span class="sd">        absolute temperature in K</span>
+<span class="sd">    qi: array like</span>
+<span class="sd">        component surface array</span>
+<span class="sd">    ri: array_like</span>
+<span class="sd">        component volumes arrays</span>
+<span class="sd">    ri34 : array_like</span>
+<span class="sd">        component volumen arrays power to 3/4</span>
+<span class="sd">    Vk : array_like</span>
+<span class="sd">        group volumes array</span>
+<span class="sd">    Qk : array_like</span>
+<span class="sd">        group surface arrays</span>
+<span class="sd">    tethai : array_like</span>
+<span class="sd">        surface fraction array</span>
+<span class="sd">    a0 : array_like</span>
+<span class="sd">        energy interactions polynomial coefficient</span>
+<span class="sd">    a1 : array_like</span>
+<span class="sd">        energy interactions polynomial coefficient</span>
+<span class="sd">    a2 : array_like</span>
+<span class="sd">        energy interactions polynomial coefficient</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lngama: array_like</span>
+<span class="sd">        natural logarithm of activify coefficient</span>
+<span class="sd">    dlngama: array_like</span>
+<span class="sd">        derivative of natural logarithm of activify coefficient</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">nc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qk</span><span class="p">)</span>
+
+    <span class="c1">#combinatory part</span>
+    <span class="n">rx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ri</span><span class="p">)</span>
+    <span class="n">r34x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ri34</span><span class="p">)</span>
+    <span class="n">qx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">qi</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">ri34</span><span class="o">/</span><span class="n">r34x</span>
+    <span class="n">phi_tetha</span> <span class="o">=</span> <span class="p">(</span><span class="n">ri</span><span class="o">*</span><span class="n">qx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">qi</span><span class="o">*</span><span class="n">rx</span><span class="p">)</span>
+    <span class="n">lngamac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+    <span class="n">lngamac</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi</span>
+    <span class="n">lngamac</span> <span class="o">-=</span> <span class="mi">5</span><span class="o">*</span><span class="n">qi</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">phi_tetha</span><span class="p">)</span><span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">phi_tetha</span><span class="p">)</span>
+
+    <span class="n">dphi</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">ri34</span><span class="p">,</span><span class="n">ri34</span><span class="p">)</span> <span class="o">/</span> <span class="n">r34x</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">dphi_tetha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">ri</span><span class="o">/</span><span class="n">qi</span><span class="p">,</span> <span class="n">rx</span><span class="o">*</span><span class="n">qi</span> <span class="o">-</span> <span class="n">ri</span><span class="o">*</span><span class="n">qx</span><span class="p">)</span> <span class="o">/</span> <span class="n">rx</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">dlngamac</span> <span class="o">=</span> <span class="p">(</span><span class="n">dphi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">phi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">dlngamac</span> <span class="o">-=</span> <span class="mi">5</span><span class="o">*</span><span class="n">qi</span><span class="o">*</span><span class="p">(</span><span class="n">dphi_tetha</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">phi_tetha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">amn</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">T</span> <span class="o">+</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">T</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1">#residual part</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">amn</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="n">Xm1</span> <span class="o">=</span> <span class="n">x</span><span class="nd">@Vk</span>
+    <span class="n">Xm1s</span> <span class="o">=</span> <span class="n">Xm1</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">dXm1s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Vk</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Xm</span> <span class="o">=</span> <span class="n">Xm1</span> <span class="o">/</span> <span class="n">Xm1s</span>
+    <span class="n">dXm</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vk</span> <span class="o">*</span> <span class="n">Xm1s</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">dXm1s</span><span class="p">,</span> <span class="n">Xm1</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="n">Xm1s</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">tetha1</span> <span class="o">=</span>  <span class="n">Xm</span><span class="o">*</span><span class="n">Qk</span>
+    <span class="n">tetha1s</span> <span class="o">=</span> <span class="n">tetha1</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">tetha</span> <span class="o">=</span> <span class="n">tetha1</span> <span class="o">/</span><span class="n">tetha1s</span>
+    <span class="n">dtetha</span> <span class="o">=</span> <span class="p">((</span><span class="n">Qk</span><span class="o">*</span><span class="n">dXm</span><span class="p">)</span> <span class="o">*</span> <span class="n">tetha1s</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">dXm</span><span class="nd">@Qk</span><span class="p">,</span> <span class="n">tetha1</span><span class="p">)</span> <span class="p">)</span><span class="o">/</span> <span class="n">tetha1s</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">SumA</span> <span class="o">=</span> <span class="n">tetha</span><span class="nd">@psi</span>
+    <span class="n">dSumA</span> <span class="o">=</span> <span class="n">dtetha</span><span class="nd">@psi</span>
+    <span class="n">dter1</span> <span class="o">=</span> <span class="p">(</span><span class="n">dSumA</span> <span class="o">/</span> <span class="n">SumA</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">SumB</span> <span class="o">=</span>  <span class="p">(</span><span class="n">psi</span><span class="o">*</span><span class="n">tetha</span><span class="p">)</span><span class="o">@</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">SumA</span><span class="p">)</span>
+    <span class="n">dSumB</span> <span class="o">=</span> <span class="p">(</span><span class="n">psi</span><span class="o">/</span><span class="n">SumA</span><span class="p">)</span><span class="nd">@dtetha</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="p">(</span><span class="n">tetha</span><span class="o">*</span><span class="n">psi</span><span class="o">/</span><span class="n">SumA</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="nd">@dSumA</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">Gm</span> <span class="o">=</span> <span class="n">Qk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">SumA</span><span class="p">)</span> <span class="o">-</span> <span class="n">SumB</span><span class="p">)</span>
+    <span class="n">dlnGk</span> <span class="o">=</span> <span class="p">(</span><span class="n">Qk</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span> <span class="n">dter1</span> <span class="o">-</span> <span class="n">dSumB</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">SumAi</span> <span class="o">=</span> <span class="n">tethai</span><span class="nd">@psi</span>
+    <span class="n">SumBi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tensordot</span><span class="p">((</span><span class="n">tethai</span><span class="o">/</span><span class="n">SumAi</span><span class="p">),</span> <span class="n">psi</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">Gi</span> <span class="o">=</span> <span class="n">Qk</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">SumAi</span><span class="p">)</span> <span class="o">-</span> <span class="n">SumBi</span><span class="p">)</span>
+
+    <span class="n">lngamar</span> <span class="o">=</span> <span class="p">(</span><span class="n">Vk</span><span class="o">*</span><span class="p">(</span><span class="n">Gm</span> <span class="o">-</span> <span class="n">Gi</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dlngamar</span> <span class="o">=</span> <span class="n">Vk</span><span class="nd">@dlnGk</span>
+
+    <span class="n">lngama</span> <span class="o">=</span> <span class="n">lngamac</span> <span class="o">+</span> <span class="n">lngamar</span>
+    <span class="n">dlngama</span> <span class="o">=</span> <span class="n">dlngamac</span> <span class="o">+</span> <span class="n">dlngamar</span>
+
+    <span class="k">return</span> <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span>
 </pre></div>
 
            </div>

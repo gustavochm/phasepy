@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -148,59 +148,130 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.actmodels.virialgama</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.virial</span> <span class="k">import</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">virial</span><span class="p">,</span> <span class="n">Virialmix</span>
-<span class="kn">from</span> <span class="nn">.nrtl</span> <span class="k">import</span> <span class="n">nrtl</span> 
+<span class="kn">from</span> <span class="nn">.virial</span> <span class="kn">import</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">ideal_gas</span><span class="p">,</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">Virialmix</span>
+<span class="kn">from</span> <span class="nn">.nrtl</span> <span class="kn">import</span> <span class="n">nrtl</span><span class="p">,</span> <span class="n">dnrtl</span><span class="p">,</span> <span class="n">nrtlter</span><span class="p">,</span> <span class="n">dnrtlter</span>
+<span class="kn">from</span> <span class="nn">.redlichkister</span> <span class="kn">import</span> <span class="n">rkb</span><span class="p">,</span> <span class="n">rk</span><span class="p">,</span> <span class="n">drk</span>
+<span class="kn">from</span> <span class="nn">.wilson</span> <span class="kn">import</span> <span class="n">wilson</span><span class="p">,</span> <span class="n">dwilson</span>
+<span class="kn">from</span> <span class="nn">.unifac</span> <span class="kn">import</span> <span class="n">unifac</span><span class="p">,</span> <span class="n">dunifac</span>
 
-<span class="n">R</span> <span class="o">=</span> <span class="mf">83.14</span> <span class="c1">#bar cm3/mol K </span>
+<span class="n">R</span> <span class="o">=</span> <span class="mf">83.14</span>  <span class="c1"># bar cm3/mol K</span>
+
+
 <div class="viewcode-block" id="virialgama"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama">[docs]</a><span class="k">class</span> <span class="nc">virialgama</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Creates a model with mixture using a virial eos to describe vapour phase</span>
 <span class="sd">    and an activity coefficient model for liquid phase.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    mix : object</span>
 <span class="sd">        mixture created with mixture class</span>
-<span class="sd">    virialmodel : function</span>
-<span class="sd">        function to compute virial coefficients</span>
-<span class="sd">    actmodel : function</span>
-<span class="sd">        function to compute activity coefficients</span>
-<span class="sd">    </span>
+<span class="sd">    virialmodel : string</span>
+<span class="sd">        function to compute virial coefficients, available options are &#39;Tsonopoulos&#39;,</span>
+<span class="sd">        &#39;Abbott&#39; or &#39;ideal_gas&#39;</span>
+<span class="sd">    actmodel : string</span>
+<span class="sd">        function to compute activity coefficients, available optiones are &#39;nrtl&#39;,</span>
+<span class="sd">        &#39;wilson&#39;, &#39;unifac&#39;, &#39;rkb&#39; or &#39;rk&#39;</span>
+
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    logfugef: computes effective fugacity coefficients</span>
-<span class="sd">    </span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span><span class="p">):</span>
-        
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;Tsonopoulos&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;nrtl&#39;</span><span class="p">):</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">psat</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">psat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vl</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">vlrackett</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mezcla</span> <span class="o">=</span> <span class="n">mix</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span> <span class="o">=</span> <span class="n">virialmodel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">actmodel</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">actmodelp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">nc</span>
-        
         <span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Zij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span> <span class="o">=</span> <span class="n">Virialmix</span><span class="p">(</span><span class="n">mix</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">virialmodel</span> <span class="o">==</span>  <span class="s1">&#39;Tsonopoulos&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Tsonopoulos</span>
+        <span class="k">elif</span> <span class="n">virialmodel</span> <span class="o">==</span>  <span class="s1">&#39;Abbott&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Abbott</span>
+        <span class="k">elif</span> <span class="n">virialmodel</span> <span class="o">==</span> <span class="s1">&#39;ideal_gas&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Virial model not implemented&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;nrtl&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="n">dnrtl</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">g1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;NRTL parameters needed&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;nrtlt&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;rkternario&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtlter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="n">dnrtlter</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">g1</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">rkternario</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;NRTL/ternary parameters needed&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;wilson&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;Aij&#39;</span><span class="p">):</span>
+                <span class="c1">#este se utiliza con mhv_wilson</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">Aij</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">vlrackett</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">wilson</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="n">dwilson</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Wilson parameters needed&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;rk&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;rkp&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;rkpT&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">rkp</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">rkpT</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">combinatory</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="n">drk</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;RK parameters needed&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;rkb&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;rkp&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;rkpT&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mix</span><span class="o">.</span><span class="n">nc</span> <span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">rkp</span><span class="p">,</span> <span class="n">mix</span><span class="o">.</span><span class="n">rkpT</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">rkb</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;RK parameters needed&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">actmodel</span> <span class="o">==</span> <span class="s1">&#39;unifac&#39;</span><span class="p">:</span>
+            <span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="s1">&#39;actmodelp&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span> <span class="o">=</span> <span class="n">unifac</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span> <span class="o">=</span> <span class="n">dunifac</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span> <span class="o">=</span> <span class="n">mix</span><span class="o">.</span><span class="n">actmodelp</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">secondorder</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Unifac parameters needed&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Activity Coefficient Model not implemented&#39;</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="virialgama.logfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama.logfugef">[docs]</a>    <span class="k">def</span> <span class="nf">logfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; </span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        logfugef(X, T, P, state)</span>
-<span class="sd">        </span>
+
 <span class="sd">        Method that computes the effective fugacity coefficients  at given</span>
-<span class="sd">        composition, temperature and pressure. </span>
+<span class="sd">        composition, temperature and pressure.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        </span>
+
 <span class="sd">        X : array_like, mole fraction vector</span>
 <span class="sd">        T : absolute temperature in K</span>
 <span class="sd">        P : pressure in bar</span>
 <span class="sd">        state : &#39;L&#39; for liquid phase and &#39;V&#39; for vapour phase</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        logfug: array_like</span>
@@ -208,18 +279,67 @@
 <span class="sd">        v0 : float</span>
 <span class="sd">            volume of phase, if calculated</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Bi</span><span class="p">,</span><span class="n">Bp</span> <span class="o">=</span> <span class="n">virial</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span><span class="p">)</span>
+        <span class="n">Bij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span><span class="p">)</span>
+        <span class="c1">#Bi, Bp = virial(X, T, self.Tij, self.Pij, self.wij, self.virialmodel)</span>
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+            <span class="n">Bi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Bij</span><span class="p">)</span>
             <span class="n">psat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
             <span class="n">pointing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vl</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">psat</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
             <span class="n">fugPsat</span> <span class="o">=</span> <span class="n">Bi</span><span class="o">*</span><span class="n">psat</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
-            <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span><span class="p">)</span>
+            <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actmodel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">act</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">psat</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">+</span><span class="n">pointing</span><span class="o">+</span><span class="n">fugPsat</span><span class="p">,</span> <span class="n">v0</span>
         <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Bp</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">),</span> <span class="n">v0</span></div></div>
-    
-            
-            
+            <span class="n">Bx</span> <span class="o">=</span> <span class="n">Bij</span><span class="o">*</span><span class="n">X</span>
+            <span class="c1">#virial de mezcla</span>
+            <span class="n">Bm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+            <span class="c1">#virial parcial</span>
+            <span class="n">Bp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Bm</span>
+            <span class="k">return</span> <span class="n">Bp</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">),</span> <span class="n">v0</span></div>
+
+<div class="viewcode-block" id="virialgama.dlogfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama.dlogfugef">[docs]</a>    <span class="k">def</span> <span class="nf">dlogfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        logfugef(X, T, P, state)</span>
+
+<span class="sd">        Method that computes the effective fugacity coefficients  at given</span>
+<span class="sd">        composition, temperature and pressure.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        X : array_like, mole fraction vector</span>
+<span class="sd">        T : absolute temperature in K</span>
+<span class="sd">        P : pressure in bar</span>
+<span class="sd">        state : &#39;L&#39; for liquid phase and &#39;V&#39; for vapour phase</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        logfug: array_like</span>
+<span class="sd">            effective fugacity coefficients</span>
+<span class="sd">        v0 : float</span>
+<span class="sd">            volume of phase, if calculated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Bij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">virialmodel</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pij</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wij</span><span class="p">)</span>
+        <span class="c1">#Bi, Bp = virial(X, T, self.Tij, self.Pij, self.wij, self.virialmodel)</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+            <span class="n">Bi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Bij</span><span class="p">)</span>
+            <span class="n">psat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psat</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">pointing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vl</span><span class="p">(</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">P</span><span class="o">-</span><span class="n">psat</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">fugPsat</span> <span class="o">=</span> <span class="n">Bi</span><span class="o">*</span><span class="n">psat</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">act</span><span class="p">,</span> <span class="n">dact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dactmodel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">actmodelp</span><span class="p">)</span>
+            <span class="n">logfug</span> <span class="o">=</span> <span class="n">act</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">psat</span><span class="o">/</span><span class="n">P</span><span class="p">)</span><span class="o">+</span><span class="n">pointing</span><span class="o">+</span><span class="n">fugPsat</span>
+            <span class="n">dxidnj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span>
+            <span class="n">dlogfug</span> <span class="o">=</span> <span class="n">dact</span><span class="nd">@dxidnj</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;V&#39;</span><span class="p">:</span>
+            <span class="n">Bx</span> <span class="o">=</span> <span class="n">Bij</span><span class="o">*</span><span class="n">X</span>
+            <span class="c1">#virial de mezcla</span>
+            <span class="n">Bm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">X</span><span class="p">)</span>
+            <span class="c1">#virial parcial</span>
+            <span class="n">Bp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Bm</span>
+            <span class="n">logfug</span> <span class="o">=</span> <span class="n">Bp</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">dlogfug</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Bij</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">Bp</span><span class="p">,</span> <span class="n">Bp</span><span class="p">))</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">logfug</span><span class="p">,</span> <span class="n">dlogfug</span><span class="p">,</span> <span class="n">v0</span></div></div>
 </pre></div>
 
            </div>

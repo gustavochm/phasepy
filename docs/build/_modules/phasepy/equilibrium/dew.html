@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,25 +150,25 @@
   <h1>Source code for phasepy.equilibrium.dew</h1><div class="highlight"><pre>
 <span></span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">root</span>
-<span class="kn">from</span> <span class="nn">..math</span> <span class="k">import</span> <span class="n">gdem</span>
-<span class="kn">from</span> <span class="nn">.equilibriumresult</span> <span class="k">import</span> <span class="n">EquilibriumResult</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root</span>
+<span class="kn">from</span> <span class="nn">..math</span> <span class="kn">import</span> <span class="n">gdem</span>
+<span class="kn">from</span> <span class="nn">.equilibriumresult</span> <span class="kn">import</span> <span class="n">EquilibriumResult</span>
 
 <span class="c1">#ELV phi-phi</span>
 <span class="k">def</span> <span class="nf">dew_sus</span><span class="p">(</span><span class="n">P_T</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T_P</span><span class="p">,</span> <span class="n">tipo</span><span class="p">,</span> <span class="n">x_guess</span><span class="p">,</span><span class="n">eos</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">):</span>
-    
+
     <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="n">P</span><span class="o">=</span><span class="n">P_T</span>
         <span class="n">T</span><span class="o">=</span><span class="n">T_P</span>
     <span class="k">elif</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
         <span class="n">T</span><span class="o">=</span><span class="n">P_T</span>
         <span class="n">P</span><span class="o">=</span><span class="n">T_P</span>
-    
+
     <span class="c1">#Vapour fugacities</span>
-    <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span><span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
-    
+    <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
+
     <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
     <span class="n">error</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">itacc</span> <span class="o">=</span> <span class="mi">0</span>
@@ -179,10 +179,10 @@
 
     <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">itacc</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">niter</span> <span class="o">+=</span> <span class="mi">1</span>
-        
+
         <span class="c1">#Liquid fugacitiies</span>
         <span class="n">lnphil</span><span class="p">,</span> <span class="n">vl0</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">vl0</span><span class="p">)</span>
-        
+
         <span class="n">lnK</span> <span class="o">=</span> <span class="n">lnphil</span><span class="o">-</span><span class="n">lnphiv</span>
         <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
         <span class="n">X_calc_old</span> <span class="o">=</span> <span class="n">X_calc</span>
@@ -195,45 +195,45 @@
         <span class="k">elif</span> <span class="n">niter</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">X1</span> <span class="o">=</span> <span class="n">X_calc</span>
         <span class="k">elif</span> <span class="n">niter</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
-            <span class="n">niter</span> <span class="o">=</span> <span class="mi">0</span> 
+            <span class="n">niter</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">itacc</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">dacc</span> <span class="o">=</span> <span class="n">gdem</span><span class="p">(</span><span class="n">X_calc</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">X3</span><span class="p">)</span>
             <span class="n">X_calc</span> <span class="o">+=</span> <span class="n">dacc</span>
-        <span class="n">error</span><span class="o">=</span><span class="p">((</span><span class="n">X_calc</span><span class="o">-</span><span class="n">X_calc_old</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X_calc</span><span class="o">-</span><span class="n">X_calc_old</span><span class="p">)</span> 
         <span class="n">X</span> <span class="o">=</span> <span class="n">X_calc</span><span class="o">/</span><span class="n">X_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    
+
     <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="n">f0</span> <span class="o">=</span> <span class="n">X_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
         <span class="n">f0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X_calc</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-        
+
     <span class="k">return</span> <span class="n">f0</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span>
 
 <span class="k">def</span> <span class="nf">dew_newton</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T_P</span><span class="p">,</span><span class="n">tipo</span><span class="p">,</span> <span class="n">eos</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">):</span>
-    
+
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
-    
+
     <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">inc</span><span class="p">)</span>
     <span class="n">lnK</span> <span class="o">=</span> <span class="n">inc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span> 
-    
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
         <span class="n">P</span> <span class="o">=</span> <span class="n">inc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">T_P</span>
     <span class="k">elif</span> <span class="n">tipo</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">inc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">P</span> <span class="o">=</span> <span class="n">T_P</span>
-    
+
     <span class="n">X</span> <span class="o">=</span> <span class="n">Y</span><span class="o">/</span><span class="n">K</span>
-    
+
     <span class="c1">#Liquid fugacitities</span>
     <span class="n">lnphil</span><span class="p">,</span> <span class="n">vl</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">vl0</span><span class="p">)</span>
     <span class="c1">#vaopur fugacities</span>
     <span class="n">lnphiv</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">eos</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
-    
+
     <span class="n">f</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lnK</span> <span class="o">+</span> <span class="n">lnphiv</span> <span class="o">-</span> <span class="n">lnphil</span>
     <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y</span><span class="o">-</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-    
+
     <span class="k">return</span> <span class="n">f</span>
 
 
@@ -241,12 +241,12 @@
           <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dew point (T, y) -&gt; (P, y)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Solves dew point at given vapour composition and temperature. It uses a</span>
 <span class="sd">    combination of accelerated successive sustitution with quasi Newton Method</span>
-<span class="sd">    in regular cases and when good initial it&#39;s provided the full system of </span>
+<span class="sd">    in regular cases and when good initial it&#39;s provided the full system of</span>
 <span class="sd">    equations of the phase envelope method is used as objective function.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x_guess : array_like</span>
@@ -258,38 +258,38 @@
 <span class="sd">    T : float</span>
 <span class="sd">        temperaure of the vapour in K</span>
 <span class="sd">    model : object</span>
-<span class="sd">        create from mixture, eos and mixrule </span>
+<span class="sd">        create from mixture, eos and mixrule</span>
 <span class="sd">    good_initial: bool, optional</span>
 <span class="sd">        if True skip succesive substitution and solves by Newton&#39;s Method.</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
 <span class="sd">    full_output: bool, optional</span>
 <span class="sd">        wheter to outputs all calculation info</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    X : array_like</span>
 <span class="sd">        liquid mole fraction vector</span>
 <span class="sd">    P : float</span>
 <span class="sd">        equilibrium pressure in bar</span>
-<span class="sd">    </span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
-    
+
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
     <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">v0</span>
-    
+
     <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">itmax</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
-    
+
     <span class="n">P</span> <span class="o">=</span> <span class="n">P_guess</span>
     <span class="n">f</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">dew_sus</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="n">h</span> <span class="o">=</span> <span class="mf">1e-4</span>
-    
+
     <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">it</span> <span class="o">&lt;=</span> <span class="n">itmax</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">good_initial</span><span class="p">:</span>
         <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">f1</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">lnK1</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">dew_sus</span><span class="p">(</span> <span class="n">P</span> <span class="o">+</span> <span class="n">h</span> <span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
@@ -300,8 +300,8 @@
             <span class="n">dP</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">P</span>
         <span class="n">P</span> <span class="o">-=</span> <span class="n">dP</span>
         <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>       
+
+    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
         <span class="n">inc0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">lnK</span><span class="p">,</span> <span class="n">P</span><span class="p">])</span>
         <span class="n">sol1</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">dew_newton</span><span class="p">,</span> <span class="n">inc0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">))</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="n">sol1</span><span class="o">.</span><span class="n">x</span>
@@ -311,26 +311,26 @@
         <span class="n">lnK</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
         <span class="n">P</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    
+
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;T&#39;</span> <span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">,</span> <span class="s1">&#39;iter&#39;</span><span class="p">:</span><span class="n">it</span><span class="p">,</span>
         <span class="s1">&#39;X&#39;</span> <span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">vl</span><span class="p">,</span> <span class="s1">&#39;state1&#39;</span> <span class="p">:</span> <span class="s1">&#39;Liquid&#39;</span><span class="p">,</span>
        <span class="s1">&#39;Y&#39;</span> <span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span> <span class="n">vv</span><span class="p">,</span> <span class="s1">&#39;state2&#39;</span> <span class="p">:</span> <span class="s1">&#39;Vapor&#39;</span><span class="p">}</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">EquilibriumResult</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>    
-        
+        <span class="k">return</span> <span class="n">out</span>
+
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">P</span></div>
 
-<div class="viewcode-block" id="dewTx"><a class="viewcode-back" href="../../../equilibrium/phasepy.elv.html#phasepy.equilibrium.dew.dewTx">[docs]</a><span class="k">def</span> <span class="nf">dewTx</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+<div class="viewcode-block" id="dewTx"><a class="viewcode-back" href="../../../equilibrium/phasepy.elv.html#phasepy.equilibrium.dew.dewTx">[docs]</a><span class="k">def</span> <span class="nf">dewTx</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">T_guess</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">good_initial</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
           <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dew point (T, y) -&gt; (P, y)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Solves dew point at given vapour composition and pressure. It uses a</span>
 <span class="sd">    combination of accelerated successive sustitution with quasi Newton Method</span>
-<span class="sd">    in regular cases and when good initial it&#39;s provided the full system of </span>
+<span class="sd">    in regular cases and when good initial it&#39;s provided the full system of</span>
 <span class="sd">    equations of the phase envelope method is used as objective function.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x_guess : array_like</span>
@@ -342,39 +342,39 @@
 <span class="sd">    P : float</span>
 <span class="sd">        pressure of the liquid in bar</span>
 <span class="sd">    model : object</span>
-<span class="sd">        create from mixture, eos and mixrule </span>
+<span class="sd">        create from mixture, eos and mixrule</span>
 <span class="sd">    good_initial: bool, optional</span>
 <span class="sd">        if True skip succesive substitution and solves by Newton&#39;s Method.</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
 <span class="sd">    full_output: bool, optional</span>
 <span class="sd">        wheter to outputs all calculation info</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    X : array_like</span>
 <span class="sd">        liquid mole fraction vector</span>
 <span class="sd">    T : float</span>
 <span class="sd">        equilibrium temperature in K</span>
-<span class="sd">    </span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_guess</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
-        
+
     <span class="k">global</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span>
     <span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span> <span class="o">=</span> <span class="n">v0</span>
-    
+
     <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">itmax</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span>
-    
+
     <span class="n">T</span> <span class="o">=</span> <span class="n">T_guess</span>
     <span class="n">f</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">lnK</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">dew_sus</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span><span class="n">vl0</span><span class="p">,</span> <span class="n">vv0</span><span class="p">)</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="n">h</span> <span class="o">=</span> <span class="mf">1e-4</span>
-    
+
     <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">it</span> <span class="o">&lt;=</span> <span class="n">itmax</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">good_initial</span><span class="p">:</span>
         <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">f1</span><span class="p">,</span> <span class="n">X1</span><span class="p">,</span> <span class="n">lnK1</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">dew_sus</span><span class="p">(</span> <span class="n">T</span> <span class="o">+</span> <span class="n">h</span> <span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
@@ -382,8 +382,8 @@
         <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">f1</span><span class="o">-</span><span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="n">h</span>
         <span class="n">T</span> <span class="o">-=</span> <span class="n">f</span><span class="o">/</span><span class="n">df</span>
         <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>       
+
+    <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
         <span class="n">inc0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">lnK</span><span class="p">,</span> <span class="n">T</span><span class="p">])</span>
         <span class="n">sol1</span> <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">dew_newton</span><span class="p">,</span> <span class="n">inc0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vl</span><span class="p">,</span> <span class="n">vv</span><span class="p">))</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="n">sol1</span><span class="o">.</span><span class="n">x</span>
@@ -393,14 +393,14 @@
         <span class="n">lnK</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
         <span class="n">T</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        
+
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;T&#39;</span> <span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="n">P</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">,</span> <span class="s1">&#39;iter&#39;</span><span class="p">:</span><span class="n">it</span><span class="p">,</span>
         <span class="s1">&#39;X&#39;</span> <span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="s1">&#39;v1&#39;</span><span class="p">:</span><span class="n">vl</span><span class="p">,</span> <span class="s1">&#39;state1&#39;</span> <span class="p">:</span> <span class="s1">&#39;Liquid&#39;</span><span class="p">,</span>
        <span class="s1">&#39;Y&#39;</span> <span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">:</span> <span class="n">vv</span><span class="p">,</span> <span class="s1">&#39;state2&#39;</span> <span class="p">:</span> <span class="s1">&#39;Vapor&#39;</span><span class="p">}</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">EquilibriumResult</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>   
-    
+        <span class="k">return</span> <span class="n">out</span>
+
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span></div>
 
 

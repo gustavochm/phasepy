@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -148,15 +148,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.actmodels.wilson</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="k">import</span> <span class="n">wilson_cy</span>
+<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="kn">import</span> <span class="n">wilson_cy</span><span class="p">,</span> <span class="n">dwilson_cy</span>
 
 
 <div class="viewcode-block" id="wilson"><a class="viewcode-back" href="../../../models/phasepy.actmodels.html#phasepy.actmodels.wilson.wilson">[docs]</a><span class="k">def</span> <span class="nf">wilson</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">vl</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Wilson activity coefficient model</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    X: array like</span>
@@ -167,7 +167,7 @@
 <span class="sd">        matrix of energy interactions in K</span>
 <span class="sd">    vl: function</span>
 <span class="sd">        liquid volume of species in cm3/mol</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    lngama: array_like</span>
@@ -178,6 +178,35 @@
     <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
     <span class="n">lngama</span> <span class="o">=</span> <span class="n">wilson_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lngama</span></div>
+
+<span class="k">def</span> <span class="nf">dwilson</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">vl</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Derivatives of Wilson activity coefficient model</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array like</span>
+<span class="sd">        vector of molar fractions</span>
+<span class="sd">    T: float</span>
+<span class="sd">        absolute temperature in K</span>
+<span class="sd">    A: array like</span>
+<span class="sd">        matrix of energy interactions in K</span>
+<span class="sd">    vl: function</span>
+<span class="sd">        liquid volume of species in cm3/mol</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lngama: array_like</span>
+<span class="sd">        natural logarithm of activify coefficient</span>
+<span class="sd">    dlngama: array_like</span>
+<span class="sd">        derivative of natural logarithm of activify coefficient</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">vl</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">A</span><span class="o">/</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span> <span class="o">=</span> <span class="n">dwilson_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span>
 </pre></div>
 
            </div>

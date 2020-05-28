@@ -5,12 +5,12 @@ Phasepy includes function to fit models for phase equilibria of binary mixtures,
 
 If there is Vapor-Liquid Equilibria (VLE):
 
-.. math:: 
+.. math::
 	FO_{VLE}(\underline{\xi}) = \sum_{j=1}^{Np} \left[ \sum_{i=1}^c (y_{i,j}^{cal} - y_{i,j}^{exp})^2 + \left( \frac{P_{j}^{cal}}{P_{j}^{exp}} - 1\right)^2 \right]
 
 If there is Liquid-Liquid Equilibria (LLE):
 
-.. math:: 
+.. math::
 	FO_{LLE}(\underline{\xi}) = \sum_{j=1}^{Np} \sum_{i=1}^c  \left[(x_{i,j} - x_{i,j}^{exp})^2 +  (w_{i,j} - w_{i,j}^{exp})^2 \right]
 
 If there is Vapor-Liquid-Liquid Equilibria (VLLE):
@@ -18,11 +18,11 @@ If there is Vapor-Liquid-Liquid Equilibria (VLLE):
 .. math::
 	FO_{VLLE}(\underline{\xi}) = \sum_{j=1}^{Np} \left[ \sum_{i=1}^c  \left[ (x_{i,j}^{cal} - x_{i,j}^{exp})^2 +  (w_{i,j}^{cal} - w_{i,j}^{exp})^2 +  (y_{i,j}^{cal} - y_{i,j}^{exp})^2 \right] + \left( \frac{P_{j}^{cal}}{P_{j}^{exp}} - 1\right)^2 \right]
 
-If there is more than one type of phase equilibria, Phasepy will sum the errors of each one. 
+If there is more than one type of phase equilibria, Phasepy will sum the errors of each one.
 As an example the parameters for the system of ethanol and water will be fitted, first the experimental data has to be loaded and then set up as a tuple as if shown in the following code block.
 
 >>> #Vapor Liquid equilibria data obtanied from Rieder, Robert M. y A. Ralph Thompson (1949).
->>> # Vapor-Liquid Equilibria Measured by a GillespieStill - Ethyl Alcohol - Water System. 
+>>> # Vapor-Liquid Equilibria Measured by a GillespieStill - Ethyl Alcohol - Water System.
 >>> #Ind. Eng. Chem. 41.12, 2905-2908.
 >>> datavle = (Xexp, Yexp, Texp, Pexp)
 
@@ -34,11 +34,11 @@ Here, ``Xexp``, ``Wexp`` and ``Yexp`` are experimental mole fraction for liquid,
 
 After the experimental data is available, the mixture with the components is created.
 
->>> water = component(name = 'Water', Tc = 647.13, Pc = 220.55, Zc = 0.229, 
+>>> water = component(name = 'Water', Tc = 647.13, Pc = 220.55, Zc = 0.229,
 ... Vc = 55.948, w = 0.344861, ksv = [ 0.87292043, -0.06844994],
 ... Ant =  [  11.72091059, 3852.20302815,  -44.10441047])
->>> ethanol = component(name = 'Ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, 
-... Vc = 168.0, w = 0.643558, ksv = [1.27092923, 0.0440421 ], 
+>>> ethanol = component(name = 'Ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241,
+... Vc = 168.0, w = 0.643558, ksv = [1.27092923, 0.0440421 ],
 ... Ant = [  12.26474221, 3851.89284329,  -36.99114863])
 >>> mix = mixture(ethanol, water)
 
@@ -79,10 +79,10 @@ By default bubble points using activity coefficient models use Tsonopoulos viria
 >>> from phasepy import ideal_gas, Abbott
 >>> #Initial guess of A12, A21
 >>> nrtl0 = np.array([-80.,  650.])
->>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = ideal_gas)
+>>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = 'ideal_gas')
 >>> #optimized values
 >>> [-86.22483806, 647.6320968 ]
->>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = Abbott)
+>>> fit_nrtl(nrtl0, mixnrtl, datavle, alpha_fixed = True, virialmodel = 'Abbott')
 >>> #optimized values
 >>> [-84.81672981, 648.75311712]
 
@@ -105,7 +105,7 @@ If the aleatory factor needs to be optimized it can be included setting alpha_fi
 
 Temperature dependent parameters can be fitted setting the option Tdep = True in ``fit_nrtl``, when this option is used the parameters are computed as:
 
-.. math:: 
+.. math::
 	A12 = A12_0 + A12_1  T \\
 	A21 = A21_0 + A21_1  T
 
@@ -127,7 +127,7 @@ or, if alpha fixed is used.
 Fitting Wilson's model parameters
 ---------------------------------
 
-As an array is been fitted, multidimentional optimization alogirthms are used, the function ``fit_wilson`` handles this optimization. 
+As an array is been fitted, multidimentional optimization alogirthms are used, the function ``fit_wilson`` handles this optimization.
 
 
 >>> from phasepy.fit import fit_wilson
@@ -140,7 +140,7 @@ As an array is been fitted, multidimentional optimization alogirthms are used, t
 
 Tsonopoulos virial correlation is used by default, if desired ideal gas or Abbott correlation can be used.
 
->>> fit_wilson(wilson0, mixwilson, datavle, virialmodel = ideal_gas)
+>>> fit_wilson(wilson0, mixwilson, datavle, virialmodel = 'ideal_gas')
 >>> #optimized value
 >>> [105.42279401, 517.2221969 ]
 
@@ -168,13 +168,13 @@ If rk0 is an scalar it reduced to Porter model, if it is array of size 2 it redu
 
 Temperature dependent parameters can be fitted in which case the initial guess will be splitted into two arrays.
 
->>> c, c1 = np.split(rk0, 2) 
+>>> c, c1 = np.split(rk0, 2)
 
 Finally the parameters are computed as :math:`G = c + c1/T`.
 
-Similarly as NRTl and Wilson's model, virial correlation can be changed by passing the desired function to the ``virialmodel`` argument. 
+Similarly as NRTl and Wilson's model, virial correlation can be changed by passing the desired function to the ``virialmodel`` argument.
 
->>> fit_rk(rk0, mixrk, datavle, Tdep =  False, virialmodel = ideal_gas)
+>>> fit_rk(rk0, mixrk, datavle, Tdep =  False, virialmodel = 'ideal_gas')
 >>> [ 1.16854714, -0.43874371]
 
 .. automodule:: phasepy.fit.binaryfit
@@ -192,6 +192,3 @@ Multidimentional minimization in SciPy are perfomed with ``minimize`` function, 
 The fitted parameters can be compared against the equilibrium data for each model. The following figure shows the perfomance of QMR, NRTL model, Wilson model and Redlich Kister expansion.
 
 .. image:: binaryfit.jpg
-
-
-

@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -148,15 +148,16 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.actmodels.nrtl</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="k">import</span> <span class="n">nrtl_cy</span><span class="p">,</span> <span class="n">rkter_nrtl_cy</span>
+<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="kn">import</span> <span class="n">nrtl_cy</span><span class="p">,</span> <span class="n">rkter_nrtl_cy</span>
+<span class="kn">from</span> <span class="nn">.actmodels_cy</span> <span class="kn">import</span> <span class="n">dnrtl_cy</span><span class="p">,</span> <span class="n">drkter_nrtl_cy</span>
 
-    
+
 <div class="viewcode-block" id="nrtl"><a class="viewcode-back" href="../../../models/phasepy.actmodels.html#phasepy.actmodels.nrtl.nrtl">[docs]</a><span class="k">def</span> <span class="nf">nrtl</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    NRTL activity coefficient model.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    X: array like</span>
@@ -169,11 +170,11 @@
 <span class="sd">        matrix of energy interactions in 1/K</span>
 <span class="sd">    alpha: array_like</span>
 <span class="sd">        aleatory factor.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    tau = ((g + g1*T)/T)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    lngama: array_like</span>
@@ -183,14 +184,14 @@
     <span class="n">tau</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">T</span> <span class="o">+</span> <span class="n">g1</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">tau</span><span class="p">)</span>
     <span class="n">lngama</span> <span class="o">=</span> <span class="n">nrtl_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">lngama</span></div>
 
 
 <span class="k">def</span> <span class="nf">nrtlter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    NRTL activity coefficient model.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    X: array like</span>
@@ -205,9 +206,9 @@
 <span class="sd">        aleatory factor</span>
 <span class="sd">    D : array_like</span>
 <span class="sd">        ternary contribution parameters</span>
-<span class="sd">    </span>
+
 <span class="sd">    tau = ((g + g1*T)/T)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    lngama: array_like</span>
@@ -217,6 +218,82 @@
     <span class="n">lngama</span> <span class="o">=</span> <span class="n">rkter_nrtl_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">xd</span><span class="p">)</span>
     <span class="n">lngama</span> <span class="o">+=</span> <span class="n">nrtl</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span> <span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lngama</span>
+
+
+<span class="k">def</span> <span class="nf">dnrtl</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Derivatives of NRTL activity coefficient model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array like</span>
+<span class="sd">        vector of molar fractions</span>
+<span class="sd">    T: float</span>
+<span class="sd">        absolute temperature in K</span>
+<span class="sd">    g: array like</span>
+<span class="sd">        matrix of energy interactions in K</span>
+<span class="sd">    g1: array_like</span>
+<span class="sd">        matrix of energy interactions in 1/K</span>
+<span class="sd">    alpha: array_like</span>
+<span class="sd">        aleatory factor.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    tau = ((g + g1*T)/T)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lngama: array_like</span>
+<span class="sd">        natural logarithm of activify coefficient</span>
+<span class="sd">    dlngama: array_like</span>
+<span class="sd">        derivative of natural logarithm of activify coefficient</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">g</span><span class="o">/</span><span class="n">T</span> <span class="o">+</span> <span class="n">g1</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">tau</span><span class="p">)</span>
+    <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span> <span class="o">=</span> <span class="n">dnrtl_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span>
+
+
+<span class="k">def</span> <span class="nf">dnrtlter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">T</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">D</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Derivatives of NRTL activity coefficient model with additional ternary</span>
+<span class="sd">    contribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: array like</span>
+<span class="sd">        vector of molar fractions</span>
+<span class="sd">    T: float</span>
+<span class="sd">        absolute temperature in K</span>
+<span class="sd">    g: array like</span>
+<span class="sd">        matrix of energy interactions in K</span>
+<span class="sd">    g1: array_like</span>
+<span class="sd">        matrix of energy interactions in 1/K</span>
+<span class="sd">    alpha: array_like</span>
+<span class="sd">        aleatory factor</span>
+<span class="sd">    D : array_like</span>
+<span class="sd">        ternary contribution parameters</span>
+
+<span class="sd">    tau = ((g + g1*T)/T)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lngama: array_like</span>
+<span class="sd">        natural logarithm of activify coefficient</span>
+<span class="sd">    dlngama: array_like</span>
+<span class="sd">        derivative of natural logarithm of activify coefficient</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">xd</span> <span class="o">=</span> <span class="n">X</span><span class="o">*</span><span class="n">D</span>
+    <span class="n">lngamaD</span><span class="p">,</span> <span class="n">dlngamaD</span> <span class="o">=</span> <span class="n">drkter_nrtl_cy</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+    <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span> <span class="o">=</span> <span class="n">dnrtl</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span> <span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
+
+    <span class="n">lngama</span> <span class="o">+=</span> <span class="n">lngamaD</span>
+    <span class="n">dlngama</span> <span class="o">+=</span> <span class="n">dlngamaD</span>
+
+    <span class="k">return</span> <span class="n">lngama</span><span class="p">,</span> <span class="n">dlngama</span>
 </pre></div>
 
            </div>

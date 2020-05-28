@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -163,17 +163,17 @@
 <h1>phasepy.component<a class="headerlink" href="#phasepy-component" title="Permalink to this headline">¶</a></h1>
 <p>Phasepy <a class="reference internal" href="#phasepy.component" title="phasepy.component"><code class="xref py py-class docutils literal notranslate"><span class="pre">phasepy.component</span></code></a> function creates an object that stores necessary pure component information needed for equilibria and interfacial properties computation. The following parameters are allowed.</p>
 <ul class="simple">
-<li>name : name of the component</li>
-<li>Tc : Critical temperature in Kelvin</li>
-<li>Pc : Critical pressure in bar</li>
-<li>Zc : critical compresibility factor</li>
-<li>Vc : Critical volume in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</li>
-<li>w : Acentric Factor</li>
-<li>c : Volume translation parameter used in cubic EoS in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</li>
-<li>cii : polynomial coefficient for influence parameter in SGT, final units must be in J mol/m <span class="math notranslate nohighlight">\(^5\)</span>.</li>
-<li>ksv : parameters to evaluate alpha functionof PRSV EoS</li>
-<li>Ant : Antoine correlation parameters</li>
-<li>GC : Group contribution information used in Modified-UNIFAC activity coefficient model, a list of possible groups can be found in <a class="reference external" href="http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups">here</a>.</li>
+<li><p>name : name of the component</p></li>
+<li><p>Tc : Critical temperature in Kelvin</p></li>
+<li><p>Pc : Critical pressure in bar</p></li>
+<li><p>Zc : critical compresibility factor</p></li>
+<li><p>Vc : Critical volume in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</p></li>
+<li><p>w : Acentric Factor</p></li>
+<li><p>c : Volume translation parameter used in cubic EoS in cm <span class="math notranslate nohighlight">\(^3\)</span>/mol</p></li>
+<li><p>cii : polynomial coefficient for influence parameter in SGT, final units must be in J mol/m <span class="math notranslate nohighlight">\(^5\)</span>.</p></li>
+<li><p>ksv : parameters to evaluate alpha functionof PRSV EoS</p></li>
+<li><p>Ant : Antoine correlation parameters</p></li>
+<li><p>GC : Group contribution information used in Modified-UNIFAC activity coefficient model, a list of possible groups can be found in <a class="reference external" href="http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups">here</a>.</p></li>
 </ul>
 <p>A component can be created as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span>
@@ -190,280 +190,239 @@
 </pre></div>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Remember to supply the necessary parameters for the model that you are going to use</p>
+<p class="admonition-title">Warning</p>
+<p>Remember to supply the necessary parameters for the model that you are going to use</p>
 </div>
-<dl class="class">
+<dl class="py class">
 <dt id="phasepy.component">
-<em class="property">class </em><code class="descname">component</code><span class="sig-paren">(</span><em>name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0, cii=0, ksv=[0, 0], Ant=[0, 0, 0], GC=None, ms=1, sigma=0, eps=0, lambda_r=12.0, lambda_a=6.0, eAB=0.0, rcAB=1.0, rdAB=0.4, sites=[0, 0, 0]</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">component</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'None'</span></em>, <em class="sig-param"><span class="n">Tc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">Pc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">Zc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">Vc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">w</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cii</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ksv</span><span class="o">=</span><span class="default_value">[0, 0]</span></em>, <em class="sig-param"><span class="n">Ant</span><span class="o">=</span><span class="default_value">[0, 0, 0]</span></em>, <em class="sig-param"><span class="n">GC</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ms</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">eps</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">lambda_r</span><span class="o">=</span><span class="default_value">12.0</span></em>, <em class="sig-param"><span class="n">lambda_a</span><span class="o">=</span><span class="default_value">6.0</span></em>, <em class="sig-param"><span class="n">eAB</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">rcAB</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">rdAB</span><span class="o">=</span><span class="default_value">0.4</span></em>, <em class="sig-param"><span class="n">sites</span><span class="o">=</span><span class="default_value">[0, 0, 0]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an object with pure component info</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<em>str</em>) – Name of the component</li>
-<li><strong>Tc</strong> (<em>float</em>) – Critical temperature</li>
-<li><strong>Pc</strong> (<em>float</em>) – Critical Pressure</li>
-<li><strong>Zc</strong> (<em>float</em>) – critical compresibility factor</li>
-<li><strong>Vc</strong> (<em>float</em>) – critical volume</li>
-<li><strong>w</strong> (<em>float</em>) – acentric factor</li>
-<li><strong>cii</strong> (<em>list</em>) – polynomial coefficient for influence parameter in SGT</li>
-<li><strong>ksv</strong> (<em>list</em>) – parameter for alpha for PRSV EoS, if fitted</li>
-<li><strong>Ant</strong> (<em>list</em>) – Antoine correlation parameters</li>
-<li><strong>GC</strong> (<em>dict</em>) – Group contribution info</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the component</p></li>
+<li><p><strong>Tc</strong> (<em>float</em>) – Critical temperature</p></li>
+<li><p><strong>Pc</strong> (<em>float</em>) – Critical Pressure</p></li>
+<li><p><strong>Zc</strong> (<em>float</em>) – critical compresibility factor</p></li>
+<li><p><strong>Vc</strong> (<em>float</em>) – critical volume</p></li>
+<li><p><strong>w</strong> (<em>float</em>) – acentric factor</p></li>
+<li><p><strong>cii</strong> (<em>list</em>) – polynomial coefficient for influence parameter in SGT</p></li>
+<li><p><strong>ksv</strong> (<em>list</em>) – parameter for alpha for PRSV EoS, if fitted</p></li>
+<li><p><strong>Ant</strong> (<em>list</em>) – Antoine correlation parameters</p></li>
+<li><p><strong>GC</strong> (<em>dict</em>) – Group contribution info</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="py attribute">
 <dt id="phasepy.component.name">
-<code class="descname">name</code><a class="headerlink" href="#phasepy.component.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><a class="headerlink" href="#phasepy.component.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the component</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.Tc">
-<code class="descname">Tc</code><a class="headerlink" href="#phasepy.component.Tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Tc</code><a class="headerlink" href="#phasepy.component.Tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Critical temperature</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.Pc">
-<code class="descname">Pc</code><a class="headerlink" href="#phasepy.component.Pc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Pc</code><a class="headerlink" href="#phasepy.component.Pc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Critical Pressure</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.Zc">
-<code class="descname">Zc</code><a class="headerlink" href="#phasepy.component.Zc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Zc</code><a class="headerlink" href="#phasepy.component.Zc" title="Permalink to this definition">¶</a></dt>
 <dd><p>critical compresibility factor</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.Vc">
-<code class="descname">Vc</code><a class="headerlink" href="#phasepy.component.Vc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Vc</code><a class="headerlink" href="#phasepy.component.Vc" title="Permalink to this definition">¶</a></dt>
 <dd><p>critical volume</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.w">
-<code class="descname">w</code><a class="headerlink" href="#phasepy.component.w" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">w</code><a class="headerlink" href="#phasepy.component.w" title="Permalink to this definition">¶</a></dt>
 <dd><p>acentric factor</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.c">
-<code class="descname">c</code><a class="headerlink" href="#phasepy.component.c" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">c</code><a class="headerlink" href="#phasepy.component.c" title="Permalink to this definition">¶</a></dt>
 <dd><p>volume translation parameter used if cubic EoS</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.cii">
-<code class="descname">cii</code><a class="headerlink" href="#phasepy.component.cii" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cii</code><a class="headerlink" href="#phasepy.component.cii" title="Permalink to this definition">¶</a></dt>
 <dd><p>polynomial coefficient for influence parameter in SGT</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.ksv">
-<code class="descname">ksv</code><a class="headerlink" href="#phasepy.component.ksv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ksv</code><a class="headerlink" href="#phasepy.component.ksv" title="Permalink to this definition">¶</a></dt>
 <dd><p>parameter for alpha for PRSV EoS, if fitted</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.Ant">
-<code class="descname">Ant</code><a class="headerlink" href="#phasepy.component.Ant" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Ant</code><a class="headerlink" href="#phasepy.component.Ant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Antoine correlation parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.component.GC">
-<code class="descname">GC</code><a class="headerlink" href="#phasepy.component.GC" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GC</code><a class="headerlink" href="#phasepy.component.GC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group contribution info</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">psat : computes saturation pressure with Antoine correlation</code></dt>
+<code class="sig-name descname">psat : computes saturation pressure with Antoine correlation</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">tsat : compues saturation temperature with Antoine correlation</code></dt>
+<code class="sig-name descname">tsat : compues saturation temperature with Antoine correlation</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">vlrackett : computes liquid volume with Rackett correlation</code></dt>
+<code class="sig-name descname">vlrackett : computes liquid volume with Rackett correlation</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">ci :  evaluates influence parameter polynomial</code></dt>
+<code class="sig-name descname">ci :  evaluates influence parameter polynomial</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.component.ci">
-<code class="descname">ci</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.ci" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ci</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.ci" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that evaluates the polynomial for cii coeffient of SGT
 cii must be in J m^5 / mol and T in K.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ci</strong> – influence parameter at given temperature</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ci</strong> – influence parameter at given temperature</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.component.psat">
-<code class="descname">psat</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.psat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">psat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.psat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes saturation pressure at T using Ant eq. Expontential
 base is used.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>Psat</strong> – Saturation pressure in bar</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">foat</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Psat</strong> – Saturation pressure in bar</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>foat</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.component.tsat">
-<code class="descname">tsat</code><span class="sig-paren">(</span><em>P</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.tsat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.tsat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tsat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">P</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.tsat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.tsat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the saturation temperature at P using Ant eq.
 Expontential base is used.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Psat</strong> (<em>foat</em>) – Saturation pressure in bar</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>T</strong> – absolute temperature in K</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Psat</strong> (<em>foat</em>) – Saturation pressure in bar</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>T</strong> – absolute temperature in K</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.component.vlrackett">
-<code class="descname">vlrackett</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.vlrackett"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.vlrackett" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">vlrackett</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#component.vlrackett"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.component.vlrackett" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the liquid volume using Rackett eq.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vl</strong> – liquid volume in cm3/mol</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>vl</strong> – liquid volume in cm3/mol</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

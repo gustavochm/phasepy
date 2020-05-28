@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -188,9 +188,8 @@ model are available.</p>
 </ul>
 </div>
 <p>Before creating a model object, it is necessary to supply the interactions parameters of the activity
-coefficient model. The object for the mixture of water and ethanol created in the past section, would be
-the following way for the NRTL model.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">virialgama</span><span class="p">,</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">nrtl</span>
+coefficient model. The mixture object is designed to store these parameters, as for example for the NRTL model.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">virialgama</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
@@ -201,7 +200,7 @@ the following way for the NRTL model.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Adding activity model parameters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating Model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">Abbott</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">nrtl</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;Abbott&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;nrtl&#39;</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Model parameters are saved in actmodelp attribute</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">g1</span><span class="p">)</span>
@@ -209,77 +208,94 @@ the following way for the NRTL model.</p>
 </pre></div>
 </div>
 <p>If you would like to use fitted parameters of a Redlich Kister expansion you can do it as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">rk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">1.20945699</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.62209997</span><span class="p">,</span>  <span class="mf">3.18919339</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">1.20945699</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.62209997</span><span class="p">,</span>  <span class="mf">3.18919339</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>  <span class="o">-</span><span class="mf">13.271128</span><span class="p">,</span>   <span class="mf">101.837857</span><span class="p">,</span> <span class="o">-</span><span class="mf">1100.29221</span> <span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">rk</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;rk&#39;</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Readimg parameters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">C0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">C1</span><span class="p">)</span>
 <span class="go">(True, True)</span>
 </pre></div>
 </div>
-<p>If we would like to use the group contribution model UNIFAC with an ideal gas, the same class is used.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">unifac</span><span class="p">,</span> <span class="n">ideal_gas</span>
-<span class="go">#Reading UNIFAC database</span>
+<p>If we would like to use the group contribution model UNIFAC with an ideal gas, the same class can be used.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#Reading UNIFAC database</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
 <span class="go">#Creating Model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="n">ideal_gas</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="n">unifac</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;ideal_gas&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;unifac&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<span class="target" id="module-phasepy.actmodels.virialgama"></span><dl class="class">
+<span class="target" id="module-phasepy.actmodels.virialgama"></span><dl class="py class">
 <dt id="phasepy.actmodels.virialgama.virialgama">
-<em class="property">class </em><code class="descname">virialgama</code><span class="sig-paren">(</span><em>mix</em>, <em>virialmodel=&lt;function Tsonopoulos&gt;</em>, <em>actmodel=&lt;function nrtl&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">virialgama</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mix</span></em>, <em class="sig-param"><span class="n">virialmodel</span><span class="o">=</span><span class="default_value">'Tsonopoulos'</span></em>, <em class="sig-param"><span class="n">actmodel</span><span class="o">=</span><span class="default_value">'nrtl'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Creates a model with mixture using a virial eos to describe vapour phase
 and an activity coefficient model for liquid phase.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mix</strong> (<em>object</em>) – mixture created with mixture class</li>
-<li><strong>virialmodel</strong> (<em>function</em>) – function to compute virial coefficients</li>
-<li><strong>actmodel</strong> (<em>function</em>) – function to compute activity coefficients</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mix</strong> (<em>object</em>) – mixture created with mixture class</p></li>
+<li><p><strong>virialmodel</strong> (<em>string</em>) – function to compute virial coefficients, available options are ‘Tsonopoulos’,
+‘Abbott’ or ‘ideal_gas’</p></li>
+<li><p><strong>actmodel</strong> (<em>string</em>) – function to compute activity coefficients, available optiones are ‘nrtl’,
+‘wilson’, ‘unifac’, ‘rkb’ or ‘rk’</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt>
-<code class="descname">logfugef: computes effective fugacity coefficients</code></dt>
+<code class="sig-name descname">logfugef: computes effective fugacity coefficients</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="phasepy.actmodels.virialgama.virialgama.logfugef">
-<code class="descname">logfugef</code><span class="sig-paren">(</span><em>X</em>, <em>T</em>, <em>P</em>, <em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.logfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.logfugef" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that computes the effective fugacity coefficients  at given
+<dl class="py method">
+<dt id="phasepy.actmodels.virialgama.virialgama.dlogfugef">
+<code class="sig-name descname">dlogfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.dlogfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.dlogfugef" title="Permalink to this definition">¶</a></dt>
+<dd><p>logfugef(X, T, P, state)</p>
+<p>Method that computes the effective fugacity coefficients  at given
 composition, temperature and pressure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>X</strong> (<em>array_like</em><em>, </em><em>mole fraction vector</em>) – </li>
-<li><strong>T</strong> (<em>absolute temperature in K</em>) – </li>
-<li><strong>P</strong> (<em>pressure in bar</em>) – </li>
-<li><strong>state</strong> (<em>'L' for liquid phase and 'V' for vapour phase</em>) – </li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array_like</em><em>, </em><em>mole fraction vector</em>) – </p></li>
+<li><p><strong>T</strong> (<em>absolute temperature in K</em>) – </p></li>
+<li><p><strong>P</strong> (<em>pressure in bar</em>) – </p></li>
+<li><p><strong>state</strong> (<em>'L' for liquid phase and 'V' for vapour phase</em>) – </p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>logfug</strong> (<em>array_like</em>) – effective fugacity coefficients</li>
-<li><strong>v0</strong> (<em>float</em>) – volume of phase, if calculated</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>logfug</strong> (<em>array_like</em>) – effective fugacity coefficients</p></li>
+<li><p><strong>v0</strong> (<em>float</em>) – volume of phase, if calculated</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="phasepy.actmodels.virialgama.virialgama.logfugef">
+<code class="sig-name descname">logfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.logfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.logfugef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes the effective fugacity coefficients  at given
+composition, temperature and pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>array_like</em><em>, </em><em>mole fraction vector</em>) – </p></li>
+<li><p><strong>T</strong> (<em>absolute temperature in K</em>) – </p></li>
+<li><p><strong>P</strong> (<em>pressure in bar</em>) – </p></li>
+<li><p><strong>state</strong> (<em>'L' for liquid phase and 'V' for vapour phase</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>logfug</strong> (<em>array_like</em>) – effective fugacity coefficients</p></li>
+<li><p><strong>v0</strong> (<em>float</em>) – volume of phase, if calculated</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

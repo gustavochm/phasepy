@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -180,14 +180,14 @@
 </pre></div>
 </div>
 <p>Once the total number of components has been added to the mixture interaction parameters can be supplied, depending on the selected model. For quadratic mixing rule used in cubic EoS:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">KIJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">k12</span><span class="p">,</span> <span class="n">k13</span><span class="p">],</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">KIJ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">k12</span><span class="p">,</span> <span class="n">k13</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">k21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k23</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">k31</span><span class="p">,</span> <span class="n">k32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">kij_cubic</span><span class="p">(</span><span class="n">KIJ</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If the NRTL model is selected:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha12</span><span class="p">,</span> <span class="n">alpha13</span><span class="p">],</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">alpha12</span><span class="p">,</span> <span class="n">alpha13</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">alpha21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha23</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">alpha31</span><span class="p">,</span> <span class="n">alpha32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">g12</span><span class="p">,</span> <span class="n">g13</span><span class="p">],</span>
@@ -202,14 +202,14 @@
 </pre></div>
 </div>
 <p>If Wilson model is selected:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">A12</span><span class="p">,</span> <span class="n">A13</span><span class="p">],</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">A12</span><span class="p">,</span> <span class="n">A13</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">A21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">A23</span><span class="p">],</span>
 <span class="gp">... </span>                    <span class="p">[</span><span class="n">A31</span><span class="p">,</span> <span class="n">A32</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">wilson</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Redlich Kister parameters are set by polynomial by pairs, the order of the pairs must be the following: 1-2, 1-3, …, 1-n, 2-3, …, 2-n, etc.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poly12</span><span class="p">],[</span><span class="n">poly13</span><span class="p">],</span> <span class="p">[</span><span class="n">poly23</span><span class="p">]]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poly12</span><span class="p">],[</span><span class="n">poly13</span><span class="p">],</span> <span class="p">[</span><span class="n">poly23</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">polyT12</span><span class="p">],[</span><span class="n">polyT13</span><span class="p">],</span> <span class="p">[</span><span class="n">polyT23</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#if C1 is not given it will be set to zeros.</span>
@@ -217,460 +217,396 @@
 </pre></div>
 </div>
 <p>Finally for Modified-UNIFAC model, Dortmund public database is included in Phasepy.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span> <span class="c1">#Read UNIFAC database</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span> <span class="c1">#Read UNIFAC database</span>
 </pre></div>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Remember to supply the necessary parameters for the model that you are going to use</p>
+<p class="admonition-title">Warning</p>
+<p>Remember to supply the necessary parameters for the model that you are going to use</p>
 </div>
-<dl class="class">
+<dl class="py class">
 <dt id="phasepy.mixture">
-<em class="property">class </em><code class="descname">mixture</code><span class="sig-paren">(</span><em>component1</em>, <em>component2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">mixture</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">component1</span></em>, <em class="sig-param"><span class="n">component2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture" title="Permalink to this definition">¶</a></dt>
 <dd><p>class mixture
 Creates an object that cointains info about a mixture.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>component1</strong> (<em>object</em>) – component created with component class</li>
-<li><strong>component2</strong> (<em>object</em>) – component created with component class</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component1</strong> (<em>object</em>) – component created with component class</p></li>
+<li><p><strong>component2</strong> (<em>object</em>) – component created with component class</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="py attribute">
 <dt id="phasepy.mixture.name">
-<code class="descname">name</code><a class="headerlink" href="#phasepy.mixture.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><a class="headerlink" href="#phasepy.mixture.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the component</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.Tc">
-<code class="descname">Tc</code><a class="headerlink" href="#phasepy.mixture.Tc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Tc</code><a class="headerlink" href="#phasepy.mixture.Tc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Critical temperature</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.Pc">
-<code class="descname">Pc</code><a class="headerlink" href="#phasepy.mixture.Pc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Pc</code><a class="headerlink" href="#phasepy.mixture.Pc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Critical Pressure</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.Zc">
-<code class="descname">Zc</code><a class="headerlink" href="#phasepy.mixture.Zc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Zc</code><a class="headerlink" href="#phasepy.mixture.Zc" title="Permalink to this definition">¶</a></dt>
 <dd><p>critical compresibility factor</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.Vc">
-<code class="descname">Vc</code><a class="headerlink" href="#phasepy.mixture.Vc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Vc</code><a class="headerlink" href="#phasepy.mixture.Vc" title="Permalink to this definition">¶</a></dt>
 <dd><p>critical volume</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.w">
-<code class="descname">w</code><a class="headerlink" href="#phasepy.mixture.w" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">w</code><a class="headerlink" href="#phasepy.mixture.w" title="Permalink to this definition">¶</a></dt>
 <dd><p>acentric factor</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.c">
-<code class="descname">c</code><a class="headerlink" href="#phasepy.mixture.c" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">c</code><a class="headerlink" href="#phasepy.mixture.c" title="Permalink to this definition">¶</a></dt>
 <dd><p>volume translation parameter used if cubic EoS</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.cii">
-<code class="descname">cii</code><a class="headerlink" href="#phasepy.mixture.cii" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cii</code><a class="headerlink" href="#phasepy.mixture.cii" title="Permalink to this definition">¶</a></dt>
 <dd><p>polynomial coefficient for influence parameter in SGT</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.ksv">
-<code class="descname">ksv</code><a class="headerlink" href="#phasepy.mixture.ksv" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ksv</code><a class="headerlink" href="#phasepy.mixture.ksv" title="Permalink to this definition">¶</a></dt>
 <dd><p>parameter for alpha for PRSV EoS, if fitted</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.Ant">
-<code class="descname">Ant</code><a class="headerlink" href="#phasepy.mixture.Ant" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Ant</code><a class="headerlink" href="#phasepy.mixture.Ant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Antoine correlation parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="phasepy.mixture.GC">
-<code class="descname">GC</code><a class="headerlink" href="#phasepy.mixture.GC" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GC</code><a class="headerlink" href="#phasepy.mixture.GC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group contribution info</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">add_component : adds a component to the mixture</code></dt>
+<code class="sig-name descname">add_component : adds a component to the mixture</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">psat : computes saturation pressure of pures</code></dt>
+<code class="sig-name descname">psat : computes saturation pressure of pures</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">tsat: computes saturation temperature of pures</code></dt>
+<code class="sig-name descname">tsat: computes saturation temperature of pures</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">vlrackett : computes liquid volume of pure</code></dt>
+<code class="sig-name descname">vlrackett : computes liquid volume of pure</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">copy: returns a copy of the object</code></dt>
+<code class="sig-name descname">copy: returns a copy of the object</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">kij_cubic : add kij matrix for QMR mixrule</code></dt>
+<code class="sig-name descname">kij_cubic : add kij matrix for QMR mixrule</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">NRTL : add energy interactions and aleatory factor for NRTL model</code></dt>
+<code class="sig-name descname">NRTL : add energy interactions and aleatory factor for NRTL model</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">wilson : add energy interactions for wilson model</code></dt>
+<code class="sig-name descname">wilson : add energy interactions for wilson model</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">rk: polynomial parameters for RK G exc model</code></dt>
+<code class="sig-name descname">rk: polynomial parameters for RK G exc model</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">unifac: read Dortmund data base for the mixture</code></dt>
+<code class="sig-name descname">unifac: read Dortmund data base for the mixture</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt>
-<code class="descname">ci : computes cij matrix at T for SGT</code></dt>
+<code class="sig-name descname">ci : computes cij matrix at T for SGT</code></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.NRTL">
-<code class="descname">NRTL</code><span class="sig-paren">(</span><em>alpha</em>, <em>g</em>, <em>g1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.NRTL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.NRTL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">NRTL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">g</span></em>, <em class="sig-param"><span class="n">g1</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.NRTL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.NRTL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds NRTL parameters to the mixture</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>g</strong> (<em>array like</em>) – matrix of energy interactions in K</li>
-<li><strong>g1</strong> (<em>array_like</em>) – matrix of energy interactions in 1/K</li>
-<li><strong>alpha</strong> (<em>array_like</em>) – aleatory factor</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>array like</em>) – matrix of energy interactions in K</p></li>
+<li><p><strong>g1</strong> (<em>array_like</em>) – matrix of energy interactions in 1/K</p></li>
+<li><p><strong>alpha</strong> (<em>array_like</em>) – aleatory factor</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Parameters are evaluated as a function of temperature:
+<p class="admonition-title">Note</p>
+<p>Parameters are evaluated as a function of temperature:
 tau = ((g + g1*T)/T)</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.add_component">
-<code class="descname">add_component</code><span class="sig-paren">(</span><em>component</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.add_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.add_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_component</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">component</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.add_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.add_component" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that add a component to the mixture</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.ci">
-<code class="descname">ci</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.ci" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ci</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.ci" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the matrix of cij interaction parameter for SGT at
 T.
 beta is a modification to the interaction parameters and must be added
 as a symmetrical matrix with main diagonal set to zero.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>ci</strong> – influence parameter matrix at given temperature</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ci</strong> – influence parameter matrix at given temperature</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that return a copy of the mixture</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>mix</strong> – returns a copy a of the mixture</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">object</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>mix</strong> – returns a copy a of the mixture</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.kij_cubic">
-<code class="descname">kij_cubic</code><span class="sig-paren">(</span><em>k</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.kij_cubic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.kij_cubic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">kij_cubic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.kij_cubic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.kij_cubic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that add kij matrix for QMR mixrule. Matrix must be symmetrical
 and the main diagonal must be zero.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>k</strong> (<em>array like</em>) – matrix of interactions parameters</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>k</strong> (<em>array like</em>) – matrix of interactions parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.psat">
-<code class="descname">psat</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.psat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">psat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.psat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.psat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes saturation pressure at T using Ant eq. Expontential
 base is used.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>Psat</strong> – Saturation pressure in bar</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Psat</strong> – Saturation pressure in bar</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.rk">
-<code class="descname">rk</code><span class="sig-paren">(</span><em>c</em>, <em>c1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rk" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">c1</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds binary Redlich Kister polynomial coefficients for
 excess Gibbs energy.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>c</strong> (<em>array_like</em>) – polynomial values adim</li>
-<li><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>array_like</em>) – polynomial values adim</p></li>
+<li><p><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>Parameters are evaluated as a function of temperature:</p>
-<p class="last">G = c + c1/T</p>
+<p>G = c + c1/T</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.rkb">
-<code class="descname">rkb</code><span class="sig-paren">(</span><em>c</em>, <em>c1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkb" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rkb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">c1</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds binary Redlich Kister polynomial coefficients for
 excess Gibbs energy.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>c</strong> (<em>array_like</em>) – polynomial values adim</li>
-<li><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>array_like</em>) – polynomial values adim</p></li>
+<li><p><strong>c1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – polynomial values in K</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>Parameters are evaluated as a function of temperature:</p>
-<p class="last">G = c + c1/T</p>
+<p>G = c + c1/T</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.rkt">
-<code class="descname">rkt</code><span class="sig-paren">(</span><em>D</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkt" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rkt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.rkt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.rkt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds a ternary polynomial modification to NRTL model</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>D</strong> (<em>array_like</em>) – ternary interaction parameters values</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>D</strong> (<em>array_like</em>) – ternary interaction parameters values</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.tsat">
-<code class="descname">tsat</code><span class="sig-paren">(</span><em>P</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.tsat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.tsat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tsat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">P</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.tsat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.tsat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the saturation temperature at P using Ant eq.
 Expontential base is used.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Psat</strong> (<em>foat</em>) – Saturation pressure in bar</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>T</strong> – absolute temperature in K</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array_like</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Psat</strong> (<em>foat</em>) – Saturation pressure in bar</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>T</strong> – absolute temperature in K</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.unifac">
-<code class="descname">unifac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.unifac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.unifac" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">unifac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.unifac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.unifac" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that read the Dortmund database for UNIFAC model
 After calling this function activity coefficient are ready
 to be calculated.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.vlrackett">
-<code class="descname">vlrackett</code><span class="sig-paren">(</span><em>T</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.vlrackett"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.vlrackett" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">vlrackett</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.vlrackett"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.vlrackett" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the liquid volume using Rackett eq.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>T</strong> (<em>float</em>) – absolute temperature in K</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>vl</strong> – liquid volume in cm3/mol</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>vl</strong> – liquid volume in cm3/mol</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="phasepy.mixture.wilson">
-<code class="descname">wilson</code><span class="sig-paren">(</span><em>A</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.wilson" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wilson</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/mixtures.html#mixture.wilson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.mixture.wilson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that adds wilson model parameters to the mixture
 Matrix A main diagonal must be zero. Values in K.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>A</strong> (<em>array_like</em>) – interaction parameters values</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>A</strong> (<em>array_like</em>) – interaction parameters values</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

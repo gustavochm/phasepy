@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,24 +150,24 @@
   <h1>Source code for phasepy.equilibrium.ell</h1><div class="highlight"><pre>
 <span></span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.stability</span> <span class="k">import</span> <span class="n">tpd_minimas</span>
-<span class="kn">from</span> <span class="nn">.flash</span> <span class="k">import</span> <span class="n">flash</span>
-<span class="kn">from</span> <span class="nn">.multiflash</span> <span class="k">import</span> <span class="n">multiflash</span>
-        
+<span class="kn">from</span> <span class="nn">.stability</span> <span class="kn">import</span> <span class="n">tpd_minimas</span>
+<span class="kn">from</span> <span class="nn">.flash</span> <span class="kn">import</span> <span class="n">flash</span>
+<span class="kn">from</span> <span class="nn">.multiflash</span> <span class="kn">import</span> <span class="n">multiflash</span>
 
-<div class="viewcode-block" id="lle"><a class="viewcode-back" href="../../../equilibrium/phasepy.multiflash.html#phasepy.equilibrium.ell.lle">[docs]</a><span class="k">def</span> <span class="nf">lle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    
+
+<div class="viewcode-block" id="lle"><a class="viewcode-back" href="../../../equilibrium/phasepy.multiflash.html#phasepy.equilibrium.ell.lle">[docs]</a><span class="k">def</span> <span class="nf">lle</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">K_tol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="n">full_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Liquid liquid equilibrium (z,T,P) -&gt; (x,w,beta)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Solves liquid liquid equilibrium from multicomponent mixtures at given</span>
 <span class="sd">    pressure, temperature and overall composition.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    </span>
+
 <span class="sd">    x0 : array_like</span>
 <span class="sd">        initial guess for liquid phase 1</span>
 <span class="sd">    w0 : array_like</span>
@@ -176,15 +176,17 @@
 <span class="sd">        overal composition of mix</span>
 <span class="sd">    T : float</span>
 <span class="sd">        absolute temperature in K.</span>
-<span class="sd">    P : float </span>
+<span class="sd">    P : float</span>
 <span class="sd">        pressure in en bar</span>
 <span class="sd">    model : object</span>
-<span class="sd">        created from mixture, eos and mixrule </span>
+<span class="sd">        created from mixture, eos and mixrule</span>
 <span class="sd">    v0 : list, optional</span>
 <span class="sd">        if supplied volume used as initial value to compute fugacities</span>
+<span class="sd">    K_tol : float, optional</span>
+<span class="sd">        Desired accuracy of K (= W/X) vector</span>
 <span class="sd">    full_output: bool, optional</span>
 <span class="sd">        wheter to outputs all calculation info</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    X : array_like</span>
@@ -193,44 +195,52 @@
 <span class="sd">        liquid 2 mole fraction vector</span>
 <span class="sd">    beta : float</span>
 <span class="sd">        phase fraction of liquid 2</span>
-<span class="sd">    </span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">nc</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">w0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Composition vector lenght must be equal to nc&#39;</span><span class="p">)</span>
-    
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    equilibrio = [&#39;L&#39;, &#39;L&#39;]</span>
+<span class="sd">    out = flash(x0, w0, equilibrio, Z, T, P, model, v0, K_tol , True)</span>
+<span class="sd">    X, W, beta = out.X, out.Y, out.beta</span>
+<span class="sd">    v1, v2 = out.v1, out.v2</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="n">equilibrio</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">flash</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">beta</span>
-    <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">v1</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">v2</span>
-    <span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">])</span>
-    
+    <span class="n">fugx</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">fugw</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">logfugef</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">lnK</span> <span class="o">=</span> <span class="n">fugx</span> <span class="o">-</span> <span class="n">fugw</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnK</span><span class="p">)</span>
+
+    <span class="n">bmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([((</span><span class="n">K</span><span class="o">*</span><span class="n">Z</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">K</span><span class="o">-</span><span class="mf">1.</span><span class="p">))[</span><span class="n">K</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">],</span><span class="mf">0.</span><span class="p">]))</span>
+    <span class="n">bmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([((</span><span class="mf">1.</span><span class="o">-</span><span class="n">Z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">K</span><span class="p">))[</span><span class="n">K</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">],</span><span class="mf">1.</span><span class="p">]))</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmin</span> <span class="o">+</span> <span class="n">bmax</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x0</span><span class="p">,</span> <span class="n">w0</span><span class="p">])</span>
+
     <span class="n">beta0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-    
-    <span class="n">out</span> <span class="o">=</span> <span class="n">multiflash</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">beta0</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">multiflash</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">beta0</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">],</span> <span class="n">K_tol</span> <span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">Xm</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">tetha</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">tetha</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">v</span>
-    
+
     <span class="k">if</span> <span class="n">tetha</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">xes</span><span class="p">,</span> <span class="n">tpd_min2</span> <span class="o">=</span> <span class="n">tpd_minimas</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">Xm</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">X0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">xes</span><span class="p">)</span>
         <span class="n">beta0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">beta</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">multiflash</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">beta0</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> 
+        <span class="n">out</span> <span class="o">=</span> <span class="n">multiflash</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span> <span class="n">beta0</span><span class="p">,</span> <span class="n">equilibrio</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">K_tol</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="n">Xm</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">tetha</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">tetha</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">v</span>
-        
+
     <span class="n">X</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="n">Xm</span>
     <span class="k">if</span> <span class="n">tetha</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">W</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        
+
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">out</span> 
-        
+        <span class="k">return</span> <span class="n">out</span>
+
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">beta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lle&#39;</span><span class="p">]</span>
-        
-
-
 </pre></div>
 
            </div>

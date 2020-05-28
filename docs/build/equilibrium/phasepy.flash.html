@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -170,8 +170,8 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
 \[min \, {G(\underline{F}^\alpha, \underline{F}^\beta)} = \sum_{i=1}^c (F_i^\alpha \ln \hat{f}_i^\alpha + F_i^\beta \ln \hat{f}_i^\beta)\]</div>
 <p>Where, <span class="math notranslate nohighlight">\(F\)</span> is the mole number and <span class="math notranslate nohighlight">\(\hat{f}\)</span> is the effective fugacity.</p>
 <p>In the following code block a flash calulation for vapor liquid equilibria it is  shown:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">preos</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">flash</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">preos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="kn">import</span> <span class="n">flash</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
 <span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
 <span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
@@ -194,7 +194,7 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
 </pre></div>
 </div>
 <p>The same algorithm can be applied for liquid-liquid equilibria, as can be seen:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mtbe</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mtbe&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">497.1</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">34.3</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.273</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">329.0</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.266059</span><span class="p">,</span>
 <span class="gp">... </span>               <span class="n">Ant</span> <span class="o">=</span> <span class="p">[</span>   <span class="mf">9.16238246</span><span class="p">,</span> <span class="mf">2541.97883529</span><span class="p">,</span>  <span class="o">-</span><span class="mf">50.40534341</span><span class="p">],</span>
 <span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CH3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;CH3O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Mixture for Liquid Liquid flash</span>
@@ -212,37 +212,34 @@ This method can be slow at high pressures, and it that cases, the algorithm chan
 <span class="go">(array([0.15604124, 0.84395876]), array([0.99289065, 0.00710935]), 0.4110193245129084)</span>
 </pre></div>
 </div>
-<span class="target" id="module-phasepy.equilibrium.flash"></span><dl class="function">
+<span class="target" id="module-phasepy.equilibrium.flash"></span><dl class="py function">
 <dt id="phasepy.equilibrium.flash.flash">
-<code class="descname">flash</code><span class="sig-paren">(</span><em>x_guess, y_guess, equilibrium, Z, T, P, model, v0=[None, None], full_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/flash.html#flash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.flash.flash" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">flash</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_guess</span></em>, <em class="sig-param"><span class="n">y_guess</span></em>, <em class="sig-param"><span class="n">equilibrium</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">[None, None]</span></em>, <em class="sig-param"><span class="n">K_tol</span><span class="o">=</span><span class="default_value">1e-08</span></em>, <em class="sig-param"><span class="n">full_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/flash.html#flash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.flash.flash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Isothermic isobaric flash (z,T,P) -&gt; (x,y,beta)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_guess</strong> (<em>array_like</em>) – guess composition of phase 1</li>
-<li><strong>y_guess</strong> (<em>array_like</em>) – guess composition of phase 2</li>
-<li><strong>equilibrium</strong> (<em>string</em>) – ‘LL’ for ELL, ‘LV’ for ELV</li>
-<li><strong>z</strong> (<em>array_like</em>) – overall system composition</li>
-<li><strong>T</strong> (<em>float</em>) – absolute temperature in K.</li>
-<li><strong>P</strong> (<em>float</em>) – pressure in bar</li>
-<li><strong>model</strong> (<em>object</em>) – created from mixture, eos and mixrule</li>
-<li><strong>v0</strong> (<em>list</em>) – if supplied volume used as initial value to compute fugacities</li>
-<li><strong>full_output</strong> (<em>bool</em>) – wheter to outputs all calculation info</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_guess</strong> (<em>array_like</em>) – guess composition of phase 1</p></li>
+<li><p><strong>y_guess</strong> (<em>array_like</em>) – guess composition of phase 2</p></li>
+<li><p><strong>equilibrium</strong> (<em>string</em>) – ‘LL’ for ELL, ‘LV’ for ELV</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – overall system composition</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature in K.</p></li>
+<li><p><strong>P</strong> (<em>float</em>) – pressure in bar</p></li>
+<li><p><strong>model</strong> (<em>object</em>) – created from mixture, eos and mixrule</p></li>
+<li><p><strong>v0</strong> (<em>list</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</p></li>
+<li><p><strong>K_tol</strong> (<em>float</em><em>, </em><em>optional</em>) – Desired accuracy of K (= Y/X) vector</p></li>
+<li><p><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – wheter to outputs all calculation info</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>X</strong> (<em>array_like</em>) – phase 1 composition</li>
-<li><strong>Y</strong> (<em>array_like</em>) – phase 2 composition</li>
-<li><strong>beta</strong> (<em>float</em>) – phase 2 phase fraction</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>X</strong> (<em>array_like</em>) – phase 1 composition</p></li>
+<li><p><strong>Y</strong> (<em>array_like</em>) – phase 2 composition</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – phase 2 phase fraction</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

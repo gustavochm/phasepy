@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -177,31 +177,27 @@
 <p>Recommended when working at low pressure.</p>
 <div class="math notranslate nohighlight">
 \[Z = \frac{Pv}{RT} = 1\]</div>
-<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
+<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="py function">
 <dt id="phasepy.actmodels.virial.ideal_gas">
-<code class="descname">ideal_gas</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#ideal_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.ideal_gas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ideal_gas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">Tij</span></em>, <em class="sig-param"><span class="n">Pij</span></em>, <em class="sig-param"><span class="n">wij</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#ideal_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.ideal_gas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given
 temperature for an ideal gas (Bij = 0)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
-<li><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</li>
-<li><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</li>
-<li><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p></li>
+<li><p><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</p></li>
+<li><p><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</p></li>
+<li><p><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Bij</strong> – square array of virial coefficient</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Bij</strong> – square array of virial coefficient</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -214,31 +210,27 @@ temperature for an ideal gas (Bij = 0)</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}B^{(0)} &amp;= 0.083 - \frac{0.422}{T_r^{1.6}}\\
 B^{(1)} &amp;= 0.139 + \frac{0.179}{T_r^{4.2}}\end{split}\]</div>
-<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
+<span class="target" id="module-0"></span><dl class="py function">
 <dt id="phasepy.actmodels.virial.Abbott">
-<code class="descname">Abbott</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Abbott"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Abbott" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Abbott</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">Tij</span></em>, <em class="sig-param"><span class="n">Pij</span></em>, <em class="sig-param"><span class="n">wij</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Abbott"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Abbott" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given
 temperature with Abbott correlation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
-<li><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</li>
-<li><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</li>
-<li><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p></li>
+<li><p><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</p></li>
+<li><p><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</p></li>
+<li><p><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Bij</strong> – square array of virial coefficient</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Bij</strong> – square array of virial coefficient</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -251,31 +243,27 @@ temperature with Abbott correlation</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}B^{(0)} &amp;= 0.1445 - \frac{0.33}{T_r} - \frac{0.1385}{T_r^       2} - \frac{0.0121}{T_r^3} - \frac{0.000607}{T_r^8} \\
 B^{(1)} &amp;= 0.0637 + \frac{0.331}{T_r^2} - \frac{0.423}{T_r^     3} - \frac{0.008}{T_r^8}\end{split}\]</div>
-<span class="target" id="module-phasepy.actmodels.virial"></span><dl class="function">
+<span class="target" id="module-1"></span><dl class="py function">
 <dt id="phasepy.actmodels.virial.Tsonopoulos">
-<code class="descname">Tsonopoulos</code><span class="sig-paren">(</span><em>T</em>, <em>Tij</em>, <em>Pij</em>, <em>wij</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Tsonopoulos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Tsonopoulos" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Tsonopoulos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">Tij</span></em>, <em class="sig-param"><span class="n">Pij</span></em>, <em class="sig-param"><span class="n">wij</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virial.html#Tsonopoulos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virial.Tsonopoulos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the virial coefficient for a mixture at given
 temperature with Tsonopoulos correlation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
-<li><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</li>
-<li><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</li>
-<li><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p></li>
+<li><p><strong>Tij</strong> (<em>array_like</em>) – square array of critical temperatures</p></li>
+<li><p><strong>Pij</strong> (<em>array_like</em>) – square array of critical pressures</p></li>
+<li><p><strong>wij</strong> (<em>array_like</em>) – square array of acentric factor</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Bij</strong> – square array of virial coefficient</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Bij</strong> – square array of virial coefficient</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

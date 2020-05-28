@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -173,8 +173,8 @@
 <div class="section" id="minimization-of-tpd-function">
 <h2>Minimization of tpd function<a class="headerlink" href="#minimization-of-tpd-function" title="Permalink to this headline">¶</a></h2>
 <p>As this is an iterative process, in order to find a minimum a initial guess of it has to be supplied. In the following code block te stability of an liquid mixture is tested against the formation of another liquid.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="k">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">preos</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">tpd_min</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">component</span><span class="p">,</span> <span class="n">mixture</span><span class="p">,</span> <span class="n">preos</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="kn">import</span> <span class="n">tpd_min</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">water</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="n">Tc</span> <span class="o">=</span> <span class="mf">647.13</span><span class="p">,</span> <span class="n">Pc</span> <span class="o">=</span> <span class="mf">220.55</span><span class="p">,</span> <span class="n">Zc</span> <span class="o">=</span> <span class="mf">0.229</span><span class="p">,</span> <span class="n">Vc</span> <span class="o">=</span> <span class="mf">55.948</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mf">0.344861</span><span class="p">,</span>
 <span class="gp">... </span>                <span class="n">Ant</span> <span class="o">=</span>  <span class="p">[</span>  <span class="mf">11.64785144</span><span class="p">,</span> <span class="mf">3797.41566067</span><span class="p">,</span>  <span class="o">-</span><span class="mf">46.77830444</span><span class="p">],</span>
 <span class="gp">... </span>               <span class="n">GC</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H2O&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
@@ -195,48 +195,44 @@
 </pre></div>
 </div>
 <p>As the tpd value at the minimum is negative it means that the phase is unstable at will split into two liquids. Similarly the relative stability can be tested against a vapor phase, in which case is found that the original phase was more stable than the vapor.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stateW</span> <span class="o">=</span>  <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">stateZ</span> <span class="o">=</span>  <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_min</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">stateW</span> <span class="o">=</span>  <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="n">stateZ</span> <span class="o">=</span>  <span class="s1">&#39;L&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimum found and tpd value</span>
 <span class="go">array([0.16434071, 0.83565929]), 0.24576563932346407</span>
 </pre></div>
 </div>
-<span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
+<span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="py function">
 <dt id="phasepy.equilibrium.stability.tpd_min">
-<code class="descname">tpd_min</code><span class="sig-paren">(</span><em>W</em>, <em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>stateW</em>, <em>stateZ</em>, <em>vw=None</em>, <em>vz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_min" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tpd_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">W</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">stateW</span></em>, <em class="sig-param"><span class="n">stateZ</span></em>, <em class="sig-param"><span class="n">vw</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Found a minimiun of Michelsen’s Adimentional tangent plane function</p>
 <p>tpd_min (W, Z, T, P, model, stateW, stateZ)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>W</strong> (<em>array_like</em>) – mole fraction array of trial fase</li>
-<li><strong>Z</strong> (<em>array_like</em>) – mole fraction array of overall mixture</li>
-<li><strong>T</strong> (<em>absolute temperature</em><em>, </em><em>in K</em>) – </li>
-<li><strong>P</strong> (<em>absolute pressure in bar</em>) – </li>
-<li><strong>model</strong> (<em>object create from mixture</em><em>, </em><em>eos and mixrule</em>) – </li>
-<li><strong>stateW</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapor phase</li>
-<li><strong>stateZ</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapor phase</li>
-<li><strong>vz</strong> (<em>vw</em><em>,</em>) – initial volume value to compute fugacities of phases</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>W</strong> (<em>array_like</em>) – mole fraction array of trial fase</p></li>
+<li><p><strong>Z</strong> (<em>array_like</em>) – mole fraction array of overall mixture</p></li>
+<li><p><strong>T</strong> (<em>absolute temperature</em><em>, </em><em>in K</em>) – </p></li>
+<li><p><strong>P</strong> (<em>absolute pressure in bar</em>) – </p></li>
+<li><p><strong>model</strong> (<em>object create from mixture</em><em>, </em><em>eos and mixrule</em>) – </p></li>
+<li><p><strong>stateW</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapor phase</p></li>
+<li><p><strong>stateZ</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapor phase</p></li>
+<li><p><strong>vz</strong> (<em>vw</em><em>,</em>) – initial volume value to compute fugacities of phases</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>w</strong> (<em>array_like</em>) – molar fraction of minimum</li>
-<li><strong>f</strong> (<em>float</em>) – minimized tpd distance</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>w</strong> (<em>array_like</em>) – molar fraction of minimum</p></li>
+<li><p><strong>f</strong> (<em>float</em>) – minimized tpd distance</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="findind-all-minimums">
 <h2>Findind all minimums<a class="headerlink" href="#findind-all-minimums" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes might be usefull to find all the minimas of a given mixture, for that case phasepy will try to find them using different initial guesses until the number of requested minimas is found. In the next example three minimias where requested.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">tpd_minimas</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="kn">import</span> <span class="n">tpd_minimas</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
@@ -250,49 +246,45 @@
 </pre></div>
 </div>
 <p>Similar as the first example, all the minimas in vapor phase can be found, in this case there only one minimum.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpd_minimas</span><span class="p">(</span><span class="n">nmin</span> <span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#composition of minimuns found and tpd values</span>
 <span class="go">(array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578]), array([0.1643422, 0.8356578])),</span>
 <span class="go">array([0.24576564, 0.24576564, 0.24576564]))</span>
 </pre></div>
 </div>
-<span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
+<span class="target" id="module-0"></span><dl class="py function">
 <dt id="phasepy.equilibrium.stability.tpd_minimas">
-<code class="descname">tpd_minimas</code><span class="sig-paren">(</span><em>nmin</em>, <em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>stateW</em>, <em>stateZ</em>, <em>vw=None</em>, <em>vz=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_minimas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_minimas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tpd_minimas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nmin</span></em>, <em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">stateW</span></em>, <em class="sig-param"><span class="n">stateZ</span></em>, <em class="sig-param"><span class="n">vw</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#tpd_minimas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.tpd_minimas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Found nmin minimuns of Michelsen’s Adimentional tangent plane function</p>
 <p>tpd_minimas (nmin, Z, T, P, model, stateW, stateZ)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nmin</strong> (<em>int</em>) – number of minimiuns to be founded</li>
-<li><strong>Z</strong> (<em>array_like</em>) – mole fraction array of overall mixture</li>
-<li><strong>T</strong> (<em>float</em>) – absolute temperature, in K</li>
-<li><strong>P</strong> (<em>float</em>) – absolute pressure in bar</li>
-<li><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</li>
-<li><strong>stateW</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapour phase</li>
-<li><strong>stateZ</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapour phase</li>
-<li><strong>vz</strong> (<em>vw</em><em>,</em>) – if supplied volume used as initial value to compute fugacities</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nmin</strong> (<em>int</em>) – number of minimiuns to be founded</p></li>
+<li><p><strong>Z</strong> (<em>array_like</em>) – mole fraction array of overall mixture</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature, in K</p></li>
+<li><p><strong>P</strong> (<em>float</em>) – absolute pressure in bar</p></li>
+<li><p><strong>model</strong> (<em>object</em>) – create from mixture, eos and mixrule</p></li>
+<li><p><strong>stateW</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapour phase</p></li>
+<li><p><strong>stateZ</strong> (<em>string</em>) – ‘L’ for liquid phase, ‘V’ for vapour phase</p></li>
+<li><p><strong>vz</strong> (<em>vw</em><em>,</em>) – if supplied volume used as initial value to compute fugacities</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>all_minima</strong> (<em>tuple</em>) – molar fractions arrays of minimums</li>
-<li><strong>f_minima</strong> (<em>tuple</em>) – minimized tpd distance</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>all_minima</strong> (<em>tuple</em>) – molar fractions arrays of minimums</p></li>
+<li><p><strong>f_minima</strong> (<em>tuple</em>) – minimized tpd distance</p></li>
 </ul>
 </p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="liquid-liquid-equilibrium-initiation">
 <h2>Liquid liquid equilibrium initiation<a class="headerlink" href="#liquid-liquid-equilibrium-initiation" title="Permalink to this headline">¶</a></h2>
 <p>Using the same principles stated above, tpd function can be used to generate initial guesses for liquid liquid equilibra, the function ell_init allows to find two minimas of the mixture.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="k">import</span> <span class="n">lle_init</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy.equilibrium</span> <span class="kn">import</span> <span class="n">lle_init</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T</span> <span class="o">=</span> <span class="mi">320</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="mf">1.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
@@ -301,31 +293,27 @@
 <span class="go">array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])</span>
 </pre></div>
 </div>
-<span class="target" id="module-phasepy.equilibrium.stability"></span><dl class="function">
+<span class="target" id="module-1"></span><dl class="py function">
 <dt id="phasepy.equilibrium.stability.lle_init">
-<code class="descname">lle_init</code><span class="sig-paren">(</span><em>Z</em>, <em>T</em>, <em>P</em>, <em>model</em>, <em>v0=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#lle_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.lle_init" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">lle_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Z</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/equilibrium/stability.html#lle_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.equilibrium.stability.lle_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize tpd function to initiate ELL at fixed T and P.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>z</strong> (<em>array_like</em>) – overall molar fraction array</li>
-<li><strong>T</strong> (<em>float</em>) – absolute temperature in K</li>
-<li><strong>P</strong> (<em>float</em>) – absolute pressure in bar</li>
-<li><strong>model</strong> (<em>object</em>) – created from eos and mixture</li>
-<li><strong>v0</strong> (<em>float</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>array_like</em>) – overall molar fraction array</p></li>
+<li><p><strong>T</strong> (<em>float</em>) – absolute temperature in K</p></li>
+<li><p><strong>P</strong> (<em>float</em>) – absolute pressure in bar</p></li>
+<li><p><strong>model</strong> (<em>object</em>) – created from eos and mixture</p></li>
+<li><p><strong>v0</strong> (<em>float</em><em>, </em><em>optional</em>) – if supplied volume used as initial value to compute fugacities</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>x0s</strong> – Contains two mol fractions arrays</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>x0s</strong> – Contains two mol fractions arrays</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>

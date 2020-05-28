@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -148,15 +148,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for phasepy.actmodels.virial</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..constants</span> <span class="k">import</span> <span class="n">R</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">R</span>
 
 <span class="k">def</span> <span class="nf">Virialmix</span><span class="p">(</span><span class="n">mix</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    VirialMix creates the needed arrays to work with multicomponent</span>
 <span class="sd">    virial eos</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    mix: object</span>
@@ -172,7 +172,7 @@
 <span class="sd">        square array of critical compresibility factor</span>
 <span class="sd">    wij: array_like</span>
 <span class="sd">        square array of acentric factor</span>
-<span class="sd">        </span>
+
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Tc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">Tc</span><span class="p">)</span>
     <span class="n">Pc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mix</span><span class="o">.</span><span class="n">Pc</span><span class="p">)</span>
@@ -188,14 +188,14 @@
     <span class="n">Zij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">Zc</span><span class="p">,</span> <span class="n">Zc</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
     <span class="n">Pij</span> <span class="o">=</span> <span class="n">Zij</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="n">Tij</span><span class="o">/</span><span class="n">vij</span>
     <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">Pij</span><span class="p">,</span> <span class="n">Pc</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">Tij</span><span class="p">,</span><span class="n">Pij</span><span class="p">,</span><span class="n">Zij</span><span class="p">,</span><span class="n">wij</span>
 
 <div class="viewcode-block" id="Tsonopoulos"><a class="viewcode-back" href="../../../models/phasepy.virial.html#phasepy.actmodels.virial.Tsonopoulos">[docs]</a><span class="k">def</span> <span class="nf">Tsonopoulos</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">Tij</span><span class="p">,</span> <span class="n">Pij</span><span class="p">,</span> <span class="n">wij</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Computes the virial coefficient for a mixture at given </span>
+<span class="sd">    Computes the virial coefficient for a mixture at given</span>
 <span class="sd">    temperature with Tsonopoulos correlation</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    T : float</span>
@@ -210,7 +210,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Bij: array_like</span>
-<span class="sd">        square array of virial coefficient        </span>
+<span class="sd">        square array of virial coefficient</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Tr</span><span class="o">=</span><span class="n">T</span><span class="o">/</span><span class="n">Tij</span>
     <span class="n">B0</span><span class="o">=</span><span class="mf">0.1145</span><span class="o">-</span><span class="mf">0.330</span><span class="o">/</span><span class="n">Tr</span><span class="o">-</span><span class="mf">0.1385</span><span class="o">/</span><span class="n">Tr</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.0121</span><span class="o">/</span><span class="n">Tr</span><span class="o">**</span><span class="mi">3</span><span class="o">-</span><span class="mf">0.000607</span><span class="o">/</span><span class="n">Tr</span><span class="o">**</span><span class="mi">8</span>
@@ -220,9 +220,9 @@
 
 <div class="viewcode-block" id="Abbott"><a class="viewcode-back" href="../../../models/phasepy.virial.html#phasepy.actmodels.virial.Abbott">[docs]</a><span class="k">def</span> <span class="nf">Abbott</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">Tij</span><span class="p">,</span> <span class="n">Pij</span><span class="p">,</span> <span class="n">wij</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Computes the virial coefficient for a mixture at given </span>
+<span class="sd">    Computes the virial coefficient for a mixture at given</span>
 <span class="sd">    temperature with Abbott correlation</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    T : float</span>
@@ -237,7 +237,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Bij: array_like</span>
-<span class="sd">        square array of virial coefficient        </span>
+<span class="sd">        square array of virial coefficient</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Tr</span><span class="o">=</span><span class="n">T</span><span class="o">/</span><span class="n">Tij</span>
     <span class="n">B0</span><span class="o">=</span><span class="mf">0.083</span><span class="o">-</span><span class="mf">0.422</span><span class="o">/</span><span class="n">Tr</span><span class="o">**</span><span class="mf">1.6</span>
@@ -247,9 +247,9 @@
 
 <div class="viewcode-block" id="ideal_gas"><a class="viewcode-back" href="../../../models/phasepy.virial.html#phasepy.actmodels.virial.ideal_gas">[docs]</a><span class="k">def</span> <span class="nf">ideal_gas</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">Tij</span><span class="p">,</span> <span class="n">Pij</span><span class="p">,</span> <span class="n">wij</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Computes the virial coefficient for a mixture at given </span>
+<span class="sd">    Computes the virial coefficient for a mixture at given</span>
 <span class="sd">    temperature for an ideal gas (Bij = 0)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    T : float</span>
@@ -264,7 +264,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Bij: array_like</span>
-<span class="sd">        square array of virial coefficient        </span>
+<span class="sd">        square array of virial coefficient</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Bij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Tij</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Bij</span></div>
@@ -273,7 +273,7 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Computes the virial coefficient and partial virial coefficient for a mixture</span>
 <span class="sd">    at given temperature and composition.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x: array_like</span>
@@ -285,7 +285,7 @@
 <span class="sd">    Pij: array_like</span>
 <span class="sd">        square array of critical pressures</span>
 <span class="sd">    wij: array_like</span>
-<span class="sd">        square array of acentric </span>
+<span class="sd">        square array of acentric</span>
 <span class="sd">    virialmodel : function</span>
 <span class="sd">        Function that computes the virial coefficient.</span>
 
@@ -296,16 +296,16 @@
 <span class="sd">    Bp : array_like</span>
 <span class="sd">        array of partial virial coefficients</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    
+
     <span class="n">Bij</span> <span class="o">=</span> <span class="n">virialmodel</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">Tij</span><span class="p">,</span> <span class="n">Pij</span><span class="p">,</span> <span class="n">wij</span><span class="p">)</span>
-    
+
     <span class="n">Bx</span> <span class="o">=</span> <span class="n">Bij</span><span class="o">*</span><span class="n">x</span>
     <span class="c1">#virial de mezcla</span>
     <span class="n">Bm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
     <span class="c1">#virial parcial</span>
     <span class="n">Bp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Bm</span>
-    
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Bij</span><span class="p">),</span> <span class="n">Bp</span>
+
+    <span class="k">return</span> <span class="n">Bij</span><span class="p">,</span> <span class="n">Bp</span>
 </pre></div>
 
            </div>

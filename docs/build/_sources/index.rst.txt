@@ -27,7 +27,7 @@ Installation Prerequisites
 Installation
 ------------
 
-Get the latest version of thermo from
+Get the latest version of phasepy from
 https://pypi.python.org/pypi/phasepy/
 
 If you have an installation of Python with pip, simple install it with:

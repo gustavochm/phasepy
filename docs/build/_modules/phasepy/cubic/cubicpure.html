@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -150,11 +150,11 @@
   <h1>Source code for phasepy.cubic.cubicpure</h1><div class="highlight"><pre>
 <span></span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.alphas</span> <span class="k">import</span> <span class="n">alpha_soave</span><span class="p">,</span> <span class="n">alpha_sv</span><span class="p">,</span> <span class="n">alpha_rk</span>
-<span class="kn">from</span> <span class="nn">.psatpure</span> <span class="k">import</span> <span class="n">psat</span> 
-<span class="kn">from</span> <span class="nn">..constants</span> <span class="k">import</span> <span class="n">R</span>
+<span class="kn">from</span> <span class="nn">.alphas</span> <span class="kn">import</span> <span class="n">alpha_soave</span><span class="p">,</span> <span class="n">alpha_sv</span><span class="p">,</span> <span class="n">alpha_rk</span>
+<span class="kn">from</span> <span class="nn">.psatpure</span> <span class="kn">import</span> <span class="n">psat</span> 
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">R</span>
 
 <div class="viewcode-block" id="cpure"><a class="viewcode-back" href="../../../models/phasepy.cubicp.html#phasepy.cubic.cubicpure.cpure">[docs]</a><span class="k">class</span> <span class="nc">cpure</span><span class="p">():</span>
     
@@ -195,7 +195,7 @@
 <span class="sd">    sgt_adim : computes adimentional factors for SGT.</span>
 
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">oma</span><span class="p">,</span> <span class="n">omb</span><span class="p">,</span> <span class="n">alpha_eos</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">oma</span><span class="p">,</span> <span class="n">omb</span><span class="p">,</span> <span class="n">alpha_eos</span><span class="p">):</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">c1</span> <span class="o">=</span> <span class="n">c1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c2</span> <span class="o">=</span> <span class="n">c2</span>
@@ -213,7 +213,7 @@
     
 
             
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_eos</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c1</span>
@@ -507,14 +507,14 @@
 <span class="n">omapr</span> <span class="o">=</span> <span class="mf">0.4572355289213825</span>
 <span class="n">ombpr</span> <span class="o">=</span> <span class="mf">0.07779607390388854</span>
 <span class="k">class</span> <span class="nc">prpure</span><span class="p">(</span><span class="n">cpure</span><span class="p">):</span>   
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">):</span>
         <span class="n">cpure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">,</span><span class="n">c1</span> <span class="o">=</span> <span class="n">c1pr</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">c2pr</span><span class="p">,</span>
               <span class="n">oma</span> <span class="o">=</span> <span class="n">omapr</span><span class="p">,</span> <span class="n">omb</span> <span class="o">=</span> <span class="n">ombpr</span><span class="p">,</span> <span class="n">alpha_eos</span> <span class="o">=</span> <span class="n">alpha_soave</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span>  <span class="mf">0.37464</span> <span class="o">+</span> <span class="mf">1.54226</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="mf">0.26992</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="c1"># PRSV EoS</span>
 <span class="k">class</span> <span class="nc">prsvpure</span><span class="p">(</span><span class="n">cpure</span><span class="p">):</span>   
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
         <span class="n">cpure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">c1pr</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">c2pr</span><span class="p">,</span>
               <span class="n">oma</span> <span class="o">=</span> <span class="n">omapr</span><span class="p">,</span> <span class="n">omb</span> <span class="o">=</span> <span class="n">ombpr</span><span class="p">,</span> <span class="n">alpha_eos</span> <span class="o">=</span> <span class="n">alpha_sv</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pure</span><span class="o">.</span><span class="n">ksv</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
@@ -530,14 +530,14 @@
 <span class="n">omark</span> <span class="o">=</span> <span class="mf">0.42748</span>
 <span class="n">ombrk</span> <span class="o">=</span> <span class="mf">0.08664</span>
 <span class="k">class</span> <span class="nc">rkspure</span><span class="p">(</span><span class="n">cpure</span><span class="p">):</span>   
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
         <span class="n">cpure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">c1rk</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">c2rk</span><span class="p">,</span>
               <span class="n">oma</span> <span class="o">=</span> <span class="n">omark</span><span class="p">,</span> <span class="n">omb</span> <span class="o">=</span> <span class="n">ombrk</span><span class="p">,</span> <span class="n">alpha_eos</span><span class="o">=</span><span class="n">alpha_soave</span><span class="p">)</span>        
         <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span>  <span class="mf">0.47979</span> <span class="o">+</span> <span class="mf">1.5476</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="mf">0.1925</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.025</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">**</span><span class="mi">3</span>
         
 <span class="c1"># RK EoS</span>
 <span class="k">class</span> <span class="nc">rkpure</span><span class="p">(</span><span class="n">cpure</span><span class="p">):</span>   
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pure</span><span class="p">):</span>
         <span class="n">cpure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pure</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">c1rk</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">c2rk</span><span class="p">,</span>
               <span class="n">oma</span> <span class="o">=</span> <span class="n">omark</span><span class="p">,</span> <span class="n">omb</span> <span class="o">=</span> <span class="n">ombrk</span><span class="p">,</span> <span class="n">alpha_eos</span><span class="o">=</span><span class="n">alpha_rk</span><span class="p">)</span>                
         <span class="k">def</span> <span class="nf">a_eos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T</span><span class="p">):</span>

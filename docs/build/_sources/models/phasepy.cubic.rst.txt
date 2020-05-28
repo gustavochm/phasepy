@@ -94,13 +94,13 @@ In case of Modified Huron Vidal with UNIFAC:
 >>> mix.unifac() #reading UNIFAC database
 >>> pr = preos(mix, mixrule = 'mhv_unifac')
 
-In case of Modified Huron Vidal with Redlich Kister Expansion:
+In case of the Wong-Sandler mixing rule with the Redlich Kister Expansion:
 
 >>> C0 = np.array([ 1.20945699, -0.62209997,  3.18919339])
 >>> C1 = np.array([  -13.271128,   101.837857, -1100.29221 ])
 >>> #Parameters are calculated as C = C0 + C1/T
 >>> mix.rk(C0, C1)
->>> pr = preos(mix, mixrule = 'mhv_rk')
+>>> pr = preos(mix, mixrule = 'ws_rk')
 
 Phasepy has included the most widely known cubic EoS, as: Van der Waals, Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera.
 
@@ -140,6 +140,3 @@ Redlich Kwong Soave EoS
     :members: rkseos
     :undoc-members:
     :show-inheritance:
-
-
-
