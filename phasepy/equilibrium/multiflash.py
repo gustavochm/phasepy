@@ -51,10 +51,10 @@ def multiflash_obj(inc, Z, K):
 
     return f, jac, Kexp, Xref
 
-def gibbs_obj(ind, phases, Z, T, P, modelo, v0):
+def gibbs_obj(ind, phases, Z, T, P, model, v0):
 
     nfase = len(phases)
-    nc = modelo.nc
+    nc = model.nc
     ind = ind.reshape(nfase - 1 , nc)
     dep = Z - ind.sum(axis= 0)
 
@@ -69,12 +69,56 @@ def gibbs_obj(ind, phases, Z, T, P, modelo, v0):
     global vg
     vg = v0.copy()
     for i, state in enumerate(phases):
-        lnphi[i], vg[i]  = modelo.logfugef(X[i], T, P, state, v0[i])
+        lnphi[i], vg[i]  = model.logfugef(X[i], T, P, state, v0[i])
     fug = np.nan_to_num(np.log(X) + lnphi)
-    G = np.dot(n,fug)
+    G = np.sum(n * fug)
     dG = (fug[1:] - fug[0]).flatten()
     return G, dG
 
+def dgibbs_obj(ind, phases, Z, T, P, model, v0):
+    global vg, dfug
+    nfase = len(phases)
+    nc = model.nc
+    ind = ind.reshape(nfase - 1 , nc)
+    dep = Z - ind.sum(axis= 0)
+
+    X = np.zeros((nfase, nc))
+    X[1:] = ind
+    X[0] = dep
+    X[X < 1e-8] = 1e-8
+    n = X.copy()
+    nt = np.sum(n, axis = 1)
+    X = (n.T / nt).T
+
+    lnphi = np.zeros([nfase, nc])
+    dlnphi = np.zeros([nfase, nc, nc])
+    dfug = np.zeros([nfase, nc, nc])
+
+    eye = np.eye(nc)
+    vg = v0.copy()
+    for i, state in enumerate(phases):
+        lnphi[i], dlnphi[i], vg[i]  = model.dlogfugef(X[i], T, P, state, v0[i])
+        dfug[i] = eye/n[i] - 1./nt[i] + dlnphi[i]/nt[i]
+
+    fug = np.nan_to_num(np.log(X) + lnphi)
+    G = np.sum(n * fug)
+    dG = (fug[1:] - fug[0]).flatten()
+
+    return G, dG
+
+def dgibbs_hess(v , phases, Z, T, P, model, v0):
+    global dfug
+    dfugind = dfug[1:]
+    dfugdep = dfug[0]
+    nfase = len(phases)
+    nc = model.nc
+
+    d2G = np.block((nfase - 1) * [(nfase - 1)*[1. * dfugdep]])
+    for i in range(0, (nfase-1)):
+        index0 = np.int(i*nc)
+        index1 = np.int((i+1)*nc)
+        d2G[index0:index1, index0:index1] += dfugind[i]
+    return d2G
 
 def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None],
               K_tol = 1e-10, full_output = False):
@@ -117,9 +161,6 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None],
 
     """
 
-
-
-
     nfase = len(equilibrium)
 
     nc = model.nc
@@ -130,7 +171,9 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None],
     error = 1
     it = 0
     itacc = 0
+    ittotal = 0
     n = 5
+    nacc = 3
 
     X = X0.copy()
     lnphi = np.zeros_like(X) #crea matriz donde se almacenan los ln coef de fug
@@ -148,14 +191,14 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None],
 
     x = betatetha
 
-    while error > K_tol and itacc < 5:
+    while error > K_tol and itacc < nacc:
+        ittotal += 1
         it += 1
         lnK_old = lnK.copy()
 
+        ef = 1.
+        ex = 1.
         itin = 0
-        ef = 1
-        ex = 1
-
         while ef > 1e-8 and ex > 1e-8 and itin < 30:
             itin += 1
             f, jac, Kexp, Xref = multiflash_obj(x, z, K)
@@ -195,28 +238,37 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0 = [None],
             lnK += dacc
 
         K = np.exp(lnK)
-        error = ((lnK-lnK_old)**2).sum()
-
-    if error > K_tol and itacc == 5 and ef < 1e-8 and np.all(tetha >0):
+        error = np.linalg.norm(lnK - lnK_old)
+    #
+    if error > K_tol and itacc == nacc and ef < 1e-8 and np.all(tetha == 0):
+        if model.secondorder:
+            fobj = dgibbs_obj
+            jac = True
+            hess = dgibbs_hess
+            method = 'trust-ncg'
+        else:
+            fobj = gibbs_obj
+            jac = True
+            hess = None
+            method = 'BFGS'
         global vg
         ind0 = (X.T*beta).T[1:].flatten()
-        ind1 = minimize(gibbs_obj, ind0,
-                       args = (equilibrium, z, T, P, model, v), jac = True,
-                      method = 'BFGS' )
+        ind1 = minimize(fobj, ind0, args = (equilibrium, z, T, P, model, v),
+                        jac = jac, method = method, hess = hess, tol = K_tol)
         v = vg.copy()
-        it += ind1.nit
-        error = ind1.fun
+        ittotal += ind1.nit
+        error = np.linalg.norm(ind1.jac)
         nc = model.nc
         ind = ind1.x.reshape(nfase - 1 , nc)
         dep = z - ind.sum(axis= 0)
         X[1:] = ind
         X[0] = dep
+        X[X < 1e-8] = 1e-8
         beta = X.sum(axis=1)
-        X[beta > 0] = (X[beta > 0].T/beta[beta > 0]).T
-        X = (X.T/X.sum(axis=1)).T
+        X = (X.T/beta).T
 
     if full_output:
-        sol = {'T' : T, 'P': P, 'error_outer':error, 'error_inner': ef, 'iter':it,
+        sol = {'T' : T, 'P': P, 'error_outer': error, 'error_inner': ef, 'iter':ittotal,
                'beta': beta, 'tetha': tetha,
                'X' : X, 'v':v, 'states' : equilibrium}
         out = EquilibriumResult(sol)

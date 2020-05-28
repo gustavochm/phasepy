@@ -51,12 +51,23 @@ def lle(x0, w0, Z, T, P, model, v0 = [None, None], K_tol = 1e-8, full_output = F
     if len(x0) != nc or len(w0) != nc or len(Z) != nc:
         raise Exception('Composition vector lenght must be equal to nc')
 
-
+    '''
     equilibrio = ['L', 'L']
     out = flash(x0, w0, equilibrio, Z, T, P, model, v0, K_tol , True)
     X, W, beta = out.X, out.Y, out.beta
     v1, v2 = out.v1, out.v2
-    X0 = np.array([X, W])
+    '''
+    
+    equilibrio = ['L', 'L']
+    fugx, v1 = model.logfugef(x0,T,P, equilibrio[0], v0[0])
+    fugw, v2 = model.logfugef(w0,T,P, equilibrio[1], v0[1])
+    lnK = fugx - fugw
+    K = np.exp(lnK)
+
+    bmin = max(np.hstack([((K*Z-1.)/(K-1.))[K > 1],0.]))
+    bmax = min(np.hstack([((1.-Z)/(1.-K))[K < 1],1.]))
+    beta = (bmin + bmax)/2
+    X0 = np.array([x0, w0])
 
     beta0 = np.array([1-beta, beta, 0.])
 
