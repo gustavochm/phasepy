@@ -5,18 +5,18 @@ from .alphas import alpha_vdw
 from ..constants import R
 
 class vdwm():
-    
+
     '''
     Mixture VdW EoS Object
-    
-    This object have implemeted methods for phase equilibrium 
+
+    This object have implemeted methods for phase equilibrium
     as for iterfacial properties calculations.
-    
+
     Parameters
     ----------
     mix : object
         mixture created with mixture class
-    
+
     Attributes
     ----------
     Tc: critical temperture in K
@@ -24,7 +24,7 @@ class vdwm():
     w: acentric factor
     cii : influence factor for SGT
     nc : number of components of mixture
-    
+
     Methods
     -------
     a_eos : computes the attractive term of cubic eos.
@@ -39,47 +39,49 @@ class vdwm():
     sgt_adim : computes adimentional factors for SGT.
 
     '''
-    
-    
+
+
     def __init__(self, mix):
-        
+
         self.c1 = 0
         self.c2 = 0
         self.oma = 27/64
         self.omb = 1/8
-        self.alpha_eos = alpha_vdw 
+        self.alpha_eos = alpha_vdw
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
-        
-        self.Tc = np.array(mix.Tc, ndmin = 1) 
-        self.Pc = np.array(mix.Pc, ndmin = 1) 
+
+        self.Tc = np.array(mix.Tc, ndmin = 1)
+        self.Pc = np.array(mix.Pc, ndmin = 1)
         self.w = np.array(mix.w, ndmin = 1)
-        self.cii = np.array(mix.cii, ndmin = 1) 
+        self.cii = np.array(mix.cii, ndmin = 1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
-        
-        self.mixrule = qmr  
+        self.secondorder = False
+        self.secondordersgt = False
+
+        self.mixrule = qmr
         if hasattr(mix, 'kij'):
             self.kij = mix.kij
-            self.mixruleparameter = (mix.kij,)
-        else: 
-            raise Exception('Matriz Kij no ingresada')
-                
-            
-    #metodos cubica    
+        else:
+            self.kij = np.zeros([mix.nc, mix.nc])
+        self.mixruleparameter = (self.kij,)
+
+
+    #metodos cubica
     def a_eos(self,T):
-        """ 
+        """
         a_eos(T)
-        
+
         Method that computes atractive term of cubic eos at fixed T (in K)
-    
+
         Parameters
         ----------
-        
+
         T : float
             absolute temperature in K
-    
+
         Returns
         -------
         a : array_like
@@ -87,27 +89,28 @@ class vdwm():
         """
         alpha=self.alpha_eos()
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
-    
+
     def _Zroot(self,A,B):
-        a1 = (self.c1+self.c2-1)*B-1
-        a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
-        a3 = -B*(self.c1*self.c2*(B**2+B)+A)
+        a1 = -1*B-1
+        a2 = +A
+        a3 = -B*A
+
         Zpol=[1,a1,a2,a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots>B]
         return Zroots
-        
+
     def Zmix(self,X,T,P):
         '''
         Zmix (X, T, P)
-        
+
         Method that computes the roots of the compresibility factor polynomial
         at given mole fractions (X), Temperature (T) and Pressure (P)
-        
+
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -116,25 +119,25 @@ class vdwm():
             pressure in bar
 
         Returns
-        -------        
+        -------
         Z : array_like
             roots of Z polynomial
         '''
         a = self.a_eos(T)
-        am,bm,ep,ap, bp = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
+        am, bm = self.mixrule(X,T, a, self.b, 0,*self.mixruleparameter)
         A = am*P/(R*T)**2
         B = bm*P/(R*T)
         return self._Zroot(A,B)
 
     def density(self, X, T, P, state):
-        """ 
+        """
         density(X, T, P, state)
         Method that computes the density of the mixture at X, T, P
 
-        
+
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -146,30 +149,30 @@ class vdwm():
 
         Returns
         -------
-        density: array_like
-            density vector of the mixture in moll/cm3
+        density: float
+            density of the mixture in moll/cm3
         """
         if state == 'L':
             Z=min(self.Zmix(X,T,P))
         elif state == 'V':
             Z=max(self.Zmix(X,T,P))
-        return X*P/(R*T*Z)
-    
+        return P/(R*T*Z)
+
     def logfugef(self, X, T, P, state, v0 = None):
-        """ 
+        """
         logfugef(X, T, P, state)
-        
+
         Method that computes the effective fugacity coefficients  at given
-        composition, temperature and pressure. 
+        composition, temperature and pressure.
 
         Parameters
         ----------
-        
+
         X : array_like, mole fraction vector
         T : absolute temperature in K
         P : pressure in bar
         state : 'L' for liquid phase and 'V' for vapour phase
-        
+
         Returns
         -------
         logfug: array_like
@@ -178,31 +181,33 @@ class vdwm():
             volume of phase, if calculated
         """
         a = self.a_eos(T)
-        am, bm, ep, ap, bp = self.mixrule(X, T, a, self.b, *self.mixruleparameter)
+        am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1, *self.mixruleparameter)
+
         if state == 'V':
-            Z=max(self.Zmix(X,T,P))
+            Z = max(self.Zmix(X,T,P))
         elif state == 'L':
-            Z=min(self.Zmix(X,T,P))
-        
+            Z = min(self.Zmix(X,T,P))
+
         B=(bm*P)/(R*T)
-        
-        logfug=(Z-1)*(bp/bm)-np.log(Z-B)
-        
-        logfug -= B*ep/Z
+        A=(am*P)/(R*T)**2
+
+        logfug = (Z-1)*(bp/bm)-np.log(Z-B)
+        logfug -= A*(ai/am - bp/bm) /Z
+
 
         return logfug, v0
-        
+
     def logfugmix(self, X, T, P, estado, v0 = None):
-        
-        """ 
+
+        """
         logfugmix(X, T, P, state)
-        
+
         Method that computes the mixture fugacity coefficient at given
-        composition, temperature and pressure. 
+        composition, temperature and pressure.
 
         Parameters
         ----------
-        
+
         X : array_like
             mole fraction vector
         T : float
@@ -211,7 +216,7 @@ class vdwm():
             pressure in bar
         state : string
             'L' for liquid phase and 'V' for vapour phase
-        
+
         Returns
         -------
         lofgfug : array_like
@@ -219,120 +224,125 @@ class vdwm():
         """
 
         a = self.a_eos(T)
-        am,bm,ep,ap, bp = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
+        am, bm = self.mixrule(X,T,a,self.b, 0,*self.mixruleparameter)
         if estado == 'V':
             Z=max(self.Zmix(X,T,P))
         elif estado == 'L':
             Z=min(self.Zmix(X,T,P))
-        
+
         B=(bm*P)/(R*T)
         A=(am*P)/(R*T)**2
-        
+
         logfug=Z-1-np.log(Z-B)
         logfug -= A/Z
-        
-        
+
+
         return logfug, v0
-    
+
     def a0ad(self, roa, T):
-        
-        """ 
+
+        """
         a0ad(roa, T)
-        
+
         Method that computes the adimenstional Helmholtz density energy at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         a0ad: float
             adimenstional Helmholtz density energy
         """
-        
+
         ai = self.a_eos(T)
         bi = self.b
         a = ai[0]
         b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
-        
-        am,bm,ep,ap, bp = self.mixrule(X, T, ai, bi, *self.mixruleparameter)
+
+        am, bm = self.mixrule(X, T, ai, bi,0, *self.mixruleparameter)
         Prefa=1*b**2/a
         Tad = R*T*b/a
         ama = am/a
         bma = bm/b
-        
-        a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa/ro)))
+
+        a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa)))
         a0 += -Tad*ro*np.log(1-bma*ro)
-        a0 += -Tad*ro*np.log(Prefa/(Tad*ro))
+        a0 += -Tad*ro*np.log(Prefa/Tad)
         a0 += -ama*ro**2
 
         return a0
-    
+
     def muad(self, roa, T):
-        
-        
-        """ 
+
+
+        """
         muad(roa, T)
-        
+
         Method that computes the adimenstional chemical potential at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         muad : array_like
             adimentional chemical potential vector
         """
-        
-        
+
+
         ai = self.a_eos(T)
         bi = self.b
-        a = ai[0]
-        b = bi[0]
+
         ro = np.sum(roa)
         X = roa/ro
-        
-        am,bm,ep,ap,bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
-        Prefa=1*b**2/a
+
+        am, aip, bm, bp = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
+
+        a = ai[0]
+        b = bi[0]
+
+        ap = aip - am
+
+        Prefa=1.*b**2/a
         Tad = R*T*b/a
         apa = ap/a
         ama = am/a
         bma = bm/b
         bad = bp/b
-        
+
         mui = -Tad*np.log(1-bma*ro)
         mui += -Tad*np.log(Prefa/(Tad*roa))+Tad
         mui += bad*Tad*ro/(1-bma*ro)
         mui -= ro*(apa+ama)
 
         return mui
-    
-    
+
+
     def dOm(self, roa, T, mu, Psat):
-        """ 
+        """
         dOm(roa, T, mu, Psat)
-        
+
         Method that computes the adimenstional Thermodynamic Grand potential at given
         density and temperature.
 
         Parameters
         ----------
-        
+
         roa : array_like
             adimentional density vector
         T : float
@@ -343,49 +353,53 @@ class vdwm():
             adimentional pressure at equilibrium
 
         Returns
-        -------       
+        -------
         dom: float
             Thermodynamic Grand potential
         """
-        
+
         return self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
-        
+
     def lnphi0(self, T, P):
-        
+
         nc = self.nc
         a_puros = self.a_eos(T)
         Ai = a_puros*P/(R*T)**2
         Bi = self.b*P/(R*T)
-        pols = np.array([Bi-1,-3*Bi**2-2*Bi+Ai,(Bi**3+Bi**2-Ai*Bi)])
+        a1 = (self.c1+self.c2-1)*Bi-1
+        a2 = self.c1*self.c2*Bi**2-(self.c1+self.c2)*(Bi**2+Bi)+Ai
+        a3 = -Bi*(self.c1*self.c2*(Bi**2+Bi)+Ai)
+
+        pols = np.array([a1, a2, a3])
         Zs = np.zeros([nc,2])
         for i in range(nc):
             zroot = np.roots(np.hstack([1,pols[:,i]]))
             zroot = zroot[zroot>Bi[i]]
             Zs[i,:]=np.array([max(zroot),min(zroot)])
-    
+
         lnphi = self.logfug(Zs.T,Ai,Bi)
         lnphi = np.amin(lnphi,axis=0)
-    
+
         return lnphi
-    
+
     def beta_sgt(self, beta):
         self.beta = beta
-    
-    
+
+
     def ci(self, T):
         '''
         ci(T)
-        
+
         Method that evaluates the polynomials for the influence parameters used
         in the SGT theory for surface tension calculations.
-        
+
         Parameters
         ----------
         T : float
             absolute temperature in K
 
         Returns
-        -------        
+        -------
         cij: array_like
             matrix of influence parameters with geomtric mixing rule.
         '''
@@ -396,21 +410,21 @@ class vdwm():
             ci[i]=np.polyval(self.cii[i],T)
         self.cij=np.sqrt(np.outer(ci,ci))
         return self.cij
-    
+
     def sgt_adim(self, T):
         '''
         sgt_adim(T)
-        
-        Method that evaluates adimentional factor for temperature, pressure, 
+
+        Method that evaluates adimentional factor for temperature, pressure,
         density, tension and distance for interfacial properties computations with
         SGT.
-        
+
         Parameters
         ----------
         T : absolute temperature in K
-        
+
         Returns
-        -------        
+        -------
         Tfactor : float
             factor to obtain dimentionless temperature (K -> adim)
         Pfactor : float
@@ -421,7 +435,7 @@ class vdwm():
             factor to obtain dimentionless surface tension (mN/m -> adim)
         zfactor : float
             factor to obtain dimentionless distance  (Amstrong -> adim)
-        
+
         '''
         a0 = self.a_eos(T)[0]
         b0 = self.b[0]

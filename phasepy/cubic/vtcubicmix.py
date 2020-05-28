@@ -1,5 +1,3 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from .mixingrules import mixingrule_fcn
@@ -74,6 +72,12 @@ class vtcubicm():
         self.beta = np.zeros([self.nc, self.nc])
         mixingrule_fcn(self, mix, mixrule)
 
+        #Matrix used for second order composition derivatives
+        Ci = self.c
+        self.MatrixCpC = np.add.outer(Ci, Ci)
+        self.MatrixCC = np.outer(Ci, Ci)
+
+
 
     #Cubic EoS methods
     def a_eos(self,T):
@@ -107,7 +111,7 @@ class vtcubicm():
         Zpol=[1,a1,a2,a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
-        Zroots = Zroots[Zroots>(B - C)]
+        Zroots = Zroots[Zroots> (B - C)]
         return Zroots
 
     def Zmix(self, X, T, P):
@@ -134,14 +138,60 @@ class vtcubicm():
         '''
         a = self.a_eos(T)
         c = self.c
-        am, bm, ep, ap, bp = self.mixrule(X,T, a, self.b,*self.mixruleparameter)
+        am, bm = self.mixrule(X,T, a, self.b, 0, *self.mixruleparameter)
         cm = np.dot(X, c)
         RT  = R * T
         A = am*P/RT**2
         B = bm*P/RT
         C = cm*P/RT
 
-        return self._Zroot(A,B,C)
+        return self._Zroot(A, B, C)
+
+    def pressure(self, X, v, T):
+        """
+        pressure(X, v, T)
+
+        Method that computes the pressure at given composition X, volume (cm3/mol)
+        and temperature T (in K)
+
+        Parameters
+        ----------
+        X : array_like
+            mole fraction vector
+        v : float
+            molar volume in cm3/mol
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------
+        P : float
+            pressure in bar
+        """
+        b = self.b
+        a = self.a_eos(T)
+        am, bm = self.mixrule(X, T, a, self.b, 0,*self.mixruleparameter)
+        cm = np.dot(X, self.c)
+        P = R*T/(v + cm - bm) - am / ((v+ cm +self.c1*bm) * (v+ cm +self.c2*bm))
+        return P
+
+    #Auxiliar method that computes volume roots
+    def _volume_solver(self, P, T, D, B, C, state):
+
+        RT = R*T
+        Dr = D*P/RT**2
+        Br = B*P/RT
+        Cr = C*P/RT
+
+        if state == 'L':
+            Z = np.min(self._Zroot(Dr, Br, Cr))
+        elif state == 'V':
+            Z = np.max(self._Zroot(Dr, Br, Cr))
+        else:
+            raise Exception('Valid states: L for liquids and V for vapor ')
+        V = (R*T*Z)/P
+
+        return V
 
     def density(self, X, T, P, state):
         """
@@ -163,14 +213,22 @@ class vtcubicm():
 
         Returns
         -------
-        density: array_like
+        density: float
             density vector of the mixture in mol/cm3
         """
-        if state == 'L':
-            Z=min(self.Zmix(X,T,P))
-        elif state == 'V':
-            Z=max(self.Zmix(X,T,P))
-        return P/(R*T*Z)
+
+        b = self.b
+        a = self.a_eos(T)
+        c = self.c
+        D, B = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
+        C = np.dot(X, c)
+
+        V = self._volume_solver(P, T, D, B, C, state)
+
+        rho = 1. / V
+        return rho
+
+
 
     def logfugef(self, X, T, P, state, v0 = None):
         """
@@ -197,29 +255,158 @@ class vtcubicm():
         c1 = self.c1
         c2 = self.c2
 
-        b = self.b
-        a = self.a_eos(T)
-        c = self.c
-        cm = np.dot(X, c)
+        bi = self.b
+        ai = self.a_eos(T)
+        Ci = self.c
+        C = np.dot(X, Ci)
 
-        am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
-
-        if state == 'V':
-            Z=max(self.Zmix(X,T,P))
-        elif state == 'L':
-            Z=min(self.Zmix(X,T,P))
+        #am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
+        D, Di, B, Bi = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
+        V = self._volume_solver(P, T, D, B, C, state)
 
         RT = R * T
-        v = (RT*Z)/P
-        B = bm * P/RT
-        C = cm*P/RT
-        Cp = c * P/RT
+        Z = P * V / (R*T)
 
-        logfug = (Z + C - 1) * (bp/bm) - np.log(Z + C - B) - Cp
-        logfug -= (ep/(c2-c1))*np.log((Z+C+c2*B)/(Z+C+c1*B))
+        D_T = D/T
+        VCc1B = V + C + c1 * B
+        VCc2B = V + C + c2 * B
+        VCB = V + C - B
 
+        g = np.log(VCB / V)
+        f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
 
-        return logfug, v
+        gb = -1./VCB
+        gc = -gb
+
+        fv = -1./(R*VCc1B*VCc2B)
+        fb = - (f + (V+C) * fv)/B
+        fc = fv
+
+        Fn = -g
+        Fb = -gb - D_T * fb
+        Fc = - gc - D_T * fc
+        Fd = - f / T
+
+        dF_dn = Fn + Fb * Bi + Fc * Ci + Fd * Di
+        logfug = dF_dn - np.log(Z)
+
+        return logfug, V
+
+    def dlogfugef(self, X, T, P, state, v0 = None):
+        """
+        dlogfugef(X, T, P, state)
+
+        Method that computes the effective fugacity coefficients and its composition
+        derivatives at given composition, temperature and pressure.
+
+        Parameters
+        ----------
+
+        X : array_like, mole fraction vector
+        T : absolute temperature in K
+        P : pressure in bar
+        state : 'L' for liquid phase and 'V' for vapour phase
+
+        Returns
+        -------
+        logfug: array_like
+            effective fugacity coefficients
+        dlogfug: array_like
+            derivatives of effective fugacity coefficients
+        v0 : float
+            volume of phase, if calculated
+        """
+        c1 = self.c1
+        c2 = self.c2
+
+        bi = self.b
+        ai = self.a_eos(T)
+        Ci = self.c
+        C = np.dot(X, Ci)
+        Cij = 0.
+
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2, *self.mixruleparameter)
+        V = self._volume_solver(P, T, D, B, C, state)
+
+        RT = R * T
+        Z = P * V / RT
+
+        D_T = D/T
+
+        VCc1B = V + C + c1 * B
+        VCc2B = V + C + c2 * B
+        VCB = V + C - B
+        g = np.log(VCB / V)
+        f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
+
+        gb = -1./VCB
+        gc = -gb
+        gv = -1./V - gb
+
+        fv = -1./(R*VCc1B*VCc2B)
+        fb = - (f + (V+C) * fv)/B
+        fc = fv
+
+        gbv = gb**2
+        gcv = - gbv
+        gvv = 1./V**2 - gbv
+        gbb = - gbv
+        gcc = - gbv
+        gbc = gbv
+
+        fvv = (1./(VCc1B*VCc2B**2) + 1./(VCc1B**2*VCc2B))/R
+        fcv = fvv
+        fcc = fvv
+        fbv = - (2*fv + (V+C) * fvv)/B
+        fbb =  - (2*fb + (V+C) * fbv)/B
+        fbc = fbv
+
+        Fn = - g
+        Fb = - gb - D_T * fb
+        Fd = - f / T
+        Fc = - gc - D_T * fc
+
+        Fnv = -gv
+        Fnb = -gb
+        Fnc = -gc
+
+        Fbv = -gbv - D_T * fbv
+        Fcv = -gcv - D_T * fcv
+        Fvv = -gvv - D_T * fvv
+        Fdv = -fv/T
+
+        Fbd = -fb/T
+        Fbb = -gbb - D_T * fbb
+        Fbc = -gbc - D_T * fbc
+        Fdc = -fc/T
+        Fcc = -gcc - D_T * fcc
+
+        dF_dn = Fn + Fb * Bi + Fc * Ci + Fd * Di
+        logfug = dF_dn - np.log(Z)
+
+        MatrixBD = np.outer(Bi, Di)
+        MatrixBD += MatrixBD.T
+        MatrixDC = np.outer(Di, Ci)
+        MatrixDC += MatrixDC.T
+
+        MatrixBpB = np.add.outer(Bi, Bi)
+        MatrixBB =  np.outer(Bi, Bi)
+        MatrixBC = np.outer(Bi, Ci)
+        MatrixBC += MatrixBC.T
+
+        dF_dnij = Fnb * MatrixBpB + Fbd * MatrixBD
+        dF_dnij += Fb * Bij + Fbb * MatrixBB + Fd * Dij
+        dF_dnij += Fnc * self.MatrixCpC +  Fbc * MatrixBC
+        dF_dnij += Fdc * MatrixDC + Fc * Cij + Fcc * self.MatrixCC
+
+        d2F_dv = Fvv
+        dF_dndv = Fnv + Fbv * Bi + Fdv * Di + Fcv * Ci
+        dP_dV = - RT * d2F_dv - RT / V**2
+        dP_dn = - RT * dF_dndv + RT / V
+
+        dlogfugef = dF_dnij + 1. + np.outer(dP_dn, dP_dn) / (R * T * dP_dV)
+
+        return logfug, dlogfugef, V
 
     def logfugmix(self, X, T, P, state, v0 = None):
 
@@ -255,15 +442,14 @@ class vtcubicm():
         c = self.c
         cm = np.dot(X, c)
 
-        am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
-
-        if state == 'V':
-            Z=max(self.Zmix(X,T,P))
-        elif state == 'L':
-            Z=min(self.Zmix(X,T,P))
+        D, B = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
+        V = self._volume_solver(P, T, D, B, cm, state)
 
         RT = R * T
-        v = (RT*Z)/P
+        Z = P * V / (R*T)
+        am = D
+        bm = B
+
         A = am * P / RT**2
         B = bm * P/RT
         C = cm * P/RT
@@ -271,7 +457,7 @@ class vtcubicm():
         logfug = Z - 1 - np.log(Z + C -B)
         logfug -= (A/(c2-c1)/B)*np.log((Z + C +c2*B)/(Z + C +c1*B))
 
-        return logfug, v
+        return logfug, V
 
     def a0ad(self, roa, T):
 
@@ -305,24 +491,29 @@ class vtcubicm():
         ro = np.sum(roa)
         X = roa/ro
 
+        C = np.dot(X, ci)
+        D, B = self.mixrule(X, T, ai, bi, 0, *self.mixruleparameter)
 
+        V = b/ro
+        D_T = D/T
+        VCc1B = V + C + c1 * B
+        VCc2B = V + C + c2 * B
+        VCB = V + C - B
 
-        am, bm, ep, ap, bp = self.mixrule(X, T, ai, bi, *self.mixruleparameter)
-        cm = np.dot(X, ci)
-        Prefa=1*b**2/a
-        Tad = R*T*b/a
-        ama = am/a
-        bma = bm/b
-        cma = cm/b
+        g = np.log(VCB / V)
+        f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
 
-        sum0 = 1-bma*ro + cma*ro
-        sum1 = 1+c1*ro*bma+ro*cma
-        sum2 = 1+c2*ro*bma+ro*cma
+        F = - g - D_T * f
 
-        a0 = np.sum(np.nan_to_num(Tad*roa*np.log(X)))
-        a0 += -Tad*ro*np.log(sum0)
-        a0 += -Tad*ro*np.log(Prefa/(Tad*ro))
-        a0 += -ama*ro*np.log(sum2/sum1)/((c2-c1)*bma)
+        RT_V = R*T/V
+        adfactor = b**2/a
+
+        F = - g - D * f / T
+        a0 = F #A residual
+        a0 += np.dot(X, np.nan_to_num(np.log(X)))
+        a0 += np.log(RT_V)
+        a0 *= RT_V
+        a0 *= adfactor
 
         return a0
 
@@ -352,36 +543,173 @@ class vtcubicm():
         c2 = self.c2
         ai = self.a_eos(T)
         bi = self.b
-        ci = self.c
         a = ai[0]
         b = bi[0]
         ro = np.sum(roa)
         X = roa/ro
 
-        am, bm, ep, ap, bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
-        cm = np.dot(X, ci)
-        Prefa=1*b**2/a
-        Tad = R*T*b/a
-        apa = ap/a
-        ama = am/a
-        bma = bm/b
-        bad = bp/b
-        cma = cm/b
-        cad = ci/b
+        #am, bm, ep, ap, bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
+        Ci = self.c
+        C = np.dot(X, Ci)
+        D, Di, B, Bi = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
 
-        sum0 = 1-bma*ro + cma*ro
-        sum1 = 1+c1*ro*bma+ro*cma
-        sum2 = 1+c2*ro*bma+ro*cma
+        adfactor = b/a
+        V = b/ro
+        RT = R*T
+        RT_V = RT/V
 
-        mui = -Tad*np.log(Prefa/(Tad*roa))+Tad
-        mui -= Tad*np.log(sum0)
-        mui += (bad - cad)*Tad*ro/(sum0)
+        D_T = D/T
+        VCc1B = V + C + c1 * B
+        VCc2B = V + C + c2 * B
+        VCB = V + C - B
 
-        mui -= (ama+apa) * np.log(sum2/sum1) / ((c2-c1)*bma)
-        mui += bad*ama * np.log(sum2/sum1) / ((c2-c1)*bma**2)
-        mui -= ama*ro*((1+cma*ro)*bad - bma*ro*cad) / (sum2*sum1*bma)
+        g = np.log(VCB / V)
+        f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
+
+        gb = -1./VCB
+        gc = -gb
+
+        fv = -1./(R*VCc1B*VCc2B)
+        fb = - (f + (V+C) * fv)/B
+        fc = fv
+
+        Fn = -g
+        Fb = -gb - D_T * fb
+        Fc = - gc - D_T * fc
+        Fd = - f / T
+
+        dF_dn = Fn + Fb * Bi + Fc * Ci + Fd * Di
+        mui = np.log(RT_V) + np.log(X) + 1.
+        mui += dF_dn
+        mui *= RT
+        mui *= adfactor
 
         return mui
+
+    def dmuad(self, roa, T):
+
+        """
+        muad(roa, T)
+
+        Method that computes the adimenstional chemical potential and its derivatives
+        at given density and temperature.
+
+        Parameters
+        ----------
+
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------
+        muad : array_like
+            adimentional chemical potential vector
+        muad : array_like
+            adimentional derivatives of chemical potential vector
+        """
+
+        c1 = self.c1
+        c2 = self.c2
+        ai = self.a_eos(T)
+        bi = self.b
+        a = ai[0]
+        b = bi[0]
+        ro = np.sum(roa)
+        X = roa/ro
+
+        #am, bm, ep, ap, bp = self.mixrule(X,T, ai, bi,*self.mixruleparameter)
+        Ci = self.c
+        Cij = 0
+        C = np.dot(X, Ci)
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2, *self.mixruleparameter)
+
+        adfactor = b/a
+        V = b/ro
+        RT = R*T
+        RT_V = RT/V
+
+        D_T = D/T
+        VCc1B = V + C + c1 * B
+        VCc2B = V + C + c2 * B
+        VCB = V + C - B
+
+        g = np.log(VCB / V)
+        f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
+
+        gb = -1./VCB
+        gc = -gb
+        gv = -1./V - gb
+
+        fv = -1./(R*VCc1B*VCc2B)
+        fb = - (f + (V+C) * fv)/B
+        fc = fv
+
+        gbv = gb**2
+        gcv = - gbv
+        gvv = 1./V**2 - gbv
+        gbb = - gbv
+        gcc = - gbv
+        gbc = gbv
+
+        fvv = (1./(VCc1B*VCc2B**2) + 1./(VCc1B**2*VCc2B))/R
+        fcv = fvv
+        fcc = fvv
+        fbv = - (2*fv + (V+C) * fvv)/B
+        fbb =  - (2*fb + (V+C) * fbv)/B
+        fbc = fbv
+
+        Fn = - g
+        Fb = - gb - D_T * fb
+        Fd = - f / T
+        Fc = - gc - D_T * fc
+
+        Fnv = -gv
+        Fnb = -gb
+        Fnc = -gc
+
+        Fbv = -gbv - D_T * fbv
+        Fcv = -gcv - D_T * fcv
+        Fvv = -gvv - D_T * fvv
+        Fdv = -fv/T
+
+        Fbd = -fb/T
+        Fbb = -gbb - D_T * fbb
+        Fbc = -gbc - D_T * fbc
+        Fdc = -fc/T
+        Fcc = -gcc - D_T * fcc
+
+        MatrixBD = np.outer(Bi, Di)
+        MatrixBD += MatrixBD.T
+        MatrixDC = np.outer(Di, Ci)
+        MatrixDC += MatrixDC.T
+
+        MatrixBpB = np.add.outer(Bi, Bi)
+        MatrixBB =  np.outer(Bi, Bi)
+        MatrixBC = np.outer(Bi, Ci)
+        MatrixBC += MatrixBC.T
+
+        dF_dnij = Fnb * MatrixBpB + Fbd * MatrixBD
+        dF_dnij += Fb * Bij + Fbb * MatrixBB + Fd * Dij
+        dF_dnij += Fnc * self.MatrixCpC +  Fbc * MatrixBC
+        dF_dnij += Fdc * MatrixDC + Fc * Cij + Fcc * self.MatrixCC
+
+        dF_dn = Fn + Fb * Bi + Fc * Ci + Fd * Di
+
+        mui = np.log(RT_V) + np.log(X) + 1.
+        mui += dF_dn
+        mui *= RT
+        mui *= adfactor
+
+        dx = (np.eye(self.nc) - X)/ro
+        dmui = dF_dnij / ro
+        dmui += 1./ro
+        dmui += dx/X
+        dmui *= RT
+        dmui *= adfactor
+
+        return mui, dmui
 
 
     def dOm(self, roa, T, mu, Psat):
@@ -417,15 +745,22 @@ class vtcubicm():
         a_puros = self.a_eos(T)
         Ai = a_puros*P/(R*T)**2
         Bi = self.b*P/(R*T)
-        pols = np.array([Bi-1,-3*Bi**2-2*Bi+Ai,(Bi**3+Bi**2-Ai*Bi)])
+        Ci = sel.c*P/(R*T)
+
+        a1 = (self.c1+self.c2-1)*B-1 + 3 * C
+        a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
+        a2 += 3*C**2 + 2*C*(-1 + B*(-1 + self.c1 + self.c2))
+        a3 = A*(-B + C) + (-1-B+C)* (C +self.c1 * B)*(C+self.c2*B)
+        pols = np.array([a1, a2, a3])
         Zs = np.zeros([nc,2])
+
         for i in range(nc):
             zroot = np.roots(np.hstack([1,pols[:,i]]))
             zroot = zroot[zroot>Bi[i]]
             Zs[i,:]=np.array([max(zroot),min(zroot)])
 
-        logphi=Zs - 1 - np.log(Zs.T-Bi)
-        logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T+self.c2*Bi)/(Zs.T+self.c1*Bi))
+        logphi =  Zs - 1 - np.log(Zs.T + Ci - Bi)
+        logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T + Ci +self.c2*Bi)/(Zs.T+ Ci +self.c1*Bi))
         logphi = np.amin(logphi,axis=0)
 
         return logphi

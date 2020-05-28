@@ -2,12 +2,11 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..constants import R
 
-
-#Quadratic mixrule      
-def qmr(X, T, ai, bi, Kij):
+#Quadratic mixrule
+def qmr(X, T, ai, bi, order, Kij):
     '''
     Quadratic mixrule QMR
-    
+
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
@@ -16,25 +15,37 @@ def qmr(X, T, ai, bi, Kij):
     bi :  pure component cohesive term in cm3/mol
     Kij : matrix of interaction parameters
 
-    
+
     Out :
-    am (mixture a term)
-    bm (mixture b term)
-    ep (e partial, e = a/(bRT) )
-    ap (a partial molar)
-    bp (b partial molar)
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
     '''
 
     aij=np.sqrt(np.outer(ai,ai))*(1-Kij)
-    
-    ax = aij*X
+    ax = aij * X
     #atractive term of mixture
-    am = np.sum(ax.T*X)
-    #atrative partial term 
-    ap = 2*np.sum(ax, axis=1) - am
-    
-    bm = np.dot(bi,X)
-    em = am/(bm*R*T)
-    ep = em*(1+ap/am-bi/bm)
-    
-    return am, bm, ep, ap, bi
+    D = np.sum(ax.T*X)
+    #mixture covolume
+    B = np.dot(bi, X)
+
+
+    if order == 0:
+        mixparameters = D, B
+    elif order == 1:
+        Di = 2*np.sum(ax, axis=1)
+        Bi = bi
+        mixparameters = D, Di, B, Bi
+    elif order == 2:
+        Di = 2*np.sum(ax, axis=1)
+        Dij = 2*aij
+        Bi = bi
+        Bij = 0.
+        mixparameters = D, Di, Dij, B, Bi, Bij
+    else:
+        raise Exception('Derivative order not valid')
+
+    return mixparameters

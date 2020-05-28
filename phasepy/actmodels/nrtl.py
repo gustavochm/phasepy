@@ -108,7 +108,8 @@ def dnrtl(X, T, alpha, g, g1):
 
 def dnrtlter(X,T, alpha,g, g1, D):
     '''
-    NRTL activity coefficient model.
+    Derivatives of NRTL activity coefficient model with additional ternary
+    contribution.
 
     Parameters
     ----------
