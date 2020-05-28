@@ -23,6 +23,40 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     fo = ter1 - dmu
     return fo.flatten()
 
+def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
+    rointer = rointer.reshape([nc, n])
+    dmu = np.zeros([n, nc])
+    dmu = np.zeros([n, nc])
+    d2mu = np.zeros([n, nc, nc])
+
+    for i in range(n):
+        dmu[i], d2mu[i] = model.dmuad(rointer[:,i], T)
+    dmu -= mu0
+    dmu = dmu.T
+    d2mu = d2mu.T
+
+    dro2 = np.matmul(rointer,Binter.T)
+    dro2 += dro20
+    dro2 += dro21
+
+    ter1 = np.matmul(cij,dro2)
+    fo = ter1 - dmu
+
+    eye = np.eye(n, n)
+    dml = []
+    for i in range(nc):
+        auxlist = []
+        for j in range(nc):
+            auxlist.append(eye * d2mu[i, j])
+        dml.append(auxlist)
+    jac_dmu = np.block(dml)
+
+
+    jacter1 = np.multiply.outer(cij, Binter.T).reshape(nc, nc*n, n)
+
+    fo_jac = np.hstack(jacter1).T - jac_dmu
+    return fo.flatten(), fo_jac
+
 
 def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z0 = 10., dz = 1.5, itmax = 10, n = 20, full_output = False,
@@ -121,6 +155,13 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         else:
             raise Exception('Shape of initial value must be nc x n')
 
+    if model.secondordersgt:
+        fobj = dfobj_z_newton
+        jac = True
+    else:
+        fobj = fobj_z_newton
+        jac = None
+
     error = 1.
     it = 0
     ten_old = 0.
@@ -143,12 +184,12 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         dro10 = np.outer(rho1a, A0) #cte
         dro11 = np.outer(rho2a, A1) #cte
 
-        sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
+        sol = root(fobj, rointer.flatten(), method = 'lm', jac = jac,
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                    options = solver_opt)
 
         if sol.status == 5:
-            sol = root(fobj_z_newton, sol.x, method = 'lm',
+            sol = root(fobj, sol.x, method = 'lm', jac = jac,
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                    options = solver_opt)
 

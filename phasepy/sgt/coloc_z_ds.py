@@ -25,6 +25,39 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, m
 
     return fo.flatten()
 
+def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, model):
+    rointer = rointer.reshape([nc, n])
+    dmu = np.zeros([n, nc])
+    dmu = np.zeros([n, nc])
+    d2mu = np.zeros([n, nc, nc])
+
+    for i in range(n):
+        dmu[i], d2mu[i] = model.dmuad(rointer[:,i], T)
+    dmu -= mu0
+    dmu = dmu.T
+    d2mu = d2mu.T
+
+    dro2 = np.matmul(rointer,Binter.T)
+    dro2 += dro20
+    dro2 += dro21
+
+    ter1 = np.matmul(cij, dro2)
+    fo = (rointer - ro_1) + ds*(dmu - ter1)
+
+    eye = np.eye(n, n)
+    dml = []
+    for i in range(nc):
+        auxlist = []
+        for j in range(nc):
+            auxlist.append(eye * d2mu[i, j])
+        dml.append(auxlist)
+    jac_dmu = np.block(dml)
+
+    jacter1 = np.multiply.outer(cij, Binter.T).reshape(nc, nc*n, n)
+
+    fo_jac = np.eye(n*nc) + ds * (jac_dmu - np.hstack(jacter1).T)
+    return fo.flatten(), fo_jac
+
 def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
             z = 20., n = 20, ds = 0.1, itmax = 50, rho_tol = 1e-3,
             full_output = False, solver_opt = None):
@@ -150,10 +183,15 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     dro10 = np.outer(rho1a, A0) #cte
     dro11 = np.outer(rho2a, A1) #cte
 
-
+    if model.secondordersgt:
+        fobj = dfobj_z_newton
+        jac = True
+    else:
+        fobj = fobj_z_newton
+        jac = None
 
     for i in range(itmax):
-        sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
+        sol = root(fobj, rointer.flatten(), method = 'lm', jac = jac,
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, ro_1, ds, nc, model),
                    options = solver_opt)
 
