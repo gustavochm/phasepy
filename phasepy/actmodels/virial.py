@@ -6,7 +6,7 @@ def Virialmix(mix):
     '''
     VirialMix creates the needed arrays to work with multicomponent
     virial eos
-    
+
     Parameters
     ----------
     mix: object
@@ -22,7 +22,7 @@ def Virialmix(mix):
         square array of critical compresibility factor
     wij: array_like
         square array of acentric factor
-        
+
     '''
     Tc = np.asarray(mix.Tc)
     Pc = np.asarray(mix.Pc)
@@ -38,14 +38,14 @@ def Virialmix(mix):
     Zij = np.add.outer(Zc, Zc)/2
     Pij = Zij*R*Tij/vij
     np.fill_diagonal(Pij, Pc)
-    
+
     return Tij,Pij,Zij,wij
 
 def Tsonopoulos(T, Tij, Pij, wij):
     '''
-    Computes the virial coefficient for a mixture at given 
+    Computes the virial coefficient for a mixture at given
     temperature with Tsonopoulos correlation
-    
+
     Parameters
     ----------
     T : float
@@ -60,7 +60,7 @@ def Tsonopoulos(T, Tij, Pij, wij):
     Returns
     -------
     Bij: array_like
-        square array of virial coefficient        
+        square array of virial coefficient
     '''
     Tr=T/Tij
     B0=0.1145-0.330/Tr-0.1385/Tr**2-0.0121/Tr**3-0.000607/Tr**8
@@ -70,9 +70,9 @@ def Tsonopoulos(T, Tij, Pij, wij):
 
 def Abbott(T, Tij, Pij, wij):
     '''
-    Computes the virial coefficient for a mixture at given 
+    Computes the virial coefficient for a mixture at given
     temperature with Abbott correlation
-    
+
     Parameters
     ----------
     T : float
@@ -87,7 +87,7 @@ def Abbott(T, Tij, Pij, wij):
     Returns
     -------
     Bij: array_like
-        square array of virial coefficient        
+        square array of virial coefficient
     '''
     Tr=T/Tij
     B0=0.083-0.422/Tr**1.6
@@ -97,9 +97,9 @@ def Abbott(T, Tij, Pij, wij):
 
 def ideal_gas(T, Tij, Pij, wij):
     '''
-    Computes the virial coefficient for a mixture at given 
+    Computes the virial coefficient for a mixture at given
     temperature for an ideal gas (Bij = 0)
-    
+
     Parameters
     ----------
     T : float
@@ -114,7 +114,7 @@ def ideal_gas(T, Tij, Pij, wij):
     Returns
     -------
     Bij: array_like
-        square array of virial coefficient        
+        square array of virial coefficient
     '''
     Bij = np.zeros_like(Tij)
     return Bij
@@ -123,7 +123,7 @@ def virial(x, T, Tij, Pij, wij, virialmodel):
     '''
     Computes the virial coefficient and partial virial coefficient for a mixture
     at given temperature and composition.
-    
+
     Parameters
     ----------
     x: array_like
@@ -135,7 +135,7 @@ def virial(x, T, Tij, Pij, wij, virialmodel):
     Pij: array_like
         square array of critical pressures
     wij: array_like
-        square array of acentric 
+        square array of acentric
     virialmodel : function
         Function that computes the virial coefficient.
 
@@ -146,13 +146,13 @@ def virial(x, T, Tij, Pij, wij, virialmodel):
     Bp : array_like
         array of partial virial coefficients
     '''
-    
+
     Bij = virialmodel(T, Tij, Pij, wij)
-    
+
     Bx = Bij*x
     #virial de mezcla
     Bm = np.sum(Bx.T*x)
     #virial parcial
     Bp = 2*np.sum(Bx, axis=1) - Bm
-    
-    return np.diag(Bij), Bp
+
+    return Bij, Bp
