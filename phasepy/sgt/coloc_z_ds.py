@@ -8,7 +8,7 @@ from .cijmix_cy import cmix_cy
 
 
 def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, model):
-    rointer = rointer.reshape([nc, n])
+    rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
 
     for i in range(n):
@@ -26,7 +26,8 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, m
     return fo.flatten()
 
 def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, model):
-    rointer = rointer.reshape([nc, n])
+    index0 = rointer < 0
+    rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
     dmu = np.zeros([n, nc])
     d2mu = np.zeros([n, nc, nc])
@@ -56,6 +57,7 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, ro_1, ds, nc, 
     jacter1 = np.multiply.outer(cij, Binter.T).reshape(nc, nc*n, n)
 
     fo_jac = np.eye(n*nc) + ds * (jac_dmu - np.hstack(jacter1).T)
+    fo_jac[:, index0] *= -1
     return fo.flatten(), fo_jac
 
 def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
@@ -144,21 +146,18 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     #Initial profiles
     if rho0 == 'linear':
         rointer = (pfl.T).copy()
-
     elif rho0 == 'hyperbolic':
         #Hyperbolic profile
         inter = 8*roots - 4
         thb = np.tanh(2*inter)
         pft = np.outer(thb,(rho2a - rho1a))/2 + (rho1a + rho2a)/2
         rointer = pft.T
-
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
         _ro0 = rho0.rho
         z = _z0[-1]
         rointer = interp1d(_z0, _ro0)(roots * z)
         rointer *= rofactor
-
     elif isinstance(rho0,  np.ndarray):
         #Check dimensiones
         if rho0.shape[0] == nc and rho0.shape[1] == n:
@@ -190,13 +189,15 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         fobj = fobj_z_newton
         jac = None
 
+    s = 0.
     for i in range(itmax):
+        s += ds
         sol = root(fobj, rointer.flatten(), method = 'lm', jac = jac,
                    args = (Binter, dro20, dro21, mu0, Tsat, cij, n, ro_1, ds, nc, model),
                    options = solver_opt)
 
         rointer = sol.x
-        rointer = rointer.reshape([nc, n])
+        rointer = np.abs(rointer.reshape([nc, n]))
         error = np.linalg.norm(rointer - ro_1)
         if error < rho_tol: break
         ro_1 = rointer.copy()
@@ -224,7 +225,8 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
         ro /= rofactor
         fun_error = np.linalg.norm(sol.fun)/n/nc
         dictresult = {'tension' : ten, 'rho': ro, 'z' : znodes,
-        'GPT' : np.hstack([0, dom, 0]), 'error':error, 'fun_error' : fun_error }
+        'GPT' : np.hstack([0, dom, 0]), 'rho_error':error, 'fun_error' : fun_error,
+         'iter' : i, 'time' : s, 'ds' : ds }
         out = TensionResult(dictresult)
         return out
 

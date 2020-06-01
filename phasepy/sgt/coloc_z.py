@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 from .cijmix_cy import cmix_cy
 
 def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
-    rointer = rointer.reshape([nc, n])
+    rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
 
     for i in range(n):
@@ -24,7 +24,9 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     return fo.flatten()
 
 def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
-    rointer = rointer.reshape([nc, n])
+
+    index0 = rointer < 0
+    rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
     dmu = np.zeros([n, nc])
     d2mu = np.zeros([n, nc, nc])
@@ -51,10 +53,10 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
         dml.append(auxlist)
     jac_dmu = np.block(dml)
 
-
     jacter1 = np.multiply.outer(cij, Binter.T).reshape(nc, nc*n, n)
-
     fo_jac = np.hstack(jacter1).T - jac_dmu
+    fo_jac[:, index0]  *=  -1
+
     return fo.flatten(), fo_jac
 
 
@@ -194,7 +196,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
                    options = solver_opt)
 
         rointer = sol.x
-        rointer = rointer.reshape([nc, n])
+        rointer = np.abs(rointer.reshape([nc, n]))
 
         dro = np.matmul(rointer,Ainter.T)
         dro += dro10
@@ -297,7 +299,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     #Coefficent matrix for derivatives
     A, B = colocAB(rootsf)
 
-        #Initial profiles
+    #Initial profiles
     if rho0 == 'linear':
         #Linear Profile
         pend = (rho2a - rho1a)
@@ -340,17 +342,24 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0 = 'linear',
     dro10 = np.outer(rho1a, A0) #cte
     dro11 = np.outer(rho2a, A1) #cte
 
-    sol = root(fobj_z_newton, rointer.flatten(), method = 'lm',
+    if model.secondordersgt:
+        fobj = dfobj_z_newton
+        jac = True
+    else:
+        fobj = fobj_z_newton
+        jac = None
+
+    sol = root(fobj, rointer.flatten(), method = 'lm', jac = jac,
                args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                options = solver_opt)
 
     if sol.status == 5:
-        sol = root(fobj_z_newton, sol.x, method = 'lm',
-               args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
-               options = solver_opt)
+        sol = root(fobj, sol.x, method = 'lm', jac = jac,
+                   args = (Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
+                   options = solver_opt)
 
     rointer = sol.x
-    rointer = rointer.reshape([nc, n])
+    rointer = np.abs(rointer.reshape([nc, n]))
 
     dro = np.matmul(rointer,Ainter.T)
     dro += dro10
