@@ -15,7 +15,7 @@ Before creating a model object, it is necessary to supply the interactions param
 coefficient model. The mixture object is designed to store these parameters, as for example for the NRTL model.
 
 
->>> from phasepy import virialgama
+>>> from phasepy import virialgamma
 >>> mix = mixture(ethanol, water)
 >>> alpha = np.array([[0.       , 0.5597628],
 ...       [0.5597628, 0.       ]])
@@ -26,7 +26,7 @@ coefficient model. The mixture object is designed to store these parameters, as 
 >>> #Adding activity model parameters
 >>> mix.NRTL(alpha, g, g1)
 >>> #Creating Model
->>> model = virialgama(mix, virialmodel = 'Abbott', actmodel = 'nrtl' )
+>>> model = virialgamma(mix, virialmodel = 'Abbott', actmodel = 'nrtl' )
 >>> #Model parameters are saved in actmodelp attribute
 >>> parameters = model.actmodelp
 >>> np.all(parameters[0] == alpha), np.all(parameters[1] == g), np.all(parameters[2] == g1)
@@ -39,7 +39,7 @@ If you would like to use fitted parameters of a Redlich Kister expansion you can
 >>> #Parameters are calculated as C = C0 + C1/T
 >>> mix.rk(C0, C1)
 >>> #Creating model
->>> model = virialgama(mix, actmodel = 'rk' )
+>>> model = virialgamma(mix, actmodel = 'rk' )
 >>> #Readimg parameters
 >>> parameters = model.actmodelp
 >>> np.all(parameters[0] == C0), np.all(parameters[1] == C1)
@@ -50,9 +50,9 @@ If we would like to use the group contribution model UNIFAC with an ideal gas, t
 >>> #Reading UNIFAC database
 >>> mix.unifac()
 #Creating Model
->>> model = virialgama(mix, virialmodel = 'ideal_gas', actmodel = 'unifac')
+>>> model = virialgamma(mix, virialmodel = 'ideal_gas', actmodel = 'unifac')
 
 .. automodule:: phasepy.actmodels.virialgama
-    :members: virialgama
+    :members: virialgamma
     :undoc-members:
     :show-inheritance:

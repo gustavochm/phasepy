@@ -28,7 +28,6 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     index0 = rointer < 0
     rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
-    dmu = np.zeros([n, nc])
     d2mu = np.zeros([n, nc, nc])
 
     for i in range(n):

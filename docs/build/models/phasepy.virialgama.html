@@ -189,7 +189,7 @@ model are available.</p>
 </div>
 <p>Before creating a model object, it is necessary to supply the interactions parameters of the activity
 coefficient model. The mixture object is designed to store these parameters, as for example for the NRTL model.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">virialgama</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">phasepy</span> <span class="kn">import</span> <span class="n">virialgamma</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span> <span class="o">=</span> <span class="n">mixture</span><span class="p">(</span><span class="n">ethanol</span><span class="p">,</span> <span class="n">water</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span>       <span class="p">,</span> <span class="mf">0.5597628</span><span class="p">],</span>
 <span class="gp">... </span>      <span class="p">[</span><span class="mf">0.5597628</span><span class="p">,</span> <span class="mf">0.</span>       <span class="p">]])</span>
@@ -200,7 +200,7 @@ coefficient model. The mixture object is designed to store these parameters, as 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Adding activity model parameters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">NRTL</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">g1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating Model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;Abbott&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;nrtl&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgamma</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;Abbott&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;nrtl&#39;</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Model parameters are saved in actmodelp attribute</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">alpha</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">g1</span><span class="p">)</span>
@@ -213,7 +213,7 @@ coefficient model. The mixture object is designed to store these parameters, as 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Parameters are calculated as C = C0 + C1/T</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">rk</span><span class="p">(</span><span class="n">C0</span><span class="p">,</span> <span class="n">C1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Creating model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;rk&#39;</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgamma</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;rk&#39;</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#Readimg parameters</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parameters</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">actmodelp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">C0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">C1</span><span class="p">)</span>
@@ -224,12 +224,12 @@ coefficient model. The mixture object is designed to store these parameters, as 
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1">#Reading UNIFAC database</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mix</span><span class="o">.</span><span class="n">unifac</span><span class="p">()</span>
 <span class="go">#Creating Model</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgama</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;ideal_gas&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;unifac&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">virialgamma</span><span class="p">(</span><span class="n">mix</span><span class="p">,</span> <span class="n">virialmodel</span> <span class="o">=</span> <span class="s1">&#39;ideal_gas&#39;</span><span class="p">,</span> <span class="n">actmodel</span> <span class="o">=</span> <span class="s1">&#39;unifac&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <span class="target" id="module-phasepy.actmodels.virialgama"></span><dl class="py class">
-<dt id="phasepy.actmodels.virialgama.virialgama">
-<em class="property">class </em><code class="sig-name descname">virialgama</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mix</span></em>, <em class="sig-param"><span class="n">virialmodel</span><span class="o">=</span><span class="default_value">'Tsonopoulos'</span></em>, <em class="sig-param"><span class="n">actmodel</span><span class="o">=</span><span class="default_value">'nrtl'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama" title="Permalink to this definition">¶</a></dt>
+<dt id="phasepy.actmodels.virialgama.virialgamma">
+<em class="property">class </em><code class="sig-name descname">virialgamma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mix</span></em>, <em class="sig-param"><span class="n">virialmodel</span><span class="o">=</span><span class="default_value">'Tsonopoulos'</span></em>, <em class="sig-param"><span class="n">actmodel</span><span class="o">=</span><span class="default_value">'nrtl'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Creates a model with mixture using a virial eos to describe vapour phase
 and an activity coefficient model for liquid phase.</p>
@@ -250,8 +250,8 @@ and an activity coefficient model for liquid phase.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="phasepy.actmodels.virialgama.virialgama.dlogfugef">
-<code class="sig-name descname">dlogfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.dlogfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.dlogfugef" title="Permalink to this definition">¶</a></dt>
+<dt id="phasepy.actmodels.virialgama.virialgamma.dlogfugef">
+<code class="sig-name descname">dlogfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em>, <em class="sig-param"><span class="n">v0</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgamma.dlogfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgamma.dlogfugef" title="Permalink to this definition">¶</a></dt>
 <dd><p>logfugef(X, T, P, state)</p>
 <p>Method that computes the effective fugacity coefficients  at given
 composition, temperature and pressure.</p>
@@ -275,8 +275,8 @@ composition, temperature and pressure.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="phasepy.actmodels.virialgama.virialgama.logfugef">
-<code class="sig-name descname">logfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgama.logfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgama.logfugef" title="Permalink to this definition">¶</a></dt>
+<dt id="phasepy.actmodels.virialgama.virialgamma.logfugef">
+<code class="sig-name descname">logfugef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">P</span></em>, <em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/phasepy/actmodels/virialgama.html#virialgamma.logfugef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phasepy.actmodels.virialgama.virialgamma.logfugef" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the effective fugacity coefficients  at given
 composition, temperature and pressure.</p>
 <dl class="field-list simple">

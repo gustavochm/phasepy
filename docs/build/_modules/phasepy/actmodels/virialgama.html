@@ -159,7 +159,7 @@
 <span class="n">R</span> <span class="o">=</span> <span class="mf">83.14</span>  <span class="c1"># bar cm3/mol K</span>
 
 
-<div class="viewcode-block" id="virialgama"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama">[docs]</a><span class="k">class</span> <span class="nc">virialgama</span><span class="p">:</span>
+<div class="viewcode-block" id="virialgamma"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgamma">[docs]</a><span class="k">class</span> <span class="nc">virialgamma</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Creates a model with mixture using a virial eos to describe vapour phase</span>
 <span class="sd">    and an activity coefficient model for liquid phase.</span>
@@ -257,7 +257,7 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Activity Coefficient Model not implemented&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="virialgama.logfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama.logfugef">[docs]</a>    <span class="k">def</span> <span class="nf">logfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="virialgamma.logfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgamma.logfugef">[docs]</a>    <span class="k">def</span> <span class="nf">logfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        logfugef(X, T, P, state)</span>
 
@@ -296,7 +296,7 @@
             <span class="n">Bp</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Bx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">Bm</span>
             <span class="k">return</span> <span class="n">Bp</span><span class="o">*</span><span class="n">P</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="p">),</span> <span class="n">v0</span></div>
 
-<div class="viewcode-block" id="virialgama.dlogfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgama.dlogfugef">[docs]</a>    <span class="k">def</span> <span class="nf">dlogfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="virialgamma.dlogfugef"><a class="viewcode-back" href="../../../models/phasepy.virialgama.html#phasepy.actmodels.virialgama.virialgamma.dlogfugef">[docs]</a>    <span class="k">def</span> <span class="nf">dlogfugef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        logfugef(X, T, P, state)</span>
 

@@ -1,6 +1,6 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import virialgama, wilson, rk
+from ..actmodels import virialgamma, wilson, rk
 from ..actmodels import Tsonopoulos
 from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazb
 from scipy.optimize import minimize, minimize_scalar
@@ -12,7 +12,7 @@ def fobj_wilson(inc, mix, datavle, virialmodel = 'Tsonopoulos'):
     a = np.array([[0,a12],[a21,0]])
 
     mix.wilson(a)
-    model = virialgama(mix, virialmodel = virialmodel, actmodel = 'wilson')
+    model = virialgamma(mix, virialmodel = virialmodel, actmodel = 'wilson')
 
     elv = fobj_elv(model, *datavle)
 
@@ -69,7 +69,7 @@ def fobj_nrtl(inc, mix, datavle = None, datalle = None, datavlle = None,
 
     g=np.array([[0,g12],[g21,0]])
     mix.NRTL(alpha, g, gT)
-    model = virialgama(mix, virialmodel = virialmodel, actmodel = 'nrtl')
+    model = virialgamma(mix, virialmodel = virialmodel, actmodel = 'nrtl')
 
     error = 0.
 
@@ -188,7 +188,7 @@ def fobj_rk(inc, mix, datavle = None, datalle = None, datavlle = None,
         c = inc
         c1 = np.zeros_like(c)
     mix.rk(c, c1)
-    modelo = virialgama(mix, virialmodel = virialmodel, actmodel = 'rk')
+    modelo = virialgamma(mix, virialmodel = virialmodel, actmodel = 'rk')
 
     error = 0.
 

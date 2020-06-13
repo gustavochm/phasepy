@@ -268,9 +268,7 @@ def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     dap_dnij += R*T*np.outer(dem_dn, dbm_dn)
 
     D = am
-    Di = am + ap
-    Dij = dap_dnij +  np.add.outer(ap, ap)
-
+    Di = am + apmn
     B = bm
     Bi = bi
     Bij = 0.

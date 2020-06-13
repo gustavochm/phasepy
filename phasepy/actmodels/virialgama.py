@@ -9,7 +9,7 @@ from .unifac import unifac, dunifac
 R = 83.14  # bar cm3/mol K
 
 
-class virialgama:
+class virialgamma:
     '''
     Creates a model with mixture using a virial eos to describe vapour phase
     and an activity coefficient model for liquid phase.
