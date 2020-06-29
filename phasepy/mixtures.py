@@ -8,6 +8,7 @@ from itertools import combinations
 from .saft_forcefield import saft_forcefield
 from .constants import kb, R
 
+
 class component(object):
     '''
     Creates an object with pure component info
@@ -70,29 +71,29 @@ class component(object):
     ci :  evaluates influence parameter polynomial
     '''
 
-    def __init__(self,name='None',Tc = 0,Pc = 0, Zc = 0, Vc = 0, w = 0, c = 0,
-                 cii = 0, ksv = [0, 0], Ant = [0,0,0],  GC = None,
-                 ms = 1, sigma = 0 , eps = 0, lambda_r = 12., lambda_a = 6.,
-                eAB = 0., rcAB = 1., rdAB = 0.4, sites = [0,0,0]):
+    def __init__(self, name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0,
+                 cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None,
+                 ms=1, sigma=0, eps=0, lambda_r=12., lambda_a=6.,
+                 eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
 
         self.name = name
-        self.Tc = Tc #Critical Temperature in K
-        self.Pc = Pc #Critical Pressure in bar
-        self.Zc = Zc #Critical compresibility factor
-        self.Vc = Vc #Critical volume in cm3/mol
+        self.Tc = Tc  # Critical Temperature in K
+        self.Pc = Pc  # Critical Pressure in bar
+        self.Zc = Zc  # Critical compresibility factor
+        self.Vc = Vc  # Critical volume in cm3/mol
         if Vc == 0 and Zc != 0:
-            self.Vc = R* Zc * Tc / Pc
+            self.Vc = R*Zc*Tc/Pc
         elif Vc != 0 and Zc == 0:
-            self.Zc = Pc *Vc / ( R* Tc)
-        self.w = w #Acentric Factor
-        self.Ant = Ant #Antoine coefficeint, base e = 2.71 coeficientes de antoine, list or array
-        self.cii = cii #Influence factor SGT, list or array
-        self.ksv = ksv #
-        self.c = c #volume translation for cubic EoS
-        self.GC = GC # Dict, Group contribution info
+            self.Zc = Pc*Vc/(R*Tc)
+        self.w = w  # Acentric Factor
+        self.Ant = Ant  # Antoine coefficeint, base e = 2.71
+        self.cii = cii  # Influence factor SGT, list or array
+        self.ksv = ksv
+        self.c = c  # volume translation for cubic EoS
+        self.GC = GC  # Dict, Group contribution info
         self.nc = 1
 
-        #Saft Parameters
+        # Saft Parameters
 
         self.ms = ms
         self.sigma = sigma * 1e-10
@@ -101,18 +102,16 @@ class component(object):
         self.lambda_r = np.asarray(lambda_r)
         self.lambda_ar = self.lambda_r + self.lambda_a
 
-        #Association Parameters
+        # Association Parameters
         self.eAB = eAB * kb
         self.rcAB = rcAB * self.sigma
         self.rdAB = rdAB * self.sigma
         self.sites = sites
 
-
-
-    def psat(self,T):
+    def psat(self, T):
         """
-        Method that computes saturation pressure at T using Ant eq. Expontential
-        base is used.
+        Method that computes saturation pressure at T using Ant eq.
+        Expontential base is used.
 
         Parameters
         ----------
@@ -127,7 +126,6 @@ class component(object):
 
         coef = self.Ant
         return np.exp(coef[0]-coef[1]/(T+coef[2]))
-
 
     def tsat(self, P):
         """
@@ -146,12 +144,12 @@ class component(object):
 
         """
 
-        coef =self.Ant
+        coef = self.Ant
         T = - coef[2] + coef[1] / (coef[0] - np.log(P))
 
         return T
 
-    def vlrackett(self,T):
+    def vlrackett(self, T):
         """
         Method that computes the liquid volume using Rackett eq.
 
@@ -166,8 +164,8 @@ class component(object):
             liquid volume in cm3/mol
 
         """
-        Tr=T/self.Tc
-        V=self.Vc*self.Zc**((1-Tr)**(2/7))
+        Tr = T/self.Tc
+        V = self.Vc*self.Zc**((1-Tr)**(2/7))
         return V
 
     def ci(self, T):
@@ -190,13 +188,15 @@ class component(object):
         return np.polyval(self.cii, T)
 
     def saftvrmie(self, ms, rhol07):
-        lambda_r, lambda_a, ms, eps, sigma = saft_forcefield(ms, self.Tc, self.w, rhol07)
+        lambda_r, lambda_a, ms, eps, sigma = saft_forcefield(ms, self.Tc,
+                                                             self.w, rhol07)
         self.lambda_a = np.asarray(lambda_a)
         self.lambda_r = np.asarray(lambda_r)
         self.lambda_ar = self.lambda_r + self.lambda_a
         self.ms = ms
         self.sigma = sigma
         self.eps = eps
+
 
 class mixture(object):
     '''
@@ -249,9 +249,10 @@ class mixture(object):
     unifac: read Dortmund data base for the mixture
     ci : computes cij matrix at T for SGT
     '''
+
     def __init__(self, component1, component2):
 
-        self.names = [component1.name ,component2.name]
+        self.names = [component1.name, component2.name]
         self.Tc = [component1.Tc, component2.Tc]
         self.Pc = [component1.Pc, component2.Pc]
         self.Zc = [component1.Zc, component2.Zc]
@@ -274,7 +275,7 @@ class mixture(object):
         self.rd = [component1.rdAB, component2.rdAB]
         self.sitesmix = [component1.sites, component2.sites]
 
-    def add_component(self,component):
+    def add_component(self, component):
         """
         Method that add a component to the mixture
         """
@@ -302,10 +303,10 @@ class mixture(object):
 
         self.nc += 1
 
-    def psat(self,T):
+    def psat(self, T):
         """
-        Method that computes saturation pressure at T using Ant eq. Expontential
-        base is used.
+        Method that computes saturation pressure at T using Ant eq.
+        Expontential base is used.
 
         Parameters
         ----------
@@ -318,7 +319,7 @@ class mixture(object):
             Saturation pressure in bar
         """
         coef = np.vstack(self.Ant)
-        return np.exp(coef[:,0]-coef[:,1]/(T+coef[:,2]))
+        return np.exp(coef[:, 0]-coef[:, 1]/(T+coef[:, 2]))
 
     def tsat(self, P):
         """
@@ -336,12 +337,11 @@ class mixture(object):
             absolute temperature in K
 
         """
-        coef=np.vstack(self.Ant)
-        T = - coef[:,2] + coef[:,1] / (coef[:,0] - np.log(P))
+        coef = np.vstack(self.Ant)
+        T = - coef[:, 2] + coef[:, 1] / (coef[:, 0] - np.log(P))
         return T
 
-
-    def vlrackett(self,T):
+    def vlrackett(self, T):
         """
         Method that computes the liquid volume using Rackett eq.
 
@@ -359,8 +359,8 @@ class mixture(object):
         Tc = np.array(self.Tc)
         Vc = np.array(self.Vc)
         Zc = np.array(self.Zc)
-        Tr=T/Tc
-        V=Vc*Zc**((1-Tr)**(2/7))
+        Tr = T/Tc
+        V = Vc*Zc**((1-Tr)**(2/7))
         return V
 
     def kij_saft(self, kij):
@@ -369,7 +369,7 @@ class mixture(object):
     def kij_ws(self, kij):
         self.Kijws = kij
 
-    def kij_cubic(self,k):
+    def kij_cubic(self, k):
         '''
         Method that add kij matrix for QMR mixrule. Matrix must be symmetrical
         and the main diagonal must be zero.
@@ -383,7 +383,7 @@ class mixture(object):
 
         self.kij = k
 
-    def NRTL(self, alpha, g , g1 = None):
+    def NRTL(self, alpha, g, g1=None):
         '''
         Method that adds NRTL parameters to the mixture
 
@@ -423,7 +423,7 @@ class mixture(object):
         self.rkternario = D
         self.actmodelp = (self.alpha, self.g, self.g1, self.rkternario)
 
-    def wilson(self,A):
+    def wilson(self, A):
         '''
         Method that adds wilson model parameters to the mixture
         Matrix A main diagonal must be zero. Values in K.
@@ -436,9 +436,9 @@ class mixture(object):
         '''
 
         self.Aij = A
-        self.actmodelp = (self.Aij , self.vlrackett)
+        self.actmodelp = (self.Aij, self.vlrackett)
 
-    def rkb(self, c, c1 = None):
+    def rkb(self, c, c1=None):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
         excess Gibbs energy.
@@ -463,7 +463,7 @@ class mixture(object):
         self.rkbT = c1
         self.actmodelp = (c, c1)
 
-    def rk(self, c, c1 = None):
+    def rk(self, c, c1=None):
         '''
         Method that adds binary Redlich Kister polynomial coefficients for
         excess Gibbs energy.
@@ -483,7 +483,7 @@ class mixture(object):
 
         '''
         nc = self.nc
-        combinatory = np.array(list(combinations(range(nc),2)), dtype = np.int)
+        combinatory = np.array(list(combinations(range(nc), 2)), dtype=np.int)
         self.combinatory = combinatory
         c = np.atleast_2d(c)
         self.rkp = c
@@ -493,7 +493,6 @@ class mixture(object):
         self.rkpT = c1
         self.actmodelp = (c, c1, combinatory)
 
-
     def unifac(self):
         """
         Method that read the Dortmund database for UNIFAC model
@@ -502,19 +501,18 @@ class mixture(object):
 
         """
 
-        #UNIFAC database reading
+        # UNIFAC database reading
         database = os.path.join(os.path.dirname(__file__), 'database')
-        database +=  '/dortmund.xlsx'
-        qkrk = read_excel(database, 'RkQk', index_col = 'Especie')
-        a0 = read_excel(database, 'A0', index_col = 'Grupo')
-        a0.fillna(0, inplace = True)
-        a1 = read_excel(database, 'A1', index_col = 'Grupo')
-        a1.fillna(0, inplace = True)
-        a2 = read_excel(database, 'A2', index_col = 'Grupo')
-        a2.fillna(0, inplace = True)
+        database += '/dortmund.xlsx'
+        qkrk = read_excel(database, 'RkQk', index_col='Especie')
+        a0 = read_excel(database, 'A0', index_col='Grupo')
+        a0.fillna(0, inplace=True)
+        a1 = read_excel(database, 'A1', index_col='Grupo')
+        a1.fillna(0, inplace=True)
+        a2 = read_excel(database, 'A2', index_col='Grupo')
+        a2.fillna(0, inplace=True)
 
-
-        #Reading pure component and mixture group contribution info
+        # Reading pure component and mixture group contribution info
         puregc = self.GC
         mix = Counter()
         for i in puregc:
@@ -522,8 +520,7 @@ class mixture(object):
 
         subgroups = list(mix.keys())
 
-
-        #Dicts created for each component
+        # Dicts created for each component
         vk = []
         dics = []
         for i in puregc:
@@ -539,9 +536,9 @@ class mixture(object):
         b = a1.loc[groups, groups].values
         c = a2.loc[groups, groups].values
 
-        #Reading info of present groups
+        # Reading info of present groups
         rq = qkrk.loc[subgroups, ['Rk', 'Qk']].values
-        Qk = rq[:,1]
+        Qk = rq[:, 1]
 
         ri, qi = (Vk@rq).T
         ri34 = ri**(0.75)
@@ -552,9 +549,7 @@ class mixture(object):
 
         self.actmodelp = (qi, ri, ri34, Vk, Qk, tethai, a, b, c)
 
-
-    def ci(self,T):
-
+    def ci(self, T):
         """
         Method that computes the matrix of cij interaction parameter for SGT at
         T.
@@ -576,8 +571,8 @@ class mixture(object):
         n = len(self.cii)
         ci = np.zeros(n)
         for i in range(n):
-            ci[i] = np.polyval(self.cii[i],T)
-        self.cij = np.sqrt(np.outer(ci,ci))
+            ci[i] = np.polyval(self.cii[i], T)
+        self.cij = np.sqrt(np.outer(ci, ci))
         return self.cij
 
     def copy(self):

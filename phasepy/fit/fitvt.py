@@ -1,5 +1,5 @@
 from __future__ import division, print_function, absolute_import
-from scipy.optimize import minimize 
+from scipy.optimize import minimize
 import numpy as np
 
 
@@ -9,13 +9,13 @@ def fobj_c(c, eos, Texp, Pexp, rhoexp):
     rho = np.zeros_like(rhoexp)
     for i in range(n):
         rho[i] = eos.density(Texp[i], Pexp[i], 'L')
-        
     return np.sum((rho/rhoexp - 1)**2)
 
-def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
+
+def fit_vt(component, eos, Texp, Pexp, rhoexp, c0=0.):
     """
-    fit Volume Translation for cubic EoS 
-    
+    fit Volume Translation for cubic EoS
+
     Parameters
     ----------
     component : object
@@ -31,13 +31,13 @@ def fit_vt(component, eos, Texp, Pexp, rhoexp, c0 = 0.):
         pressure in mol/cm3.
     c0 : float, optional
         initial values.
-    
+
     Returns
     -------
     fit : OptimizeResult
         Result of SciPy minimize
-    
+
     """
-    cubic = eos(component, volume_translation = True)
-    fit = minimize(fobj_c, c0, args = (cubic, Texp, Pexp, rhoexp))
+    cubic = eos(component, volume_translation=True)
+    fit = minimize(fobj_c, c0, args=(cubic, Texp, Pexp, rhoexp))
     return fit

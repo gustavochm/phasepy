@@ -4,24 +4,25 @@ from ..actmodels import nrtl, wilson, nrtlter, rk, unifac
 from ..actmodels import dnrtl, dwilson, dnrtlter, drk, dunifac
 from ..constants import R
 
+
 def ws(X, T, ai, bi, C, Kij, ActModel, parameter):
 
-    #Acivity coefficient
+    # Acivity coefficient
     lngama = ActModel(X, T, *parameter)
-    Gex = np.dot(lngama,X)
+    Gex = np.dot(lngama, X)
 
     RT = R*T
-    #Mixrule parameters
+    # Mixrule parameters
     ei = ai/(bi*RT)
-    biaiRT =  bi - ai/RT
+    biaiRT = bi - ai/RT
     abij = np.add.outer(biaiRT, biaiRT)/2
     abij *= (1. - Kij)
     xbi_ai = X*abij
-    Q  = np.sum(xbi_ai.T*X)
-    dQ = 2*np.sum(xbi_ai , axis=1)
+    Q = np.sum(xbi_ai.T*X)
+    # dQ = 2*np.sum(xbi_ai, axis=1)
     D = Gex/C + np.dot(X, ei)
     D1 = 1. - D
-    dD = ei + lngama/C
+    # dD = ei + lngama/C
 
     # Mixture parameters
     bm = Q/D1
@@ -31,19 +32,19 @@ def ws(X, T, ai, bi, C, Kij, ActModel, parameter):
 
 def dws(X, T, ai, bi, C, Kij, ActModel, parameter):
 
-    #Acivity coefficient
+    # Acivity coefficient
     lngama = ActModel(X, T, *parameter)
-    Gex = np.dot(lngama,X)
+    Gex = np.dot(lngama, X)
 
     RT = R*T
-    #Mixrule parameters
+    # Mixrule parameters
     ei = ai/(bi*RT)
-    biaiRT =  bi - ai/RT
+    biaiRT = bi - ai/RT
     abij = np.add.outer(biaiRT, biaiRT)/2
     abij *= (1. - Kij)
     xbi_ai = X*abij
-    Q  = np.sum(xbi_ai.T*X)
-    dQ = 2*np.sum(xbi_ai , axis=1)
+    Q = np.sum(xbi_ai.T*X)
+    dQ = 2*np.sum(xbi_ai, axis=1)
     D = Gex/C + np.dot(X, ei)
     D1 = 1. - D
     dD = ei + lngama/C
@@ -51,35 +52,34 @@ def dws(X, T, ai, bi, C, Kij, ActModel, parameter):
     # Mixture parameters
     bm = Q/D1
     am = bm*D*RT
-    #Partial Molar properties
+    # Partial Molar properties
     Bi = dQ/D1 - Q/D1**2 * (1 - dD)
-    Di =  RT*(D*Bi + bm*dD)
+    Di = RT*(D*Bi + bm*dD)
 
     return am, Di, bm, Bi
 
+
 def d2ws(X, T, ai, bi, C, Kij, ActModel, parameter):
 
-
-    #Acivity coefficient
+    # Acivity coefficient
     lngama, dlngama = ActModel(X, T, *parameter)
-    Gex = np.dot(lngama,X)
+    Gex = np.dot(lngama, X)
 
     RT = R*T
-    #Mixrule parameters
+    # Mixrule parameters
 
     ei = ai/(bi*RT)
-    biaiRT =  bi - ai/RT
+    biaiRT = bi - ai/RT
     abij = np.add.outer(biaiRT, biaiRT)/2
     xbi_ai = X*abij
-    Q  = np.sum(xbi_ai.T*X)
+    Q = np.sum(xbi_ai.T*X)
     D = Gex/C + np.dot(X, ei)
     D1 = 1. - D
 
     bm = Q/D1
     am = bm*D*RT
 
-
-    dQ_dn = 2*np.sum(xbi_ai , axis=1)
+    dQ_dn = 2*np.sum(xbi_ai, axis=1)
     dD_dn = ei + lngama/C
 
     db_dn = dQ_dn/D1 - Q/D1**2 * (1 - dD_dn)
@@ -102,7 +102,8 @@ def d2ws(X, T, ai, bi, C, Kij, ActModel, parameter):
 
     return am, da_dn, da_dnij, bm, db_dn, db_dnij
 
-def ws_nrtl(X, T, ai, bi, order, C,Kij, alpha, g, g1):
+
+def ws_nrtl(X, T, ai, bi, order, C, Kij, alpha, g, g1):
     parameter = (alpha, g, g1)
     if order == 0:
         mixparameters = ws(X, T, ai, bi, C, Kij, nrtl, parameter)
@@ -113,6 +114,7 @@ def ws_nrtl(X, T, ai, bi, order, C,Kij, alpha, g, g1):
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
+
 
 def ws_nrtlt(X, T, ai, bi, order, C, Kij, alpha, g, g1, D):
     parameter = (alpha, g, g1, D)
@@ -126,8 +128,9 @@ def ws_nrtlt(X, T, ai, bi, order, C, Kij, alpha, g, g1, D):
         raise Exception('Derivative order not valid')
     return mixparameters
 
+
 def ws_wilson(X, T, ai, bi, order, C, Kij, Aij, vl):
-    parameter=(Aij,vl)
+    parameter = (Aij, vl)
     if order == 0:
         mixparameters = ws(X, T, ai, bi, C, Kij, wilson, parameter)
     elif order == 1:
@@ -138,8 +141,9 @@ def ws_wilson(X, T, ai, bi, order, C, Kij, Aij, vl):
         raise Exception('Derivative order not valid')
     return mixparameters
 
+
 def ws_rk(X, T, ai, bi, order, C, Kij, Crk, Crk1, combinatory):
-    parameter=(Crk, Crk1, combinatory)
+    parameter = (Crk, Crk1, combinatory)
     if order == 0:
         mixparameters = ws(X, T, ai, bi, C, Kij, rk, parameter)
     elif order == 1:
@@ -151,7 +155,8 @@ def ws_rk(X, T, ai, bi, order, C, Kij, Crk, Crk1, combinatory):
     return mixparameters
 
 
-def ws_unifac(X,T,ai,bi, order, C, Kij, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
+def ws_unifac(X, T, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
+              tethai, a0, a1, a2):
     parameter = (qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2)
     if order == 0:
         mixparameters = ws(X, T, ai, bi, C, Kij, unifac, parameter)

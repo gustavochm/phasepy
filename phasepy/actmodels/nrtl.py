@@ -30,7 +30,7 @@ def nrtl(X, T, alpha, g, g1):
     lngama: array_like
         natural logarithm of activify coefficient
     '''
-    X = np.asarray(X, dtype = np.float64)
+    X = np.asarray(X, dtype=np.float64)
     tau = g/T + g1
     G = np.exp(-alpha*tau)
     lngama = nrtl_cy(X, tau, G)
@@ -38,7 +38,7 @@ def nrtl(X, T, alpha, g, g1):
     return lngama
 
 
-def nrtlter(X,T, alpha,g, g1, D):
+def nrtlter(X, T, alpha, g, g1, D):
     '''
     NRTL activity coefficient model.
 
@@ -66,7 +66,7 @@ def nrtlter(X,T, alpha,g, g1, D):
     '''
     xd = X*D
     lngama = rkter_nrtl_cy(X, xd)
-    lngama += nrtl(X, T,alpha, g , g1)
+    lngama += nrtl(X, T, alpha, g, g1)
     return lngama
 
 
@@ -98,7 +98,7 @@ def dnrtl(X, T, alpha, g, g1):
     dlngama: array_like
         derivative of natural logarithm of activify coefficient
     '''
-    X = np.asarray(X, dtype = np.float64)
+    X = np.asarray(X, dtype=np.float64)
     tau = g/T + g1
     G = np.exp(-alpha*tau)
     lngama, dlngama = dnrtl_cy(X, tau, G)
@@ -106,7 +106,7 @@ def dnrtl(X, T, alpha, g, g1):
     return lngama, dlngama
 
 
-def dnrtlter(X,T, alpha,g, g1, D):
+def dnrtlter(X, T, alpha, g, g1, D):
     '''
     Derivatives of NRTL activity coefficient model with additional ternary
     contribution.
@@ -138,7 +138,7 @@ def dnrtlter(X,T, alpha,g, g1, D):
 
     xd = X*D
     lngamaD, dlngamaD = drkter_nrtl_cy(X, xd, D)
-    lngama, dlngama = dnrtl(X, T,alpha, g , g1)
+    lngama, dlngama = dnrtl(X, T, alpha, g, g1)
 
     lngama += lngamaD
     dlngama += dlngamaD

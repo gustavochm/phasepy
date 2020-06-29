@@ -1,8 +1,8 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..constants import R
 
-#Quadratic mixrule
+
+# Quadratic mixrule
 def qmr(X, T, ai, bi, order, Kij):
     '''
     Quadratic mixrule QMR
@@ -25,13 +25,12 @@ def qmr(X, T, ai, bi, order, Kij):
     Bij (mixture a term second derivative)
     '''
 
-    aij=np.sqrt(np.outer(ai,ai))*(1-Kij)
+    aij = np.sqrt(np.outer(ai, ai))*(1-Kij)
     ax = aij * X
-    #atractive term of mixture
+    # Atractive term of mixture
     D = np.sum(ax.T*X)
-    #mixture covolume
+    # Mixture covolume
     B = np.dot(bi, X)
-
 
     if order == 0:
         mixparameters = D, B

@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .actmodels_cy import rkb_cy, rk_cy, drk_cy
 
+
 def rkb(x, T, C, C1):
     '''
     Redlich-Kister activity coefficient model for multicomponent mixtures.
@@ -27,11 +28,12 @@ def rkb(x, T, C, C1):
     lngama: array_like
         natural logarithm of activify coefficient
     '''
-    x = np.asarray(x,dtype = np.float64)
+    x = np.asarray(x, dtype=np.float64)
 
     G = C + C1 / T
     Mp = rkb_cy(x, G)
     return Mp
+
 
 def rk(x, T, C, C1, combinatory):
     '''
@@ -60,11 +62,11 @@ def rk(x, T, C, C1, combinatory):
     lngama: array_like
         natural logarithm of activify coefficient
     '''
-    x = np.asarray(x,dtype = np.float64)
+    x = np.asarray(x, dtype=np.float64)
 
     G = C + C1 / T
     ge, dge = rk_cy(x, G, combinatory)
-    Mp = ge + dge - np.dot(dge,x)
+    Mp = ge + dge - np.dot(dge, x)
     return Mp
 
 
@@ -98,10 +100,10 @@ def drk(x, T, C, C1, combinatory):
     dlngama: array_like
         derivative of natural logarithm of activify coefficient
     '''
-    x = np.asarray(x,dtype = np.float64)
+    x = np.asarray(x, dtype=np.float64)
 
     G = C + C1 / T
     ge, dge, d2ge = drk_cy(x, G, combinatory)
-    Mp = ge + dge - np.dot(dge,x)
+    Mp = ge + dge - np.dot(dge, x)
     dMp = d2ge - d2ge@x
     return Mp, dMp

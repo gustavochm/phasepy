@@ -1,6 +1,5 @@
-
-
 from __future__ import division, print_function, absolute_import
+
 
 class EquilibriumResult(dict):
 
@@ -9,7 +8,6 @@ class EquilibriumResult(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
-
 
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__

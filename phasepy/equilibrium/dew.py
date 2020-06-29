@@ -1,23 +1,22 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from scipy.optimize import root
 from ..math import gdem
 from .equilibriumresult import EquilibriumResult
 
-#ELV phi-phi
-def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
+
+# ELV phi-phi
+def dew_sus(P_T, Y, T_P, tipo, x_guess, eos, vl0, vv0):
 
     if tipo == 'T':
-        P=P_T
-        T=T_P
+        P = P_T
+        T = T_P
     elif tipo == 'P':
-        T=P_T
-        P=T_P
+        T = P_T
+        P = T_P
 
-    #Vapour fugacities
-    lnphiv, vv0 = eos.logfugef(Y,T,P,'V', vv0)
+    # Vapour fugacities
+    lnphiv, vv0 = eos.logfugef(Y, T, P, 'V', vv0)
 
     tol = 1e-8
     error = 1
@@ -30,13 +29,13 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
     while error > tol and itacc < 3:
         niter += 1
 
-        #Liquid fugacitiies
-        lnphil, vl0 = eos.logfugef(X,T,P,'L', vl0)
+        # Liquid fugacitiies
+        lnphil, vl0 = eos.logfugef(X, T, P, 'L', vl0)
 
         lnK = lnphil-lnphiv
         K = np.exp(lnK)
         X_calc_old = X_calc
-        X_calc=Y/K
+        X_calc = Y/K
 
         if niter == (n-3):
             X3 = X_calc
@@ -49,7 +48,7 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
             itacc += 1
             dacc = gdem(X_calc, X1, X2, X3)
             X_calc += dacc
-        error = np.linalg.norm(X_calc-X_calc_old) 
+        error = np.linalg.norm(X_calc-X_calc_old)
         X = X_calc/X_calc.sum()
 
     if tipo == 'T':
@@ -59,7 +58,8 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess,eos, vl0, vv0):
 
     return f0, X, lnK, vl0, vv0
 
-def dew_newton(inc, Y, T_P,tipo, eos, vl0, vv0):
+
+def dew_newton(inc, Y, T_P, tipo, eos, vl0, vv0):
 
     global vl, vv
 
@@ -76,10 +76,10 @@ def dew_newton(inc, Y, T_P,tipo, eos, vl0, vv0):
 
     X = Y/K
 
-    #Liquid fugacitities
-    lnphil, vl = eos.logfugef(X,T,P,'L', vl0)
-    #vaopur fugacities
-    lnphiv, vv = eos.logfugef(Y,T,P,'V', vv0)
+    # Liquid fugacities
+    lnphil, vl = eos.logfugef(X, T, P, 'L', vl0)
+    # Vapor fugacities
+    lnphiv, vv = eos.logfugef(Y, T, P, 'V', vv0)
 
     f[:-1] = lnK + lnphiv - lnphil
     f[-1] = (Y-X).sum()
@@ -87,8 +87,8 @@ def dew_newton(inc, Y, T_P,tipo, eos, vl0, vv0):
     return f
 
 
-def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
-          v0 = [None, None] , full_output = False):
+def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
+          v0=[None, None], full_output=False):
     """
     Dew point (T, y) -> (P, y)
 
@@ -136,13 +136,13 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
     tol = 1e-8
 
     P = P_guess
-    f, X, lnK, vl, vv = dew_sus(P, y, T, 'T',x_guess, model, vl0, vv0)
+    f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', x_guess, model, vl0, vv0)
     error = np.abs(f)
     h = 1e-4
 
     while error > tol and it <= itmax and not good_initial:
         it += 1
-        f1, X1, lnK1, vl, vv = dew_sus( P + h , y, T,'T', X, model, vl, vv)
+        f1, X1, lnK1, vl, vv = dew_sus(P+h, y, T, 'T', X, model, vl, vv)
         f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', X, model, vl, vv)
         df = (f1-f)/h
         dP = f / df
@@ -153,7 +153,7 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
 
     if error > tol:
         inc0 = np.hstack([lnK, P])
-        sol1 = root(dew_newton, inc0, args = (y, T,'T',model, vl, vv))
+        sol1 = root(dew_newton, inc0, args=(y, T, 'T', model, vl, vv))
         sol = sol1.x
         lnK = sol[:-1]
         error = np.linalg.norm(sol1.fun)
@@ -163,16 +163,17 @@ def dewPx(x_guess, P_guess, y,T , model, good_initial = False,
         P = sol[-1]
 
     if full_output:
-        sol = {'T' : T, 'P': P, 'error':error, 'iter':it,
-        'X' : X, 'v1':vl, 'state1' : 'Liquid',
-       'Y' : y, 'v2': vv, 'state2' : 'Vapor'}
+        sol = {'T': T, 'P': P, 'error': error, 'iter': it,
+               'X': X, 'v1': vl, 'state1': 'Liquid',
+               'Y': y, 'v2': vv, 'state2': 'Vapor'}
         out = EquilibriumResult(sol)
         return out
 
     return X, P
 
-def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
-          v0 = [None, None] , full_output = False):
+
+def dewTx(x_guess, T_guess, y, P, model, good_initial=False,
+          v0=[None, None], full_output=False):
     """
     Dew point (T, y) -> (P, y)
 
@@ -221,13 +222,13 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
     tol = 1e-8
 
     T = T_guess
-    f, X, lnK, vl, vv = dew_sus(T, y, P, 'P',x_guess, model,vl0, vv0)
+    f, X, lnK, vl, vv = dew_sus(T, y, P, 'P', x_guess, model, vl0, vv0)
     error = np.abs(f)
     h = 1e-4
 
     while error > tol and it <= itmax and not good_initial:
         it += 1
-        f1, X1, lnK1, vl, vv = dew_sus( T + h , y, P,'P', X, model, vl, vv)
+        f1, X1, lnK1, vl, vv = dew_sus(T+h, y, P, 'P', X, model, vl, vv)
         f, X, lnK, vl, vv = dew_sus(T, y, P, 'P', X, model, vl, vv)
         df = (f1-f)/h
         T -= f/df
@@ -235,7 +236,7 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
 
     if error > tol:
         inc0 = np.hstack([lnK, T])
-        sol1 = root(dew_newton, inc0, args = (y, P,'P', model, vl, vv))
+        sol1 = root(dew_newton, inc0, args=(y, P, 'P', model, vl, vv))
         sol = sol1.x
         lnK = sol[:-1]
         error = np.linalg.norm(sol1.fun)
@@ -245,9 +246,9 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial = False,
         T = sol[-1]
 
     if full_output:
-        sol = {'T' : T, 'P': P, 'error':error, 'iter':it,
-        'X' : X, 'v1':vl, 'state1' : 'Liquid',
-       'Y' : y, 'v2': vv, 'state2' : 'Vapor'}
+        sol = {'T': T, 'P': P, 'error': error, 'iter': it,
+               'X': X, 'v1': vl, 'state1': 'Liquid',
+               'Y': y, 'v2': vv, 'state2': 'Vapor'}
         out = EquilibriumResult(sol)
         return out
 

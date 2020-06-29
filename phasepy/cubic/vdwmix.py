@@ -4,8 +4,8 @@ from .qmr import qmr
 from .alphas import alpha_vdw
 from ..constants import R
 
-class vdwm():
 
+class vdwm():
     '''
     Mixture VdW EoS Object
 
@@ -40,7 +40,6 @@ class vdwm():
 
     '''
 
-
     def __init__(self, mix):
 
         self.c1 = 0
@@ -50,11 +49,10 @@ class vdwm():
         self.alpha_eos = alpha_vdw
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
-
-        self.Tc = np.array(mix.Tc, ndmin = 1)
-        self.Pc = np.array(mix.Pc, ndmin = 1)
-        self.w = np.array(mix.w, ndmin = 1)
-        self.cii = np.array(mix.cii, ndmin = 1)
+        self.Tc = np.array(mix.Tc, ndmin=1)
+        self.Pc = np.array(mix.Pc, ndmin=1)
+        self.w = np.array(mix.w, ndmin=1)
+        self.cii = np.array(mix.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
@@ -68,9 +66,8 @@ class vdwm():
             self.kij = np.zeros([mix.nc, mix.nc])
         self.mixruleparameter = (self.kij,)
 
-
-    #metodos cubica
-    def a_eos(self,T):
+    # EoS methods
+    def a_eos(self, T):
         """
         a_eos(T)
 
@@ -87,21 +84,21 @@ class vdwm():
         a : array_like
             atractive term array
         """
-        alpha=self.alpha_eos()
+        alpha = self.alpha_eos()
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
 
-    def _Zroot(self,A,B):
+    def _Zroot(self, A, B):
         a1 = -1*B-1
         a2 = +A
         a3 = -B*A
 
-        Zpol=[1,a1,a2,a3]
+        Zpol=[1, a1, a2, a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
-        Zroots = Zroots[Zroots>B]
+        Zroots = Zroots[Zroots > B]
         return Zroots
 
-    def Zmix(self,X,T,P):
+    def Zmix(self, X, T, P):
         '''
         Zmix (X, T, P)
 
@@ -124,10 +121,10 @@ class vdwm():
             roots of Z polynomial
         '''
         a = self.a_eos(T)
-        am, bm = self.mixrule(X,T, a, self.b, 0,*self.mixruleparameter)
+        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
         A = am*P/(R*T)**2
         B = bm*P/(R*T)
-        return self._Zroot(A,B)
+        return self._Zroot(A, B)
 
     def density(self, X, T, P, state):
         """
@@ -153,12 +150,12 @@ class vdwm():
             density of the mixture in moll/cm3
         """
         if state == 'L':
-            Z=min(self.Zmix(X,T,P))
+            Z = min(self.Zmix(X, T, P))
         elif state == 'V':
-            Z=max(self.Zmix(X,T,P))
+            Z = max(self.Zmix(X, T, P))
         return P/(R*T*Z)
 
-    def logfugef(self, X, T, P, state, v0 = None):
+    def logfugef(self, X, T, P, state, v0=None):
         """
         logfugef(X, T, P, state)
 
@@ -181,24 +178,23 @@ class vdwm():
             volume of phase, if calculated
         """
         a = self.a_eos(T)
-        am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1, *self.mixruleparameter)
+        am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1,
+                                      *self.mixruleparameter)
 
         if state == 'V':
-            Z = max(self.Zmix(X,T,P))
+            Z = max(self.Zmix(X, T, P))
         elif state == 'L':
-            Z = min(self.Zmix(X,T,P))
+            Z = min(self.Zmix(X, T, P))
 
-        B=(bm*P)/(R*T)
-        A=(am*P)/(R*T)**2
+        B = (bm*P)/(R*T)
+        A = (am*P)/(R*T)**2
 
         logfug = (Z-1)*(bp/bm)-np.log(Z-B)
-        logfug -= A*(ai/am - bp/bm) /Z
-
+        logfug -= A*(ai/am - bp/bm)/Z
 
         return logfug, v0
 
-    def logfugmix(self, X, T, P, estado, v0 = None):
-
+    def logfugmix(self, X, T, P, estado, v0=None):
         """
         logfugmix(X, T, P, state)
 
@@ -224,23 +220,21 @@ class vdwm():
         """
 
         a = self.a_eos(T)
-        am, bm = self.mixrule(X,T,a,self.b, 0,*self.mixruleparameter)
+        am, bm = self.mixrule(X, T, a,self.b, 0, *self.mixruleparameter)
         if estado == 'V':
-            Z=max(self.Zmix(X,T,P))
+            Z = max(self.Zmix(X, T, P))
         elif estado == 'L':
-            Z=min(self.Zmix(X,T,P))
+            Z = min(self.Zmix(X, T, P))
 
-        B=(bm*P)/(R*T)
-        A=(am*P)/(R*T)**2
+        B = (bm*P)/(R*T)
+        A = (am*P)/(R*T)**2
 
-        logfug=Z-1-np.log(Z-B)
+        logfug = Z-1-np.log(Z-B)
         logfug -= A/Z
-
 
         return logfug, v0
 
     def a0ad(self, roa, T):
-
         """
         a0ad(roa, T)
 
@@ -268,8 +262,8 @@ class vdwm():
         ro = np.sum(roa)
         X = roa/ro
 
-        am, bm = self.mixrule(X, T, ai, bi,0, *self.mixruleparameter)
-        Prefa=1*b**2/a
+        am, bm = self.mixrule(X, T, ai, bi, 0, *self.mixruleparameter)
+        Prefa = 1*b**2/a
         Tad = R*T*b/a
         ama = am/a
         bma = bm/b
@@ -282,8 +276,6 @@ class vdwm():
         return a0
 
     def muad(self, roa, T):
-
-
         """
         muad(roa, T)
 
@@ -304,7 +296,6 @@ class vdwm():
             adimentional chemical potential vector
         """
 
-
         ai = self.a_eos(T)
         bi = self.b
 
@@ -318,7 +309,7 @@ class vdwm():
 
         ap = aip - am
 
-        Prefa=1.*b**2/a
+        Prefa = 1.*b**2/a
         Tad = R*T*b/a
         apa = ap/a
         ama = am/a
@@ -332,13 +323,12 @@ class vdwm():
 
         return mui
 
-
     def dOm(self, roa, T, mu, Psat):
         """
         dOm(roa, T, mu, Psat)
 
-        Method that computes the adimenstional Thermodynamic Grand potential at given
-        density and temperature.
+        Method that computes the adimenstional Thermodynamic Grand potential
+        at given density and temperature.
 
         Parameters
         ----------
@@ -371,20 +361,19 @@ class vdwm():
         a3 = -Bi*(self.c1*self.c2*(Bi**2+Bi)+Ai)
 
         pols = np.array([a1, a2, a3])
-        Zs = np.zeros([nc,2])
+        Zs = np.zeros([nc, 2])
         for i in range(nc):
-            zroot = np.roots(np.hstack([1,pols[:,i]]))
-            zroot = zroot[zroot>Bi[i]]
-            Zs[i,:]=np.array([max(zroot),min(zroot)])
+            zroot = np.roots(np.hstack([1, pols[:, i]]))
+            zroot = zroot[zroot > Bi[i]]
+            Zs[i,:] = np.array([max(zroot), min(zroot)])
 
-        lnphi = self.logfug(Zs.T,Ai,Bi)
-        lnphi = np.amin(lnphi,axis=0)
+        lnphi = self.logfug(Zs.T, Ai, Bi)
+        lnphi = np.amin(lnphi, axis=0)
 
         return lnphi
 
     def beta_sgt(self, beta):
         self.beta = beta
-
 
     def ci(self, T):
         '''
@@ -404,11 +393,11 @@ class vdwm():
             matrix of influence parameters with geomtric mixing rule.
         '''
 
-        n=self.nc
-        ci=np.zeros(n)
+        n = self.nc
+        ci = np.zeros(n)
         for i in range(n):
-            ci[i]=np.polyval(self.cii[i],T)
-        self.cij=np.sqrt(np.outer(ci,ci))
+            ci[i] = np.polyval(self.cii[i], T)
+        self.cij = np.sqrt(np.outer(ci, ci))
         return self.cij
 
     def sgt_adim(self, T):
@@ -416,8 +405,8 @@ class vdwm():
         sgt_adim(T)
 
         Method that evaluates adimentional factor for temperature, pressure,
-        density, tension and distance for interfacial properties computations with
-        SGT.
+        density, tension and distance for interfacial properties computations
+        with SGT.
 
         Parameters
         ----------
@@ -439,10 +428,10 @@ class vdwm():
         '''
         a0 = self.a_eos(T)[0]
         b0 = self.b[0]
-        ci = self.ci(T)[0,0]
+        ci = self.ci(T)[0, 0]
         Tfactor = R*b0/a0
         Pfactor = b0**2/a0
         rofactor = b0
-        tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3) #para dejarlo en nM/m
-        zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10 #Para dejarlo en Amstrong
+        tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3)
+        zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10
         return Tfactor, Pfactor, rofactor, tenfactor, zfactor

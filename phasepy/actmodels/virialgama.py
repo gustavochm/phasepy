@@ -9,7 +9,7 @@ from .unifac import unifac, dunifac
 R = 83.14  # bar cm3/mol K
 
 
-class virialgamma:
+class virialgamma():
     '''
     Creates a model with mixture using a virial eos to describe vapour phase
     and an activity coefficient model for liquid phase.
@@ -19,11 +19,11 @@ class virialgamma:
     mix : object
         mixture created with mixture class
     virialmodel : string
-        function to compute virial coefficients, available options are 'Tsonopoulos',
-        'Abbott' or 'ideal_gas'
+        function to compute virial coefficients, available options are
+        'Tsonopoulos', 'Abbott' or 'ideal_gas'
     actmodel : string
-        function to compute activity coefficients, available optiones are 'nrtl',
-        'wilson', 'unifac', 'rkb' or 'rk'
+        function to compute activity coefficients, available optiones are
+        'nrtl', 'wilson', 'unifac', 'rkb' or 'rk'
 
     Methods
     -------
@@ -31,7 +31,7 @@ class virialgamma:
 
     '''
 
-    def __init__(self, mix, virialmodel = 'Tsonopoulos', actmodel = 'nrtl'):
+    def __init__(self, mix, virialmodel='Tsonopoulos', actmodel='nrtl'):
 
         self.psat = mix.psat
         self.vl = mix.vlrackett
@@ -39,9 +39,9 @@ class virialgamma:
         self.nc = mix.nc
         self.Tij, self.Pij, self.Zij, self.wij = Virialmix(mix)
 
-        if virialmodel ==  'Tsonopoulos':
+        if virialmodel == 'Tsonopoulos':
             self.virialmodel = Tsonopoulos
-        elif virialmodel ==  'Abbott':
+        elif virialmodel == 'Abbott':
             self.virialmodel = Abbott
         elif virialmodel == 'ideal_gas':
             self.virialmodel = ideal_gas
@@ -68,7 +68,7 @@ class virialgamma:
 
         elif actmodel == 'wilson':
             if hasattr(mix, 'Aij'):
-                #este se utiliza con mhv_wilson
+
                 self.actmodelp = (mix.Aij, mix.vlrackett)
                 self.actmodel = wilson
                 self.dactmodel = dwilson
@@ -86,7 +86,7 @@ class virialgamma:
                 raise Exception('RK parameters needed')
 
         elif actmodel == 'rkb':
-            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT') and mix.nc ==2:
+            if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT') and mix.nc == 2:
                 self.actmodelp = (mix.rkp, mix.rkpT)
                 self.actmodel = rkb
                 self.dactmodel = None
@@ -106,8 +106,7 @@ class virialgamma:
         else:
             raise Exception('Activity Coefficient Model not implemented')
 
-
-    def logfugef(self, X, T, P, state, v0 = None):
+    def logfugef(self, X, T, P, state, v0=None):
         """
         logfugef(X, T, P, state)
 
@@ -130,7 +129,6 @@ class virialgamma:
             volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
-        #Bi, Bp = virial(X, T, self.Tij, self.Pij, self.wij, self.virialmodel)
         if state == 'L':
             Bi = np.diag(Bij)
             psat = self.psat(T)
@@ -140,13 +138,11 @@ class virialgamma:
             return act+np.log(psat/P)+pointing+fugPsat, v0
         elif state == 'V':
             Bx = Bij*X
-            #virial de mezcla
             Bm = np.sum(Bx.T*X)
-            #virial parcial
             Bp = 2*np.sum(Bx, axis=1) - Bm
             return Bp*P/(R*T), v0
 
-    def dlogfugef(self, X, T, P, state, v0 = None):
+    def dlogfugef(self, X, T, P, state, v0=None):
         """
         logfugef(X, T, P, state)
 
@@ -169,7 +165,6 @@ class virialgamma:
             volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
-        #Bi, Bp = virial(X, T, self.Tij, self.Pij, self.wij, self.virialmodel)
         if state == 'L':
             Bi = np.diag(Bij)
             psat = self.psat(T)
@@ -182,11 +177,8 @@ class virialgamma:
 
         elif state == 'V':
             Bx = Bij*X
-            #virial de mezcla
             Bm = np.sum(Bx.T*X)
-            #virial parcial
             Bp = 2*np.sum(Bx, axis=1) - Bm
             logfug = Bp*P/(R*T)
             dlogfug = (2*Bij - np.add.outer(Bp, Bp))*P/(R*T)
-
         return logfug, dlogfug, v0

@@ -22,22 +22,21 @@ Available fitting routines (phasepy.fit)
     fit_nrtl : fit nrtl parameters
     fit_wilson : fit Wilson parameters
     fit_rk : fit Redlich Kister parameters
-    
+
 Interfacial properties (phasepy.sgt):
     sgt_pure: SGT for pure fluids.
-    sgt_mix_beta0 : SGT for mixtures with beta = 0 
-    (Reference component, Path functions,linear approximation, spot approximation)
+    sgt_mix_beta0 : SGT for mixtures with beta = 0
+    (Reference component, Path functions,linear approximation,
+    spot approximation)
     sgt_mix : SGT for mixtures with beta != 0
     msgt_mix : modified SGT for mixtures with beta != 0
-    
+
 
 """
 
-
-
 from __future__ import division, print_function, absolute_import
 
-#__all__ = [s for s in dir() if not s.startswith('_')]
+# __all__ = [s for s in dir() if not s.startswith('_')]
 
 from .mixtures import *
 from .cubic.cubic import *

@@ -1,10 +1,9 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from .alphas import alpha_vdw
 from .psatpure import psat
 from ..constants import R
+
 
 class vdwpure():
     '''
@@ -40,6 +39,7 @@ class vdwpure():
     sgt_adim : computes adimentional factors for SGT.
 
     '''
+
     def __init__(self, pure):
 
         self.c1 = 0
@@ -49,13 +49,11 @@ class vdwpure():
         self.alpha_eos = alpha_vdw
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
-
-        self.Tc = np.array(pure.Tc, ndmin = 1)
-        self.Pc = np.array(pure.Pc, ndmin = 1)
-        self.w = np.array(pure.w, ndmin = 1)
-        self.cii = np.array(pure.cii, ndmin = 1)
+        self.Tc = np.array(pure.Tc, ndmin=1)
+        self.Pc = np.array(pure.Pc, ndmin=1)
+        self.w = np.array(pure.w, ndmin=1)
+        self.cii = np.array(pure.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
-
 
     def __call__(self, T, v):
         b = self.b
@@ -64,7 +62,7 @@ class vdwpure():
         c2 = self.c2
         return R*T/(v - b) - a/((v+c1*b)*(v+c2*b))
 
-    def a_eos(self,T):
+    def a_eos(self, T):
         """
         a_eos(T)
 
@@ -76,7 +74,6 @@ class vdwpure():
         T : float
             absolute temperature in K
 
-
         Returns
         -------
         a : float
@@ -85,7 +82,7 @@ class vdwpure():
         alpha = self.alpha_eos()
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
 
-    def psat(self, T, P0 = None):
+    def psat(self, T, P0=None):
         """
         psat(T, P0)
 
@@ -106,21 +103,20 @@ class vdwpure():
         """
         return psat(T, self, P0)
 
-    def _Zroot(self,A,B):
+    def _Zroot(self, A, B):
         a1 = (self.c1+self.c2-1)*B-1
         a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
         a3 = -B*(self.c1*self.c2*(B**2+B)+A)
-        Zpol=[1, a1, a2, a3]
+        Zpol = [1, a1, a2, a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
-        Zroots = Zroots[Zroots>B]
+        Zroots = Zroots[Zroots > B]
         return Zroots
 
     def density(self, T, P, state):
         """
         density(T, P, state)
         Method that computes the density of the mixture at T, P
-
 
         Parameters
         ----------
@@ -138,20 +134,19 @@ class vdwpure():
             density in moll/cm3
 
         """
-        A = self.a_eos(T) * P /(R*T)**2
-        B = self.b* P / (R*T)
+        A = self.a_eos(T)*P/(R*T)**2
+        B = self.b*P/(R*T)
 
         if state == 'L':
-            Z=min(self._Zroot(A,B))
+            Z = min(self._Zroot(A, B))
         if state == 'V':
-            Z=max(self._Zroot(A,B))
+            Z = max(self._Zroot(A, B))
 
         return P/(R*T*Z)
 
+    def _logfug_aux(self, Z, A, B):
 
-    def _logfug_aux(self,Z, A, B):
-
-        logfug=Z-1-np.log(Z-B)
+        logfug = Z-1-np.log(Z-B)
         logfug -= A/Z
 
         return logfug
@@ -178,26 +173,24 @@ class vdwpure():
             fugacity coefficient
         """
 
-
-        A = self.a_eos(T) * P /(R*T)**2
-        B = self.b* P / (R*T)
+        A = self.a_eos(T)*P/(R*T)**2
+        B = self.b*P/(R*T)
 
         if state == 'L':
-            Z=min(self._Zroot(A,B))
+            Z = min(self._Zroot(A, B))
         if state == 'V':
-            Z=max(self._Zroot(A,B))
+            Z = max(self._Zroot(A, B))
 
         logfug = self._logfug_aux(Z, A, B)
 
         return logfug
 
-
-    def a0ad(self, ro,T):
+    def a0ad(self, ro, T):
         """
         a0ad(ro, T)
 
-        Method that computes the adimenstional Helmholtz density energy at given
-        density and temperature.
+        Method that computes the adimenstional Helmholtz density energy at
+        given density and temperature.
 
         Parameters
         ----------
@@ -252,8 +245,8 @@ class vdwpure():
         """
         dOm(roa, T, mu, Psat)
 
-        Method that computes the adimenstional Thermodynamic Grand potential at given
-        density and temperature.
+        Method that computes the adimenstional Thermodynamic Grand potential
+        at given density and temperature.
 
         Parameters
         ----------
@@ -272,8 +265,7 @@ class vdwpure():
         Out: float, Thermodynamic Grand potential
         """
 
-
-        return self.a0ad(roa, Tad)- roa*mu0 + Psat
+        return self.a0ad(roa, Tad) - roa*mu0 + Psat
 
     def ci(self, T):
         '''
@@ -299,8 +291,8 @@ class vdwpure():
         sgt_adim(T)
 
         Method that evaluates adimentional factor for temperature, pressure,
-        density, tension and distance for interfacial properties computations with
-        SGT.
+        density, tension and distance for interfacial properties computations
+        with SGT.
 
         Parameters
         ----------

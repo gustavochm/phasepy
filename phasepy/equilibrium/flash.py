@@ -1,10 +1,9 @@
-
-
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..math import gdem
 from scipy.optimize import minimize
 from .equilibriumresult import EquilibriumResult
+
 
 def rachfordrice(beta, K, Z):
     '''
@@ -38,14 +37,14 @@ def rachfordrice(beta, K, Z):
 
     return beta, D, singlephase
 
-def Gibbs_obj(v , phases, Z, T, P, model, v10, v20):
 
+def Gibbs_obj(v, phases, Z, T, P, model, v10, v20):
     '''
     Objective function to minimize Gibbs energy in biphasic flash
     '''
-    l = Z - v
-    v[v<1e-8] = 1e-8
-    l[l<1e-8] = 1e-8
+    l = Z-v
+    v[v < 1e-8] = 1e-8
+    l[l < 1e-8] = 1e-8
     X = l/l.sum()
     Y = v/v.sum()
 
@@ -59,16 +58,15 @@ def Gibbs_obj(v , phases, Z, T, P, model, v10, v20):
     return f, df
 
 
-def dGibbs_obj(v , phases, Z, T, P, model, v10, v20):
-
+def dGibbs_obj(v, phases, Z, T, P, model, v10, v20):
     '''
     Objective function to minimize Gibbs energy in biphasic flash when second
     order derivatives are available
     '''
 
     l = Z - v
-    v[v<1e-8] = 1e-8
-    l[l<1e-8] = 1e-8
+    v[v < 1e-8] = 1e-8
+    l[l < 1e-8] = 1e-8
     vt = np.sum(v)
     lt = np.sum(l)
     X = l/lt
@@ -91,7 +89,8 @@ def dGibbs_obj(v , phases, Z, T, P, model, v10, v20):
 
     return f, df
 
-def dGibbs_hess(v , phases, Z, T, P, model , v10, v20):
+
+def dGibbs_hess(v, phases, Z, T, P, model, v10, v20):
     '''
     Hessian to minimize Gibbs energy in biphasic flash when second
     order derivatives are available
@@ -100,8 +99,9 @@ def dGibbs_hess(v , phases, Z, T, P, model , v10, v20):
     d2fo = dfugv + dfugl
     return d2fo
 
-def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
-          v0 = [None, None], K_tol = 1e-8, full_output = False):
+
+def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
+          v0=[None, None], K_tol=1e-8, full_output=False):
     """
     Isothermic isobaric flash (z,T,P) -> (x,y,beta)
 
@@ -154,27 +154,27 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
     X = x_guess
     Y = y_guess
 
-    fugl, v1 = model.logfugef(X,T,P, equilibrium[0], v10)
-    fugv, v2 = model.logfugef(Y,T,P, equilibrium[1], v20)
+    fugl, v1 = model.logfugef(X, T, P, equilibrium[0], v10)
+    fugv, v2 = model.logfugef(Y, T, P, equilibrium[1], v20)
     lnK = fugl - fugv
     K = np.exp(lnK)
 
-    bmin = max(np.hstack([((K*Z-1.)/(K-1.))[K > 1],0.]))
-    bmax = min(np.hstack([((1.-Z)/(1.-K))[K < 1],1.]))
+    bmin = max(np.hstack([((K*Z-1.)/(K-1.))[K > 1], 0.]))
+    bmax = min(np.hstack([((1.-Z)/(1.-K))[K < 1], 1.]))
     beta = (bmin + bmax)/2
 
     while e1 > K_tol and itacc < nacc:
         it += 1
         it2 += 1
         lnK_old = lnK
-        beta, D, singlephase =  rachfordrice(beta, K, Z)
+        beta, D, singlephase = rachfordrice(beta, K, Z)
 
         X = Z/D
         Y = X*K
         X /= X.sum()
         Y /= Y.sum()
-        fugl, v1 = model.logfugef(X,T,P, equilibrium[0], v1)
-        fugv, v2 = model.logfugef(Y,T,P, equilibrium[1], v2)
+        fugl, v1 = model.logfugef(X, T, P, equilibrium[0], v1)
+        fugv, v2 = model.logfugef(Y, T, P, equilibrium[1], v2)
 
         lnK = fugl-fugv
         if it == (n-3):
@@ -191,8 +191,7 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
         K = np.exp(lnK)
         e1 = ((lnK-lnK_old)**2).sum()
 
-
-    if e1 >  K_tol and itacc == nacc and not singlephase:
+    if e1 > K_tol and itacc == nacc and not singlephase:
         if model.secondorder:
             fobj = dGibbs_obj
             jac = True
@@ -204,16 +203,16 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
             hess = None
             method = 'BFGS'
 
-        vsol = minimize(fobj, beta*Y, args = (equilibrium, Z, T, P, model, v1, v2),
-                        jac = jac, method = method, hess = hess, tol = K_tol)
+        vsol = minimize(fobj, beta*Y, args=(equilibrium, Z, T, P, model,
+                        v1, v2), jac=jac, method=method, hess=hess, tol=K_tol)
 
         it2 += vsol.nit
         e1 = np.linalg.norm(vsol.jac)
         v = vsol.x
         l = Z - v
         beta = v.sum()
-        v[v<=1e-8] = 0
-        l[l<=1e-8] = 0
+        v[v <= 1e-8] = 0
+        l[l <= 1e-8] = 0
         Y = v / beta
         Y /= Y.sum()
         X = l/l.sum()
@@ -224,9 +223,9 @@ def flash( x_guess, y_guess, equilibrium, Z, T, P, model,
         Y = X.copy()
 
     if full_output:
-        sol = {'T' : T, 'P': P, 'beta': beta, 'error':e1, 'iter':it2,
-               'X' : X, 'v1': v1, 'state1' : equilibrium[0],
-               'Y' : Y, 'v2': v2, 'state2' : equilibrium[1]}
+        sol = {'T': T, 'P': P, 'beta': beta, 'error': e1, 'iter': it2,
+               'X': X, 'v1': v1, 'state1': equilibrium[0],
+               'Y': Y, 'v2': v2, 'state2': equilibrium[1]}
         out = EquilibriumResult(sol)
         return out
 

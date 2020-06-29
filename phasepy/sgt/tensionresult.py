@@ -1,5 +1,6 @@
 from __future__ import division, print_function, absolute_import
 
+
 class TensionResult(dict):
 
     def __getattr__(self, name):
@@ -7,7 +8,6 @@ class TensionResult(dict):
             return self[name]
         except KeyError:
             raise AttributeError(name)
-
 
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__

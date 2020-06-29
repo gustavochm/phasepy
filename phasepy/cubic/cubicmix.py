@@ -3,7 +3,8 @@ import numpy as np
 from .mixingrules import mixingrule_fcn
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R
-#from .volume_solver import volume_newton
+# from .volume_solver import volume_newton
+
 
 class cubicm():
     '''
@@ -62,18 +63,17 @@ class cubicm():
         self.alpha_eos = alpha_eos
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
-
-        self.Tc = np.array(mix.Tc, ndmin = 1)
-        self.Pc = np.array(mix.Pc, ndmin = 1)
-        self.w = np.array(mix.w, ndmin = 1)
-        self.cii = np.array(mix.cii, ndmin = 1)
+        self.Tc = np.array(mix.Tc, ndmin=1)
+        self.Pc = np.array(mix.Pc, ndmin=1)
+        self.w = np.array(mix.w, ndmin=1)
+        self.cii = np.array(mix.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
         mixingrule_fcn(self, mix, mixrule)
 
-    #Cubic EoS methods
-    def a_eos(self,T):
+    # Cubic EoS methods
+    def a_eos(self, T):
         """
         a_eos(T)
 
@@ -90,18 +90,18 @@ class cubicm():
         a : array_like
             atractive term array
         """
-        alpha = self.alpha_eos(T,self.k,self.Tc)
-        a  = self.oma*(R*self.Tc)**2*alpha/self.Pc
+        alpha = self.alpha_eos(T, self.k, self.Tc)
+        a = self.oma*(R*self.Tc)**2*alpha/self.Pc
         return a
 
     def _Zroot(self, A, B):
         a1 = (self.c1+self.c2-1)*B-1
         a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
         a3 = -B*(self.c1*self.c2*(B**2+B)+A)
-        Zpol=[1,a1,a2,a3]
+        Zpol = [1., a1, a2, a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
-        Zroots = Zroots[Zroots>B]
+        Zroots = Zroots[Zroots > B]
         return Zroots
 
     def Zmix(self, X, T, P):
@@ -133,13 +133,12 @@ class cubicm():
         Br = B*P/RT
         return self._Zroot(Dr, Br)
 
-
     def pressure(self, X, v, T):
         """
         pressure(X, v, T)
 
-        Method that computes the pressure at given composition X, volume (cm3/mol)
-        and temperature T (in K)
+        Method that computes the pressure at given composition X,
+        volume (cm3/mol) and temperature T (in K)
 
         Parameters
         ----------
@@ -155,13 +154,12 @@ class cubicm():
         P : float
             pressure in bar
         """
-        b = self.b
         a = self.a_eos(T)
-        am, bm = self.mixrule(X, T, a, self.b, 0,*self.mixruleparameter)
+        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
         P = R*T/(v - bm) - am / ((v+self.c1*bm) * (v+self.c2*bm))
         return P
 
-    #Auxiliar method that computes volume roots
+    # Auxiliar method that computes volume roots
     def _volume_solver(self, P, T, D, B, state, v0):
 
         RT = R*T
@@ -194,7 +192,7 @@ class cubicm():
         '''
         return V
 
-    def density(self, X, T, P, state, rho0 = None):
+    def density(self, X, T, P, state, rho0=None):
         """
         density(X, T, P, state)
         Method that computes the density of the mixture at X, T, P
@@ -222,15 +220,15 @@ class cubicm():
         a = self.a_eos(T)
         D, B = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
 
-        if rho0 == None:
-            V = self._volume_solver(P, T, D, B, state, v0 = None)
+        if rho0 is None:
+            V = self._volume_solver(P, T, D, B, state, v0=None)
         else:
             v0 = 1./rho0
-            V = self._volume_solver(P, T, D, B, state, v0 = v0)
+            V = self._volume_solver(P, T, D, B, state, v0=v0)
         rho = 1. / V
         return rho
 
-    def logfugef(self, X, T, P, state, v0 = None):
+    def logfugef(self, X, T, P, state, v0=None):
         """
         logfugef(X, T, P, state)
 
@@ -260,7 +258,6 @@ class cubicm():
         b = self.b
         a = self.a_eos(T)
         D, Di, B, Bi = self.mixrule(X, T, a, b, 1, *self.mixruleparameter)
-        #am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
         V = self._volume_solver(P, T, D, B, state, v0)
 
         Z = P * V / (R*T)
@@ -268,7 +265,7 @@ class cubicm():
         Vc2B = V + c2*B
         V_B = V - B
 
-        g = np.log( V_B  / V)
+        g = np.log(V_B/V)
         f = np.log(Vc1B / Vc2B) / (R * B * (c1 - c2))
 
         gB = - 1 / V_B
@@ -280,16 +277,16 @@ class cubicm():
         FD = - f / T
 
         dF_dn = Fn + FB * Bi + FD * Di
-        logfug =  dF_dn - np.log(Z)
+        logfug = dF_dn - np.log(Z)
 
         return logfug, V
 
-    def dlogfugef(self, X, T, P, state, v0 = None):
+    def dlogfugef(self, X, T, P, state, v0=None):
         """
         dlogfugef(X, T, P, state)
 
-        Method that computes the effective fugacity coefficients and its composition
-        derivatives at given composition, temperature and pressure.
+        Method that computes the effective fugacity coefficients and its
+        composition derivatives at given composition, temperature and pressure.
 
         Parameters
         ----------
@@ -314,8 +311,8 @@ class cubicm():
         bi = self.b
         ai = self.a_eos(T)
 
-        #am, bm, ep, ap, bp = self.mixrule(X, T, a, b, *self.mixruleparameter)
-        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2, *self.mixruleparameter)
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2,
+                                              *self.mixruleparameter)
         V = self._volume_solver(P, T, D, B, state, v0)
 
         RT = R * T
@@ -334,7 +331,6 @@ class cubicm():
 
         fv = -1./(R*VCc1B*VCc2B)
         fb = - (f + V * fv)/B
-        fc = fv
 
         gbv = gb**2
         gvv = 1./V**2 - gbv
@@ -342,7 +338,7 @@ class cubicm():
 
         fvv = (1./(VCc1B*VCc2B**2) + 1./(VCc1B**2*VCc2B))/R
         fbv = - (2*fv + V * fvv)/B
-        fbb =  - (2*fb + V * fbv)/B
+        fbb = - (2*fb + V * fbv)/B
 
         Fn = - g
         Fb = - gb - D_T * fb
@@ -364,7 +360,7 @@ class cubicm():
         MatrixBD = np.outer(Bi, Di)
         MatrixBD += MatrixBD.T
         MatrixBpB = np.add.outer(Bi, Bi)
-        MatrixBB =  np.outer(Bi, Bi)
+        MatrixBB = np.outer(Bi, Bi)
 
         dF_dnij = Fnb * MatrixBpB + Fbd * MatrixBD
         dF_dnij += Fb * Bij + Fbb * MatrixBB + Fd * Dij
@@ -378,8 +374,7 @@ class cubicm():
 
         return logfug, dlogfugef, V
 
-    def logfugmix(self, X, T, P, state, v0 = None):
-
+    def logfugmix(self, X, T, P, state, v0=None):
         """
         logfugmix(X, T, P, state)
 
@@ -407,14 +402,13 @@ class cubicm():
         a = self.a_eos(T)
         b = self.b
         am, bm = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
-        #am, bm, ep, ap, bp = self.mixrule(X,T,a,self.b,*self.mixruleparameter)
 
         V = self._volume_solver(P, T, am, bm, state, v0)
         RT = R * T
         Z = P * V / RT
 
-        B=(bm*P)/(RT)
-        A=(am*P)/(RT)**2
+        B = (bm*P)/(RT)
+        A = (am*P)/(RT)**2
 
         logfug = Z - 1 - np.log(Z-B)
         logfug -= (A/(self.c2-self.c1)/B)*np.log((Z+self.c2*B)/(Z+self.c1*B))
@@ -422,12 +416,11 @@ class cubicm():
         return logfug, V
 
     def a0ad(self, roa, T):
-
         """
         a0ad(roa, T)
 
-        Method that computes the adimenstional Helmholtz density energy at given
-        density and temperature.
+        Method that computes the adimenstional Helmholtz density energy at
+        given density and temperature.
 
         Parameters
         ----------
@@ -452,7 +445,7 @@ class cubicm():
         ro = np.sum(roa)
         X = roa/ro
 
-        D, B = self.mixrule(X, T, ai, bi, 0,*self.mixruleparameter)
+        D, B = self.mixrule(X, T, ai, bi, 0, *self.mixruleparameter)
 
         adfactor = b**2/a
         V = b/ro
@@ -462,11 +455,11 @@ class cubicm():
         Vc2B = V + c2*B
         V_B = V - B
 
-        g = np.log( V_B  / V)
+        g = np.log(V_B/V)
         f = np.log(Vc1B / Vc2B) / (R * B * (c1 - c2))
 
         F = - g - D * f / T
-        a0 = F #A residual
+        a0 = F  # A residual
         a0 += np.dot(X, np.nan_to_num(np.log(X)))
         a0 += np.log(RT_V)
         a0 *= RT_V
@@ -475,7 +468,6 @@ class cubicm():
         return a0
 
     def muad(self, roa, T):
-
         """
         muad(roa, T)
 
@@ -516,7 +508,7 @@ class cubicm():
         Vc2B = V + c2*B
         V_B = V - B
 
-        g = np.log( V_B  / V)
+        g = np.log(V_B/V)
         f = np.log(Vc1B / Vc2B) / (R * B * (c1 - c2))
 
         gB = - 1 / V_B
@@ -536,14 +528,12 @@ class cubicm():
 
         return mui
 
-
     def dmuad(self, roa, T):
-
         """
         muad(roa, T)
 
-        Method that computes the adimenstional chemical potential and its derivatives
-        at given density and temperature.
+        Method that computes the adimenstional chemical potential and
+        its derivatives at given density and temperature.
 
         Parameters
         ----------
@@ -570,7 +560,8 @@ class cubicm():
         ro = np.sum(roa)
         X = roa/ro
 
-        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2, *self.mixruleparameter)
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2,
+                                              *self.mixruleparameter)
 
         adfactor = b/a
         V = b/ro
@@ -587,30 +578,29 @@ class cubicm():
         f = (1. / (R*B*(c1 - c2))) * np.log(VCc1B / VCc2B)
 
         gb = -1./V_B
-        gv = -1./V - gb
+        # gv = -1./V - gb
 
         fv = -1./(R*VCc1B*VCc2B)
         fb = - (f + V * fv)/B
-        fc = fv
 
         gbv = gb**2
-        gvv = 1./V**2 - gbv
+        # gvv = 1./V**2 - gbv
         gbb = - gbv
 
         fvv = (1./(VCc1B*VCc2B**2) + 1./(VCc1B**2*VCc2B))/R
         fbv = - (2*fv + V * fvv)/B
-        fbb =  - (2*fb + V * fbv)/B
+        fbb = - (2*fb + V * fbv)/B
 
         Fn = - g
         Fb = - gb - D_T * fb
         Fd = - f / T
 
-        Fnv = -gv
+        # Fnv = -gv
         Fnb = -gb
 
-        Fbv = -gbv - D_T * fbv
-        Fvv = -gvv - D_T * fvv
-        Fdv = -fv/T
+        # Fbv = -gbv - D_T * fbv
+        # Fvv = -gvv - D_T * fvv
+        # Fdv = -fv/T
 
         Fbd = -fb/T
         Fbb = -gbb - D_T * fbb
@@ -618,7 +608,7 @@ class cubicm():
         MatrixBD = np.outer(Bi, Di)
         MatrixBD += MatrixBD.T
         MatrixBpB = np.add.outer(Bi, Bi)
-        MatrixBB =  np.outer(Bi, Bi)
+        MatrixBB = np.outer(Bi, Bi)
 
         dF_dn = Fn + Fb * Bi + Fd * Di
 
@@ -630,7 +620,6 @@ class cubicm():
         mui *= RT
         mui *= adfactor
 
-
         dx = (np.eye(self.nc) - X)/ro
         dmui = dF_dnij / ro
         dmui += 1./ro
@@ -640,14 +629,12 @@ class cubicm():
 
         return mui, dmui
 
-
-
     def dOm(self, roa, T, mu, Psat):
         """
         dOm(roa, T, mu, Psat)
 
-        Method that computes the adimenstional Thermodynamic Grand potential at given
-        density and temperature.
+        Method that computes the adimenstional Thermodynamic Grand potential
+        at given density and temperature.
 
         Parameters
         ----------
@@ -671,25 +658,26 @@ class cubicm():
 
     def _lnphi0(self, T, P):
 
+        c1, c2 = self.c1, self.c2
         nc = self.nc
         a_puros = self.a_eos(T)
         Ai = a_puros*P/(R*T)**2
         Bi = self.b*P/(R*T)
 
-        a1 = (self.c1+self.c2-1)*Bi-1
-        a2 = self.c1*self.c2*Bi**2-(self.c1+self.c2)*(Bi**2+Bi)+Ai
-        a3 = -Bi*(self.c1*self.c2*(Bi**2+Bi)+Ai)
+        a1 = (c1+c2-1)*Bi-1
+        a2 = c1*c2*Bi**2-(c1+c2)*(Bi**2+Bi)+Ai
+        a3 = -Bi*(c1*c2*(Bi**2+Bi)+Ai)
 
         pols = np.array([a1, a2, a3])
-        Zs = np.zeros([nc,2])
+        Zs = np.zeros([nc, 2])
         for i in range(nc):
-            zroot = np.roots(np.hstack([1,pols[:,i]]))
-            zroot = zroot[zroot>Bi[i]]
-            Zs[i,:]=np.array([max(zroot),min(zroot)])
+            zroot = np.roots(np.hstack([1., pols[:, i]]))
+            zroot = zroot[zroot > Bi[i]]
+            Zs[i, :] = np.array([max(zroot), min(zroot)])
 
         logphi = Zs - 1 - np.log(Zs.T-Bi)
-        logphi -= (Ai/(self.c2-self.c1)/Bi)*np.log((Zs.T+self.c2*Bi)/(Zs.T+self.c1*Bi))
-        logphi = np.amin(logphi,axis=0)
+        logphi -= (Ai/(c2-c1)/Bi)*np.log((Zs.T+c2*Bi)/(Zs.T+c1*Bi))
+        logphi = np.amin(logphi, axis=0)
 
         return logphi
 
@@ -714,11 +702,11 @@ class cubicm():
             matrix of influence parameters with geomtric mixing rule.
         '''
 
-        n=self.nc
-        ci=np.zeros(n)
+        n = self.nc
+        ci = np.zeros(n)
         for i in range(n):
-            ci[i]=np.polyval(self.cii[i],T)
-        self.cij=np.sqrt(np.outer(ci,ci))*(1-self.beta)
+            ci[i] = np.polyval(self.cii[i], T)
+        self.cij = np.sqrt(np.outer(ci, ci))*(1-self.beta)
         return self.cij
 
     def sgt_adim(self, T):
@@ -726,8 +714,8 @@ class cubicm():
         sgt_adim(T)
 
         Method that evaluates adimentional factor for temperature, pressure,
-        density, tension and distance for interfacial properties computations with
-        SGT.
+        density, tension and distance for interfacial properties computations
+        with SGT.
 
         Parameters
         ----------
@@ -749,7 +737,7 @@ class cubicm():
         '''
         a0 = self.a_eos(T)[0]
         b0 = self.b[0]
-        ci = self.ci(T)[0,0]
+        ci = self.ci(T)[0, 0]
         Tfactor = R*b0/a0
         Pfactor = b0**2/a0
         rofactor = b0
@@ -757,45 +745,54 @@ class cubicm():
         zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10
         return Tfactor, Pfactor, rofactor, tenfactor, zfactor
 
+
 # Peng Robinson EoS
 c1pr = 1-np.sqrt(2)
 c2pr = 1+np.sqrt(2)
 omapr = 0.4572355289213825
 ombpr = 0.07779607390388854
-class prmix(cubicm):
-    def __init__(self, mix, mixrule = 'qmr'):
-        cubicm.__init__(self, mix,c1 = c1pr, c2 = c2pr,
-              oma = omapr, omb = ombpr, alpha_eos = alpha_soave, mixrule = mixrule )
 
-        self.k =  0.37464 + 1.54226*self.w - 0.26992*self.w**2
+
+class prmix(cubicm):
+    def __init__(self, mix, mixrule='qmr'):
+        cubicm.__init__(self, mix, c1=c1pr, c2=c2pr, oma=omapr, omb=ombpr,
+                        alpha_eos=alpha_soave, mixrule=mixrule)
+        self.k = 0.37464 + 1.54226*self.w - 0.26992*self.w**2
+
 
 # Peng Robinson SV EoS
 class prsvmix(cubicm):
-    def __init__(self, mix, mixrule = 'qmr'):
-        cubicm.__init__(self, mix, c1 = c1pr, c2 = c2pr,
-              oma = omapr, omb = ombpr, alpha_eos = alpha_sv, mixrule = mixrule )
+    def __init__(self, mix, mixrule='qmr'):
+        cubicm.__init__(self, mix, c1=c1pr, c2=c2pr, oma=omapr, omb=ombpr,
+                        alpha_eos=alpha_sv, mixrule=mixrule)
         if np.all(mix.ksv == 0):
-            self.k = np.zeros([self.nc,2])
-            self.k[:,0] = 0.378893+1.4897153*self.w-0.17131838*self.w**2+0.0196553*self.w**3
+            self.k = np.zeros([self.nc, 2])
+            self.k[:, 0] = 0.378893+1.4897153*self.w-0.17131838*self.w**2
+            self.k[:, 0] += 0.0196553*self.w**3
         else:
-             self.k = np.array(mix.ksv)
+            self.k = np.array(mix.ksv)
+
 
 # RK - EoS
 c1rk = 0
 c2rk = 1
 omark = 0.42748
 ombrk = 0.08664
-class rksmix(cubicm):
-    def __init__(self, mix, mixrule = 'qmr'):
-        cubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
-              oma = omark, omb = ombrk, alpha_eos = alpha_soave, mixrule = mixrule)
-        self.k =  0.47979 + 1.5476*self.w - 0.1925*self.w**2 + 0.025*self.w**3
 
-#RKS- EoS
+
+class rksmix(cubicm):
+    def __init__(self, mix, mixrule='qmr'):
+        cubicm.__init__(self, mix, c1=c1rk, c2=c2rk, oma=omark, omb=ombrk,
+                        alpha_eos=alpha_soave, mixrule=mixrule)
+        self.k = 0.47979 + 1.5476*self.w - 0.1925*self.w**2 + 0.025*self.w**3
+
+
+# RKS- EoS
 class rkmix(cubicm):
-    def __init__(self, mix, mixrule = 'qmr'):
-        cubicm.__init__(self, mix, c1 = c1rk, c2 = c2rk,
-              oma = omark, omb = ombrk, alpha_eos = alpha_rk, mixrule = mixrule)
-    def a_eos(self,T):
-        alpha=self.alpha_eos(T, self.Tc)
+    def __init__(self, mix, mixrule='qmr'):
+        cubicm.__init__(self, mix, c1=c1rk, c2=c2rk, oma=omark, omb=ombrk,
+                        alpha_eos=alpha_rk, mixrule=mixrule)
+
+    def a_eos(self, T):
+        alpha = self.alpha_eos(T, self.Tc)
         return self.oma*(R*self.Tc)**2*alpha/self.Pc

@@ -23,11 +23,12 @@ def wilson(X, T, A, vl):
     lngama: array_like
         natural logarithm of activify coefficient
     '''
-    X = np.asarray(X,dtype = np.float64)
+    X = np.asarray(X, dtype=np.float64)
     v = vl(T)
     M = np.divide.outer(v, v).T * np.exp(-A/T)
     lngama = wilson_cy(X, M)
     return lngama
+
 
 def dwilson(X, T, A, vl):
     '''
@@ -51,7 +52,7 @@ def dwilson(X, T, A, vl):
     dlngama: array_like
         derivative of natural logarithm of activify coefficient
     '''
-    X = np.asarray(X,dtype = np.float64)
+    X = np.asarray(X, dtype=np.float64)
     v = vl(T)
     M = np.divide.outer(v, v).T * np.exp(-A/T)
     lngama, dlngama = dwilson_cy(X, M)

@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..constants import R
 
+
 def Virialmix(mix):
     '''
     VirialMix creates the needed arrays to work with multicomponent
@@ -39,7 +40,8 @@ def Virialmix(mix):
     Pij = Zij*R*Tij/vij
     np.fill_diagonal(Pij, Pc)
 
-    return Tij,Pij,Zij,wij
+    return Tij, Pij, Zij, wij
+
 
 def Tsonopoulos(T, Tij, Pij, wij):
     '''
@@ -62,11 +64,12 @@ def Tsonopoulos(T, Tij, Pij, wij):
     Bij: array_like
         square array of virial coefficient
     '''
-    Tr=T/Tij
-    B0=0.1145-0.330/Tr-0.1385/Tr**2-0.0121/Tr**3-0.000607/Tr**8
-    B1=0.0637+0.331/Tr**2-0.423/Tr**3-0.008/Tr**8
-    Bij=(B0+wij*B1)*R*Tij/Pij
+    Tr = T/Tij
+    B0 = 0.1145-0.330/Tr-0.1385/Tr**2-0.0121/Tr**3-0.000607/Tr**8
+    B1 = 0.0637+0.331/Tr**2-0.423/Tr**3-0.008/Tr**8
+    Bij = (B0+wij*B1)*R*Tij/Pij
     return Bij
+
 
 def Abbott(T, Tij, Pij, wij):
     '''
@@ -89,11 +92,12 @@ def Abbott(T, Tij, Pij, wij):
     Bij: array_like
         square array of virial coefficient
     '''
-    Tr=T/Tij
-    B0=0.083-0.422/Tr**1.6
-    B1=0.139-0.172/Tr**4.2
-    Bij=(B0+wij*B1)*R*Tij/Pij
+    Tr = T/Tij
+    B0 = 0.083-0.422/Tr**1.6
+    B1 = 0.139-0.172/Tr**4.2
+    Bij = (B0+wij*B1)*R*Tij/Pij
     return Bij
+
 
 def ideal_gas(T, Tij, Pij, wij):
     '''
@@ -119,10 +123,11 @@ def ideal_gas(T, Tij, Pij, wij):
     Bij = np.zeros_like(Tij)
     return Bij
 
+
 def virial(x, T, Tij, Pij, wij, virialmodel):
     '''
-    Computes the virial coefficient and partial virial coefficient for a mixture
-    at given temperature and composition.
+    Computes the virial coefficient and partial virial coefficient for a
+    mixture at given temperature and composition.
 
     Parameters
     ----------
@@ -150,9 +155,9 @@ def virial(x, T, Tij, Pij, wij, virialmodel):
     Bij = virialmodel(T, Tij, Pij, wij)
 
     Bx = Bij*x
-    #virial de mezcla
+    # Mixture Virial
     Bm = np.sum(Bx.T*x)
-    #virial parcial
+    # Molar partial virial
     Bp = 2*np.sum(Bx, axis=1) - Bm
 
     return Bij, Bp

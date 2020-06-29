@@ -16,7 +16,8 @@ def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):
     obj[s] = dh2 - ci.dot(dro**2)
     return obj
 
-def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
+
+def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
 
     Tfactor, Pfactor, rofactor, tenfactor, zfactor = model.sgt_adim(Tsat)
     Pad = Psat*Pfactor
@@ -30,7 +31,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
         raise Exception('Not equilibria compositions, mu1 != mu2')
 
     cij = model.ci(Tsat)
-    c1 = cij[0,0]
+    c1 = cij[0, 0]
     cij /= c1
     ci = np.diag(cij)
     sqrtci = np.sqrt(ci)
@@ -46,19 +47,21 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
 
     i = 1
     dr0 = deltaro*dH2
-    dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat, mu0, ci, sqrtci, model))
-    ro0 = np.add(ro[i-1],dro0)
+    dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat, mu0, ci,
+                  sqrtci, model))
+    ro0 = np.add(ro[i-1], dro0)
     ro.append(ro0)
     dro.append(dro0)
     end = False
 
     while not end and i < 2*Nsteps:
         i += 1
-        dro0 = fsolve(fobj_beta0,dro[i-1],args=(ro[i-1], dH2, 0, Tsat, mu0, ci, sqrtci, model))
+        dro0 = fsolve(fobj_beta0, dro[i-1], args=(ro[i-1], dH2, 0,
+                      Tsat, mu0, ci, sqrtci, model))
         ro0 = ro[i-1] + dro0
         ro.append(ro0)
         dro.append(dro0)
-        end = np.allclose(ro0, ro2a, rtol = 1e-2)
+        end = np.allclose(ro0, ro2a, rtol=1e-2)
 
     ro.append(ro2a)
     dro.append(ro2a-ro[-2])
@@ -78,16 +81,18 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
         ro = [ro1a]
         i = 1
         dr0 = deltaro*dH2
-        dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat, mu0, ci, sqrtci, model))
-        ro0 = np.add(ro[i-1],dro0)
+        dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat,
+                      mu0, ci, sqrtci, model))
+        ro0 = np.add(ro[i-1], dro0)
         ro.append(ro0)
         dro.append(dro0)
-        end = np.allclose(ro[i], ro2a, rtol = 1e-2)
+        end = np.allclose(ro[i], ro2a, rtol=1e-2)
 
         while i < Nsteps:
             i += 1
-            dro0 = fsolve(fobj_beta0,dro[i-1],args=(ro[i-1], dH2, 0, Tsat, mu0, ci, sqrtci, model))
-            ro0 = np.add(ro[i-1],dro0)
+            dro0 = fsolve(fobj_beta0, dro[i-1], args=(ro[i-1], dH2, 0,
+                          Tsat, mu0, ci, sqrtci, model))
+            ro0 = np.add(ro[i-1], dro0)
             ro.append(ro0)
             dro.append(dro0)
 
@@ -102,30 +107,28 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n = 1000, full_output = False ):
 
     ro2 = np.asarray(ro).T
     Hi = dH * np.arange(0, Nsteps + 2)
-    drodh = np.gradient(ro2, Hi, edge_order = 2, axis = 1)
-
-
+    drodh = np.gradient(ro2, Hi, edge_order=2, axis=1)
 
     suma = cmix_cy(drodh, cij)
     dom = np.zeros(Nsteps + 2)
     for k in range(1, Nsteps + 1):
-        dom[k] = model.dOm(ro2[:,k], Tsat, mu0, Pad)
+        dom[k] = model.dOm(ro2[:, k], Tsat, mu0, Pad)
 
-    #Tension computation
+    # Tension computation
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
     ten = np.abs(np.trapz(integral, Hi))
     ten *= tenfactor
 
     if full_output:
-        #Z profile
+        # Z profile
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0
-        z = np.abs(cumtrapz(intz,Hi, initial = 0))
+        z = np.abs(cumtrapz(intz, Hi, initial=0))
         z /= zfactor
         ro2 /= rofactor
-        dictresult = {'tension' : ten, 'rho': ro2, 'z' : z,
-        'GPT' : dom, 'path': Hi}
+        dictresult = {'tension': ten, 'rho': ro2, 'z': z,
+                      'GPT': dom, 'path': Hi}
         out = TensionResult(dictresult)
         return out
     return ten

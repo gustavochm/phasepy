@@ -14,12 +14,16 @@ Available mixrules
 ------------------
 
 qmr : quadratic mixrule
-mhv_nrtl : Modified Huron Vidal mixrule with NRTL model
-mhv_wilson : Modified Huron Vidal mixrule with Wilson model
-mhv_unifac : Modified Huron Vidal mixrule with Wilson model
-mhv_rk : Modified Huron Vidal mixrule with Redlich-Kister model
-"""
+mhv_nrtl : Modified Huron Vidal mixing rule with NRTL model
+mhv_wilson : Modified Huron Vidal mixing rule with Wilson model
+mhv_unifac : Modified Huron Vidal mixing rule with Wilson model
+mhv_rk : Modified Huron Vidal mixing rule with Redlich-Kister model
 
+ws_nrtl : Wong-Sandler mixing rule with NRTL model
+ws_wilson :  Wong-Sandler mixing rule with Wilson model
+ws_unifac :  Wong-Sandler mixing rule with Wilson model
+ws_rk :  Wong-Sandler mixing rule with Redlich-Kister model
+"""
 
 from __future__ import division, print_function, absolute_import
 from .cubic import *
