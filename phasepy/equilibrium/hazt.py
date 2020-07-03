@@ -247,9 +247,15 @@ def vlle(X0, W0, Y0, Z, T, P, model, v0=[None, None, None], K_tol=1e-10,
     if nonzero == 2:
         index = np.nonzero(Z)[0]
         sol = np.zeros_like(x0)
+        global vg
         sol[:, index], T = haz_pb(x0[:, index], T, P, 'P', model, index,
                                   'LLV', v0)
         X, W, Y = sol
+        if full_output:
+            info = {'T': T, 'P': P, 'X': sol, 'v': vg,
+                    'states': ['L', 'L', 'V']}
+            out = EquilibriumResult(info)
+            return out
         return X, W, Y, T
 
     out = multiflash(x0, b0, ['L', 'L', 'V'], Z, T, P, model, v0, K_tol, True)
