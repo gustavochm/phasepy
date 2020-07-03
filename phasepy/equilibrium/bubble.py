@@ -145,6 +145,9 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
         dP = f / df
         if dP > P:
             dP = 0.4 * P
+        elif np.isnan(dP):
+            dP = 0.0
+            it = 1.*itmax
         P -= dP
         error = np.abs(f)
 

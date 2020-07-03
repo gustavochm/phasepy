@@ -48,7 +48,7 @@ def dew_sus(P_T, Y, T_P, tipo, x_guess, eos, vl0, vv0):
             itacc += 1
             dacc = gdem(X_calc, X1, X2, X3)
             X_calc += dacc
-        error = np.linalg.norm(X_calc-X_calc_old)
+        error = np.linalg.norm(X_calc - X_calc_old)
         X = X_calc/X_calc.sum()
 
     if tipo == 'T':
@@ -138,7 +138,7 @@ def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
     P = P_guess
     f, X, lnK, vl, vv = dew_sus(P, y, T, 'T', x_guess, model, vl0, vv0)
     error = np.abs(f)
-    h = 1e-4
+    h = 1e-3
 
     while error > tol and it <= itmax and not good_initial:
         it += 1
@@ -148,6 +148,9 @@ def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
         dP = f / df
         if dP > P:
             dP = 0.4 * P
+        elif np.isnan(dP):
+            dP = 0.0
+            it = 1.*itmax
         P -= dP
         error = np.abs(f)
 
@@ -231,6 +234,9 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial=False,
         f1, X1, lnK1, vl, vv = dew_sus(T+h, y, P, 'P', X, model, vl, vv)
         f, X, lnK, vl, vv = dew_sus(T, y, P, 'P', X, model, vl, vv)
         df = (f1-f)/h
+        if np.isnan(df):
+            df = 0.0
+            it = 1.*itmax
         T -= f/df
         error = np.abs(f)
 
