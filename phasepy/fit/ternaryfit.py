@@ -10,7 +10,7 @@ def fobj_nrtlrkt(D, Xexp, Wexp, Yexp, Texp, Pexp, mezcla, good_initial=True):
     n = len(Pexp)
     mezcla.rkt(D)
 
-    vg = virialgamma(mezcla, actmodel='nrtlter')
+    vg = virialgamma(mezcla, actmodel='nrtlt')
     x = np.zeros_like(Xexp)
     w = np.zeros_like(Wexp)
     y = np.zeros_like(Yexp)
