@@ -31,10 +31,11 @@ def gdem(X, X1, X2, X3):
     b11 = dX1.dot(dX1)
     b22 = dX2.dot(dX2)
     den = b11*b22-b12**2
-    mu1 = (b02*b12 - b01*b22)/den
-    mu2 = (b01*b12 - b02*b11)/den
-    dacc = (dX - mu2*dX1)/(1+mu1+mu2)
-    return dacc
+    with np.errstate(divide='ignore', invalid='ignore'):
+        mu1 = (b02*b12 - b01*b22)/den
+        mu2 = (b01*b12 - b02*b11)/den
+        dacc = (dX - mu2*dX1)/(1+mu1+mu2)
+    return np.nan_to_num(dacc)
 
 
 __all__ = ['gauss', 'lobatto', 'colocAB', 'colocA', 'colocB', 'gdem']
