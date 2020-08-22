@@ -5,7 +5,7 @@ phasepy
 What is phasepy?
 ----------------
 Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
-This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension. 
+This package facilitates the calculation of liquid-vapor equilibrium, liquid-liquid equilibrium and liquid-liquid-vapor equilibrium as well as density profiles and interfacial tension.
 Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
 
 Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
@@ -34,8 +34,6 @@ To get the git version, run:
     $ git clone https://github.com/gustavochm/phasepy
 
 
-
-
 Documentation
 -------------
 
@@ -49,7 +47,7 @@ Getting Started
 
 This library is designed to work with absolute temperature in Kelvin, pressure in bar and
 volume in cm3/mol. In order to create a mixture pure components have to be defined:
-	
+
 .. code-block:: python
 
 	>>> from phasepy import component, mixture
@@ -61,7 +59,7 @@ volume in cm3/mol. In order to create a mixture pure components have to be defin
 
 If, for example, we need the bubble point of the a mixture of x = 0.5 of ethanol at 320K, we could use
 the Peng Robinson EoS with the advanced mixing rule MHV and the Modified-UNIFAC model:
-	
+
 .. code-block:: python
 
 	>>> mix.unifac()
@@ -99,4 +97,3 @@ of this software, and a DISCLAIMER OF ALL WARRANTIES.
 Although not required by the phasepy license, if it is convenient for you,
 please cite phasepy if used in your work. Please also consider contributing
 any changes you make back, and benefit the community.
-
