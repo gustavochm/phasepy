@@ -63,7 +63,7 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
 
 def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
             z0=10., dz=1.5, itmax=10, n=20, full_output=False,
-            ten_tol=1e-2, solver_opt=None):
+            ten_tol=1e-2, root_method='lm', solver_opt=None):
     """
     SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
 
@@ -94,6 +94,10 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         number points to solve density profiles
     full_output : bool, optional
         wheter to outputs all calculation info
+    root_method: string, optional
+        Method used un SciPy's root function
+        default 'lm',  other options: 'krylov', 'hybr'. See SciPy documentation
+        for more info
     solver_opt : dict, optional
         aditional solver options passed to SciPy solver
 
@@ -132,18 +136,21 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
     A, B = colocAB(rootsf)
 
     # Initial profiles
-    if rho0 == 'linear':
-        # Linear Profile
-        pend = (rho2a - rho1a)
-        b = rho1a
-        pfl = (np.outer(roots, pend) + b)
-        rointer = (pfl.T).copy()
-    elif rho0 == 'hyperbolic':
-        # Hyperbolic profile
-        inter = 8*roots - 4
-        thb = np.tanh(2*inter)
-        pft = np.outer(thb, (rho2a-rho1a))/2+(rho1a+rho2a)/2
-        rointer = pft.T
+    if isinstance(rho0, str):
+        if rho0 == 'linear':
+            # Linear Profile
+            pend = (rho2a - rho1a)
+            b = rho1a
+            pfl = (np.outer(roots, pend) + b)
+            rointer = (pfl.T).copy()
+        elif rho0 == 'hyperbolic':
+            # Hyperbolic profile
+            inter = 8*roots - 4
+            thb = np.tanh(2*inter)
+            pft = np.outer(thb, (rho2a-rho1a))/2+(rho1a+rho2a)/2
+            rointer = pft.T
+        else:
+            raise Exception('Initial density profile not known')
     elif isinstance(rho0,  TensionResult):
         _z0 = rho0.z
         _ro0 = rho0.rho
@@ -157,10 +164,16 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
             rointer *= rofactor
         else:
             raise Exception('Shape of initial value must be nc x n')
+    else:
+        raise Exception('Initial density profile not known')
 
-    if model.secondordersgt:
-        fobj = dfobj_z_newton
-        jac = True
+    if root_method == 'lm' or root_method == 'hybr':
+        if model.secondordersgt:
+            fobj = dfobj_z_newton
+            jac = True
+        else:
+            fobj = fobj_z_newton
+            jac = None
     else:
         fobj = fobj_z_newton
         jac = None
@@ -187,7 +200,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         dro10 = np.outer(rho1a, A0)  # cte
         dro11 = np.outer(rho2a, A1)  # cte
 
-        sol = root(fobj, rointer.flatten(), method='lm', jac=jac,
+        sol = root(fobj, rointer.flatten(), method=root_method, jac=jac,
                    args=(Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                    options=solver_opt)
 
@@ -233,8 +246,8 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
 
 
 # Function for solving sgt for a fixed interfacial lenght
-def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear',
-               z=10, n=20, full_output=False, solver_opt=None):
+def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear', z=10, n=20,
+               full_output=False, root_method='lm', solver_opt=None):
     """
     SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
 
@@ -261,6 +274,10 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear',
         number points to solve density profiles
     full_output : bool, optional
         wheter to outputs all calculation info
+    root_method: string, optional
+        Method used un SciPy's root function
+        default 'lm',  other options: 'krylov', 'hybr'. See SciPy documentation
+        for more info
     solver_opt : dict, optional
         aditional solver options passed to SciPy solver
 
@@ -347,7 +364,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear',
         fobj = fobj_z_newton
         jac = None
 
-    sol = root(fobj, rointer.flatten(), method='lm', jac=jac,
+    sol = root(fobj, rointer.flatten(), method=root_method, jac=jac,
                args=(Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
                options=solver_opt)
 
