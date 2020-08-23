@@ -3,14 +3,14 @@ import numpy as np
 
 
 # Quadratic mixrule
-def qmr(X, T, ai, bi, order, Kij):
+def qmr(X, RT, ai, bi, order, Kij):
     '''
     Quadratic mixrule QMR
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     Kij : matrix of interaction parameters

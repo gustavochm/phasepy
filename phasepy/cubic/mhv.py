@@ -1,8 +1,9 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import nrtl, wilson, nrtlter, rk, unifac
-from ..actmodels import dnrtl, dwilson, dnrtlter, drk, dunifac
-from ..constants import R
+from ..actmodels import nrtl_aux, dnrtl_aux, nrtlter_aux, dnrtlter_aux
+from ..actmodels import wilson_aux, dwilson_aux
+from ..actmodels import rk_aux, drk_aux
+from ..actmodels import unifac_aux, dunifac_aux
 
 
 # Modified Huron Vidal Mixrule
@@ -110,14 +111,14 @@ def dem_solver(X, e, zm, c1, c2):
     return em, df0, d2f0
 
 
-def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
+def mhv(X, RT, ai, bi, c1, c2, ActModel, parameter):
     '''
     Modified Huron vidal mixrule
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     c1, c2: cubic eos constants
@@ -129,7 +130,7 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     am (mixture a term)
     bm (mixture b term)
     '''
-    e = ai/(bi*R*T)
+    e = ai/(bi*RT)
     # Pure component reduced volume
     U = (e-c1-c2-np.sqrt((e-c1-c2)**2-4*(c1*c2+e)))/2
     # Pure component fugacity at zero pressure
@@ -137,7 +138,7 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     # Mixture Fugacity
     bm = np.dot(bi, X)
     # Acivity coefficient
-    lngama = ActModel(X, T, *parameter)
+    lngama = ActModel(X, *parameter)
     Gex = np.dot(lngama, X)
 
     bibm = bi/bm
@@ -145,19 +146,19 @@ def mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
 
     zm = Gex + np.dot(z, X) - np.dot(logbibm, X)
     em, der = em_solver(X, e, zm, c1, c2)
-    am = em*bm*R*T
+    am = em*bm*RT
 
     return am, bm
 
 
-def dmhv(X, T, ai, bi, c1, c2, ActModel, parameter):
+def dmhv(X, RT, ai, bi, c1, c2, ActModel, parameter):
     '''
     Modified Huron vidal mixrule
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     c1, c2: cubic eos constants
@@ -173,7 +174,7 @@ def dmhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    e = ai/(bi*R*T)
+    e = ai/(bi*RT)
     # Pure component reduced volume
     U = (e-c1-c2-np.sqrt((e-c1-c2)**2-4*(c1*c2+e)))/2
     # Pure component fugacity at zero pressure
@@ -181,7 +182,7 @@ def dmhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     # Mixture Fugacity
     bm = np.dot(bi, X)
     # Acivity coefficient
-    lngama = ActModel(X, T, *parameter)
+    lngama = ActModel(X, *parameter)
     Gex = np.dot(lngama, X)
 
     bibm = bi/bm
@@ -189,13 +190,13 @@ def dmhv(X, T, ai, bi, c1, c2, ActModel, parameter):
 
     zm = Gex + np.dot(z, X) - np.dot(logbibm, X)
     em, der = em_solver(X, e, zm, c1, c2)
-    am = em*bm*R*T
+    am = em*bm*RT
 
     # Partial fugacity
     zp = lngama + z - logbibm + bibm - 1.
     dedn = (zp-zm)/der
     # Partial attractive term
-    ap = am + em*(bi-bm)*R*T + dedn*bm*R*T
+    ap = am + em*(bi-bm)*RT + dedn*bm*RT
 
     D = am
     Di = am + ap
@@ -205,14 +206,14 @@ def dmhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     return D, Di, B, Bi
 
 
-def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
+def d2mhv(X, RT, ai, bi, c1, c2, ActModel, parameter):
     '''
     Modified Huron vidal mixrule
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     c1, c2: cubic eos constants
@@ -230,8 +231,7 @@ def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     '''
     nc = len(X)
     dxjdni = np.eye(nc) - X
-    RT = R*T
-    e = ai/(bi*R*T)
+    e = ai/(bi*RT)
     U = (e-c1-c2-np.sqrt((e-c1-c2)**2-4*(c1*c2+e)))/2.
 
     # Pure component fugacity at zero pressure
@@ -239,7 +239,7 @@ def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     # Mixture Fugacity
     bm = np.dot(bi, X)
     # Acivity coefficient
-    lngama, dlng_dx = ActModel(X, T, *parameter)
+    lngama, dlng_dx = ActModel(X, *parameter)
     dlngama = dlng_dx@dxjdni.T
     Gex = np.dot(lngama, X)
 
@@ -269,8 +269,8 @@ def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     dem_dnij += dem_dn
 
     dap_dnij = dem_dnij * bm * RT
-    dap_dnij += R*T*np.outer(dbm_dn, dem_dn)
-    dap_dnij += R*T*np.outer(dem_dn, dbm_dn)
+    dap_dnij += RT*np.outer(dbm_dn, dem_dn)
+    dap_dnij += RT*np.outer(dem_dn, dbm_dn)
 
     D = am
     Di = am + ap
@@ -281,20 +281,20 @@ def d2mhv(X, T, ai, bi, c1, c2, ActModel, parameter):
     return D, Di, Dij, B, Bi, Bij
 
 
-def mhv_nrtl(X, T, ai, bi, order, c1, c2, alpha, g, g1):
+def mhv_nrtl(X, RT, ai, bi, order, c1, c2, tau, G):
     '''
     Modified Huron vidal mixrule with nrtl model
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
     c1, c2: cubic eos constants
-    alpha, g, g1 : array_like, parameters to evaluate nrtl model
+    tau, G : array_like, parameters to evaluate nrtl model
 
 
     Out :
@@ -305,33 +305,32 @@ def mhv_nrtl(X, T, ai, bi, order, c1, c2, alpha, g, g1):
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    parameter = (alpha, g, g1)
+    parameter = (tau, G)
     if order == 0:
-        mixparameters = mhv(X, T, ai, bi, c1, c2, nrtl, parameter)
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, nrtl_aux, parameter)
     elif order == 1:
-        mixparameters = dmhv(X, T, ai, bi, c1, c2, nrtl, parameter)
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, nrtl_aux, parameter)
     elif order == 2:
-        mixparameters = d2mhv(X, T, ai, bi, c1, c2, dnrtl, parameter)
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, dnrtl_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def mhv_wilson(X, T, ai, bi, order, c1, c2, Aij, vl):
+def mhv_wilson(X, RT, ai, bi, order, c1, c2, M):
     '''
     Modified Huron vidal mixrule with wilson model
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
     c1, c2: cubic eos constants
-    Aij : array_like, parameters to evaluate wilson model
-    vl : function to evaluate pure liquid volumes
+    M : array_like, parameters to evaluate wilson model
 
     Out :
     D (mixture a term)
@@ -341,32 +340,32 @@ def mhv_wilson(X, T, ai, bi, order, c1, c2, Aij, vl):
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    parameter = (Aij, vl)
+    parameter = (M, )
     if order == 0:
-        mixparameters = mhv(X, T, ai, bi, c1, c2, wilson, parameter)
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, wilson_aux, parameter)
     elif order == 1:
-        mixparameters = dmhv(X, T, ai, bi, c1, c2, wilson, parameter)
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, wilson_aux, parameter)
     elif order == 2:
-        mixparameters = d2mhv(X, T, ai, bi, c1, c2, dwilson, parameter)
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, dwilson_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def mhv_nrtlt(X, T, ai, bi, order, c1, c2, alpha, g, g1, D):
+def mhv_nrtlt(X, RT, ai, bi, order, c1, c2, tau, G, D):
     '''
     Modified Huron vidal mixrule with modified ternary nrtl model
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
     c1, c2: cubic eos constants
-    alpha, g, g1 : array_like, parameters to evaluate nrtl model
+    tau, G : array_like, parameters to evaluate nrtl model
     D : array_like, parameter to evaluate ternary term.
 
 
@@ -378,33 +377,33 @@ def mhv_nrtlt(X, T, ai, bi, order, c1, c2, alpha, g, g1, D):
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    parameter = (alpha, g, g1, D)
+    parameter = (tau, G, D)
 
     if order == 0:
-        mixparameters = mhv(X, T, ai, bi, c1, c2, nrtlter, parameter)
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, nrtlter_aux, parameter)
     elif order == 1:
-        mixparameters = dmhv(X, T, ai, bi, c1, c2, nrtlter, parameter)
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, nrtlter_aux, parameter)
     elif order == 2:
-        mixparameters = d2mhv(X, T, ai, bi, c1, c2, dnrtlter, parameter)
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, dnrtlter_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def mhv_rk(X, T, ai, bi, order, c1, c2, C, C1, combinatory):
+def mhv_rk(X, RT, ai, bi, order, c1, c2, G, combinatory):
     '''
     Modified Huron vidal mixrule with Redlich Kister model
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
     c1, c2: cubic eos constants
-    C, C1 : array_like, parameters to evaluate Redlich Kister polynomial
+    G : array_like, parameters to evaluate Redlich Kister polynomial
     combinatory: array_like, array_like, contains info of the order of
                  polynomial coefficients by pairs.
 
@@ -416,32 +415,32 @@ def mhv_rk(X, T, ai, bi, order, c1, c2, C, C1, combinatory):
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    parameter = (C, C1, combinatory)
+    parameter = (G, combinatory)
 
     if order == 0:
-        mixparameters = mhv(X, T, ai, bi, c1, c2, rk, parameter)
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, rk_aux, parameter)
     elif order == 1:
-        mixparameters = dmhv(X, T, ai, bi, c1, c2, rk, parameter)
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, rk_aux, parameter)
     elif order == 2:
-        mixparameters = d2mhv(X, T, ai, bi, c1, c2, drk, parameter)
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, drk_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def mhv_unifac(X, T, ai, bi, order, c1, c2, qi, ri, ri34, Vk, Qk,
-               tethai, a0, a1, a2):
+def mhv_unifac(X, RT, ai, bi, order, c1, c2, qi, ri, ri34, Vk, Qk,
+               tethai, amn, psi):
     '''
     Modified Huron vidal mixrule with UNIFAC model
 
     Inputs
     ----------
     X : molar fraction array [x1, x2, ..., xc]
-    T: Absolute temperature in K
+    RT: Absolute temperature in K plus R
     ai :  pure component attrative term in bar cm6/mol2
     bi :  pure component cohesive term in cm3/mol
     c1, c2: cubic eos constants
-    qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2: parameters to evaluae modified
+    qi, ri, ri34, Vk, Qk, tethai, amn, psi: parameters to evaluae modified
         Dortmund UNIFAC.
 
     Out :
@@ -452,13 +451,13 @@ def mhv_unifac(X, T, ai, bi, order, c1, c2, qi, ri, ri34, Vk, Qk,
     Bi (mixture b term first derivative)
     Bij (mixture a term second derivative)
     '''
-    parameter = (qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2)
+    parameter = (qi, ri, ri34, Vk, Qk, tethai, amn, psi)
     if order == 0:
-        mixparameters = mhv(X, T, ai, bi, c1, c2, unifac, parameter)
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, unifac_aux, parameter)
     elif order == 1:
-        mixparameters = dmhv(X, T, ai, bi, c1, c2, unifac, parameter)
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, unifac_aux, parameter)
     elif order == 2:
-        mixparameters = d2mhv(X, T, ai, bi, c1, c2, dunifac, parameter)
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, dunifac_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters

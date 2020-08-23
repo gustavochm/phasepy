@@ -1,17 +1,17 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from ..actmodels import nrtl, wilson, nrtlter, rk, unifac
-from ..actmodels import dnrtl, dwilson, dnrtlter, drk, dunifac
-from ..constants import R
+from ..actmodels import nrtl_aux, dnrtl_aux, nrtlter_aux, dnrtlter_aux
+from ..actmodels import wilson_aux, dwilson_aux
+from ..actmodels import rk_aux, drk_aux
+from ..actmodels import unifac_aux, dunifac_aux
 
 
-def ws(X, T, ai, bi, C, Kij, ActModel, parameter):
+def ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
 
     # Acivity coefficient
-    lngama = ActModel(X, T, *parameter)
+    lngama = ActModel(X, *parameter)
     Gex = np.dot(lngama, X)
 
-    RT = R*T
     # Mixrule parameters
     ei = ai/(bi*RT)
     biaiRT = bi - ai/RT
@@ -30,13 +30,12 @@ def ws(X, T, ai, bi, C, Kij, ActModel, parameter):
     return am, bm
 
 
-def dws(X, T, ai, bi, C, Kij, ActModel, parameter):
+def dws(X, RT, ai, bi, C, Kij, ActModel, parameter):
 
     # Acivity coefficient
-    lngama = ActModel(X, T, *parameter)
+    lngama = ActModel(X, *parameter)
     Gex = np.dot(lngama, X)
 
-    RT = R*T
     # Mixrule parameters
     ei = ai/(bi*RT)
     biaiRT = bi - ai/RT
@@ -59,15 +58,13 @@ def dws(X, T, ai, bi, C, Kij, ActModel, parameter):
     return am, Di, bm, Bi
 
 
-def d2ws(X, T, ai, bi, C, Kij, ActModel, parameter):
+def d2ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
 
     # Acivity coefficient
-    lngama, dlngama = ActModel(X, T, *parameter)
+    lngama, dlngama = ActModel(X, *parameter)
     Gex = np.dot(lngama, X)
 
-    RT = R*T
     # Mixrule parameters
-
     ei = ai/(bi*RT)
     biaiRT = bi - ai/RT
     abij = np.add.outer(biaiRT, biaiRT)/2
@@ -103,67 +100,67 @@ def d2ws(X, T, ai, bi, C, Kij, ActModel, parameter):
     return am, da_dn, da_dnij, bm, db_dn, db_dnij
 
 
-def ws_nrtl(X, T, ai, bi, order, C, Kij, alpha, g, g1):
-    parameter = (alpha, g, g1)
+def ws_nrtl(X, T, ai, bi, order, C, Kij, tau, G):
+    parameter = (tau, G)
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, nrtl, parameter)
+        mixparameters = ws(X, T, ai, bi, C, Kij, nrtl_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, nrtl, parameter)
+        mixparameters = dws(X, T, ai, bi, C, Kij, nrtl_aux, parameter)
     elif order == 2:
-        mixparameters = dws(X, T, ai, bi, C, Kij, dnrtl, parameter)
+        mixparameters = d2ws(X, T, ai, bi, C, Kij, dnrtl_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def ws_nrtlt(X, T, ai, bi, order, C, Kij, alpha, g, g1, D):
-    parameter = (alpha, g, g1, D)
+def ws_nrtlt(X, RT, ai, bi, order, C, Kij, tau, G, D):
+    parameter = (tau, G, D)
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, nrtlter, parameter)
+        mixparameters = ws(X, RT, ai, bi, C, Kij, nrtlter_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, nrtlter, parameter)
+        mixparameters = dws(X, RT, ai, bi, C, Kij, nrtlter_aux, parameter)
     elif order == 2:
-        mixparameters = dws(X, T, ai, bi, C, Kij, dnrtlter, parameter)
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, dnrtlter_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def ws_wilson(X, T, ai, bi, order, C, Kij, Aij, vl):
-    parameter = (Aij, vl)
+def ws_wilson(X, RT, ai, bi, order, C, Kij, M):
+    parameter = (M, )
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, wilson, parameter)
+        mixparameters = ws(X, RT, ai, bi, C, Kij, wilson_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, wilson, parameter)
+        mixparameters = dws(X, RT, ai, bi, C, Kij, wilson_aux, parameter)
     elif order == 2:
-        mixparameters = dws(X, T, ai, bi, C, Kij, dwilson, parameter)
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, dwilson_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def ws_rk(X, T, ai, bi, order, C, Kij, Crk, Crk1, combinatory):
-    parameter = (Crk, Crk1, combinatory)
+def ws_rk(X, RT, ai, bi, order, C, Kij, G, combinatory):
+    parameter = (G, combinatory)
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, rk, parameter)
+        mixparameters = ws(X, RT, ai, bi, C, Kij, rk_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, rk, parameter)
+        mixparameters = dws(X, RT, ai, bi, C, Kij, rk_aux, parameter)
     elif order == 2:
-        mixparameters = d2ws(X, T, ai, bi, C, Kij, drk, parameter)
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, drk_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
-def ws_unifac(X, T, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
-              tethai, a0, a1, a2):
-    parameter = (qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2)
+def ws_unifac(X, RT, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
+              tethai, amn, psi):
+    parameter = (qi, ri, ri34, Vk, Qk, tethai, amn, psi)
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, unifac, parameter)
+        mixparameters = ws(X, RT, ai, bi, C, Kij, unifac_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, unifac, parameter)
+        mixparameters = dws(X, RT, ai, bi, C, Kij, unifac_aux, parameter)
     elif order == 2:
-        mixparameters = d2ws(X, T, ai, bi, C, Kij, dunifac, parameter)
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, dunifac_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters

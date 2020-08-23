@@ -99,6 +99,13 @@ class vtcubicm():
         a = self.oma*(R*self.Tc)**2*alpha/self.Pc
         return a
 
+    def temperature_aux(self, T):
+        RT = R*T
+        ai = self.a_eos(T)
+        mixingrulep = self.mixrule_temp(T)
+        temp_aux = (RT, T, ai, mixingrulep)
+        return temp_aux
+
     def _Zroot(self, A, B, C):
 
         a1 = (self.c1+self.c2-1)*B-1 + 3 * C
@@ -134,11 +141,11 @@ class vtcubicm():
         Z : array_like
             roots of Z polynomial
         '''
-        a = self.a_eos(T)
+        RT, T, ai, mixingrulep = self.temperature_aux(T)
+        # a = self.a_eos(T)
         c = self.c
-        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
+        am, bm = self.mixrule(X, RT, ai, self.b, 0, *mixingrulep)
         cm = np.dot(X, c)
-        RT = R*T
         A = am*P/RT**2
         B = bm*P/RT
         C = cm*P/RT
@@ -166,17 +173,16 @@ class vtcubicm():
         P : float
             pressure in bar
         """
+        RT, T, ai, mixingrulep = self.temperature_aux(T)
 
-        a = self.a_eos(T)
-        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
+        am, bm = self.mixrule(X, RT, ai, self.b, 0, *mixingrulep)
         cm = np.dot(X, self.c)
-        P = R*T/(v+cm-bm)-am/((v+cm+self.c1*bm)*(v+cm+self.c2*bm))
+        P = RT/(v+cm-bm)-am/((v+cm+self.c1*bm)*(v+cm+self.c2*bm))
         return P
 
     # Auxiliar method that computes volume roots
-    def _volume_solver(self, P, T, D, B, C, state):
+    def _volume_solver(self, P, RT, D, B, C, state):
 
-        RT = R*T
         Dr = D*P/RT**2
         Br = B*P/RT
         Cr = C*P/RT
@@ -187,7 +193,7 @@ class vtcubicm():
             Z = np.max(self._Zroot(Dr, Br, Cr))
         else:
             raise Exception('Valid states: L for liquids and V for vapor ')
-        V = (R*T*Z)/P
+        V = (RT*Z)/P
 
         return V
 
@@ -214,52 +220,32 @@ class vtcubicm():
         density: float
             density vector of the mixture in mol/cm3
         """
+        RT, T, ai, mixingrulep = self.temperature_aux(T)
 
-        b = self.b
-        a = self.a_eos(T)
+        bi = self.b
         c = self.c
-        D, B = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         C = np.dot(X, c)
 
-        V = self._volume_solver(P, T, D, B, C, state)
+        V = self._volume_solver(P, RT, D, B, C, state)
 
         rho = 1. / V
         return rho
 
-    def logfugef(self, X, T, P, state, v0=None):
-        """
-        logfugef(X, T, P, state)
+    def logfugef_aux(self, X, temp_aux, P, state, v0=None):
 
-        Method that computes the effective fugacity coefficients  at given
-        composition, temperature and pressure.
+        RT, T, ai, mixingrulep = temp_aux
 
-        Parameters
-        ----------
-
-        X : array_like, mole fraction vector
-        T : absolute temperature in K
-        P : pressure in bar
-        state : 'L' for liquid phase and 'V' for vapour phase
-
-        Returns
-        -------
-        logfug: array_like
-            effective fugacity coefficients
-        v0 : float
-            volume of phase, if calculated
-        """
         c1 = self.c1
         c2 = self.c2
 
         bi = self.b
-        ai = self.a_eos(T)
         Ci = self.c
         C = np.dot(X, Ci)
 
-        D, Di, B, Bi = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
-        V = self._volume_solver(P, T, D, B, C, state)
+        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, C, state)
 
-        RT = R*T
         Z = P*V/RT
 
         D_T = D/T
@@ -287,12 +273,12 @@ class vtcubicm():
 
         return logfug, V
 
-    def dlogfugef(self, X, T, P, state, v0=None):
+    def logfugef(self, X, T, P, state, v0=None):
         """
-        dlogfugef(X, T, P, state)
+        logfugef(X, T, P, state)
 
-        Method that computes the effective fugacity coefficients and its
-        composition derivatives at given composition, temperature and pressure.
+        Method that computes the effective fugacity coefficients  at given
+        composition, temperature and pressure.
 
         Parameters
         ----------
@@ -306,25 +292,29 @@ class vtcubicm():
         -------
         logfug: array_like
             effective fugacity coefficients
-        dlogfug: array_like
-            derivatives of effective fugacity coefficients
         v0 : float
             volume of phase, if calculated
         """
+
+        temp_aux = self.temperature_aux(T)
+        logfug, V = self.logfugef_aux(X, temp_aux, P, state, v0)
+
+        return logfug, V
+
+    def dlogfugef_aux(self, X, temp_aux, P, state, v0=None):
+
+        RT, T, ai, mixingrulep = temp_aux
         c1 = self.c1
         c2 = self.c2
 
         bi = self.b
-        ai = self.a_eos(T)
         Ci = self.c
         C = np.dot(X, Ci)
         Cij = 0.
 
-        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2,
-                                              *self.mixruleparameter)
-        V = self._volume_solver(P, T, D, B, C, state)
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, RT, ai, bi, 2, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, C, state)
 
-        RT = R * T
         Z = P * V / RT
 
         D_T = D/T
@@ -404,6 +394,63 @@ class vtcubicm():
 
         return logfug, dlogfugef, V
 
+    def dlogfugef(self, X, T, P, state, v0=None):
+        """
+        dlogfugef(X, T, P, state)
+
+        Method that computes the effective fugacity coefficients and its
+        composition derivatives at given composition, temperature and pressure.
+
+        Parameters
+        ----------
+
+        X : array_like, mole fraction vector
+        T : absolute temperature in K
+        P : pressure in bar
+        state : 'L' for liquid phase and 'V' for vapour phase
+
+        Returns
+        -------
+        logfug: array_like
+            effective fugacity coefficients
+        dlogfug: array_like
+            derivatives of effective fugacity coefficients
+        v0 : float
+            volume of phase, if calculated
+        """
+
+        temp_aux = self.temperature_aux(T)
+        logfug, dlogfugef, V = self.dlogfugef_aux(X, temp_aux, P, state, v0)
+
+        return logfug, dlogfugef, V
+
+    def logfugmix_aux(self, X, temp_aux, P, state, v0=None):
+
+        RT, T, ai, mixingrulep = temp_aux
+
+        c1 = self.c1
+        c2 = self.c2
+
+        bi = self.b
+        c = self.c
+        cm = np.dot(X, c)
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, cm, state)
+
+        Z = P * V / RT
+        am = D
+        bm = B
+
+        A = am * P / RT**2
+        B = bm * P/RT
+        C = cm * P/RT
+
+        logfug = Z - 1 - np.log(Z+C-B)
+        logfug -= (A/(c2-c1)/B)*np.log((Z+C+c2*B)/(Z+C+c1*B))
+
+        return logfug, V
+
     def logfugmix(self, X, T, P, state, v0=None):
         """
         logfugmix(X, T, P, state)
@@ -428,56 +475,18 @@ class vtcubicm():
         lofgfug : array_like
             effective fugacity coefficients
         """
-
-        c1 = self.c1
-        c2 = self.c2
-
-        b = self.b
-        a = self.a_eos(T)
-        c = self.c
-        cm = np.dot(X, c)
-
-        D, B = self.mixrule(X, T, a, b, 0, *self.mixruleparameter)
-        V = self._volume_solver(P, T, D, B, cm, state)
-
-        RT = R * T
-        Z = P * V / (R*T)
-        am = D
-        bm = B
-
-        A = am * P / RT**2
-        B = bm * P/RT
-        C = cm * P/RT
-
-        logfug = Z - 1 - np.log(Z+C-B)
-        logfug -= (A/(c2-c1)/B)*np.log((Z+C+c2*B)/(Z+C+c1*B))
+        temp_aux = self.temperature_aux(T)
+        logfug, V = self.logfugmix_aux(X, temp_aux, P, state, v0)
 
         return logfug, V
 
-    def a0ad(self, roa, T):
-        """
-        a0ad(roa, T)
+    def a0ad_aux(self, roa, temp_aux):
 
-        Method that computes the adimenstional Helmholtz density energy at
-        given density and temperature.
-
-        Parameters
-        ----------
-
-        roa : array_like
-            adimentional density vector
-        T : float
-            absolute temperature in K
-
-        Returns
-        -------
-        a0ad: float
-            adimenstional Helmholtz density energy
-        """
+        RT, T, ai, mixingrulep = temp_aux
 
         c1 = self.c1
         c2 = self.c2
-        ai = self.a_eos(T)
+
         bi = self.b
         ci = self.c
         a = ai[0]
@@ -486,7 +495,7 @@ class vtcubicm():
         X = roa/ro
 
         C = np.dot(X, ci)
-        D, B = self.mixrule(X, T, ai, bi, 0, *self.mixruleparameter)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
 
         V = b/ro
         D_T = D/T
@@ -511,7 +520,33 @@ class vtcubicm():
 
         return a0
 
-    def muad(self, roa, T):
+    def a0ad(self, roa, T):
+        """
+        a0ad(roa, T)
+
+        Method that computes the adimenstional Helmholtz density energy at
+        given density and temperature.
+
+        Parameters
+        ----------
+
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------
+        a0ad: float
+            adimenstional Helmholtz density energy
+        """
+
+        temp_aux = self.temperature_aux(T)
+        a0 = self.a0ad_aux(roa, temp_aux)
+
+        return a0
+
+    def muad_aux(self, roa, temp_aux):
         """
         muad(roa, T)
 
@@ -532,9 +567,10 @@ class vtcubicm():
             adimentional chemical potential vector
         """
 
+        RT, T, ai, mixingrulep = temp_aux
+
         c1 = self.c1
         c2 = self.c2
-        ai = self.a_eos(T)
         bi = self.b
         a = ai[0]
         b = bi[0]
@@ -543,11 +579,10 @@ class vtcubicm():
 
         Ci = self.c
         C = np.dot(X, Ci)
-        D, Di, B, Bi = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
+        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
 
         adfactor = b/a
         V = b/ro
-        RT = R*T
         RT_V = RT/V
 
         D_T = D/T
@@ -578,12 +613,12 @@ class vtcubicm():
 
         return mui
 
-    def dmuad(self, roa, T):
+    def muad(self, roa, T):
         """
         muad(roa, T)
 
-        Method that computes the adimenstional chemical potential and its
-        derivatives at given density and temperature.
+        Method that computes the adimenstional chemical potential at given
+        density and temperature.
 
         Parameters
         ----------
@@ -597,13 +632,18 @@ class vtcubicm():
         -------
         muad : array_like
             adimentional chemical potential vector
-        muad : array_like
-            adimentional derivatives of chemical potential vector
         """
+
+        temp_aux = self.temperature_aux(T)
+        mui = self.muad_aux(roa, temp_aux)
+
+        return mui
+
+    def dmuad_aux(self, roa, temp_aux):
+        RT, T, ai, mixingrulep = temp_aux
 
         c1 = self.c1
         c2 = self.c2
-        ai = self.a_eos(T)
         bi = self.b
         a = ai[0]
         b = bi[0]
@@ -613,8 +653,7 @@ class vtcubicm():
         Ci = self.c
         Cij = 0
         C = np.dot(X, Ci)
-        D, Di, Dij, B, Bi, Bij = self.mixrule(X, T, ai, bi, 2,
-                                              *self.mixruleparameter)
+        D, Di, Dij, B, Bi, Bij = self.mixrule(X, RT, ai, bi, 2, *mixingrulep)
 
         adfactor = b/a
         V = b/ro
@@ -631,21 +670,17 @@ class vtcubicm():
 
         gb = -1./VCB
         gc = -gb
-        # gv = -1./V - gb
 
         fv = -1./(R*VCc1B*VCc2B)
         fb = - (f + (V+C) * fv)/B
         fc = fv
 
         gbv = gb**2
-        # gcv = - gbv
-        # gvv = 1./V**2 - gbv
         gbb = - gbv
         gcc = - gbv
         gbc = gbv
 
         fvv = (1./(VCc1B*VCc2B**2) + 1./(VCc1B**2*VCc2B))/R
-        # fcv = fvv
         fcc = fvv
         fbv = - (2*fv + (V+C) * fvv)/B
         fbb = - (2*fb + (V+C) * fbv)/B
@@ -656,14 +691,8 @@ class vtcubicm():
         Fd = - f / T
         Fc = - gc - D_T * fc
 
-        # Fnv = -gv
         Fnb = -gb
         Fnc = -gc
-
-        # Fbv = -gbv - D_T * fbv
-        # Fcv = -gcv - D_T * fcv
-        # Fvv = -gvv - D_T * fvv
-        # Fdv = -fv/T
 
         Fbd = -fb/T
         Fbb = -gbb - D_T * fbb
@@ -702,6 +731,39 @@ class vtcubicm():
 
         return mui, dmui
 
+    def dmuad(self, roa, T):
+        """
+        muad(roa, T)
+
+        Method that computes the adimenstional chemical potential and its
+        derivatives at given density and temperature.
+
+        Parameters
+        ----------
+
+        roa : array_like
+            adimentional density vector
+        T : float
+            absolute temperature in K
+
+        Returns
+        -------
+        muad : array_like
+            adimentional chemical potential vector
+        muad : array_like
+            adimentional derivatives of chemical potential vector
+        """
+
+        temp_aux = self.temperature_aux(T)
+        mui, dmui = self.dmuad_aux(roa, temp_aux)
+
+        return mui, dmui
+
+    def dOm_aux(self, roa, temp_aux, mu, Psat):
+        a0ad = self.a0ad_aux(roa, temp_aux)
+        dom = a0ad - np.sum(np.nan_to_num(roa*mu)) + Psat
+        return dom
+
     def dOm(self, roa, T, mu, Psat):
         """
         dOm(roa, T, mu, Psat)
@@ -726,7 +788,9 @@ class vtcubicm():
         dom: float
             Thermodynamic Grand potential
         """
-        dom = self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
+        temp_aux = self.temperature_aux(T)
+        dom = self.dOm_aux(roa, temp_aux, mu, Psat)
+
         return dom
 
     def _lnphi0(self, T, P):
