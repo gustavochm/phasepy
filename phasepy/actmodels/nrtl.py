@@ -4,6 +4,18 @@ from .actmodels_cy import nrtl_cy, rkter_nrtl_cy
 from .actmodels_cy import dnrtl_cy, drkter_nrtl_cy
 
 
+def nrtl_aux(X, tau, G):
+    X = np.asarray(X, dtype=np.float64)
+    lngama = nrtl_cy(X, tau, G)
+    return lngama
+
+
+def dnrtl_aux(X, tau, G):
+    X = np.asarray(X, dtype=np.float64)
+    lngama, dlngama = dnrtl_cy(X, tau, G)
+    return lngama, dlngama
+
+
 def nrtl(X, T, alpha, g, g1):
     '''
     NRTL activity coefficient model.
@@ -36,6 +48,29 @@ def nrtl(X, T, alpha, g, g1):
     lngama = nrtl_cy(X, tau, G)
 
     return lngama
+
+
+def nrtlter_aux(X, tau, G, D):
+    X = np.asarray(X, dtype=np.float64)
+    lngama = nrtl_cy(X, tau, G)
+
+    xd = X*D
+    lngama += rkter_nrtl_cy(X, xd)
+    # lngama += nrtl(X, T, alpha, g, g1)
+    return lngama
+
+
+def dnrtlter_aux(X, tau, G, D):
+    X = np.asarray(X, dtype=np.float64)
+
+    xd = X*D
+    lngamaD, dlngamaD = drkter_nrtl_cy(X, xd, D)
+    lngama, dlngama = dnrtl_cy(X, tau, G)
+
+    lngama += lngamaD
+    dlngama += dlngamaD
+
+    return lngama, dlngama
 
 
 def nrtlter(X, T, alpha, g, g1, D):

@@ -3,6 +3,18 @@ import numpy as np
 from .actmodels_cy import wilson_cy, dwilson_cy
 
 
+def wilson_aux(X, M):
+    X = np.asarray(X, dtype=np.float64)
+    lngama = wilson_cy(X, M)
+    return lngama
+
+
+def dwilson_aux(X, M):
+    X = np.asarray(X, dtype=np.float64)
+    lngama, dlngama = dwilson_cy(X, M)
+    return lngama, dlngama
+
+
 def wilson(X, T, A, vl):
     '''
     Wilson activity coefficient model

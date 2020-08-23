@@ -2,6 +2,92 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 
 
+def unifac_aux(x, qi, ri, ri34, Vk, Qk, tethai, amn, psi):
+
+    # Combinatory part
+    rx = np.dot(x, ri)
+    r34x = np.dot(x, ri34)
+    qx = np.dot(x, qi)
+    phi = ri34/r34x
+    phi_tetha = (ri*qx) / (qi*rx)
+    lngamac = np.log(phi)
+    lngamac += 1 - phi
+    lngamac -= 5*qi*(np.log(phi_tetha)+1-phi_tetha)
+
+    # Residual part
+    Xm = x@Vk
+    Xm = Xm/Xm.sum()
+    tetha = Xm*Qk
+    tetha /= tetha.sum()
+
+    SumA = tetha@psi
+    SumB = (psi*tetha)@(1./SumA)
+    Gm = Qk * (1 - np.log(SumA) - SumB)
+
+    SumAi = tethai@psi
+    SumBi = np.tensordot((tethai/SumAi), psi, axes=(1, 1))
+    Gi = Qk * (1 - np.log(SumAi) - SumBi)
+
+    lngamar = (Vk*(Gm - Gi)).sum(axis=1)
+
+    return lngamac + lngamar
+
+
+def dunifac_aux(x, qi, ri, ri34, Vk, Qk, tethai, amn, psi):
+
+    # nc = len(x)
+    # ng = len(Qk)
+
+    # Combinatory part
+    rx = np.dot(x, ri)
+    r34x = np.dot(x, ri34)
+    qx = np.dot(x, qi)
+    phi = ri34/r34x
+    phi_tetha = (ri*qx) / (qi*rx)
+    lngamac = np.log(phi)
+    lngamac += 1 - phi
+    lngamac -= 5*qi*(np.log(phi_tetha)+1-phi_tetha)
+
+    dphi = - np.outer(ri34, ri34)/r34x**2
+    dphi_tetha = np.outer(ri/qi, rx*qi - ri*qx) / rx**2
+    dlngamac = (dphi * (1/phi - 1)).T
+    dlngamac -= 5*qi*(dphi_tetha.T * (1/phi_tetha - 1))
+
+    # Residual part
+    Xm1 = x@Vk
+    Xm1s = Xm1.sum()
+    dXm1s = np.sum(Vk, axis=1)
+    Xm = Xm1 / Xm1s
+    dXm = (Vk * Xm1s - np.outer(dXm1s, Xm1))/Xm1s**2
+
+    tetha1 = Xm*Qk
+    tetha1s = tetha1.sum()
+    tetha = tetha1/tetha1s
+    dtetha = ((Qk*dXm)*tetha1s-np.outer(dXm@Qk, tetha1))/tetha1s**2
+
+    SumA = tetha@psi
+    dSumA = dtetha@psi
+    dter1 = (dSumA / SumA).T
+
+    SumB = (psi*tetha)@(1./SumA)
+    dSumB = (psi/SumA)@dtetha.T - (tetha*psi/SumA**2)@dSumA.T
+
+    Gm = Qk * (1 - np.log(SumA) - SumB)
+    dlnGk = (Qk * (- dter1 - dSumB).T).T
+
+    SumAi = tethai@psi
+    SumBi = np.tensordot((tethai/SumAi), psi, axes=(1, 1))
+    Gi = Qk * (1 - np.log(SumAi) - SumBi)
+
+    lngamar = (Vk*(Gm - Gi)).sum(axis=1)
+    dlngamar = Vk@dlnGk
+
+    lngama = lngamac + lngamar
+    dlngama = dlngamac + dlngamar
+
+    return lngama, dlngama
+
+
 def unifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
     '''
     Dortmund UNIFAC activity coefficient model for multicomponent mixtures.

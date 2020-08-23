@@ -3,6 +3,27 @@ import numpy as np
 from .actmodels_cy import rkb_cy, rk_cy, drk_cy
 
 
+def rkb_aux(x, G):
+    x = np.asarray(x, dtype=np.float64)
+    Mp = rkb_cy(x, G)
+    return Mp
+
+
+def rk_aux(x, G, combinatory):
+    x = np.asarray(x, dtype=np.float64)
+    ge, dge = rk_cy(x, G, combinatory)
+    Mp = ge + dge - np.dot(dge, x)
+    return Mp
+
+
+def drk_aux(x, G, combinatory):
+    x = np.asarray(x, dtype=np.float64)
+    ge, dge, d2ge = drk_cy(x, G, combinatory)
+    Mp = ge + dge - np.dot(dge, x)
+    dMp = d2ge - d2ge@x
+    return Mp, dMp
+
+
 def rkb(x, T, C, C1):
     '''
     Redlich-Kister activity coefficient model for multicomponent mixtures.
