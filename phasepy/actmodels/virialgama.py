@@ -71,7 +71,10 @@ class virialgamma():
                 raise Exception('NRTL parameters needed')
 
         elif actmodel == 'nrtlt':
-            if hasattr(mix, 'g') and hasattr(mix, 'alpha') and hasattr(mix, 'rkternario'):
+            bool1 = hasattr(mix, 'g')
+            bool2 = hasattr(mix, 'alpha')
+            bool3 = hasattr(mix, 'rkternario')
+            if bool1 and bool2 and bool3:
                 self.actmodel = nrtlter
                 self.dactmodel = dnrtlter
                 self.actmodel_aux = nrtlter_aux
