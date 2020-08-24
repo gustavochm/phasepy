@@ -44,7 +44,10 @@ def mixingrule_fcn(self, mix, mixrule):
             raise Exception('NRTL parameters needed')
 
     elif mixrule == 'mhv_nrtlt':
-        if hasattr(mix, 'g') and hasattr(mix, 'alpha') and hasattr(mix, 'rkternario'):
+        bool1 = hasattr(mix, 'g')
+        bool2 = hasattr(mix, 'alpha')
+        bool3 = hasattr(mix, 'rkternario')
+        if bool1 and bool2 and bool3:
             self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternario)
             self.mixruleparameter = (self.c1, self.c2, mix.alpha, mix.g,
                                      mix.g1, mix.rkternario)
@@ -93,7 +96,8 @@ def mixingrule_fcn(self, mix, mixrule):
                 qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2 = self.unifac
                 amn = a0 + a1 * T + a2 * T**2
                 psi = np.exp(-amn/T)
-                aux = (self.c1, self.c2, qi, ri, ri34, Vk, Qk, tethai, amn, psi)
+                aux = (self.c1, self.c2, qi, ri, ri34, Vk, Qk, tethai,
+                       amn, psi)
                 return aux
             self.mixrule_temp = mixrule_temp.__get__(self)
 
@@ -218,7 +222,8 @@ def mixingrule_fcn(self, mix, mixrule):
             qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2 = self.unifac
             amn = a0 + a1 * T + a2 * T**2
             psi = np.exp(-amn/T)
-            aux = (self.Cws, self.Kijws, qi, ri, ri34, Vk, Qk, tethai, amn, psi)
+            aux = (self.Cws, self.Kijws, qi, ri, ri34, Vk, Qk, tethai,
+                   amn, psi)
             return aux
         self.mixrule_temp = mixrule_temp.__get__(self)
     else:

@@ -1,15 +1,15 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
-from scipy.optimize import fsolve, root
+from scipy.optimize import root
 from scipy.integrate import cumtrapz
 from .cijmix_cy import cmix_cy
 from .tensionresult import TensionResult
 
 
-def fobj_sk(inc, spath, T, mu0, ci, sqrtci, model):
-    ro = inc[:-1]
+def fobj_sk(inc, spath, temp_aux, mu0, ci, sqrtci, model):
+    ro = np.abs(inc[:-1])
     alpha = inc[-1]
-    mu = model.muad(ro, T)
+    mu = model.muad_aux(ro, temp_aux)
     obj = np.zeros_like(inc)
     obj[:-1] = mu - (mu0 + alpha*sqrtci)
     obj[-1] = spath - sqrtci.dot(ro)
@@ -32,9 +32,10 @@ def ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n=200, full_output=False,
     ci = np.diag(cij)
     sqrtci = np.sqrt(ci)
 
-    mu0 = model.muad(ro1a, Tsat)
+    temp_aux = model.temperature_aux(Tsat)
 
-    mu02 = model.muad(ro2a, Tsat)
+    mu0 = model.muad_aux(ro1a, temp_aux)
+    mu02 = model.muad_aux(ro2a, temp_aux)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
 
@@ -51,16 +52,17 @@ def ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n=200, full_output=False,
     i = 1
     r0 = ro1a + deltaro * (spath[i]-s0) / n
     if alpha0 is None:
-        alpha0 = np.mean((model.muad(r0, Tsat) - mu0)/sqrtci)
+        alpha0 = np.mean((model.muad_aux(r0, temp_aux) - mu0)/sqrtci)
     r0 = np.hstack([r0, alpha0])
-    ro0 = root(fobj_sk, r0, args=(spath[i], Tsat, mu0, ci, sqrtci, model),
+    ro0 = root(fobj_sk, r0, args=(spath[i], temp_aux, mu0, ci, sqrtci, model),
                method='lm')
     ro0 = ro0.x
-    ro[:, i] = ro0[:-1]
+    ro[:, i] = np.abs(ro0[:-1])
 
     for i in range(1, n):
-        ro0 = fsolve(fobj_sk, ro0,
-                     args=(spath[i], Tsat, mu0, ci, sqrtci, model))
+        sol = root(fobj_sk, ro0, args=(spath[i], temp_aux, mu0, ci,
+                   sqrtci, model), method='lm')
+        ro0 = sol.x
         alphas[i] = ro0[-1]
         ro[:, i] = ro0[:-1]
 
@@ -70,7 +72,7 @@ def ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n=200, full_output=False,
     suma = cmix_cy(drods, cij)
     dom = np.zeros(n)
     for k in range(1, n - 1):
-        dom[k] = model.dOm(ro[:, k], Tsat, mu0, Pad)
+        dom[k] = model.dOm_aux(ro[:, k], temp_aux, mu0, Pad)
 
     integral = np.nan_to_num(np.sqrt(2*dom*suma))
     tension = np.abs(np.trapz(integral, spath))

@@ -7,12 +7,13 @@ from scipy.interpolate import interp1d
 from .cijmix_cy import cmix_cy
 
 
-def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
+def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, temp_aux, cij, n,
+                  nc, model):
     rointer = np.abs(rointer.reshape([nc, n]))
     dmu = np.zeros([n, nc])
 
     for i in range(n):
-        dmu[i] = model.muad(rointer[:, i], T)
+        dmu[i] = model.muad_aux(rointer[:, i], temp_aux)
     dmu -= mu0
     dmu = dmu.T
 
@@ -25,7 +26,8 @@ def fobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     return fo.flatten()
 
 
-def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
+def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, temp_aux, cij, n,
+                   nc, model):
 
     index0 = rointer < 0
     rointer = np.abs(rointer.reshape([nc, n]))
@@ -33,7 +35,7 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, T, cij, n, nc, model):
     d2mu = np.zeros([n, nc, nc])
 
     for i in range(n):
-        dmu[i], d2mu[i] = model.dmuad(rointer[:, i], T)
+        dmu[i], d2mu[i] = model.dmuad_aux(rointer[:, i], temp_aux)
     dmu -= mu0
     dmu = dmu.T
     d2mu = d2mu.T
@@ -123,9 +125,11 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         warning = 'Determinant of influence parameters matrix is: {}'
         raise Exception(warning.format(dcij))
 
+    temp_aux = model.temperature_aux(Tsat)
+
     # Chemical potential
-    mu0 = model.muad(rho1a, Tsat)
-    mu02 = model.muad(rho2a, Tsat)
+    mu0 = model.muad_aux(rho1a, temp_aux)
+    mu02 = model.muad_aux(rho2a, temp_aux)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
 
@@ -201,8 +205,8 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         dro11 = np.outer(rho2a, A1)  # cte
 
         sol = root(fobj, rointer.flatten(), method=root_method, jac=jac,
-                   args=(Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
-                   options=solver_opt)
+                   args=(Binter, dro20, dro21, mu0, temp_aux, cij, n, nc,
+                   model), options=solver_opt)
 
         rointer = sol.x
         rointer = np.abs(rointer.reshape([nc, n]))
@@ -214,7 +218,7 @@ def sgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         suma = cmix_cy(dro, cij)
         dom = np.zeros(n)
         for k in range(n):
-            dom[k] = model.dOm(rointer[:, k], Tsat, mu0, Pad)
+            dom[k] = model.dOm_aux(rointer[:, k], temp_aux, mu0, Pad)
         dom[dom < 0] = 0.
         intten = np.nan_to_num(np.sqrt(2*suma*dom))
         ten = np.dot(intten, weights)
@@ -302,9 +306,11 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear', z=10, n=20,
         warning = 'Determinant of influence parameters matrix is: {}'
         raise Exception(warning.format(dcij))
 
+    temp_aux = model.temperature_aux(Tsat)
+
     # Chemical potential
-    mu0 = model.muad(rho1a, Tsat)
-    mu02 = model.muad(rho2a, Tsat)
+    mu0 = model.muad_aux(rho1a, temp_aux)
+    mu02 = model.muad_aux(rho2a, temp_aux)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
 
@@ -365,7 +371,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear', z=10, n=20,
         jac = None
 
     sol = root(fobj, rointer.flatten(), method=root_method, jac=jac,
-               args=(Binter, dro20, dro21, mu0, Tsat, cij, n, nc, model),
+               args=(Binter, dro20, dro21, mu0, temp_aux, cij, n, nc, model),
                options=solver_opt)
 
     rointer = sol.x
@@ -378,7 +384,7 @@ def sgt_zfixed(rho1, rho2, Tsat, Psat, model, rho0='linear', z=10, n=20,
     suma = cmix_cy(dro, cij)
     dom = np.zeros(n)
     for k in range(n):
-        dom[k] = model.dOm(rointer[:, k], Tsat, mu0, Pad)
+        dom[k] = model.dOm_aux(rointer[:, k], temp_aux, mu0, Pad)
     dom[dom < 0] = 0.
     intten = np.nan_to_num(np.sqrt(2*suma*dom))
     ten = np.dot(intten, weights)

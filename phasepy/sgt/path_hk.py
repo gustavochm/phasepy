@@ -6,9 +6,9 @@ from .cijmix_cy import cmix_cy
 from .tensionresult import TensionResult
 
 
-def fobj_beta0(dro, ro1, dh2, s, T, mu0, ci, sqrtci, model):
+def fobj_beta0(dro, ro1, dh2, s, temp_aux, mu0, ci, sqrtci, model):
     ro = ro1 + dro
-    dmu = model.muad(ro, T) - mu0
+    dmu = model.muad_aux(ro, temp_aux) - mu0
 
     f1 = sqrtci[s]*dmu
     f2 = sqrtci*dmu[s]
@@ -25,8 +25,11 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
     ro2a = rho2*rofactor
 
     nc = model.nc
-    mu0 = model.muad(ro1a, Tsat)
-    mu02 = model.muad(ro2a, Tsat)
+
+    temp_aux = model.temperature_aux(Tsat)
+
+    mu0 = model.muad_aux(ro1a, temp_aux)
+    mu02 = model.muad_aux(ro2a, temp_aux)
     if not np.allclose(mu0, mu02):
         raise Exception('Not equilibria compositions, mu1 != mu2')
 
@@ -47,7 +50,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
 
     i = 1
     dr0 = deltaro*dH2
-    dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat, mu0, ci,
+    dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, temp_aux, mu0, ci,
                   sqrtci, model))
     ro0 = np.add(ro[i-1], dro0)
     ro.append(ro0)
@@ -57,7 +60,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
     while not end and i < 2*Nsteps:
         i += 1
         dro0 = fsolve(fobj_beta0, dro[i-1], args=(ro[i-1], dH2, 0,
-                      Tsat, mu0, ci, sqrtci, model))
+                      temp_aux, mu0, ci, sqrtci, model))
         ro0 = ro[i-1] + dro0
         ro.append(ro0)
         dro.append(dro0)
@@ -81,7 +84,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
         ro = [ro1a]
         i = 1
         dr0 = deltaro*dH2
-        dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, Tsat,
+        dro0 = fsolve(fobj_beta0, dr0, args=(ro[i-1], dH2, 0, temp_aux,
                       mu0, ci, sqrtci, model))
         ro0 = np.add(ro[i-1], dro0)
         ro.append(ro0)
@@ -91,7 +94,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
         while i < Nsteps:
             i += 1
             dro0 = fsolve(fobj_beta0, dro[i-1], args=(ro[i-1], dH2, 0,
-                          Tsat, mu0, ci, sqrtci, model))
+                          temp_aux, mu0, ci, sqrtci, model))
             ro0 = np.add(ro[i-1], dro0)
             ro.append(ro0)
             dro.append(dro0)
@@ -112,7 +115,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
     suma = cmix_cy(drodh, cij)
     dom = np.zeros(Nsteps + 2)
     for k in range(1, Nsteps + 1):
-        dom[k] = model.dOm(ro2[:, k], Tsat, mu0, Pad)
+        dom[k] = model.dOm_aux(ro2[:, k], temp_aux, mu0, Pad)
 
     # Tension computation
     integral = np.nan_to_num(np.sqrt(2*dom*suma))

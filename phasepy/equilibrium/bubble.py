@@ -5,17 +5,18 @@ from ..math import gdem
 from .equilibriumresult import EquilibriumResult
 
 
-def bubble_sus(P_T, X, T_P, tipo, y_guess, eos, vl0, vv0):
+def bubble_sus(P_T, X, T_P, type, y_guess, eos, vl0, vv0):
 
-    if tipo == 'T':
+    if type == 'T':
         P = P_T
-        T = T_P
-    elif tipo == 'P':
+        temp_aux = T_P
+    elif type == 'P':
         T = P_T
+        temp_aux = eos.temperature_aux(T)
         P = T_P
 
     # Liquid fugacities
-    lnphil, vl = eos.logfugef(X, T, P, 'L', vl0)
+    lnphil, vl = eos.logfugef_aux(X, temp_aux, P, 'L', vl0)
 
     tol = 1e-8
     error = 1
@@ -26,7 +27,7 @@ def bubble_sus(P_T, X, T_P, tipo, y_guess, eos, vl0, vv0):
     Y = y_guess
 
     # Vapour fugacities
-    lnphiv, vv = eos.logfugef(Y, T, P, 'V', vv0)
+    lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv0)
 
     while error > tol and itacc < 3:
         niter += 1
@@ -50,35 +51,36 @@ def bubble_sus(P_T, X, T_P, tipo, y_guess, eos, vl0, vv0):
         error = np.linalg.norm(Y_calc-Y_calc_old)
         Y = Y_calc/Y_calc.sum()
         # Vapor fugacities
-        lnphiv, vv = eos.logfugef(Y, T, P, 'V', vv)
+        lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv)
 
-    if tipo == 'T':
+    if type == 'T':
         f0 = Y_calc.sum() - 1
-    elif tipo == 'P':
+    elif type == 'P':
         f0 = np.log(Y_calc.sum())
 
     return f0, Y, lnK, vl, vv
 
 
-def bubble_newton(inc, X, T_P, tipo, eos, vl0, vv0):
+def bubble_newton(inc, X, T_P, type, eos, vl0, vv0):
     global vl, vv
     f = np.zeros_like(inc)
     lnK = inc[:-1]
     K = np.exp(lnK)
 
-    if tipo == 'T':
+    if type == 'T':
         P = inc[-1]
-        T = T_P
-    elif tipo == 'P':
+        temp_aux = T_P
+    elif type == 'P':
         T = inc[-1]
+        temp_aux = eos.temperature_aux(T)
         P = T_P
 
     Y = X*K
 
     # Liquid fugacities
-    lnphil, vl = eos.logfugef(X, T, P, 'L', vl0)
+    lnphil, vl = eos.logfugef_aux(X, temp_aux, P, 'L', vl0)
     # Vapour fugacities
-    lnphiv, vv = eos.logfugef(Y, T, P, 'V', vv0)
+    lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv0)
 
     f[:-1] = lnK + lnphiv - lnphil
     f[-1] = (Y-X).sum()
@@ -128,19 +130,23 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
     global vl, vv
     vl0, vv0 = v0
 
+    temp_aux = model.temperature_aux(T)
+
     it = 0
     itmax = 10
     tol = 1e-8
 
     P = P_guess
-    f, Y, lnK, vl, vv = bubble_sus(P, X, T, 'T', y_guess, model, vl0, vv0)
+    f, Y, lnK, vl, vv = bubble_sus(P, X, temp_aux, 'T', y_guess, model,
+                                   vl0, vv0)
     error = np.abs(f)
     h = 1e-4
 
     while error > tol and it <= itmax and not good_initial:
         it += 1
-        f1, Y1, lnK1, vl, vv = bubble_sus(P+h, X, T, 'T', Y, model, vl, vv)
-        f, Y, lnK, vl, vv = bubble_sus(P, X, T, 'T', Y, model, vl, vv)
+        f1, Y1, lnK1, vl, vv = bubble_sus(P+h, X, temp_aux, 'T', Y, model,
+                                          vl, vv)
+        f, Y, lnK, vl, vv = bubble_sus(P, X, temp_aux, 'T', Y, model, vl, vv)
         df = (f1-f)/h
         dP = f / df
         if dP > P:
@@ -153,7 +159,8 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
 
     if error > tol:
         inc0 = np.hstack([lnK, P])
-        sol1 = root(bubble_newton, inc0, args=(X, T, 'T', model, vl, vv))
+        sol1 = root(bubble_newton, inc0, args=(X, temp_aux, 'T', model,
+                    vl, vv))
         sol = sol1.x
         lnK = sol[:-1]
         error = np.linalg.norm(sol1.fun)

@@ -56,8 +56,11 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
     '''
 
     equilibrio = ['L', 'L']
-    fugx, v1 = model.logfugef(x0, T, P, equilibrio[0], v0[0])
-    fugw, v2 = model.logfugef(w0, T, P, equilibrio[1], v0[1])
+
+    temp_aux = model.temperature_aux(T)
+
+    fugx, v1 = model.logfugef_aux(x0, temp_aux, P, equilibrio[0], v0[0])
+    fugw, v2 = model.logfugef_aux(w0, temp_aux, P, equilibrio[1], v0[1])
     lnK = fugx - fugw
     K = np.exp(lnK)
 

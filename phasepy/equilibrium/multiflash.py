@@ -49,7 +49,7 @@ def multiflash_obj(inc, Z, K):
     return f, jac, Kexp, Xref
 
 
-def gibbs_obj(ind, phases, Z, T, P, model, v0):
+def gibbs_obj(ind, phases, Z, temp_aux, P, model):
 
     nfase = len(phases)
     nc = model.nc
@@ -65,16 +65,16 @@ def gibbs_obj(ind, phases, Z, T, P, model, v0):
 
     lnphi = np.zeros_like(X)
     global vg
-    vg = v0.copy()
+    # vg = v0.copy()
     for i, state in enumerate(phases):
-        lnphi[i], vg[i] = model.logfugef(X[i], T, P, state, v0[i])
+        lnphi[i], vg[i] = model.logfugef_aux(X[i], temp_aux, P, state, vg[i])
     fug = np.nan_to_num(np.log(X) + lnphi)
     G = np.sum(n * fug)
     dG = (fug[1:] - fug[0]).flatten()
     return G, dG
 
 
-def dgibbs_obj(ind, phases, Z, T, P, model, v0):
+def dgibbs_obj(ind, phases, Z, temp_aux, P, model):
     global vg, dfug
     nfase = len(phases)
     nc = model.nc
@@ -94,9 +94,10 @@ def dgibbs_obj(ind, phases, Z, T, P, model, v0):
     dfug = np.zeros([nfase, nc, nc])
 
     eye = np.eye(nc)
-    vg = v0.copy()
+    # vg = v0.copy()
     for i, state in enumerate(phases):
-        lnphi[i], dlnphi[i], vg[i] = model.dlogfugef(X[i], T, P, state, v0[i])
+        lnphi[i], dlnphi[i], vg[i] = model.dlogfugef_aux(X[i], temp_aux, P,
+                                                         state, vg[i])
         dfug[i] = eye/n[i] - 1./nt[i] + dlnphi[i]/nt[i]
 
     fug = np.nan_to_num(np.log(X) + lnphi)
@@ -106,7 +107,7 @@ def dgibbs_obj(ind, phases, Z, T, P, model, v0):
     return G, dG
 
 
-def dgibbs_hess(v, phases, Z, T, P, model, v0):
+def dgibbs_hess(v, phases, Z, temp_aux, P, model):
     global dfug
     dfugind = dfug[1:]
     dfugdep = dfug[0]
@@ -166,11 +167,13 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
     if np.all(X0.shape != (nfase, nc)) or len(z) != nc:
         raise Exception('Composition vector lenght must be equal to nc')
 
+    temp_aux = model.temperature_aux(T)
+
     error = 1
     it = 0
     itacc = 0
     ittotal = 0
-    n = 5
+    n = 4
     nacc = 3
 
     X = X0.copy()
@@ -180,8 +183,8 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
         v0 *= nfase
     v = v0.copy()
 
-    for i, estado in enumerate(equilibrium):
-        lnphi[i], v[i] = model.logfugef(X[i], T, P, estado, v0[i])
+    for i, state in enumerate(equilibrium):
+        lnphi[i], v[i] = model.logfugef_aux(X[i], temp_aux, P, state, v0[i])
 
     lnK = lnphi[0] - lnphi[1:]
     K = np.exp(lnK)
@@ -215,8 +218,8 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
         X = (X.T/X.sum(axis=1)).T
 
         # Update fugacity coefficient
-        for i, estado in enumerate(equilibrium):
-            lnphi[i], v[i] = model.logfugef(X[i], T, P, estado, v[i])
+        for i, state in enumerate(equilibrium):
+            lnphi[i], v[i] = model.logfugef_aux(X[i], temp_aux, P, state, v[i])
         lnK = lnphi[0] - lnphi[1:]
 
         # Accelerate succesive sustitution
@@ -248,9 +251,11 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
             hess = None
             method = 'BFGS'
         global vg
+        vg = v.copy()
         ind0 = (X.T*beta).T[1:].flatten()
-        ind1 = minimize(fobj, ind0, args=(equilibrium, z, T, P, model, v),
-                        jac=jac, method=method, hess=hess, tol=K_tol)
+        ind1 = minimize(fobj, ind0, jac=jac, method=method,
+                        hess=hess, tol=K_tol,
+                        args=(equilibrium, z, temp_aux, P, model))
         v = vg.copy()
         ittotal += ind1.nit
         error = np.linalg.norm(ind1.jac)

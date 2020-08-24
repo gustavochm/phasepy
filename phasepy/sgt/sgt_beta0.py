@@ -51,12 +51,14 @@ def sgt_mix_beta0(rho1, rho2, Tsat, Psat, model, n=100, method='reference',
         raise Exception(warning)
 
     if method == 'reference':
-        sol = ten_beta0_reference(rho1, rho2, Tsat, Psat, model,
-                                  s, n, full_output)
+        sol = ten_beta0_reference(rho1, rho2, Tsat, Psat, model, s, n,
+                                  full_output)
     elif method == 'cornelisse':
         sol = ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n, full_output)
     elif method == 'liang':
         sol = ten_beta0_sk(rho1, rho2, Tsat, Psat, model, n, full_output,
                            alpha0)
+    else:
+        raise Exception('Method not implemented')
 
     return sol

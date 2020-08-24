@@ -4,31 +4,33 @@ from scipy.optimize import root
 from .equilibriumresult import EquilibriumResult
 
 
-def haz_objb(inc, T_P, tipo, modelo, v0):
+def haz_objb(inc, T_P, type, model, v0):
 
     X, W, Y, P_T = np.array_split(inc, 4)
 
-    if tipo == 'T':
+    if type == 'T':
         P = P_T
         T = T_P
-    elif tipo == 'P':
+    elif type == 'P':
         T = P_T
         P = T_P
+
+    temp_aux = model.temperature_aux(T)
 
     global vx, vw, vy
     vx, vw, vy = v0
 
-    fugX, vx = modelo.logfugef(X, T, P, 'L', vx)
-    fugW, vw = modelo.logfugef(W, T, P, 'L', vw)
-    fugY, vy = modelo.logfugef(Y, T, P, 'V', vy)
+    fugX, vx = model.logfugef_aux(X, temp_aux, P, 'L', vx)
+    fugW, vw = model.logfugef_aux(W, temp_aux, P, 'L', vw)
+    fugY, vy = model.logfugef_aux(Y, temp_aux, P, 'V', vy)
 
     K1 = np.exp(fugX-fugY)
     K2 = np.exp(fugX-fugW)
     return np.hstack([K1*X-Y, K2*X-W, X.sum()-1, Y.sum()-1, W.sum()-1])
 
 
-def vlleb(X0, W0, Y0, P_T, T_P, spec, model,
-          v0=[None, None, None], full_output=False):
+def vlleb(X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None],
+          full_output=False):
     '''
     Solves liquid liquid vapour equilibrium for binary mixtures.
     (T,P) -> (x,w,y)

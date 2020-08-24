@@ -5,15 +5,15 @@ from .multiflash import multiflash
 from .equilibriumresult import EquilibriumResult
 
 
-def haz_objb(inc, T_P, tipo, modelo, index, equilibrio, v0):
+def haz_objb(inc, T_P, type, modelo, index, equilibrio, v0):
 
     X0 = inc[:-1].reshape(3, 2)
     P_T = inc[-1]
 
-    if tipo == 'T':
+    if type == 'T':
         P = P_T
         T = T_P
-    elif tipo == 'P':
+    elif type == 'P':
         T = P_T
         P = T_P
 
@@ -24,8 +24,8 @@ def haz_objb(inc, T_P, tipo, modelo, index, equilibrio, v0):
 
     global vg
     vg = v0.copy()
-    for i, estado in enumerate(equilibrio):
-        lnphi[i], vg[i] = modelo.logfugef(X[i], T, P, estado, v0[i])
+    for i, state in enumerate(equilibrio):
+        lnphi[i], vg[i] = modelo.logfugef(X[i], T, P, state, v0[i])
 
     lnK = lnphi[0] - lnphi[1:]
     K = np.exp(lnK)
@@ -43,16 +43,16 @@ def haz_pb(X0, P_T, T_P, tipo, modelo, index, equilibrio,
     return X, var
 
 
-def haz_objt(inc, T, P, model, v0=[None, None, None]):
+def haz_objt(inc, temp_aux, P, model, v0=[None, None, None]):
 
     X, W, Y = np.split(inc, 3)
 
     global vx, vw, vy
     vx, vw, vy = v0
 
-    fugX, vx = model.logfugef(X, T, P, 'L', vx)
-    fugW, vw = model.logfugef(W, T, P, 'L', vw)
-    fugY, vy = model.logfugef(Y, T, P, 'V', vy)
+    fugX, vx = model.logfugef(X, temp_aux, P, 'L', vx)
+    fugW, vw = model.logfugef(W, temp_aux, P, 'L', vw)
+    fugY, vy = model.logfugef(Y, temp_aux, P, 'V', vy)
 
     K1 = np.exp(fugX-fugY)
     K2 = np.exp(fugX-fugW)
@@ -134,7 +134,8 @@ def haz(X0, W0, Y0, T, P, model, good_initial=False,
                          K_tol, True)
     else:
         global vx, vw, vy
-        sol = fsolve(haz_objt, x0.flatten(), args=(T, P, model, v0))
+        temp_aux = model.temperature_aux(T)
+        sol = fsolve(haz_objt, x0.flatten(), args=(temp_aux, P, model, v0))
         x0 = sol.reshape([model.nc, 3])
         Z0 = x0.mean(axis=0)
         out = multiflash(x0, b0, ['L', 'L', 'V'], Z0, T, P, model,
