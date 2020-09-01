@@ -50,9 +50,9 @@ def haz_objt(inc, temp_aux, P, model, v0=[None, None, None]):
     global vx, vw, vy
     vx, vw, vy = v0
 
-    fugX, vx = model.logfugef(X, temp_aux, P, 'L', vx)
-    fugW, vw = model.logfugef(W, temp_aux, P, 'L', vw)
-    fugY, vy = model.logfugef(Y, temp_aux, P, 'V', vy)
+    fugX, vx = model.logfugef_aux(X, temp_aux, P, 'L', vx)
+    fugW, vw = model.logfugef_aux(W, temp_aux, P, 'L', vw)
+    fugY, vy = model.logfugef_aux(Y, temp_aux, P, 'V', vy)
 
     K1 = np.exp(fugX-fugY)
     K2 = np.exp(fugX-fugW)
