@@ -72,7 +72,7 @@ the Peng Robinson EoS with the advanced mixing rule MHV and the Modified-UNIFAC 
 Similarly, liquid-liquid and liquid-liquid-vapor equilibrium can be solved, if were the case, with the same object, eos.
 
 For more examples, please have a look at the Jupyter Notebook files
-located in the *examples* folder of the sources or 
+located in the *examples* folder of the sources or
 `view examples in github <https://github.com/gustavochm/phasepy/tree/master/examples>`_.
 
 
@@ -101,3 +101,8 @@ of this software, and a DISCLAIMER OF ALL WARRANTIES.
 Although not required by the phasepy license, if it is convenient for you,
 please cite phasepy if used in your work. Please also consider contributing
 any changes you make back, and benefit the community.
+
+
+Chaparro, G, Mejía, A. Phasepy: A Python based framework for fluid phase
+equilibria and interfacial properties computation.
+J Comput Chem. 2020; 1– 23. `https://doi.org/10.1002/jcc.26405 <https://doi.org/10.1002/jcc.26405>`_.
