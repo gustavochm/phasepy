@@ -71,6 +71,10 @@ the Peng Robinson EoS with the advanced mixing rule MHV and the Modified-UNIFAC 
 
 Similarly, liquid-liquid and liquid-liquid-vapor equilibrium can be solved, if were the case, with the same object, eos.
 
+For more examples, please have a look at the Jupyter Notebook files
+located in the *examples* folder of the sources or 
+`view examples in github <https://github.com/gustavochm/phasepy/tree/master/examples>`_.
+
 
 Latest source code
 ------------------
