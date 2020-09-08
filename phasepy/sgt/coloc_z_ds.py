@@ -65,7 +65,7 @@ def dfobj_z_newton(rointer, Binter, dro20, dro21, mu0, temp_aux, cij, n, ro_1,
 
 
 def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
-             z=20., n=20, ds=0.1, itmax=50, rho_tol=1e-3,
+             z=20., n=20, ds=0.1, itmax=30, rho_tol=1e-2,
              full_output=False, root_method='lm', solver_opt=None):
     """
     SGT for mixtures and beta != 0 (rho1, rho2, T, P) -> interfacial tension
@@ -210,13 +210,14 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
     s = 0.
     for i in range(itmax):
         s += ds
-        sol = root(fobj, rointer.flatten(), method='lm', jac=jac,
+        sol = root(fobj, rointer.flatten(), method=root_method, jac=jac,
                    args=(Binter, dro20, dro21, mu0, temp_aux, cij, n, ro_1,
                    ds, nc, model), options=solver_opt)
 
         rointer = sol.x
         rointer = np.abs(rointer.reshape([nc, n]))
-        error = np.linalg.norm(rointer - ro_1)
+        # error = np.linalg.norm(rointer - ro_1)
+        error = np.mean(np.abs(rointer/ro_1 - 1))
         if error < rho_tol:
             break
         ro_1 = rointer.copy()
@@ -244,7 +245,7 @@ def msgt_mix(rho1, rho2, Tsat, Psat, model, rho0='linear',
         fun_error = np.linalg.norm(sol.fun)/n/nc
         dictresult = {'tension': ten, 'rho': ro, 'z': znodes,
                       'GPT': np.hstack([0, dom, 0]), 'rho_error': error,
-                      'fun_error': fun_error, 'iter': i, 'time': s, 'ds': ds}
+                      'fun_norm': fun_error, 'iter': i, 'time': s, 'ds': ds}
         out = TensionResult(dictresult)
         return out
 
