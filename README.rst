@@ -2,6 +2,9 @@
 phasepy
 =======
 
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/gustavochm/phasepy/master
+
 What is phasepy?
 ----------------
 Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
