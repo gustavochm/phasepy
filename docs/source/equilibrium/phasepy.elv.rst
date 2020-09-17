@@ -49,6 +49,7 @@ bubbleTy( y0, T0, x, P, eos)
     :members: bubbleTy
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 
@@ -67,6 +68,7 @@ In the following case a saturated liquid of known composition and temperature is
     :members: bubblePy
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 dew points
@@ -109,6 +111,7 @@ array([0.20224128, 0.79775872]), 1.0478247387561512
     :members: dewPx
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Similarly, the calculation can be done for equilibria comosition and temperature:
@@ -126,3 +129,4 @@ array([0.19854812, 0.80145188]), 338.85030223879545
     :members: dewTx
     :undoc-members:
     :show-inheritance:
+    :noindex:

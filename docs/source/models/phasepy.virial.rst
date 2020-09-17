@@ -12,6 +12,7 @@ Recommended when working at low pressure.
     :members: ideal_gas
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Abbott - Van Ness
 -----------------
@@ -33,6 +34,7 @@ Where :math:`B^{(0)}` and :math:`B^{(1)}` are obtained from:
     :members: Abbott
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Tsonopoulos
 -----------
@@ -51,3 +53,4 @@ Where :math:`B^{(0)}` and :math:`B^{(1)}` are obtained from:
     :members: Tsonopoulos
     :undoc-members:
     :show-inheritance:
+    :noindex:

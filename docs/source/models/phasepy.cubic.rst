@@ -112,6 +112,7 @@ van der Waals EoS
     :members: vdweos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Peng Robinson EoS
 -----------------
@@ -119,6 +120,7 @@ Peng Robinson EoS
     :members: preos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Peng Robinson Stryjec Vera EoS
 ------------------------------
@@ -126,6 +128,7 @@ Peng Robinson Stryjec Vera EoS
     :members: prsveos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Redlich Kwong EoS
 -----------------
@@ -133,6 +136,7 @@ Redlich Kwong EoS
     :members: rkeos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Redlich Kwong Soave EoS
 -----------------------
@@ -140,3 +144,4 @@ Redlich Kwong Soave EoS
     :members: rkseos
     :undoc-members:
     :show-inheritance:
+    :noindex:
