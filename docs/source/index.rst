@@ -10,17 +10,18 @@ What is phasepy?
 ----------------
 Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
 This package facilitates the calculation of vapor-liquid equilibrium, liquid-liquid equilibrium and vapor-liquid-liquid equilibrium as well as density profiles and interfacial tension. 
-Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
+Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model (e.g. Modified UNIFAC) for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
 
 Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
 
-Phasepy relies on NumPy, SciPy and Cython extension modules, when necessary.
+Phasepy relies on NumPy, SciPy and Cython extension modules.
 
 Installation Prerequisites
 --------------------------
 - numpy
 - scipy
 - pandas
+- xlrd
 - C/C++ Compiler for Cython extension modules
 
 

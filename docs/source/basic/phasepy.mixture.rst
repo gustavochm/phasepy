@@ -1,7 +1,7 @@
 phasepy.mixture
 ===============
 
-Phasepy :class:`phasepy.mixture` function creates an object that stores necessary pure component information and interaction parameters needed for equilibria and interfacial properties computation. For a mixture creation there is necessary at least two pure components:
+Phasepy :class:`phasepy.mixture` class constructor function creates an object that stores necessary pure component information and interaction parameters needed for equilibria and interfacial properties computation. Two pure components are required to create a base mixture:
 
 .. code-block:: python
 
@@ -24,7 +24,9 @@ Additional components can be added to the mixture with the method ``add_componen
 	...                GC = {'CH3':3, 'CH3O':1, 'C':1})
 	>>> mix.add_component(mtbe)
 
-Once the total number of components has been added to the mixture interaction parameters can be supplied, depending on the selected model. For quadratic mixing rule used in cubic EoS:
+Once all components have been added to the mixture, the interaction parameters can be supplied, depending on the selected model:
+
+For quadratic mixing rule (QMR) used in cubic EoS:
 
 >>> KIJ = np.array([[0, k12, k13],
 ...			[k21, 0, k23],
@@ -65,7 +67,8 @@ Finally for Modified-UNIFAC model, Dortmund public database is included in Phase
 
 >>> mix.unifac() #Read UNIFAC database
 
-.. warning:: Remember to supply the necessary parameters for the model that you are going to use
+.. warning:: User is required to supply the necessary parameters for methods
+
 
 
 .. autoclass:: phasepy.mixture

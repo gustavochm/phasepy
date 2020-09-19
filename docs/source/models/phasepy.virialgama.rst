@@ -1,7 +1,7 @@
 Virial - Activity coefficient Model
 ===================================
 
-This class is focused for phase equilibrium using a virial correlation for the
+This phase equilibrium model class uses a virial correlation for the
 vapor phase and a activity coefficient model for the liquid phase. For the gas phase,
 the virial coefficient can be estimated using Abbott or Tsonopoulos correlations, also
 an ideal gas option is available. For liquid phase, NRTL, Wilson, Redlich - Kister and Modified-UNIFAC
