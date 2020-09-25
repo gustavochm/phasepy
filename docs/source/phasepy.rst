@@ -1,18 +1,14 @@
 phasepy
 =======
 
-Phasepy is a object oriented programmed Python package . In order to help the final user to deal with the minimun quantity of parameters as possible, those are saved as attributes in objects. Objects for creating components and mixtures are available, then this object are used within a EoS to create a final object that is going to be used for fluid phase equilibrium calculations.
-
-In order to start with phase equilibrium calculations it is necessary to provide pure component and mixture info. Phasepy is an object oriented python package that implements two basics classes for this purpose.
+Phasepy aims to require minimum quantity of parameters needed to do phase equilibrium calculations. First it is required to create components and mixtures, and then combine them with a phase equilibrium model to create a final model object, which can be used to carry out fluid phase equilibrium calculations.
 
 .. toctree::
    	./basic/phasepy.component
 	./basic/phasepy.mixture
 
-With the class component :class:`phasepy.component`, pure component info is saved, this includes
-critical temperature, pressure, volume, acentric factor, antoine coefficients and group contribution
-info. On the other hand, classs :class:`phasepy.mixture` saves pure component data and also allows to
-incorporate interactions parameters for the available models as, NRTL, Wilson, Redlich Kister.
+With the class component :class:`phasepy.component`, only pure component info is saved. Info includes critical temperature, pressure, volume, acentric factor, Antoine coefficients and group contribution info.
+The class :class:`phasepy.mixture` saves pure component data, but also interactions parameters for the activity coeffient models.
 
 .. code-block:: python
 
@@ -32,7 +28,7 @@ incorporate interactions parameters for the available models as, NRTL, Wilson, R
 	>>> ethanol.vlrackett(T = 310)
 	56.32856995891473
 
-Now, from two components a mixture can be created:
+A mixture can be created from two components:
 	
 .. code-block:: python
 
@@ -48,7 +44,10 @@ Now, from two components a mixture can be created:
 	array([56.32856996, 16.46025809])
 
 
-The mixture object can be used within any of the available models in Phasepy. There are two options when choosing a model, a discontinous model where the vapor and liquid deviations are modeled with an virial expansion and a activity coefficient model, respectively. Aditionally, both phases can be modeled with a continous model, using the same equation of state for all the phases. The available options are described bellow:
+Phasepy includes two phase equilibrium models:
+
+1. A discontinous (:math:`\gamma - \phi`) Virial - Activity Coefficient Method model where the vapor and liquid deviations are modeled with an virial expansion and an activity coefficient model, respectively, or
+2. A continuous  (:math:`\phi - \phi`) Cubic Equation of State model, using the same equation of state for all the phases.
 
 .. toctree::
 	:maxdepth: 1

@@ -57,6 +57,7 @@ As an scalar is been fitted, SciPy recommends to give a certain interval where t
     :members: fit_kij
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Fitting NRTL parameters
@@ -121,6 +122,7 @@ or, if alpha fixed is used.
     :members: fit_nrtl
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 
@@ -148,6 +150,7 @@ Tsonopoulos virial correlation is used by default, if desired ideal gas or Abbot
     :members: fit_wilson
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 
@@ -181,6 +184,7 @@ Similarly as NRTl and Wilson's model, virial correlation can be changed by passi
     :members: fit_rk
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Multidimentional minimization in SciPy are perfomed with ``minimize`` function, aditional command can be passed to this function in order to change tolerance, number of function evaluations or mimization method. This is done by passing a dictionary with the settings to ``minimize_options`` in ``fit_nrtl``, ``fit_wilson`` or ``fit_rk``. For example:

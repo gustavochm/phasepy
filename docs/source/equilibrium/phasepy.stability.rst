@@ -44,6 +44,7 @@ array([0.16434071, 0.83565929]), 0.24576563932346407
     :members: tpd_min
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 
@@ -75,6 +76,7 @@ array([0.24576564, 0.24576564, 0.24576564]))
     :members: tpd_minimas
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Liquid liquid equilibrium initiation
@@ -95,3 +97,4 @@ array([0.99538258, 0.00461742]), array([0.30683414, 0.69316586])
     :members: lle_init
     :undoc-members:
     :show-inheritance:
+    :noindex:

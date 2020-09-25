@@ -1,6 +1,6 @@
 Cubic Equation of State
 =======================
-Equation of State for modeling vapor and liquid phases. This EoS is explicit in pressure and has the following form:
+This phase equilibrium model class applies equation of state (EoS) model for both vapor and liquid phases. EoS is explicit in pressure and has the following form:
 
 .. math::
 	P = \frac{RT}{v-b} - \frac{a}{(v+c_1b)(v+c_2b)}
@@ -18,22 +18,22 @@ This way, once you create an cubic EoS object it will check if you are working w
 
 
 >>> from phasepy import preos
->>> eos  = preos(ethanol)
+>>> eos = preos(ethanol)
 >>> #computes saturation pressure
->>> pr.psat(T = 350.)
+>>> eos.psat(T = 350.)
 >>> #saturation pressure, liquid volume and vapor volume
 >>> #(array([0.98800647]), array([66.75754804]),array([28799.31921623]))
 
 Additionally, density can be computed given the aggregation state.
 
 >>> #liquid density
->>> pr.density(T = 350, P = 1., state = 'L')
+>>> eos.density(T = 350, P = 1., state = 'L')
 >>> #0.01497960198094922
 >>> #vapor density
->>> pr.density(T = 350, P = 1., state = 'V')
+>>> eos.density(T = 350, P = 1., state = 'V')
 >>> #3.515440899573752e-05
 
-A volume translation can be considered from any of the cubic eos. The attribute ``c`` has to be supplied to the pure component and the option ``volume_translation`` has to be set to ``True``. The volume translation doesn't change equilibrium and tries to improve the behavior of liquid density predicted by the EoS.
+A volume translation can be considered from any of the cubic EoS. The attribute ``c`` has to be supplied to the pure component and the option ``volume_translation`` has to be set to ``True``. The volume translation doesn't change equilibrium and tries to improve the behavior of liquid density predicted by the EoS.
 
 >>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0, w = 0.643558,
                 c = 5.35490936, Ant = [  11.61809279, 3423.0259436 ,  -56.48094263],
@@ -52,7 +52,7 @@ A volume translation can be considered from any of the cubic eos. The attribute 
 When working with mixture you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
 and then how to specify a mixrule.
 
-For the case of classic quadratic mixrule:
+For the case of classic quadratic mixrule (QMR):
 
 .. math::
 	a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} = 	\sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i
@@ -102,7 +102,7 @@ In case of the Wong-Sandler mixing rule with the Redlich Kister Expansion:
 >>> mix.rk(C0, C1)
 >>> pr = preos(mix, mixrule = 'ws_rk')
 
-Phasepy has included the most widely known cubic EoS, as: Van der Waals, Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera.
+Phasepy includes the most widely known cubic EoS: Van der Waals (VdW), Peng Robinson (PR), Redlich Kwong (RK), Redlich Kwong Soave (RKS) and Peng Robinson Stryjec Vera (PRSV).
 
 Additionally, volume translated versions are available for Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera. 
 
@@ -112,6 +112,7 @@ van der Waals EoS
     :members: vdweos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Peng Robinson EoS
 -----------------
@@ -119,6 +120,7 @@ Peng Robinson EoS
     :members: preos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Peng Robinson Stryjec Vera EoS
 ------------------------------
@@ -126,6 +128,7 @@ Peng Robinson Stryjec Vera EoS
     :members: prsveos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Redlich Kwong EoS
 -----------------
@@ -133,6 +136,7 @@ Redlich Kwong EoS
     :members: rkeos
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Redlich Kwong Soave EoS
 -----------------------
@@ -140,3 +144,4 @@ Redlich Kwong Soave EoS
     :members: rkseos
     :undoc-members:
     :show-inheritance:
+    :noindex:

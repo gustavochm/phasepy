@@ -41,6 +41,7 @@ The model is fitted directly with Phasepy, optionally an initial guess can be pa
     :members: fit_ant
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Following with saturation pressure fitting, when using PRSV EoS
@@ -70,6 +71,7 @@ it is necessary to fit :math:`\alpha` parameters, for these purpose a component 
     :members: fit_ksv
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 
@@ -92,6 +94,7 @@ When working with cubic EoS, there might an interest for a better prediction of 
     :members: fit_vt
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Influence parameter for SGT
@@ -120,6 +123,7 @@ Beware that influence parameter in cubic EoS absorbs density deviations from exp
     :members: fit_cii
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 The perfomance of the fitted interaction parameters can be compared against the experimental data (dots), the following figure shows the behavior of the cubic EoS for the saturation pressure, liquid density and interfacial tension (oranges lines).
