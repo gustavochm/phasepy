@@ -14,8 +14,9 @@ from ..constants import R
 
 class virialgamma():
     '''
-    Creates a model with mixture using a virial eos to describe vapour phase
-    and an activity coefficient model for liquid phase.
+    Returns a phase equilibrium model with mixture using a virial EOS
+    to describe vapour phase, and an activity coefficient model for
+    liquid phase.
 
     Parameters
     ----------
@@ -27,11 +28,6 @@ class virialgamma():
     actmodel : string
         function to compute activity coefficients, available optiones are
         'nrtl', 'wilson', 'unifac', 'rkb' or 'rk'
-
-    Methods
-    -------
-    logfugef: computes effective fugacity coefficients
-
     '''
 
     def __init__(self, mix, virialmodel='Tsonopoulos', actmodel='nrtl'):
@@ -216,25 +212,23 @@ class virialgamma():
 
     def logfugef(self, X, T, P, state, v0=None):
         """
-        logfugef(X, T, P, state)
-
-        Method that computes the effective fugacity coefficients  at given
-        composition, temperature and pressure.
+        Returns array of effective fugacity coefficients at given
+        composition, temperature and pressure as first return value, and
+        passes through argument v0 as second value.
 
         Parameters
         ----------
 
-        X : array_like, mole fraction vector
-        T : absolute temperature in K
-        P : pressure in bar
-        state : 'L' for liquid phase and 'V' for vapour phase
-
-        Returns
-        -------
-        logfug: array_like
-            effective fugacity coefficients
-        v0 : float
-            volume of phase, if calculated
+        X : array
+            molar fractions
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase, or 'V' for vapour phase
+        v0 : float, optional
+            volume of phase
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
         if state == 'L':
@@ -252,25 +246,25 @@ class virialgamma():
 
     def dlogfugef(self, X, T, P, state, v0=None):
         """
-        logfugef(X, T, P, state)
-
-        Method that computes the effective fugacity coefficients  at given
-        composition, temperature and pressure.
+        Returns array of effective fugacity coefficients at given
+        composition, temperature and pressure as first return value,
+        array of partial fugacity coefficients as second return value,
+        and passes through argument v0 as third value.
 
         Parameters
         ----------
 
-        X : array_like, mole fraction vector
-        T : absolute temperature in K
-        P : pressure in bar
-        state : 'L' for liquid phase and 'V' for vapour phase
+        X : array
+            molar fractions
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase, or 'V' for vapour phase
+        v0 : float, optional
+            volume of phase
 
-        Returns
-        -------
-        logfug: array_like
-            effective fugacity coefficients
-        v0 : float
-            volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
         if state == 'L':
@@ -289,4 +283,5 @@ class virialgamma():
             Bp = 2*np.sum(Bx, axis=1) - Bm
             logfug = Bp*P/(R*T)
             dlogfug = (2*Bij - np.add.outer(Bp, Bp))*P/(R*T)
+
         return logfug, dlogfug, v0

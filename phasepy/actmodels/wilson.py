@@ -16,24 +16,25 @@ def dwilson_aux(X, M):
 
 
 def wilson(X, T, A, vl):
-    '''
-    Wilson activity coefficient model
+    r'''Wilson activity coefficient model is a local composition model
+    recommended for vapor-liquid equilibria calculation. It can't
+    predict liquid liquid equilibrium. Function returns array of
+    natural logarithm of activity coefficients.
+
+    .. math::
+	g^e = \sum_{i=1}^c x_i \ln ( \sum_{j=1}^c x_j 	\Lambda_{ij})
 
     Parameters
     ----------
-    X: array like
-        vector of molar fractions
+    X: array
+        Molar fractions
     T: float
-        absolute temperature in K
+        Absolute temperature [K]
     A: array like
-        matrix of energy interactions in K
+        Matrix of energy interactions [K]
     vl: function
-        liquid volume of species in cm3/mol
-
-    Returns
-    -------
-    lngama: array_like
-        natural logarithm of activify coefficient
+        Returns liquid volume of species [:math:`\mathrm{cm^3/mol}`]
+        given temperature [K] as argument.
     '''
     X = np.asarray(X, dtype=np.float64)
     v = vl(T)
