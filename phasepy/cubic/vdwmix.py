@@ -28,7 +28,7 @@ class vdwm():
     Methods
     -------
     a_eos : computes the attractive term of cubic eos.
-    Zmix : computes the roots of compresibility factor polynomial.
+    Zmix : computes the roots of compressibility factor polynomial.
     density : computes density of mixture.
     logfugef : computes effective fugacity coefficients.
     logfugmix : computes mixture fugacity coeficcient;
@@ -102,7 +102,7 @@ class vdwm():
         '''
         Zmix (X, T, P)
 
-        Method that computes the roots of the compresibility factor polynomial
+        Method that computes the roots of the compressibility factor polynomial
         at given mole fractions (X), Temperature (T) and Pressure (P)
 
         Parameters

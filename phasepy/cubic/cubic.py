@@ -10,18 +10,12 @@ from .vtcubicmix import vtprmix, vtprsvmix, vtrksmix, vtrkmix
 
 def vdweos(mix_or_component):
     '''
-    van der Waals EoS
+    Returns Van der Waals EoS object.
 
     Parameters
     ----------
     mix_or_component : object
-        created with component or mixture, in case of mixture object has to
-        have interactions parameters.
-
-    Returns
-    -------
-    eos : object
-        eos used for phase equilibrium calculations
+        :class:`phasepy.mixture` or :class:`phasepy.component` object
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -33,23 +27,19 @@ def vdweos(mix_or_component):
 
 def preos(mix_or_component, mixrule='qmr', volume_translation=False):
     '''
-    Peng Robinson EoS
+    Returns Peng Robinson EoS object.
 
     Parameters
     ----------
     mix_or_component : object
-        created with component or mixture, in case of mixture object has to
-        have interactions parameters.
+        :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
-        available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+        Mixing rule specification. Available opitions include 'qmr',
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
+        'ws_wilson', 'ws_rk', 'ws_unifac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
 
-    Returns
-    -------
-    eos : object
-        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
     if nc == 1:
@@ -67,23 +57,18 @@ def preos(mix_or_component, mixrule='qmr', volume_translation=False):
 
 def prsveos(mix_or_component, mixrule='qmr', volume_translation=False):
     '''
-    Peng Robinson EoS
+    Returns Peng Robinson Stryjek Vera EoS object.
 
     Parameters
     ----------
     mix_or_component : object
-        created with component or mixture, in case of mixture object has to
-        have interactions parameters.
+        :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
-        available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+        Mixing rule specification. Available opitions include 'qmr',
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
+        'ws_wilson', 'ws_rk', 'ws_unifac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
-
-    Returns
-    -------
-    eos : object
-        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
 
@@ -101,24 +86,18 @@ def prsveos(mix_or_component, mixrule='qmr', volume_translation=False):
 
 
 def rkeos(mix_or_component, mixrule='qmr', volume_translation=False):
-    '''
-    Redlich Kwong EoS
+    '''Returns Redlich Kwong EoS object.
 
     Parameters
     ----------
     mix_or_component : object
-        created with component or mixture, in case of mixture object has to
-        have interactions parameters.
+        :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
-        available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+        Mixing rule specification. Available opitions include 'qmr',
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
+        'ws_wilson', 'ws_rk', 'ws_unifac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
-
-    Returns
-    -------
-    eos : object
-        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
 
@@ -136,26 +115,21 @@ def rkeos(mix_or_component, mixrule='qmr', volume_translation=False):
 
 
 def rkseos(mix_or_component, mixrule='qmr', volume_translation=False):
-    '''
-    Redlich Kwong Soave EoS
+    '''Returns Redlich Kwong Soave EoS object.
 
     Parameters
     ----------
     mix_or_component : object
-        created with component or mixture, in case of mixture object has to
-        have interactions parameters.
+        :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
-        available opitions 'qmr', 'mhv_nrtl', 'mhv_unifac', 'mhv_rk',
-        'mhv_wilson', 'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac'.
+        Mixing rule specification. Available opitions include 'qmr',
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
+        'ws_wilson', 'ws_rk', 'ws_unifac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
-
-    Returns
-    -------
-    eos : object
-        eos used for phase equilibrium calculations
     '''
     nc = mix_or_component.nc
+
     if nc == 1:
         if volume_translation:
             eos = vtrkspure(mix_or_component)

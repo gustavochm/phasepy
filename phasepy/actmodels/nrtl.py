@@ -17,30 +17,30 @@ def dnrtl_aux(X, tau, G):
 
 
 def nrtl(X, T, alpha, g, g1):
-    '''
-    NRTL activity coefficient model.
+    r'''
+    The non-random two-liquid (NRTL) activity coefficient model is a a
+    local composition model, widely used to describe vapor-liquid,
+    liquid-liquid and vapor-liquid-liquid equilibria. This function
+    returns array of natural logarithm of the activity coefficients.
+
+    .. math::
+	g^e = \sum_{i=1}^c x_i \frac{\sum_{j=1}^c \tau_{ji}G_{ji}x_j}{\sum_{l=1}^c G_{li}x_l}
+
+    .. math::
+        \tau = g/T + g_1
 
     Parameters
     ----------
-    X: array like
-        vector of molar fractions
+    X: array
+        Molar fractions
     T: float
-        absolute temperature in K
-    g: array like
-        matrix of energy interactions in K
-    g1: array_like
-        matrix of energy interactions in 1/K
-    alpha: array_like
-        aleatory factor.
-
-    Notes
-    -----
-    tau = ((g + g1*T)/T)
-
-    Returns
-    -------
-    lngama: array_like
-        natural logarithm of activify coefficient
+        Absolute temperature [K]
+    g: array
+        Matrix of energy interactions [K]
+    g1: array
+        Matrix of energy interactions [1/K]
+    alpha: array
+        Matrix of aleatory factors
     '''
     X = np.asarray(X, dtype=np.float64)
     tau = g/T + g1

@@ -89,42 +89,46 @@ def dunifac_aux(x, qi, ri, ri34, Vk, Qk, tethai, amn, psi):
 
 
 def unifac(x, T, qi, ri, ri34, Vk, Qk, tethai, a0, a1, a2):
-    '''
-    Dortmund UNIFAC activity coefficient model for multicomponent mixtures.
+    r'''
+    Dortmund Modified-UNIFAC activity coefficient model for
+    multicomponent mixtures is a group contribution method, which uses
+    group definitions and parameter values from
+    `Dortmund public database <http://www.ddbst.com/PublishedParametersUNIFACDO.html>`_.
+    Function returns array of natural logarithm of activity
+    coefficients.
+
+    .. math::
+	\ln \gamma_i = \ln \gamma_i^{comb} + \ln \gamma_i^{res}
+
+    Energy interaction equation is
+
+    .. math::
+        a_{mn} = a_0 + a_1 T + a_2 T^2
 
     Parameters
     ----------
-    X: array like
-        vector of molar fractions
+    X: array
+        Molar fractions
     T: float
-        absolute temperature in K
-    qi: array like
-        component surface array
-    ri: array_like
-        component volumes arrays
-    ri34 : array_like
-        component volumen arrays power to 3/4
-    Vk : array_like
-        group volumes array
-    Qk : array_like
-        group surface arrays
-    tethai : array_like
-        surface fraction array
-    a0 : array_like
-        energy interactions polynomial coefficient
-    a1 : array_like
-        energy interactions polynomial coefficient
-    a2 : array_like
-        energy interactions polynomial coefficient
-
-    Notes
-    -----
-    Energy interaction arrays: amn = a0 + a1 * T + a2 * T**2
-
-    Returns
-    -------
-    lngama: array_like
-        natural logarithm of activify coefficient
+        Absolute temperature [K]
+    qi: array
+        Component surface array
+    ri: array
+        Component volumes array
+    ri34 : array
+        Component volume array, exponent 3/4
+    Vk : array
+        Group volumes
+    Qk : array
+        Group surface array
+    tethai : array
+        Surface fractions
+    a0 : array
+        Energy interactions polynomial coefficients
+    a1 : array
+        Energy interactions polynomial coefficients
+    a2 : array
+        Energy interactions polynomial coefficients
     '''
 
     # nc = len(x)

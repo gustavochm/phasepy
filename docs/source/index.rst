@@ -8,11 +8,11 @@ Welcome to phasepy's documentation!
 
 What is phasepy?
 ----------------
-Phasepy is an open-source scientific python package for fluid phase equilibria and interfacial properties computation.
+Phasepy is an open-source scientific Python package for fluid phase equilibria and interfacial properties computation.
 This package facilitates the calculation of vapor-liquid equilibrium, liquid-liquid equilibrium and vapor-liquid-liquid equilibrium as well as density profiles and interfacial tension. 
-Equilibrium calculations can be performed with cubic equations of state (EoS) with classic or advances mixing rules or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficients model (e.g. Modified UNIFAC) for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
+Equilibrium calculations can be performed with a continuous approach by cubic equations of state (EoS) with classic or advanced mixing rules, or with a discontinuous approach using a virial equation of state for the vapor phase and an activity coefficient model (e.g. Dortmund Modified UNIFAC) for the liquid phase. On the other hand, the interfacial description must be done with a continuous model, i.e. cubic EoS.
 
-Besides equilibria and interfacial computations, with Phasepy it is possible to fit pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
+Phasepy supports fitting of pure component parameters as well as interaction parameters for quadratic mixing rule (QMR) and NRTL, Wilson and Redlich Kister activity coefficient models.
 
 Phasepy relies on NumPy, SciPy and Cython extension modules.
 
@@ -68,6 +68,9 @@ the Peng Robinson EoS with an advanced mix rule with UNIFAC model:
 
 Similarly, liquid-liquid and vapor-liquid-liquid equilibrium can be solved, if were the case, with the same object (eos).
 
+For more examples, please have a look at the Jupyter Notebook files
+located in the *examples* folder of the sources or
+`view examples in github <https://github.com/gustavochm/phasepy/tree/master/examples>`_.
 
 Latest source code
 ------------------

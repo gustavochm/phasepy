@@ -1,147 +1,149 @@
-Cubic Equation of State
-=======================
-This phase equilibrium model class applies equation of state (EoS) model for both vapor and liquid phases. EoS is explicit in pressure and has the following form:
+Cubic Equation of State Model
+=============================
+
+This phase equilibrium model class applies `equation of state (EoS)
+model <https://en.wikipedia.org/wiki/Equation_of_state>`_ for both
+vapor and liquid phases. EoS formulation is explicit:
 
 .. math::
 	P = \frac{RT}{v-b} - \frac{a}{(v+c_1b)(v+c_2b)}
 
-Where :math:`b` and :math:`a` are molecular parameters.
+Phasepy includes following cubic EoS:
 
-Main Cubic EoS functions of phasepy packages are bases on the following classes:
+- Van der Waals (VdW)
+- Peng Robinson (PR)
+- Redlich Kwong (RK)
+- Redlich Kwong Soave (RKS), a.k.a Soave Redlich Kwong (SRK)
+- Peng Robinson Stryjek Vera (PRSV)
 
-.. toctree::
-	phasepy.cubicp
-	phasepy.cubicm
+Both pure component EoS and mixture EoS are supported.
 
+Pure Component EoS
+------------------
 
-This way, once you create an cubic EoS object it will check if you are working with a pure component or a mixture. In the former case
+Pure component example using Peng-Robinson EoS:
 
-
->>> from phasepy import preos
+>>> from phasepy import preos, component
+>>> ethanol = component(name='ethanol', Tc=514.0, Pc=61.37, Zc=0.241, Vc=168.0, w=0.643558,
+                        Ant=[11.61809279, 3423.0259436, -56.48094263],
+                        GC={'CH3':1, 'CH2':1, 'OH(P)':1})
 >>> eos = preos(ethanol)
->>> #computes saturation pressure
->>> eos.psat(T = 350.)
->>> #saturation pressure, liquid volume and vapor volume
->>> #(array([0.98800647]), array([66.75754804]),array([28799.31921623]))
+>>> eos.psat(T=350.0) # saturation pressure, liquid volume and vapor volume
+(array([0.98800647]), array([66.75754804]), array([28799.31921623]))
 
-Additionally, density can be computed given the aggregation state.
+Density can be computed given the aggregation state (``L`` for liquid,
+``V`` for vapor):
 
->>> #liquid density
->>> eos.density(T = 350, P = 1., state = 'L')
->>> #0.01497960198094922
->>> #vapor density
->>> eos.density(T = 350, P = 1., state = 'V')
->>> #3.515440899573752e-05
+>>> eos.density(T=350.0, P=1.0, state='L')
+0.01497960198094922
+>>> eos.density(T=350.0, P=1.0, state='V')
+3.515440899573752e-05
 
-A volume translation can be considered from any of the cubic EoS. The attribute ``c`` has to be supplied to the pure component and the option ``volume_translation`` has to be set to ``True``. The volume translation doesn't change equilibrium and tries to improve the behavior of liquid density predicted by the EoS.
 
->>> ethanol = component(name = 'ethanol', Tc = 514.0, Pc = 61.37, Zc = 0.241, Vc = 168.0, w = 0.643558,
-                c = 5.35490936, Ant = [  11.61809279, 3423.0259436 ,  -56.48094263],
-                GC = {'CH3':1, 'CH2':1,'OH(P)':1})
->>> pr = preos(ethanol, volume_translation = True)
->>> #computes saturation pressure
->>> pr.psat(T = 350.)
->>> #(array([0.98800647]), array([61.40263868]), array([28793.96430687]))
->>> #liquid density
->>> pr.density(T = 350, P = 1., state = 'L')
->>> #0.01628597159790686
->>> #vapor density
->>> pr.density(T = 350, P = 1., state = 'V')
->>> #3.5161028012629526e-05
+Volume Translation
+------------------
 
-When working with mixture you will need to provide interaction parameters to the mixrule of the EoS. In the following code blocks you can see how to add interaction parameters to a mixture
-and then how to specify a mixrule.
+Volume translated (VT) versions of EoS are available for PR, RK, RKS
+and PRSV models. These models include an additional component specific
+volume translation parameter ``c``, which can be used to improve
+liquid density predictions without changing phase equilibrium.
+EoS property ``volume_translation`` must be ``True`` to enable VT.
 
-For the case of classic quadratic mixrule (QMR):
+>>> ethanol = component(name='ethanol', Tc=514.0, Pc=61.37, Zc=0.241, Vc=168.0, w=0.643558,
+                        Ant=[11.61809279, 3423.0259436, -56.48094263],
+                        GC={'CH3':1, 'CH2':1, 'OH(P)':1},
+                        c=5.35490936)
+>>> eos = preos(ethanol, volume_translation=True)
+>>> eos.psat(T=350.0) # saturation pressure, liquid volume and vapor volume
+(array([0.98800647]), array([61.40263868]), array([28793.96430687]))
+>>> eos.density(T=350.0, P=1.0, state='L')
+0.01628597159790686
+>>> eos.density(T=350.0, P=1.0, state='V')
+3.5161028012629526e-05
+
+
+Mixture EoS
+-----------
+
+Mixture EoS utilize one-fluid mixing rules, using parameters for
+hypothetical pure fluids, to predict the mixture behavior. The mixing
+rules require interaction parameter values as input (zero values are
+assumed if no values are specified).
+
+Classic Quadratic Mixing Rule (QMR)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. math::
-	a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} = 	\sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i
+	a_m = \sum_{i=1}^c \sum_{j=1}^c x_ix_ja_{ij} \quad a_{ij} =
+	\sqrt{a_ia_j}(1-k_{ij}) \quad b_m = \sum_{i=1}^c x_ib_i
 
+Example of Peng-Robinson with QMR:
 
 >>> from phasepy import preos
 >>> mix = mixture(ethanol, water)
 >>> Kij = np.array([[0, -0.11], [-0.11, 0]])
 >>> mix.kij_cubic(Kij)
->>> pr = preos(mix, mixrule = 'qmr')
+>>> eos = preos(mix, mixrule='qmr')
 
-If no correction :math:`k_{ij}` is set, phasepy will consider it as zero.
 
-In case of Modified Huron Vidal (MHV) and Wong Sandler (WS) mixing rule, it is necessary to provide information from a activity coefficient model in order to compute mixtures parameters. Covolume is calcuated same way as QMR.
+Modified Huron Vidal (MHV) Mixing Rule
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+MHV mixing rule is specified in combination with an activity
+coefficient model to solve EoS.
+In MHV model, the repulsive (covolume) parameter is calcuated same way
+as in QMR
 
 .. math::
 	b_m = \sum_{i=1}^c x_ib_i
 
-While attractive term is an implicit function:
+while attractive term is an implicit function
 
 .. math::
 	g^e_{EOS} = g^e_{model}
 
 
-With NRTL model:
+Example of Peng-Robinson with MHV and NRTL:
 
->>> alpha = np.array([[0.       , 0.5597628],
-...       [0.5597628, 0.       ]])
->>> g = np.array([[  0.       , -57.6880881],
-...        [668.682368 ,   0.       ]])
->>> g1 = np.array([[ 0.        ,  0.46909821],
-...       [-0.37982045,  0.        ]])
->>> #Adding activity model parameters
+>>> alpha = np.array([[0.0, 0.5597628],
+                      [0.5597628, 0.0]])
+>>> g = np.array([[0.0, -57.6880881],
+                  [668.682368, 0.0]])
+>>> g1 = np.array([[0.0, 0.46909821],
+                   [-0.37982045, 0.0]])
 >>> mix.NRTL(alpha, g, g1)
->>> pr = preos(mix, mixrule = 'mhv_nrtl')
+>>> eos = preos(mix, mixrule='mhv_nrtl')
 
-In case of Modified Huron Vidal with UNIFAC:
+Example of Peng-Robinson with MHV and Modified-UNIFAC:
 
->>> mix.unifac() #reading UNIFAC database
->>> pr = preos(mix, mixrule = 'mhv_unifac')
+>>> mix.unifac()
+>>> eos = preos(mix, mixrule='mhv_unifac')
 
-In case of the Wong-Sandler mixing rule with the Redlich Kister Expansion:
 
->>> C0 = np.array([ 1.20945699, -0.62209997,  3.18919339])
->>> C1 = np.array([  -13.271128,   101.837857, -1100.29221 ])
->>> #Parameters are calculated as C = C0 + C1/T
+Wong Sandler (WS) Mixing Rule
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+WS mixing rule is specified in combination with an activity
+coefficient model to solve EoS.
+
+Example of Peng-Robinson with WS and Redlich Kister:
+
+>>> C0 = np.array([1.20945699, -0.62209997,  3.18919339])
+>>> C1 = np.array([-13.271128, 101.837857, -1100.29221])
 >>> mix.rk(C0, C1)
->>> pr = preos(mix, mixrule = 'ws_rk')
+>>> eos = preos(mix, mixrule='ws_rk')
 
-Phasepy includes the most widely known cubic EoS: Van der Waals (VdW), Peng Robinson (PR), Redlich Kwong (RK), Redlich Kwong Soave (RKS) and Peng Robinson Stryjec Vera (PRSV).
 
-Additionally, volume translated versions are available for Peng Robinson, Redlich Kwong, Redlich Kwong Soave and Peng Robinson Stryjec Vera. 
-
-van der Waals EoS
------------------
 .. automodule:: phasepy.cubic.cubic
-    :members: vdweos
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-Peng Robinson EoS
------------------
-.. automodule:: phasepy.cubic.cubic
-    :members: preos
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
 
-Peng Robinson Stryjec Vera EoS
-------------------------------
-.. automodule:: phasepy.cubic.cubic
-    :members: prsveos
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
+EoS classes
+-----------
 
-Redlich Kwong EoS
------------------
-.. automodule:: phasepy.cubic.cubic
-    :members: rkeos
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
+.. toctree::
+	phasepy.cubicp
+	phasepy.cubicm
 
-Redlich Kwong Soave EoS
------------------------
-.. automodule:: phasepy.cubic.cubic
-    :members: rkseos
-    :undoc-members:
-    :show-inheritance:
-    :noindex:

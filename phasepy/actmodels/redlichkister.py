@@ -57,31 +57,29 @@ def rkb(x, T, C, C1):
 
 
 def rk(x, T, C, C1, combinatory):
-    '''
-    Redlich-Kister activity coefficient model for multicomponent mixtures.
+    r'''
+    Redlich-Kister activity coefficient model for multicomponent
+    mixtures. This method uses a polynomial fit of Gibbs excess
+    energy. It is not recommended to use more than 5 terms of the
+    polynomial expansion. Function returns array of natural logarithm
+    of activity coefficients.
+
+    .. math::
+	g^e_{ij} = x_ix_j \sum_{k=0}^m C_k (x_i - x_j)^k
+
+    .. math::
+        G = C + C_1/T
 
     Parameters
     ----------
-    X: array_like
-        vector of molar fractions
+    X: array
+        Molar fractions
     T: float
-        absolute temperature in K
-    C: array_like
-        polynomial values adim
-    C1: array_like
-        polynomial values in K
-    combinatory: array_like
-        index by pairs of Redlich Kister Expansion
-
-    Notes
-    -----
-
-    G = C + C1/T
-
-    Returns
-    -------
-    lngama: array_like
-        natural logarithm of activify coefficient
+        Absolute temperature [K]
+    C: array
+        Polynomial coefficient values adim
+    C1: array
+        Polynomial coefficient values [K]
     '''
     x = np.asarray(x, dtype=np.float64)
 
