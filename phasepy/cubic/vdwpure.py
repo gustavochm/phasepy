@@ -28,7 +28,7 @@ class vdwpure():
     Methods
     -------
     a_eos : computes the attractive term of cubic eos.
-    Zmix : computes the roots of compresibility factor polynomial.
+    Zmix : computes the roots of compressibility factor polynomial.
     density : computes density of mixture.
     logfugef : computes effective fugacity coefficients.
     logfugmix : computes mixture fugacity coeficcient;
