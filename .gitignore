@@ -25,6 +25,17 @@ wheels/
 *.egg
 MANIFEST
 
+phasepy.egg-info/
+phasepy/saftvrmie/
+phasepy/__pycache__/
+phasepy/actmodels/__pycache__/
+phasepy/cubic/__pycache__/
+phasepy/equilibrium/__pycache__/
+phasepy/fit/__pycache__/
+phasepy/sgt/__pycache__/
+phasepy/src/build/
+phasepy/src/setup.py
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
