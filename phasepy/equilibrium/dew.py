@@ -92,39 +92,36 @@ def dew_newton(inc, Y, T_P, type, eos, vl0, vv0):
 def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
           v0=[None, None], full_output=False):
     """
-    Dew point (T, y) -> (P, y)
+    Dew point (y, T) -> (x, P)
 
-    Solves dew point at given vapour composition and temperature. It uses a
-    combination of accelerated successive sustitution with quasi Newton Method
-    in regular cases and when good initial it's provided the full system of
-    equations of the phase envelope method is used as objective function.
+    Solves dew point (liquid phase composition and pressure) at given
+    temperature and vapor composition.
 
     Parameters
     ----------
-    x_guess : array_like
-        guess of liquid phase composition
+    x_guess : array
+        Initial guess of liquid phase molar fractions
     P_guess : float
-        guess of equilibrium pressure of the liquid in bar.
-    y : array_like
-        vapour phase composition
+        Initial guess of equilibrium pressure [bar]
+    y : array
+        Vapor phase molar fractions
     T : float
-        temperaure of the vapour in K
+        Temperature [K]
     model : object
-        create from mixture, eos and mixrule
+        Phase equilibrium model object
     good_initial: bool, optional
-        if True skip succesive substitution and solves by Newton's Method.
+        If True uses only phase envelope method in solution
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute fugacities
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    X : array_like
-        liquid mole fraction vector
+    x : array
+        Liquid molar fractions
     P : float
-        equilibrium pressure in bar
-
+        Equilibrium pressure [bar]
     """
     nc = model.nc
     if len(x_guess) != nc or len(y) != nc:
@@ -182,39 +179,36 @@ def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
 def dewTx(x_guess, T_guess, y, P, model, good_initial=False,
           v0=[None, None], full_output=False):
     """
-    Dew point (T, y) -> (P, y)
+    Dew point (y, P) -> (x, T)
 
-    Solves dew point at given vapour composition and pressure. It uses a
-    combination of accelerated successive sustitution with quasi Newton Method
-    in regular cases and when good initial it's provided the full system of
-    equations of the phase envelope method is used as objective function.
+    Solves dew point (liquid phase composition and temperature) at given
+    pressure and vapor phase composition.
 
     Parameters
     ----------
-    x_guess : array_like
-        guess of liquid phase composition
+    x_guess : array
+        Initial guess of liquid phase molar fractions
     T_guess : float
-        guess of equilibrium temperature of the liquid in K.
-    y : array_like
-        vapour phase composition
+        Initial guess of equilibrium temperature [K]
+    y : array
+        Vapor phase molar fractions
     P : float
-        pressure of the liquid in bar
+        Pressure [bar]
     model : object
-        create from mixture, eos and mixrule
+        Phase equilibrium model object
     good_initial: bool, optional
-        if True skip succesive substitution and solves by Newton's Method.
+        If True uses only phase envelope method in solution
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute fugacities
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    X : array_like
-        liquid mole fraction vector
+    x : array
+        Liquid molar fractions
     T : float
-        equilibrium temperature in K
-
+        Equilibrium temperature [K]
     """
 
     nc = model.nc
