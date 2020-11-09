@@ -30,6 +30,12 @@ the system:
 :math:`F` is the molar amount of component in a phase and
 :math:`\hat{f}` is the effective fugacity.
 
+.. warning::
+
+   ``flash()`` routine does not check for the stability of the numerical
+   solution (see :ref:`stability`).
+
+
 Liquid-vapor flash example:
 
 >>> import numpy as np

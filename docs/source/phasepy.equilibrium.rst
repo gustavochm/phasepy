@@ -32,7 +32,7 @@ where :math:`f_i^0` is standard state fugacity.
 .. toctree::
    :maxdepth: 1
 
+   ./equilibrium/phasepy.stability
    ./equilibrium/phasepy.elv
    ./equilibrium/phasepy.flash
    ./equilibrium/phasepy.multiflash
-   ./equilibrium/phasepy.stability
