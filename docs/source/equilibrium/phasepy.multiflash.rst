@@ -14,48 +14,8 @@ This system of equations was proposed by Gupta et al, and it is a modified Radfo
 	min \, {G} = \sum_{k=1}^\pi \sum_{i=1}^c F_{ik} \ln \hat{f}_{ik}
 
 
-Liquid Liquid Equilibrium
-#########################
-
-Two phase flash can be used for solving liquid liquid equilibrium, but it is important to consider stability of the phases. For that reason a algorithm that can compute stability and equilibrium simultaneously was implemented in this packages.
-
-
-In the following code block and example of how to solve this problem it is shown.
-
->>> from phasepy import component, mixture, virialgamma
->>> from phasepy.equilibrium import lle
->>> water = component(name = 'water', Tc = 647.13, Pc = 220.55, Zc = 0.229, Vc = 55.948, w = 0.344861,
-...                Ant =  [  11.64785144, 3797.41566067,  -46.77830444],
-...                GC = {'H2O':1})
->>> mtbe = component(name = 'mtbe', Tc = 497.1, Pc = 34.3, Zc = 0.273, Vc = 329.0, w = 0.266059,
-...                Ant = [   9.16238246, 2541.97883529,  -50.40534341],
-...                GC = {'CH3':3, 'CH3O':1, 'C':1})
->>> mixell = mixture(water, mtbe)
->>> mixell.unifac()
->>> mell = virialgamma(mixell, actmodel = 'unifac')
->>> T = 320 #K
->>> P = 1.01 #bar
->>> Z  = np.array([0.5,0.5])
->>> #initial guess
->>> x0 = np.array([0.01,0.99])
->>> w0 = np.array([0.99,0.01])
->>> lle(x0, w0, Z, T, P, mell)
->>> #x, w, beta
-array([0.15601096, 0.84398904]), array([0.99289324, 0.00710676]), 0.41103635397012755
-
-.. automodule:: phasepy.equilibrium.ell
-    :members: lle
-    :undoc-members:
-    :show-inheritance:
-
-
-Three phase equilibrium
-#######################
-
-
-
 Binary mixtures
-***************
+---------------
 
 For degrees of freedom's restriction, a systems of equations has to be solved for three phase equilibrium of binary mixtures. In the following code block a example of how to do it it is shown.
 
@@ -83,7 +43,7 @@ For degrees of freedom's restriction, a systems of equations has to be solved fo
 
 
 Multicomponent mixtures
-***********************
+-----------------------
 
 When working with multicomponent mixtures (3 or more) a multiflash has to be performed in order to compute three phase equilibrium. This algorithm ensures that a stable phases are computed.
 

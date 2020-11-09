@@ -7,42 +7,38 @@ from .multiflash import multiflash
 def lle(x0, w0, Z, T, P, model, v0=[None, None],
         K_tol=1e-8, full_output=False):
     """
-    Liquid liquid equilibrium (z,T,P) -> (x,w,beta)
-
-    Solves liquid liquid equilibrium from multicomponent mixtures at given
-    pressure, temperature and overall composition.
+    Isobaric isothermic (PT) flash for multicomponent liquid-liquid
+    systems: (Z, T, P) -> (x, w, beta)
 
     Parameters
     ----------
-
-    x0 : array_like
-        initial guess for liquid phase 1
-    w0 : array_like
-        initial guess for liquid phase 2
-    z : array_like
-        overal composition of mix
+    x0 : array
+        Initial guess for molar fractions of liquid phase 1
+    w0 : array
+        Initial guess for molar fractions of liquid phase 2
+    Z : array
+        Overall molar fractions of components
     T : float
-        absolute temperature in K.
+        Absolute temperature [K]
     P : float
-        pressure in en bar
+        Pressure [bar]
     model : object
-        created from mixture, eos and mixrule
+        Phase equilibrium model object
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid phase 1 and 2 molar volumes used as initial values to compute fugacities
     K_tol : float, optional
-        Desired accuracy of K (= W/X) vector
+        Tolerance for equilibrium constant values
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    X : array_like
-        liquid 1 mole fraction vector
-    W : array_like
-        liquid 2 mole fraction vector
+    x : array
+        Phase 1 molar fractions of components
+    w : array
+        Phase 2 molar fractions of components
     beta : float
-        phase fraction of liquid 2
-
+        Phase 2 phase fraction
     """
     nc = model.nc
     if len(x0) != nc or len(w0) != nc or len(Z) != nc:

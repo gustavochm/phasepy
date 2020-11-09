@@ -35,8 +35,11 @@ the system:
    ``flash()`` routine does not check for the stability of the numerical
    solution (see :ref:`stability`).
 
+Vapor-Liquid Equilibrium
+------------------------
 
-Liquid-vapor flash example:
+This example shows solution of vapor-liquid equilibrium (VLE) using
+the ``flash()`` function.
 
 >>> import numpy as np
 >>> from phasepy import component, mixture, preos
@@ -59,24 +62,48 @@ Liquid-vapor flash example:
 (array([0.8979481, 0.1020519]), array([0.53414948, 0.46585052]), 0.26923713078124695)
 
 
-Liquid-liquid flash example:
+.. automodule:: phasepy.equilibrium.flash
+    :members: flash
+    :undoc-members:
+    :show-inheritance:
 
+
+Liquid-Liquid Equilibrium
+-------------------------
+
+For liquid-liquid equilibrium (LLE), it is important to consider
+stability of the phases. ``lle()`` function takes into account both
+stability and equilibrium simultaneously for the PT flash.
+
+>>> import numpy as np
+>>> from phasepy import component, mixture, virialgamma
+>>> from phasepy.equilibrium import lle
+>>> water = component(name='water', Tc=647.13, Pc=220.55, Zc=0.229, Vc=55.948, w=0.344861,
+                      Ant=[11.64785144, 3797.41566067, -46.77830444],
+                      GC={'H2O':1})
 >>> mtbe = component(name='mtbe', Tc=497.1, Pc=34.3, Zc=0.273, Vc=329.0, w=0.266059,
                      Ant=[9.16238246, 2541.97883529, -50.40534341],
                      GC={'CH3':3, 'CH3O':1, 'C':1})
 >>> mix = mixture(water, mtbe)
 >>> mix.unifac()
->>> eos = preos(mix, 'mhv_unifac')
+>>> eos = virialgamma(mix, actmodel = 'unifac')
 >>> T = 320.0
 >>> P = 1.01
 >>> Z = np.array([0.5, 0.5])
 >>> x0 = np.array([0.01, 0.99])
->>> y0 = np.array([0.99, 0.01])
->>> flash(x0, y0, 'LL', Z, T, P, eos) # phase compositions, phase 2 fraction
-(array([0.15602773, 0.84397227]), array([0.99289086, 0.00710914]), 0.4110257205721999)
+>>> w0 = np.array([0.99, 0.01])
+>>> lle(x0, w0, Z, T, P, eos) # phase compositions, phase 2 fraction
+(array([0.1560131, 0.8439869]), array([0.99289324, 0.00710676]), 0.4110348438873743)
 
-
-.. automodule:: phasepy.equilibrium.flash
-    :members: flash
+.. automodule:: phasepy.equilibrium.ell
+    :members: lle
     :undoc-members:
     :show-inheritance:
+
+Liquid-liquid flash can be also solved without stability analysis
+using the ``flash()`` function, but this is not recommended.
+
+>>> from phasepy.equilibrium import flash
+>>> flash(x0, w0, 'LL', Z, T, P, eos) # phase compositions, phase 2 fraction
+(array([0.1560003, 0.8439997]), array([0.99289323, 0.00710677]), 0.41104385845638447)
+
