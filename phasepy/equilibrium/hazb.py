@@ -32,49 +32,47 @@ def haz_objb(inc, T_P, type, model, v0):
 def vlleb(X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None],
           full_output=False):
     '''
-    Solves liquid liquid vapour equilibrium for binary mixtures.
-    (T,P) -> (x,w,y)
+    Solves component molar fractions in each phase and either
+    temperature or pressure in vapor-liquid-liquid equilibrium (VLLE)
+    of binary (two component) mixture: (T or P) -> (X, W, Y, and P or T)
 
     Parameters
     ----------
-
-    X0 : array_like
-        guess composition of phase 1
-    W0 : array_like
-        guess composition of phase 1
-    Y0 : array_like
-        guess composition of phase 2
+    X0 : array
+        Initial guess molar fractions of liquid phase 1
+    W0 : array
+        Initial guess molar fractions of liquid phase 2
+    Y0 : array
+        Initial guess molar fractions of vapor phase
     P_T : float
-        absolute temperature or pressure
-    T_P : floar
-        absolute temperature or pressure
+        Absolute temperature [K] or pressure [bar] (see *spec*)
+    T_P : float
+        Absolute temperature [K] or pressure [bar] (see *spec*)
     spec: string
-        'T' if T_P is temperature or 'P' if pressure.
+        'T' if T_P is temperature or 'P' if T_P is pressure.
     model : object
-        created from mixture, eos and mixrule
+        Phase equilibrium model object
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid phase 1 and 2 and vapor phase molar volume used as initial values to compute fugacities
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-
-    X : array_like
-        liquid1 mole fraction vector
-    W : array_like
-        liquid2 mole fraction vector
-    Y : array_like
-        vapour mole fraction fector
+    X : array
+        Liquid phase 1 molar fractions
+    W : array
+        Liquid phase 2 molar fractions
+    Y : array
+        Vapor phase molar fractions
     var: float
-        temperature or pressure, depending of specification
+        Temperature [K] or pressure [bar], opposite of *spec*
 
     '''
 
     nc = model.nc
-
     if nc != 2:
-        raise Exception('3 phase equilibra for binary mixtures')
+        raise Exception('vlleb() requires a binary mixture')
 
     if len(X0) != nc or len(W0) != nc or len(Y0) != nc:
         raise Exception('Composition vector lenght must be equal to nc')
@@ -87,7 +85,7 @@ def vlleb(X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None],
     nfev = sol1.nfev
     sol = sol1.x
     if np.any(sol < 0):
-        raise Exception('negative Composition or T/P  founded')
+        raise Exception('composition, T or P is negative')
     X, W, Y, var = np.array_split(sol, 4)
 
     if full_output:

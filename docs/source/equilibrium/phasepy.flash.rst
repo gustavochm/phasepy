@@ -100,7 +100,7 @@ stability and equilibrium simultaneously for the PT flash.
     :undoc-members:
     :show-inheritance:
 
-Liquid-liquid flash can be also solved without stability analysis
+Liquid-liquid flash can be also solved without considering stability by
 using the ``flash()`` function, but this is not recommended.
 
 >>> from phasepy.equilibrium import flash
