@@ -26,7 +26,7 @@ def bubble_sus(P_T, X, T_P, type, y_guess, eos, vl0, vv0):
     Y_calc = y_guess
     Y = y_guess
 
-    # Vapour fugacities
+    # Vapor fugacities
     lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv0)
 
     while error > tol and itacc < 3:
@@ -79,7 +79,7 @@ def bubble_newton(inc, X, T_P, type, eos, vl0, vv0):
 
     # Liquid fugacities
     lnphil, vl = eos.logfugef_aux(X, temp_aux, P, 'L', vl0)
-    # Vapour fugacities
+    # Vapor fugacities
     lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv0)
 
     f[:-1] = lnK + lnphiv - lnphil
@@ -91,37 +91,36 @@ def bubble_newton(inc, X, T_P, type, eos, vl0, vv0):
 def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
              v0=[None, None], full_output=False):
     """
-    Bubble point (T, x) -> (P, y)
+    Bubble point (X, T) -> (Y, P).
 
-    Solves bubble point at given liquid composition and temperature. It uses a
-    combination of accelerated successive sustitution with quasi Newton Method
-    in regular cases and when good initial it's provided the full system of
-    equations of the phase envelope method is used as objective function.
+    Solves bubble point (vapor phase composition and pressure) at given
+    temperature and liquid composition.
 
     Parameters
     ----------
-    y_guess : array_like
-        guess of vapour phase composition
+    y_guess : array
+        Initial guess of vapor phase molar fractions
     P_guess : float
-        guess of equilibrium pressure in bar.
-    x : array_like
-        liquid phase composition
+        Initial guess for equilibrium pressure [bar]
+    X : array
+        Liquid phase molar fractions
     T : float
-        absolute temperature of the liquid in K.
+        Absolute temperature [K]
     model : object
-        create from mixture, eos and mixrule
+        Phase equilibrium model object
     good_initial: bool, optional
-        if True skip succesive substitution and solves by Newton's Method.
+        If True uses only phase envelope method in solution
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute fugacities
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    Y : array_like, vector of vapour fraction moles
-    P : float, equilibrium pressure in bar
-
+    Y : array
+        Vapor molar fractions
+    P : float
+        Equilibrium pressure [bar]
     """
     nc = model.nc
     if len(y_guess) != nc or len(X) != nc:
@@ -182,40 +181,36 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
 def bubbleTy(y_guess, T_guess, X, P, model, good_initial=False,
              v0=[None, None], full_output=False):
     """
-    Bubble point (P, x) -> (T, y)
+    Bubble point (X, P) -> (Y, T).
 
-    Solves bubble point at given liquid composition and pressure. It uses a
-    combination of accelerated successive sustitution with quasi Newton Method
-    in regular cases and when good initial it's provided the full system of
-    equations of the phase envelope method is used as objective function.
+    Solves bubble point (vapor phase composition and temperature) at given
+    pressure and liquid phase composition.
 
     Parameters
     ----------
-    y_guess : array_like
-        guess of vapour phase composition
+    y_guess : array
+        Initial guess of vapor phase molar fractions
     T_guess : float
-        guess of equilibrium temperature of the liquid in K.
-
-    x : array_like
-        liquid phase composition
+        Initial guess of equilibrium temperature [K]
+    X : array
+        Liquid phase molar fractions
     P : float
-        pressure of the liquid in bar
+        Pressure [bar]
     model : object
-        create from mixture, eos and mixrule
+        Phase equilibrium model object
     good_initial: bool, optional
-        if True skip succesive substitution and solves by Newton's Method.
+        If True uses only phase envelope method in solution
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute fugacities
     full_output: bool, optional
-        wheter to outputs all calculation info
-
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    Y : array_like
-        vector of vapour fraction moles
+    Y : array
+        Vapor molar fractions
     T : float
-        equilibrium temperature in K
+        Equilibrium temperature [K]
     """
 
     nc = model.nc

@@ -194,46 +194,40 @@ def haz(X0, W0, Y0, T, P, model, good_initial=False,
 def vlle(X0, W0, Y0, Z, T, P, model, v0=[None, None, None], K_tol=1e-10,
          full_output=False):
     """
-    Liquid liquid vapor Multiflash (Z, T,P) -> (x, w, y)
-
-    Computes liquid liquid vapor equilibrium of multicomponent mixtures at
-    given temperature. This functions uses a simultaneous method to check
-    stability and equilibrium, when slow convergence is noted, minimization
-    of Gibbs free energy is performed with BFGS.
+    Solves liquid-liquid-vapor equilibrium (VLLE) multicomponent flash:
+    (Z, T, P) -> (X, W, Y)
 
     Parameters
     ----------
-
-    X0 : array_like
-         guess composition of liquid 1
-    W0 : array_like
-         guess composition of liquid 2
-    Y0 : array_like
-         guess composition of vapour 1
+    X0 : array
+        Initial guess molar fractions of liquid phase 1
+    W0 : array
+        Initial guess molar fractions of liquid phase 2
+    Y0 : array
+        Initial guess molar fractions of vapor phase
     T : float
-        absolute temperature in K.
+        Absolute temperature [K]
     P : float
-        pressure in bar
+        Pressure [bar]
     model : object
-        Created from mixture, eos and mixrule
+        Phase equilibrium model object
     good_initial: bool, optional
-        if True skip Gupta's method and solves full system of equations.
+        if True skip Gupta's method and solve full system of equations
     v0 : list, optional
-         if supplied volume used as initial value to compute fugacities
+        Liquid phase 1 and 2 and vapor phase molar volume used as initial values to compute fugacities
     K_tol : float, optional
-        Desired accuracy of K (= X/Xr) vector
+        Tolerance for equilibrium constant values
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    X : array_like
-        liquid1 mole fraction vector
-    W : array_like
-        liquid2 mole fraction vector
-    Y : array_like
-        vapour mole fraction fector
-
+    X : array
+        Liquid phase 1 molar fractions
+    W : array
+        Liquid phase 2 molar fractions
+    Y : array
+        Vapor phase molar fractions
     """
 
     nc = model.nc

@@ -2,7 +2,9 @@ from __future__ import division, print_function, absolute_import
 
 
 class EquilibriumResult(dict):
-
+    """
+    Extended dictionary class with pretty printing
+    """
     def __getattr__(self, name):
         try:
             return self[name]
