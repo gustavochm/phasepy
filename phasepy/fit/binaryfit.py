@@ -32,7 +32,8 @@ def fit_wilson(x0, mix, datavle, virialmodel='Tsonopoulos',
     datavle: tuple
         (Xexp, Yelv, Texp, Pexp)
     virialmodel : function
-        function to compute virial coefficients
+        function to compute virial coefficients, available options are
+        'Tsonopoulos', 'Abbott' or 'ideal_gas'
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
 
@@ -107,7 +108,8 @@ def fit_nrtl(x0, mix, datavle=None, datalle=None, datavlle=None,
     Tdep: bool, optional
         Wheter the energy parameters have a temperature dependence
     virialmodel : function
-        function to compute virial coefficients
+        function to compute virial coefficients, available options are
+        'Tsonopoulos', 'Abbott' or 'ideal_gas'
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
 
@@ -224,7 +226,8 @@ def fit_rk(inc0, mix, datavle=None, datalle=None,
     Tdep : bool,
         wheter the parameter will have a temperature dependence
     virialmodel : function
-        function to compute virial coefficients
+        function to compute virial coefficients, available options are
+        'Tsonopoulos', 'Abbott' or 'ideal_gas'
     minimize_options: dict
         Dictionary of any additional spefication for scipy minimize
 
