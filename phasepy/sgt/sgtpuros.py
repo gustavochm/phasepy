@@ -40,9 +40,9 @@ def sgt_pure(rhov, rhol, Tsat, Psat, model, n=100, full_output=False):
     Parameters
     ----------
     rhov : float
-        liquid phase density
-    rhol : float
         vapor phase density
+    rhol : float
+        liquid phase density
     Tsat : float
         saturation temperature
     Psat : float
