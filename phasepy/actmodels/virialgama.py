@@ -28,6 +28,16 @@ class virialgamma():
     actmodel : string
         function to compute activity coefficients, available optiones are
         'nrtl', 'wilson', 'unifac', 'rkb' or 'rk'
+
+    Methods
+    -------
+    temperature_aux: computes temperature dependent parameters.
+    logfugef: computes effective fugacity coefficients.
+    dlogfugef: computes effective fugacity coefficients and it
+        composition derivatives.
+    lngama: computes activity coefficients.
+    dlngama: computes activity coefficients and it
+        composition derivatives.
     '''
 
     def __init__(self, mix, virialmodel='Tsonopoulos', actmodel='nrtl'):
@@ -229,6 +239,13 @@ class virialgamma():
             'L' for liquid phase, or 'V' for vapour phase
         v0 : float, optional
             volume of phase
+
+        Returns
+        -------
+        logfug: array_like
+            effective fugacity coefficients
+        v0 : float
+            volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
         if state == 'L':
@@ -265,6 +282,14 @@ class virialgamma():
         v0 : float, optional
             volume of phase
 
+        Returns
+        -------
+        logfug: array_like
+            effective fugacity coefficients
+        dlogfug: array_like
+            derivatives of effective fugacity coefficients
+        v0 : float
+            volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
         if state == 'L':
@@ -285,3 +310,44 @@ class virialgamma():
             dlogfug = (2*Bij - np.add.outer(Bp, Bp))*P/(R*T)
 
         return logfug, dlogfug, v0
+
+    def lngama(self, X, T):
+        """
+        Computes the natural logarithm of activy coefficients.
+
+        Parameters
+        ----------
+        X : array
+            molar fractions
+        T : float
+            absolute temperature [K]
+
+        Returns
+        -------
+        lngama: array_like
+            activity coefficients
+        """
+        gamas = self.actmodel(X, T, *self.actmodelp)
+        return gamas
+
+    def dlngama(self, X, T):
+        """
+        Computes the natural logarithm of activy coefficients and its
+        composition derivatives matrix.
+
+        Parameters
+        ----------
+        X : array
+            molar fractions
+        T : float
+            absolute temperature [K]
+
+        Returns
+        -------
+        lngama: array_like
+            activity coefficient
+        dlngama: array_like
+            derivatives of the activity coefficients
+        """
+        gamas, dgama = self.dactmodel(X, T, *self.actmodelp)
+        return gamas, dgama

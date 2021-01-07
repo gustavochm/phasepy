@@ -41,12 +41,15 @@ class cubicm():
 
     Methods
     -------
+    temperature_aux: computes temperature dependent parameters.
     a_eos : computes the attractive term of cubic eos.
     Zmix : computes the roots of compressibility factor polynomial.
     density : computes density of mixture.
     logfugef : computes effective fugacity coefficients.
-    logfugmix : computes mixture fugacity coeficcient;
-    a0ad : computes adimentional Helmholtz density energy
+    logfugmix : computes mixture fugacity coeficcient.
+    dlogfugef: computes effective fugacity coefficients and it
+        composition derivatives.
+    a0ad : computes adimentional Helmholtz density energy.
     muad : computes adimentional chemical potential.
     dOm : computes adimentional Thermodynamic Grand Potential.
     ci :  computes influence parameters matrix for SGT.

@@ -11,7 +11,7 @@ class cpure():
     Pure component Cubic EoS Object
 
     This object have implemeted methods for phase equilibrium
-    as for iterfacial properties calculations.
+    as for interfacial properties calculations.
 
     Parameters
     ----------
@@ -61,6 +61,31 @@ class cpure():
         self.b = self.omb*R*self.Tc/self.Pc
 
     def __call__(self, T, v):
+        b = self.b
+        a = self.a_eos(T)
+        c1 = self.c1
+        c2 = self.c2
+        return R*T/(v - b) - a/((v+c1*b)*(v+c2*b))
+
+    def pressure(self, T, v):
+        """
+        pressure(v, T)
+
+        Method that computes the pressure at given volume (cm3/mol)
+        and temperature T (in K)
+
+        Parameters
+        ----------
+        T : float
+            absolute temperature in K
+        v : float
+            molar volume in cm3/mol
+
+        Returns
+        -------
+        P : float
+            pressure in bar
+        """
         b = self.b
         a = self.a_eos(T)
         c1 = self.c1
@@ -247,7 +272,7 @@ class cpure():
         return mu
 
     def dOm(self, roa, Tad, mu, Psat):
-        """
+        r"""
         dOm(roa, T, mu, Psat)
 
         Method that computes the adimenstional Thermodynamic Grand potential
