@@ -104,41 +104,39 @@ def dGibbs_hess(v, phases, Z, temp_aux, P, model):
 def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
           v0=[None, None], K_tol=1e-8, full_output=False):
     """
-    Isothermic isobaric flash (z,T,P) -> (x,y,beta)
+    Isobaric isothermic (PT) flash: (Z, T, P) -> (x, y, beta)
 
     Parameters
     ----------
-
-    x_guess : array_like
-        guess composition of phase 1
-    y_guess : array_like
-        guess composition of phase 2
+    x_guess : array
+        Initial guess for molar fractions of phase 1 (liquid)
+    y_guess : array
+        Initial guess for molar fractions of phase 2 (gas or liquid)
     equilibrium : string
-        'LL' for ELL, 'LV' for ELV
-    z : array_like
-        overall system composition
+        Two-phase system definition: 'LL' (liquid-liquid) or 'LV' (liquid-vapor)
+    Z : array
+        Overall molar fractions of components
     T : float
-        absolute temperature in K.
+        Absolute temperature [K]
     P : float
-        pressure in bar
-
+        Pressure [bar]
     model : object
-        created from mixture, eos and mixrule
+        Phase equilibrium model object
     v0 : list, optional
-        if supplied volume used as initial value to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute fugacities
     K_tol : float, optional
-        Desired accuracy of K (= Y/X) vector
+        Tolerance for equilibrium constant values
     full_output: bool, optional
-        wheter to outputs all calculation info
+        Flag to return a dictionary of all calculation info
 
     Returns
     -------
-    X : array_like
-        phase 1 composition
-    Y : array_like
-        phase 2 composition
+    x : array
+        Phase 1 molar fractions of components
+    y : array
+        Phase 2 molar fractions of components
     beta : float
-        phase 2 phase fraction
+        Phase 2 phase fraction
     """
     nc = model.nc
     if len(x_guess) != nc or len(y_guess) != nc or len(Z) != nc:

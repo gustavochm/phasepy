@@ -205,9 +205,8 @@ class cubicm():
 
     def density(self, X, T, P, state, rho0=None):
         """
-        density(X, T, P, state)
-        Method that computes the density of the mixture at X, T, P
-
+        Method that computes the molar concentration (molar density)
+        of the mixture at X, T, P
 
         Parameters
         ----------
@@ -224,7 +223,7 @@ class cubicm():
         Returns
         -------
         density: float
-            density vector of the mixture in mol/cm3
+            Molar concentration of the mixture [mol/cm3]
         """
         RT, T, ai, mixingrulep = self.temperature_aux(T)
         bi = self.b
