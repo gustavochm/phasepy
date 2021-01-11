@@ -2,7 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .qmr import qmr
 from .alphas import alpha_vdw
-from ..constants import R
+from ..constants import R, r
 
 
 class vdwm():
@@ -19,11 +19,12 @@ class vdwm():
 
     Attributes
     ----------
-    Tc: critical temperture in K
-    Pc: critical pressure in bar
+    Tc: critical temperture [K]
+    Pc: critical pressure [bar]
     w: acentric factor
-    cii : influence factor for SGT
+    cii : influence parameter for SGT polynomial [J m5 mol-2]
     nc : number of components of mixture
+    Mw : molar weight [g mol-1]
 
     Methods
     -------
@@ -37,6 +38,12 @@ class vdwm():
     dOm : computes adimentional Thermodynamic Grand Potential.
     ci :  computes influence parameters matrix for SGT.
     sgt_adim : computes adimentional factors for SGT.
+    beta_sgt : method that incorporates the beta correction for SGT.
+    EntropyR : computes residual Entropy.
+    EnthalpyR: computes residual Enthalpy.
+    CvR : computes residual isochoric heat capacity.
+    CpR : computes residual isobaric heat capacity.
+    speed_sound : computes the speed of sound.
 
     '''
 
@@ -58,6 +65,7 @@ class vdwm():
         self.beta = np.zeros([self.nc, self.nc])
         self.secondorder = False
         self.secondordersgt = False
+        self.Mw = np.array(mix.Mw, ndmin=1)
 
         self.mixrule = qmr
         if hasattr(mix, 'kij'):
@@ -77,26 +85,68 @@ class vdwm():
         ----------
 
         T : float
-            absolute temperature in K
+            absolute temperature [K]
 
         Returns
         -------
         a : array_like
-            atractive term array
+            atractive term array [bar cm6 mol-2]
         """
         alpha = self.alpha_eos()
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
+
+    def pressure(self, X, v, T):
+        """
+        pressure(X, v, T)
+
+        Method that computes the pressure at given composition X,
+        volume (cm3/mol) and temperature T (in K)
+
+        Parameters
+        ----------
+        X : array_like
+            mole fraction vector
+        v : float
+            molar volume in [cm3/mol]
+        T : float
+            absolute temperature [K]
+
+        Returns
+        -------
+        P : float
+            pressure [bar]
+        """
+        a = self.a_eos(T)
+        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
+        RT = R * T
+
+        P = RT/(v - bm) - am / v**2
+        return P
 
     def _Zroot(self, A, B):
         a1 = -1*B-1
         a2 = +A
         a3 = -B*A
 
-        Zpol=[1, a1, a2, a3]
+        Zpol = [1, a1, a2, a3]
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots > B]
         return Zroots
+
+    # Auxiliar method that computes volume roots
+    def _volume_solver(self, P, RT, D, B, state, v0):
+
+        Dr = D*P/RT**2
+        Br = B*P/RT
+        if state == 'L':
+            Z = np.min(self._Zroot(Dr, Br))
+        elif state == 'V':
+            Z = np.max(self._Zroot(Dr, Br))
+        else:
+            raise Exception('Valid states: L for liquids and V for vapor ')
+        V = (RT*Z)/P
+        return V
 
     def Zmix(self, X, T, P):
         '''
@@ -111,9 +161,9 @@ class vdwm():
         X : array_like
             mole fraction vector
         T : float
-            absolute temperature in K
+            absolute temperature [K]
         P : float
-            pressure in bar
+            pressure [bar]
 
         Returns
         -------
@@ -128,9 +178,9 @@ class vdwm():
 
     def density(self, X, T, P, state):
         """
-        density(X, T, P, state)
-        Method that computes the density of the mixture at X, T, P
-
+        Method that computes the molar concentration (molar density)
+        of the mixture at given composition (X), temperature (T) and
+        pressure (P)
 
         Parameters
         ----------
@@ -138,16 +188,16 @@ class vdwm():
         X : array_like
             mole fraction vector
         T : float
-            absolute temperature in K
+            absolute temperature [K]
         P : float
-            pressure in bar
+            pressure [bar]
         state : string
             'L' for liquid phase and 'V' for vapour phase
 
         Returns
         -------
         density: float
-            density of the mixture in moll/cm3
+            Molar concentration of the mixture [mol/cm3]
         """
         if state == 'L':
             Z = min(self.Zmix(X, T, P))
@@ -165,17 +215,23 @@ class vdwm():
         Parameters
         ----------
 
-        X : array_like, mole fraction vector
-        T : absolute temperature in K
-        P : pressure in bar
-        state : 'L' for liquid phase and 'V' for vapour phase
+        X : array_like,
+            mole fraction vector
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0 : float, optional
+            initial volume to iterate [cm3/mol]
 
         Returns
         -------
         logfug: array_like
             effective fugacity coefficients
-        v0 : float
-            volume of phase, if calculated
+        v : float
+            volume of the mixture [cm3/mol]
         """
         a = self.a_eos(T)
         am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1,
@@ -207,9 +263,9 @@ class vdwm():
         X : array_like
             mole fraction vector
         T : float
-            absolute temperature in K
+            absolute temperature [K]
         P : float
-            pressure in bar
+            pressure [bar]
         state : string
             'L' for liquid phase and 'V' for vapour phase
 
@@ -217,10 +273,12 @@ class vdwm():
         -------
         lofgfug : array_like
             effective fugacity coefficients
+        v : float
+            volume of phase [cm3/mol]
         """
 
         a = self.a_eos(T)
-        am, bm = self.mixrule(X, T, a,self.b, 0, *self.mixruleparameter)
+        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
         if estado == 'V':
             Z = max(self.Zmix(X, T, P))
         elif estado == 'L':
@@ -234,20 +292,20 @@ class vdwm():
 
         return logfug, v0
 
-    def a0ad(self, roa, T):
+    def a0ad(self, rhoa, T):
         """
         a0ad(roa, T)
 
-        Method that computes the adimenstional Helmholtz density energy at given
-        density and temperature.
+        Method that computes the adimenstional Helmholtz density energy at
+        given density and temperature.
 
         Parameters
         ----------
 
-        roa : array_like
-            adimentional density vector
+        rhoa : array_like
+            adimentional density vector [rhoa = rho * b[0]]
         T : float
-            absolute temperature in K
+            absolute temperature [K]
 
         Returns
         -------
@@ -259,8 +317,8 @@ class vdwm():
         bi = self.b
         a = ai[0]
         b = bi[0]
-        ro = np.sum(roa)
-        X = roa/ro
+        ro = np.sum(rhoa)
+        X = rhoa/ro
 
         am, bm = self.mixrule(X, T, ai, bi, 0, *self.mixruleparameter)
         Prefa = 1*b**2/a
@@ -268,14 +326,14 @@ class vdwm():
         ama = am/a
         bma = bm/b
 
-        a0 = np.sum(np.nan_to_num(Tad*roa*np.log(roa)))
+        a0 = np.sum(np.nan_to_num(Tad*rhoa*np.log(rhoa)))
         a0 += -Tad*ro*np.log(1-bma*ro)
         a0 += -Tad*ro*np.log(Prefa/Tad)
         a0 += -ama*ro**2
 
         return a0
 
-    def muad(self, roa, T):
+    def muad(self, rhoa, T):
         """
         muad(roa, T)
 
@@ -285,10 +343,10 @@ class vdwm():
         Parameters
         ----------
 
-        roa : array_like
-            adimentional density vector
+        rhoa : array_like
+            adimentional density vector [rhoa = rho * b[0]]
         T : float
-            absolute temperature in K
+            absolute temperature [K]
 
         Returns
         -------
@@ -299,8 +357,8 @@ class vdwm():
         ai = self.a_eos(T)
         bi = self.b
 
-        ro = np.sum(roa)
-        X = roa/ro
+        ro = np.sum(rhoa)
+        X = rhoa/ro
 
         am, aip, bm, bp = self.mixrule(X, T, ai, bi, 1, *self.mixruleparameter)
 
@@ -317,7 +375,7 @@ class vdwm():
         bad = bp/b
 
         mui = -Tad*np.log(1-bma*ro)
-        mui += -Tad*np.log(Prefa/(Tad*roa))+Tad
+        mui += -Tad*np.log(Prefa/(Tad*rhoa))+Tad
         mui += bad*Tad*ro/(1-bma*ro)
         mui -= ro*(apa+ama)
 
@@ -333,14 +391,14 @@ class vdwm():
         Parameters
         ----------
 
-        roa : array_like
-            adimentional density vector
+        rhoa : array_like
+            adimentional density vector [rhoa = rho * b[0]]
         T : float
-            absolute temperature in K
+            absolute temperature [K]
         mu : array_like
-            adimentional chemical potential at equilibrium
+            adimentional chemical potential at equilibrium [adim]
         Psat : float
-            adimentional pressure at equilibrium
+            adimentional pressure at equilibrium [adim]
 
         Returns
         -------
@@ -365,7 +423,7 @@ class vdwm():
         for i in range(nc):
             zroot = np.roots(np.hstack([1, pols[:, i]]))
             zroot = zroot[zroot > Bi[i]]
-            Zs[i,:] = np.array([max(zroot), min(zroot)])
+            Zs[i, :] = np.array([max(zroot), min(zroot)])
 
         lnphi = self.logfug(Zs.T, Ai, Bi)
         lnphi = np.amin(lnphi, axis=0)
@@ -373,7 +431,29 @@ class vdwm():
         return lnphi
 
     def beta_sgt(self, beta):
-        self.beta = beta
+        '''
+        beta_sgt
+
+        Method that allow asigning the beta correction for the influence
+        parameter in Square Gradient Theory.
+
+        Parameters
+        ----------
+        beta : array_like
+            beta corrections for influence parameter
+        '''
+
+        nc = self.nc
+        BETA = np.asarray(beta)
+        shape = BETA.shape
+
+        isSquare = shape == (nc, nc)
+        isSymmetric = np.allclose(BETA, BETA.T)
+
+        if isSquare and isSymmetric:
+            self.beta = BETA
+        else:
+            raise Exception('beta matrix is not square or symmetric')
 
     def ci(self, T):
         '''
@@ -385,14 +465,14 @@ class vdwm():
         Parameters
         ----------
         T : float
-            absolute temperature in K
+            absolute temperature [K]
 
         Returns
         -------
         cij: array_like
-            matrix of influence parameters with geomtric mixing rule.
+            matrix of influence parameters with geometric mixing
+            rule [J m5 mol-2]
         '''
-
         n = self.nc
         ci = np.zeros(n)
         for i in range(n):
@@ -410,7 +490,7 @@ class vdwm():
 
         Parameters
         ----------
-        T : absolute temperature in K
+        T : absolute temperature [K]
 
         Returns
         -------
@@ -435,3 +515,423 @@ class vdwm():
         tenfactor = 1000*np.sqrt(a0*ci)/b0**2*(np.sqrt(101325/1.01325)*100**3)
         zfactor = np.sqrt(a0/ci*10**5/100**6)*10**-10
         return Tfactor, Pfactor, rofactor, tenfactor, zfactor
+
+    def ares(self, V, T, D, B):
+
+        V_B = V - B
+
+        g = np.log(V_B/V)
+        f = 1./(R*V)
+
+        F = -g - (D/T)*f
+        return F
+
+    def EntropyR(self, X, T, P, state, v0=None, T_Step=0.1):
+        """
+        EntropyR(X, T, P, state, v0, T_step)
+
+        Method that computes the residual entropy at given composition,
+        temperature and pressure.
+
+        Parameters
+        ----------
+        X : array_like
+            molar fraction array
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0: float, optional
+            initial guess for volume root [cm3/mol]
+        T_step: float, optional
+            Step to compute the numerical temperature derivates of Helmholtz
+            free energy
+
+        Returns
+        -------
+        Sr : float
+            residual entropy [J/mol K]
+
+        """
+        h = T_Step
+
+        RT = R*T
+        ai = self.a_eos(T)
+        bi = self.b
+        mixingrulep = self.mixruleparameter
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, state, v0)
+        Z = P*V/RT
+
+        F = self.ares(V, T, D, B)
+
+        T1 = T+h
+        T2 = T+2*h
+        T_1 = T-h
+        T_2 = T-2*h
+
+        ai1 = self.a_eos(T1)
+        ai2 = self.a_eos(T1)
+        ai_1 = self.a_eos(T_1)
+        ai_2 = self.a_eos(T_2)
+
+        RT1 = R*T1
+        RT2 = R*T2
+        RT_1 = R*T_1
+        RT_2 = R*T_2
+
+        D1, B1 = self.mixrule(X, RT1, ai1, bi, 0, *mixingrulep)
+        D2, B2 = self.mixrule(X, RT2, ai2, bi, 0, *mixingrulep)
+        D_1, B_1 = self.mixrule(X, RT_1, ai_1, bi, 0, *mixingrulep)
+        D_2, B_2 = self.mixrule(X, RT_2, ai_2, bi, 0, *mixingrulep)
+
+        F1 = self.ares(V, T1, D1, B1)
+        F2 = self.ares(V, T2, D2, B2)
+        F_1 = self.ares(V, T_1, D_1, B_1)
+        F_2 = self.ares(V, T_2, D_2, B_2)
+
+        dFdT = (F_2/12 - 2*F_1/3 + 2*F1/3 - F2/12)/h
+
+        Sr_TVN = -T*dFdT - F  # residual entropy (TVN) divided by R
+        Sr_TPN = Sr_TVN + np.log(Z)  # residual entropy (TPN) divided by R
+        Sr_TPN *= r  # J / mol K
+        return Sr_TPN
+
+    def EnthalpyR(self, X, T, P, state, v0=None, T_Step=0.1):
+        """
+        EnthalpyR(X, T, P, state, v0, T_step)
+
+        Method that computes the residual enthalpy at given composition,
+        temperature and pressure.
+
+        Parameters
+        ----------
+        X : array_like
+            molar fraction array
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0: float, optional
+            initial guess for volume root [cm3/mol]
+        T_step: float, optional
+            Step to compute the numerical temperature derivates of Helmholtz
+            free energy
+
+        Returns
+        -------
+        Hr : float
+            residual enthalpy [J/mol]
+
+        """
+        h = T_Step
+
+        RT = R*T
+        ai = self.a_eos(T)
+        bi = self.b
+        mixingrulep = self.mixruleparameter
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, state, v0)
+        Z = P*V/RT
+
+        F = self.ares(V, T, D, B)
+
+        T1 = T+h
+        T2 = T+2*h
+        T_1 = T-h
+        T_2 = T-2*h
+
+        ai1 = self.a_eos(T1)
+        ai2 = self.a_eos(T1)
+        ai_1 = self.a_eos(T_1)
+        ai_2 = self.a_eos(T_2)
+
+        RT1 = R*T1
+        RT2 = R*T2
+        RT_1 = R*T_1
+        RT_2 = R*T_2
+
+        D1, B1 = self.mixrule(X, RT1, ai1, bi, 0, *mixingrulep)
+        D2, B2 = self.mixrule(X, RT2, ai2, bi, 0, *mixingrulep)
+        D_1, B_1 = self.mixrule(X, RT_1, ai_1, bi, 0, *mixingrulep)
+        D_2, B_2 = self.mixrule(X, RT_2, ai_2, bi, 0, *mixingrulep)
+
+        F1 = self.ares(V, T1, D1, B1)
+        F2 = self.ares(V, T2, D2, B2)
+        F_1 = self.ares(V, T_1, D_1, B_1)
+        F_2 = self.ares(V, T_2, D_2, B_2)
+
+        dFdT = (F_2/12 - 2*F_1/3 + 2*F1/3 - F2/12)/h
+
+        Sr_TVN = -T*dFdT - F  # residual entropy (TVN) divided by R
+        Hr_TPN = F + Sr_TVN + Z - 1.  # residual entalphy divided by RT
+        Hr_TPN *= (r*T)  # J / mol
+        return Hr_TPN
+
+    def CvR(self, X, T, P, state, v0=None, T_Step=0.1):
+        """
+        Cpr(X, T, P, state, v0, T_step)
+
+        Method that computes the residual isochoric heat capacity at given
+        composition, temperature and pressure.
+
+        Parameters
+        ----------
+        X : array_like
+            molar fraction array
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0: float, optional
+            initial guess for volume root [cm3/mol]
+        T_step: float, optional
+            Step to compute the numerical temperature derivates of Helmholtz
+            free energy
+
+        Returns
+        -------
+        Cv: float
+            residual isochoric heat capacity [J/mol K]
+        """
+        h = T_Step
+
+        RT = R*T
+        ai = self.a_eos(T)
+        bi = self.b
+        mixingrulep = self.mixruleparameter
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, state, v0)
+
+        F = self.ares(V, T, D, B)
+
+        T1 = T+h
+        T2 = T+2*h
+        T_1 = T-h
+        T_2 = T-2*h
+
+        ai1 = self.a_eos(T1)
+        ai2 = self.a_eos(T1)
+        ai_1 = self.a_eos(T_1)
+        ai_2 = self.a_eos(T_2)
+
+        RT1 = R*T1
+        RT2 = R*T2
+        RT_1 = R*T_1
+        RT_2 = R*T_2
+
+        D1, B1 = self.mixrule(X, RT1, ai1, bi, 0, *mixingrulep)
+        D2, B2 = self.mixrule(X, RT2, ai2, bi, 0, *mixingrulep)
+        D_1, B_1 = self.mixrule(X, RT_1, ai_1, bi, 0, *mixingrulep)
+        D_2, B_2 = self.mixrule(X, RT_2, ai_2, bi, 0, *mixingrulep)
+
+        F1 = self.ares(V, T1, D1, B1)
+        F2 = self.ares(V, T2, D2, B2)
+        F_1 = self.ares(V, T_1, D_1, B_1)
+        F_2 = self.ares(V, T_2, D_2, B_2)
+
+        dFdT = (F_2/12 - 2*F_1/3 + 2*F1/3 - F2/12)/h
+        d2FdT = (-F_2/12 + 4*F_1/3 - 5*F/2 + 4*F1/3 - F2/12)/h**2
+
+        Cvr_TVN = -T**2*d2FdT - 2*T*dFdT  # residual isochoric heat capacity
+        Cvr_TVN *= r
+        return Cvr_TVN
+
+    def CpR(self, X, T, P, state, v0=None, T_Step=0.1):
+        """
+        Cpr(X, T, P, state, v0, T_step)
+
+        Method that computes the residual heat capacity at given composition,
+        temperature and pressure.
+
+        Parameters
+        ----------
+        X : array_like
+            molar fraction array
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0: float, optional
+            initial guess for volume root [cm3/mol]
+        T_step: float, optional
+            Step to compute the numerical temperature derivates of Helmholtz
+            free energy
+
+        Returns
+        -------
+        Cp: float
+            residual heat capacity [J/mol K]
+        """
+        h = T_Step
+
+        RT = R*T
+        ai = self.a_eos(T)
+        bi = self.b
+        mixingrulep = self.mixruleparameter
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, state, v0)
+
+        V_B = V - B
+
+        g = np.log(V_B/V)
+        f = 1./(R*V)
+
+        F = -g - (D/T)*f
+
+        T1 = T+h
+        T2 = T+2*h
+        T_1 = T-h
+        T_2 = T-2*h
+
+        ai1 = self.a_eos(T1)
+        ai2 = self.a_eos(T1)
+        ai_1 = self.a_eos(T_1)
+        ai_2 = self.a_eos(T_2)
+
+        RT1 = R*T1
+        RT2 = R*T2
+        RT_1 = R*T_1
+        RT_2 = R*T_2
+
+        D1, B1 = self.mixrule(X, RT1, ai1, bi, 0, *mixingrulep)
+        D2, B2 = self.mixrule(X, RT2, ai2, bi, 0, *mixingrulep)
+        D_1, B_1 = self.mixrule(X, RT_1, ai_1, bi, 0, *mixingrulep)
+        D_2, B_2 = self.mixrule(X, RT_2, ai_2, bi, 0, *mixingrulep)
+
+        F1 = self.ares(V, T1, D1, B1)
+        F2 = self.ares(V, T2, D2, B2)
+        F_1 = self.ares(V, T_1, D_1, B_1)
+        F_2 = self.ares(V, T_2, D_2, B_2)
+
+        dFdT = (F_2/12 - 2*F_1/3 + 2*F1/3 - F2/12)/h
+        d2FdT = (-F_2/12 + 4*F_1/3 - 5*F/2 + 4*F1/3 - F2/12)/h**2
+        dDdT = (D_2/12 - 2*D_1/3 + 2*D1/3 - D2/12)/h
+
+        dPdT = R/V_B - dDdT/V**2
+        dPdV = -RT/V_B**2 + 2*D / V**3
+
+        Cvr_TVN = -T**2*d2FdT - 2*T*dFdT  # residual isochoric heat capacity
+        Cvr_TVN *= r
+
+        # residual heat capacity
+        Cpr = Cvr_TVN - r - (T*dPdT**2/dPdV) / 10
+        return Cpr
+
+    def speed_sound(self, X, T, P, state, v0=None, T_Step=0.1, CvId=3*r/2,
+                    CpId=5*r/2):
+        """
+        speed_sound(X, T, P, state, v0, T_step, CvId, CpId)
+
+        Method that computes the speed of sound at given temperature
+        and pressure.
+
+        This calculation requires that the molar weight [g/mol] of the fluid
+        has been set in the component function.
+
+        By default the ideal gas Cv and Cp are set to 3R/2 and 5R/2, the user
+        can supply better values if available.
+
+        Parameters
+        ----------
+        X : array_like
+            molar fraction array
+        T : float
+            absolute temperature [K]
+        P : float
+            pressure [bar]
+        state : string
+            'L' for liquid phase and 'V' for vapour phase
+        v0: float, optional
+            initial guess for volume root [cm3/mol]
+        T_step: float, optional
+            Step to compute the numerical temperature derivates of Helmholtz
+            free energy
+        CvId: float, optional
+            Ideal gas isochoric heat capacity, set to 3R/2 by default [J/mol K]
+        CpId: float, optional
+            Ideal gas heat capacity, set to 3R/2 by default [J/mol K]
+
+
+        Returns
+        -------
+        w: float
+            speed of sound [m/s]
+        """
+        h = T_Step
+
+        RT = R*T
+        ai = self.a_eos(T)
+        bi = self.b
+        mixingrulep = self.mixruleparameter
+
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
+        V = self._volume_solver(P, RT, D, B, state, v0)
+
+        V_B = V - B
+
+        g = np.log(V_B/V)
+        f = 1./(R*V)
+
+        F = -g - (D/T)*f
+
+        T1 = T+h
+        T2 = T+2*h
+        T_1 = T-h
+        T_2 = T-2*h
+
+        ai1 = self.a_eos(T1)
+        ai2 = self.a_eos(T1)
+        ai_1 = self.a_eos(T_1)
+        ai_2 = self.a_eos(T_2)
+
+        RT1 = R*T1
+        RT2 = R*T2
+        RT_1 = R*T_1
+        RT_2 = R*T_2
+
+        D1, B1 = self.mixrule(X, RT1, ai1, bi, 0, *mixingrulep)
+        D2, B2 = self.mixrule(X, RT2, ai2, bi, 0, *mixingrulep)
+        D_1, B_1 = self.mixrule(X, RT_1, ai_1, bi, 0, *mixingrulep)
+        D_2, B_2 = self.mixrule(X, RT_2, ai_2, bi, 0, *mixingrulep)
+
+        F1 = self.ares(V, T1, D1, B1)
+        F2 = self.ares(V, T2, D2, B2)
+        F_1 = self.ares(V, T_1, D_1, B_1)
+        F_2 = self.ares(V, T_2, D_2, B_2)
+
+        dFdT = (F_2/12 - 2*F_1/3 + 2*F1/3 - F2/12)/h
+        d2FdT = (-F_2/12 + 4*F_1/3 - 5*F/2 + 4*F1/3 - F2/12)/h**2
+        dDdT = (D_2/12 - 2*D_1/3 + 2*D1/3 - D2/12)/h
+
+        dPdT = R/V_B - dDdT/V**2
+        dPdV = -RT/V_B**2 + 2*D / V**3
+
+        Cvr_TVN = -T**2*d2FdT - 2*T*dFdT  # residual isochoric heat capacity
+        Cvr_TVN *= r
+
+        # residual heat capacity
+        Cpr = Cvr_TVN - r - (T*dPdT**2/dPdV) / 10
+
+        # speed of sound calculation
+        Cp = CpId + Cpr
+        Cv = CvId + Cvr_TVN
+
+        betas = - (Cv/Cp) / dPdV / V
+
+        Mwx = np.dot(X, self.Mw)
+        w2 = 100.*V/(betas * Mwx)
+        w = np.sqrt(w2)
+        return w

@@ -39,10 +39,12 @@ class component(object):
         Group contribution information used in Modified-UNIFAC
         activity coefficient model. Group definitions can be found `here
         <http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups>`_.
+    Mw : float
+        molar weight of the fluid [g/mol]
     '''
 
     def __init__(self, name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0,
-                 cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None,
+                 cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None, Mw=1.,
                  ms=1, sigma=0, eps=0, lambda_r=12., lambda_a=6.,
                  eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
 
@@ -62,7 +64,7 @@ class component(object):
         self.c = c  # volume translation for cubic EoS
         self.GC = GC  # Dict, Group contribution info
         self.nc = 1
-
+        self.Mw = Mw  # molar weight in g/mol
         # Saft Parameters
 
         self.ms = ms
@@ -165,7 +167,7 @@ class mixture(object):
     Tc : List[float]
         Critical temperatures [K]
     Pc : List[float]
-        Critical pressures [bar}
+        Critical pressures [bar]
     Zc : List[float]
         critical compressibility factors
     Vc : List[float]
@@ -199,6 +201,7 @@ class mixture(object):
         self.ksv = [component1.ksv, component2.ksv]
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]
+        self.Mw = [component1.Mw,  component2.Mw]
 
         self.lr = [component1.lambda_r, component2.lambda_r]
         self.la = [component1.lambda_a, component2.lambda_a]
@@ -225,6 +228,7 @@ class mixture(object):
         self.c.append(component.c)
         self.ksv.append(component.ksv)
         self.GC.append(component.GC)
+        self.Mw.append(component.Mw)
 
         self.lr.append(component.lambda_r)
         self.la.append(component.lambda_a)
@@ -240,13 +244,18 @@ class mixture(object):
 
     def psat(self, T):
         """
-        Returns array of vapour saturation pressures [bar] at a given temperature
-        using Antoine equation. Exponential base is :math:`e`.
+        Returns array of vapour saturation pressures [bar] at a given
+        temperature using Antoine equation. Exponential base is :math:`e`.
 
         Parameters
         ----------
         T : float
             Absolute temperature [K]
+
+        Returns
+        -------
+        Psat : array_like
+            saturation pressure of each component [bar]
         """
 
         coef = np.vstack(self.Ant)
@@ -254,13 +263,18 @@ class mixture(object):
 
     def tsat(self, P):
         """
-        Returns array of vapour saturation temperatures [K] at a given pressure using
-        Antoine equation. Exponential base is :math:`e`.
+        Returns array of vapour saturation temperatures [K] at a given pressure
+        using Antoine equation. Exponential base is :math:`e`.
 
         Parameters
         ----------
         Psat : float
             Saturation pressure [bar]
+
+        Returns
+        -------
+        Tsat : array_like
+            saturation temperature of each component [K]
         """
 
         coef = np.vstack(self.Ant)
@@ -269,13 +283,18 @@ class mixture(object):
 
     def vlrackett(self, T):
         """
-        Returns array of liquid molar volumes [:math:`\mathrm{cm^3/mol}`] at a given
-        temperature using the Rackett equation.
+        Returns array of liquid molar volumes [:math:`\mathrm{cm^3/mol}`] at a
+        given temperature using the Rackett equation.
 
         Parameters
         ----------
         T : float
             Absolute temperature [K]
+
+        Returns
+        -------
+        vl : array_like
+            liquid volume of each component [cm3 mol-1]
         """
 
         Tc = np.array(self.Tc)
@@ -286,12 +305,55 @@ class mixture(object):
         return V
 
     def kij_saft(self, kij):
-        self.KIJsaft = kij
+        '''
+        Adds kij binary interaction matrix for SAFT-VR-Mie to the
+        mixture. Matrix must be symmetrical and the main diagonal must
+        be zero.
+
+        .. math::
+           \epsilon_{ij} = (1-k_{ij}) \frac{\sqrt{\sigma_i^3 \sigma_j^3}}{\sigma_{ij}^3} \sqrt{\epsilon_i \epsilon_j}
+
+        Parameters
+        ----------
+        kij: array_like
+            Matrix of interaction parameters
+        '''
+        nc = self.nc
+        KIJ = np.asarray(kij)
+        shape = KIJ.shape
+
+        isSquare = shape == (nc, nc)
+        isSymmetric = np.allclose(KIJ, KIJ.T)
+
+        if isSquare and isSymmetric:
+            self.KIJsaft = kij
+        else:
+            raise Exception('kij matrix is not square or symmetric')
 
     def kij_ws(self, kij):
-        self.Kijws = kij
+        '''
+        Adds kij matrix coefficients for WS mixing rule to the
+        mixture. Matrix must be symmetrical and the main diagonal must
+        be zero.
 
-    def kij_cubic(self, k):
+        Parameters
+        ----------
+        kij: array_like
+            Matrix of interaction parameters
+        '''
+        nc = self.nc
+        KIJ = np.asarray(kij)
+        shape = KIJ.shape
+
+        isSquare = shape == (nc, nc)
+        isSymmetric = np.allclose(KIJ, KIJ.T)
+
+        if isSquare and isSymmetric:
+            self.Kijws = kij
+        else:
+            raise Exception('kij matrix is not square or symmetric')
+
+    def kij_cubic(self, kij):
         '''
         Adds kij matrix coefficients for QMR mixing rule to the
         mixture. Matrix must be symmetrical and the main diagonal must
@@ -299,12 +361,20 @@ class mixture(object):
 
         Parameters
         ----------
-        k: array
+        kij: array_like
             Matrix of interaction parameters
-
         '''
+        nc = self.nc
+        KIJ = np.asarray(kij)
+        shape = KIJ.shape
 
-        self.kij = k
+        isSquare = shape == (nc, nc)
+        isSymmetric = np.allclose(KIJ, KIJ.T)
+
+        if isSquare and isSymmetric:
+            self.kij = kij
+        else:
+            raise Exception('kij matrix is not square or symmetric')
 
     def NRTL(self, alpha, g, g1=None):
         r'''
@@ -324,9 +394,19 @@ class mixture(object):
         Parameters are evaluated as a function of temperature:
         :math:`\tau = g/T + g_1`
         '''
+        nc = self.nc
+        Alpha = np.asarray(alpha)
+        shape = Alpha.shape
+
+        isSquare = shape == (nc, nc)
+        isSymmetric = np.allclose(Alpha, Alpha.T)
+
+        if isSquare and isSymmetric:
+            self.alpha = Alpha
+        else:
+            raise Exception('alpha matrix is not square or symmetric')
 
         self.g = g
-        self.alpha = alpha
         if g1 is None:
             g1 = np.zeros_like(g)
         self.g1 = g1
@@ -367,7 +447,7 @@ class mixture(object):
         Parameters
         ----------
         c: array
-            Polynomial values adim
+            Polynomial values [Adim]
         c1: array, optional
             Polynomial values [K]
 
@@ -391,7 +471,7 @@ class mixture(object):
         Parameters
         ----------
         c: array
-            Polynomial values adim
+            Polynomial values [Adim]
         c1: array, optional
             Polynomial values [K]
 
@@ -416,6 +496,9 @@ class mixture(object):
         """
         Reads the Dortmund database for Modified-UNIFAC model
         to the mixture for calculation of activity coefficients.
+
+         Group definitions can be found `here
+        <http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups>`_.
         """
 
         # UNIFAC database reading
@@ -488,5 +571,4 @@ class mixture(object):
         """
         Returns a copy of the mixture object
         """
-
         return copy(self)

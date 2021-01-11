@@ -67,9 +67,9 @@ def fobj_nrtl(inc, mix, datavle=None, datalle=None, datavlle=None,
         else:
             g12, g21, alpha = inc
             gT = None
-
+    Alpha = np.array([[0., alpha], [alpha, 0.]])
     g = np.array([[0, g12], [g21, 0]])
-    mix.NRTL(alpha, g, gT)
+    mix.NRTL(Alpha, g, gT)
     model = virialgamma(mix, virialmodel=virialmodel, actmodel='nrtl')
 
     error = 0.
