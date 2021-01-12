@@ -11,7 +11,7 @@ class cubicm():
     Mixture Cubic EoS Object
 
     This object have implemeted methods for phase equilibrium
-    as for iterfacial properties calculations.
+    as for interfacial properties calculations.
 
     Parameters
     ----------
@@ -146,7 +146,7 @@ class cubicm():
         '''
         RT, T, ai, mixingrulep = self.temperature_aux(T)
 
-        D, B = self.mixrule(X, T, ai, self.b, 0, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, self.b, 0, *mixingrulep)
         Dr = D*P/RT**2
         Br = B*P/RT
         return self._Zroot(Dr, Br)
@@ -174,8 +174,7 @@ class cubicm():
         """
         RT, T, ai, mixingrulep = self.temperature_aux(T)
         bi = self.b
-        # a = self.a_eos(T)
-        am, bm = self.mixrule(X, T, ai, bi, 0, *mixingrulep)
+        am, bm = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         P = RT/(v - bm) - am / ((v+self.c1*bm) * (v+self.c2*bm))
         return P
 
@@ -909,7 +908,7 @@ class cubicm():
         RT, T, ai, mixingrulep = temp_aux
         bi = self.b
 
-        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         V = self._volume_solver(P, RT, D, B, state, v0)
 
         Z = P*V/RT
@@ -979,7 +978,7 @@ class cubicm():
         RT, T, ai, mixingrulep = temp_aux
         bi = self.b
 
-        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         V = self._volume_solver(P, RT, D, B, state, v0)
 
         Z = P*V/RT
@@ -1048,7 +1047,7 @@ class cubicm():
         RT, T, ai, mixingrulep = temp_aux
         bi = self.b
 
-        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         V = self._volume_solver(P, RT, D, B, state, v0)
 
         F = self.ares(V, T, D, B)
@@ -1116,7 +1115,7 @@ class cubicm():
         RT, T, ai, mixingrulep = temp_aux
         bi = self.b
 
-        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         V = self._volume_solver(P, RT, D, B, state, v0)
 
         c1 = self.c1
@@ -1213,7 +1212,7 @@ class cubicm():
         RT, T, ai, mixingrulep = temp_aux
         bi = self.b
 
-        D, Di, B, Bi = self.mixrule(X, RT, ai, bi, 1, *mixingrulep)
+        D, B = self.mixrule(X, RT, ai, bi, 0, *mixingrulep)
         V = self._volume_solver(P, RT, D, B, state, v0)
 
         c1 = self.c1
