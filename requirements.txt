@@ -1,6 +1,6 @@
 numpy
 scipy
 matplotlib
-xlrd
+openpyxl
 pandas
 cython

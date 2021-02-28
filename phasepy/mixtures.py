@@ -504,12 +504,12 @@ class mixture(object):
         # UNIFAC database reading
         database = os.path.join(os.path.dirname(__file__), 'database')
         database += '/dortmund.xlsx'
-        qkrk = read_excel(database, 'RkQk', index_col='Especie')
-        a0 = read_excel(database, 'A0', index_col='Grupo')
+        qkrk = read_excel(database, 'RkQk', index_col='Especie', engine='openpyxl')
+        a0 = read_excel(database, 'A0', index_col='Grupo', engine='openpyxl')
         a0.fillna(0, inplace=True)
-        a1 = read_excel(database, 'A1', index_col='Grupo')
+        a1 = read_excel(database, 'A1', index_col='Grupo', engine='openpyxl')
         a1.fillna(0, inplace=True)
-        a2 = read_excel(database, 'A2', index_col='Grupo')
+        a2 = read_excel(database, 'A2', index_col='Grupo', engine='openpyxl')
         a2.fillna(0, inplace=True)
 
         # Reading pure component and mixture group contribution info

@@ -33,7 +33,7 @@ Installation Prerequisites
 - numpy
 - scipy
 - pandas
-- xlrd
+- openpyxl
 - C/C++ Compiler for Cython extension modules
 
 Installation
