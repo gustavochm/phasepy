@@ -1150,7 +1150,7 @@ class vtcubicm():
 
         Cvr_TVN = -T**2*d2FdT - 2*T*dFdT  # residual isochoric heat capacity
         Cvr_TVN *= r
-        Cvr_TVN
+
         return Cvr_TVN
 
     def CpR(self, X, T, P, state, v0=None, T_Step=0.1):
@@ -1232,7 +1232,6 @@ class vtcubicm():
 
         Cvr_TVN = -T**2*d2FdT - 2*T*dFdT  # residual isochoric heat capacity
         Cvr_TVN *= r
-        Cvr_TVN
 
         # residual heat capacity
         Cpr = Cvr_TVN - r - (T*dPdT**2/dPdV) / 10
