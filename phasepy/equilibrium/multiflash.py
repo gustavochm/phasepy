@@ -65,7 +65,7 @@ def gibbs_obj(ind, phases, Z, temp_aux, P, model):
 
     lnphi = np.zeros_like(X)
     global vg
-    # vg = v0.copy()
+
     for i, state in enumerate(phases):
         lnphi[i], vg[i] = model.logfugef_aux(X[i], temp_aux, P, state, vg[i])
     fug = np.nan_to_num(np.log(X) + lnphi)
@@ -94,7 +94,7 @@ def dgibbs_obj(ind, phases, Z, temp_aux, P, model):
     dfug = np.zeros([nfase, nc, nc])
 
     eye = np.eye(nc)
-    # vg = v0.copy()
+
     for i, state in enumerate(phases):
         lnphi[i], dlnphi[i], vg[i] = model.dlogfugef_aux(X[i], temp_aux, P,
                                                          state, vg[i])

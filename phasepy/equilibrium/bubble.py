@@ -111,7 +111,8 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
     good_initial: bool, optional
         If True uses only phase envelope method in solution
     v0 : list, optional
-        Liquid and vapor phase molar volume used as initial values to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to
+        compute fugacities
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 
@@ -200,7 +201,8 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial=False,
     good_initial: bool, optional
         If True uses only phase envelope method in solution
     v0 : list, optional
-        Liquid and vapor phase molar volume used as initial values to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to
+        compute fugacities
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 

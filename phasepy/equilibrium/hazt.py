@@ -46,6 +46,7 @@ def haz_pb(X0, P_T, T_P, tipo, modelo, index, equilibrio,
     return X, var
 '''
 
+
 def haz_objt(inc, temp_aux, P, model):
 
     X, W, Y = np.split(inc, 3)
@@ -225,7 +226,8 @@ def vlle(X0, W0, Y0, Z, T, P, model, v0=[None, None, None], K_tol=1e-10,
     good_initial: bool, optional
         if True skip Gupta's method and solve full system of equations
     v0 : list, optional
-        Liquid phase 1 and 2 and vapor phase molar volume used as initial values to compute fugacities
+        Liquid phase 1 and 2 and vapor phase molar volume used as initial
+        values to compute fugacities
     K_tol : float, optional
         Tolerance for equilibrium constant values
     nacc : int, optional

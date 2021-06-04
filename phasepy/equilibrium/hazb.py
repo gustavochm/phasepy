@@ -41,7 +41,6 @@ def haz_objb(inc, T_P, type, model):
         P = T_P
 
     global vx, vw, vy
-    global Xassx, Xassw, Xassy
 
     fugX, vx = model.logfugef_aux(X, temp_aux, P, 'L', vx)
     fugW, vw = model.logfugef_aux(W, temp_aux, P, 'L', vw)
@@ -76,7 +75,8 @@ def vlleb(X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None],
     model : object
         Phase equilibrium model object
     v0 : list, optional
-        Liquid phase 1 and 2 and vapor phase molar volume used as initial values to compute fugacities
+        Liquid phase 1 and 2 and vapor phase molar volume used as initial
+        values to compute fugacities
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 

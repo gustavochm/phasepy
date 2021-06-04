@@ -112,7 +112,8 @@ def dewPx(x_guess, P_guess, y, T, model, good_initial=False,
     good_initial: bool, optional
         If True uses only phase envelope method in solution
     v0 : list, optional
-        Liquid and vapor phase molar volume used as initial values to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to
+        compute fugacities
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 
@@ -199,7 +200,8 @@ def dewTx(x_guess, T_guess, y, P, model, good_initial=False,
     good_initial: bool, optional
         If True uses only phase envelope method in solution
     v0 : list, optional
-        Liquid and vapor phase molar volume used as initial values to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to
+        compute fugacities
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 

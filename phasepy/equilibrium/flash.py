@@ -113,7 +113,8 @@ def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
     y_guess : array
         Initial guess for molar fractions of phase 2 (gas or liquid)
     equilibrium : string
-        Two-phase system definition: 'LL' (liquid-liquid) or 'LV' (liquid-vapor)
+        Two-phase system definition: 'LL' (liquid-liquid) or
+        'LV' (liquid-vapor)
     Z : array
         Overall molar fractions of components
     T : float
@@ -123,7 +124,8 @@ def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
     model : object
         Phase equilibrium model object
     v0 : list, optional
-        Liquid and vapor phase molar volume used as initial values to compute fugacities
+        Liquid and vapor phase molar volume used as initial values to compute
+        fugacities
     K_tol : float, optional
         Tolerance for equilibrium constant values
     nacc : int, optional

@@ -1,5 +1,6 @@
 from __future__ import division, print_function, absolute_import
 
+# obtained from scipy optimize result
 
 class EquilibriumResult(dict):
     """

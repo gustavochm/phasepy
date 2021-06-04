@@ -25,7 +25,8 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
     model : object
         Phase equilibrium model object
     v0 : list, optional
-        Liquid phase 1 and 2 molar volumes used as initial values to compute fugacities
+        Liquid phase 1 and 2 molar volumes used as initial values to compute
+        fugacities
     K_tol : float, optional
         Tolerance for equilibrium constant values
     nacc : int, optional
@@ -46,19 +47,12 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
     if len(x0) != nc or len(w0) != nc or len(Z) != nc:
         raise Exception('Composition vector lenght must be equal to nc')
 
-    '''
-    equilibrio = ['L', 'L']
-    out = flash(x0, w0, equilibrio, Z, T, P, model, v0, K_tol , True)
-    X, W, beta = out.X, out.Y, out.beta
-    v1, v2 = out.v1, out.v2
-    '''
-
-    equilibrio = ['L', 'L']
+    equilibrium = ['L', 'L']
 
     temp_aux = model.temperature_aux(T)
 
-    fugx, v1 = model.logfugef_aux(x0, temp_aux, P, equilibrio[0], v0[0])
-    fugw, v2 = model.logfugef_aux(w0, temp_aux, P, equilibrio[1], v0[1])
+    fugx, v1 = model.logfugef_aux(x0, temp_aux, P, equilibrium[0], v0[0])
+    fugw, v2 = model.logfugef_aux(w0, temp_aux, P, equilibrium[1], v0[1])
     lnK = fugx - fugw
     K = np.exp(lnK)
 
@@ -69,7 +63,7 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
 
     beta0 = np.array([1-beta, beta, 0.])
 
-    out = multiflash(X0, beta0, equilibrio, Z, T, P, model,
+    out = multiflash(X0, beta0, equilibrium, Z, T, P, model,
                      [v1, v2], K_tol, nacc, True)
     Xm, beta, tetha, v = out.X, out.beta, out.tetha, out.v
 
@@ -78,7 +72,7 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
                                     v[0], v[0])
         X0 = np.asarray(xes)
         beta0 = np.hstack([beta, 0.])
-        out = multiflash(X0, beta0, equilibrio, Z, T, P, model, v, K_tol,
+        out = multiflash(X0, beta0, equilibrium, Z, T, P, model, v, K_tol,
                          nacc, True)
         Xm, beta, tetha, v = out.X, out.beta, out.tetha, out.v
 
