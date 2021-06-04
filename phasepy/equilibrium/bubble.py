@@ -61,7 +61,7 @@ def bubble_sus(P_T, X, T_P, type, y_guess, eos, vl0, vv0):
     return f0, Y, lnK, vl, vv
 
 
-def bubble_newton(inc, X, T_P, type, eos, vl0, vv0):
+def bubble_newton(inc, X, T_P, type, eos):
     global vl, vv
     f = np.zeros_like(inc)
     lnK = inc[:-1]
@@ -78,9 +78,9 @@ def bubble_newton(inc, X, T_P, type, eos, vl0, vv0):
     Y = X*K
 
     # Liquid fugacities
-    lnphil, vl = eos.logfugef_aux(X, temp_aux, P, 'L', vl0)
+    lnphil, vl = eos.logfugef_aux(X, temp_aux, P, 'L', vl)
     # Vapor fugacities
-    lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv0)
+    lnphiv, vv = eos.logfugef_aux(Y, temp_aux, P, 'V', vv)
 
     f[:-1] = lnK + lnphiv - lnphil
     f[-1] = (Y-X).sum()
@@ -158,8 +158,7 @@ def bubblePy(y_guess, P_guess, X, T, model, good_initial=False,
 
     if error > tol:
         inc0 = np.hstack([lnK, P])
-        sol1 = root(bubble_newton, inc0, args=(X, temp_aux, 'T', model,
-                    vl, vv))
+        sol1 = root(bubble_newton, inc0, args=(X, temp_aux, 'T', model))
         sol = sol1.x
         lnK = sol[:-1]
         error = np.linalg.norm(sol1.fun)
@@ -240,7 +239,7 @@ def bubbleTy(y_guess, T_guess, X, P, model, good_initial=False,
 
     if error > tol:
         inc0 = np.hstack([lnK, T])
-        sol1 = root(bubble_newton, inc0, args=(X, P, 'P', model, vl, vv))
+        sol1 = root(bubble_newton, inc0, args=(X, P, 'P', model))
         sol = sol1.x
         lnK = sol[:-1]
         error = np.linalg.norm(sol1.fun)

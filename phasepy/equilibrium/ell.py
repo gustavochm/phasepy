@@ -5,7 +5,7 @@ from .multiflash import multiflash
 
 
 def lle(x0, w0, Z, T, P, model, v0=[None, None],
-        K_tol=1e-8, full_output=False):
+        K_tol=1e-8, nacc=5, full_output=False):
     """
     Isobaric isothermic (PT) flash for multicomponent liquid-liquid
     systems: (Z, T, P) -> (x, w, beta)
@@ -28,6 +28,8 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
         Liquid phase 1 and 2 molar volumes used as initial values to compute fugacities
     K_tol : float, optional
         Tolerance for equilibrium constant values
+    nacc : int, optional
+        number of accelerated successive substitution cycles to perform
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 
@@ -68,7 +70,7 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
     beta0 = np.array([1-beta, beta, 0.])
 
     out = multiflash(X0, beta0, equilibrio, Z, T, P, model,
-                     [v1, v2], K_tol, True)
+                     [v1, v2], K_tol, nacc, True)
     Xm, beta, tetha, v = out.X, out.beta, out.tetha, out.v
 
     if tetha > 0:
@@ -76,7 +78,8 @@ def lle(x0, w0, Z, T, P, model, v0=[None, None],
                                     v[0], v[0])
         X0 = np.asarray(xes)
         beta0 = np.hstack([beta, 0.])
-        out = multiflash(X0, beta0, equilibrio, Z, T, P, model, v, K_tol, True)
+        out = multiflash(X0, beta0, equilibrio, Z, T, P, model, v, K_tol,
+                         nacc, True)
         Xm, beta, tetha, v = out.X, out.beta, out.tetha, out.v
 
     X, W = Xm

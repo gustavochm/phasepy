@@ -1,6 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from scipy.optimize import minimize
+from copy import copy
 
 
 def tpd(X, state, Z, T, P, model, v0=[None, None]):
@@ -42,12 +43,12 @@ def tpd(X, state, Z, T, P, model, v0=[None, None]):
     return np.sum(np.nan_to_num(tpdi))
 
 
-def tpd_obj(a, temp_aux, P, di, model, state, v0):
+def tpd_obj(a, temp_aux, P, di, model, state):
 
     W = a**2/4.  # change from alpha to mole numbers
     w = W/W.sum()  # change to mole fraction
-
-    logfugW, _ = model.logfugef_aux(w, temp_aux, P, state, v0)
+    global vgw
+    logfugW, vgw = model.logfugef_aux(w, temp_aux, P, state, vgw)
 
     dtpd = np.log(W) + logfugW - di
     tpdi = np.nan_to_num(W*(dtpd-1.))
@@ -99,8 +100,11 @@ def tpd_min(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     alpha0 = 2*W**0.5
     alpha0[alpha0 < 1e-8] = 1e-8  # To avoid negative compositions
 
+    global vgw
+    vgw = copy(vw)
+
     alpha = minimize(tpd_obj, alpha0, jac=True, method='BFGS',
-                     args=(temp_aux, P, di, model, stateW, vw))
+                     args=(temp_aux, P, di, model, stateW))
 
     W = alpha.x**2/2
     w = W/W.sum()
@@ -158,8 +162,12 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     Id = np.eye(nc)
     alpha0 = 2*Id[0]**0.5
     alpha0[alpha0 < 1e-5] = 1e-5  # no negative or zero compositions
+
+    global vgw
+    vgw = copy(vw)
+
     alpha = minimize(tpd_obj, alpha0, jac=True, method='BFGS',
-                     args=(temp_aux, P, di, model, stateW, vw))
+                     args=(temp_aux, P, di, model, stateW))
     W = alpha.x**2/4
     w = W/W.sum()  # normalized composition
     tpd = alpha.fun
@@ -169,8 +177,9 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     for i in range(1, nc):
         alpha0 = 2*Id[i]**0.5
         alpha0[alpha0 < 1e-5] = 1e-5
+        vgw = copy(vw)
         alpha = minimize(tpd_obj, alpha0, jac=True, method='BFGS',
-                         args=(temp_aux, P, di, model, stateW, vw))
+                         args=(temp_aux, P, di, model, stateW))
         W = alpha.x**2/4
         w = W/W.sum()  # normalized composition
         tpd = alpha.fun
@@ -190,8 +199,9 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
         Al = Al/np.sum(Al)
         alpha0 = 2*Al**0.5
         alpha0[alpha0 < 1e-5] = 1e-5
+        vgw = copy(vw)
         alpha = minimize(tpd_obj, alpha0, jac=True, method='BFGS',
-                         args=(temp_aux, P, di, model, stateW, vw))
+                         args=(temp_aux, P, di, model, stateW))
         W = alpha.x**2/4
         w = W/W.sum()  # normalized composition
         tpd = alpha.fun
@@ -210,7 +220,7 @@ def tpd_minimas(nmin, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     return tuple(all_minima), np.array(f_minima)
 
 
-def lle_init(Z, T, P, model, v0=None):
+def lle_init(Z, T, P, model, vw=None, vz=None):
     """
     Carry out two repetitions of Tangent Plane Distance (TPD) function
     minimization with random initial values to find two liquid phase
@@ -226,8 +236,8 @@ def lle_init(Z, T, P, model, v0=None):
         Absolute pressure [bar]
     model : object
         Phase equilibrium model object
-    v0 : float, optional
-        Phase molar volume used as initial value to compute fugacities
+    vw, vz : float, optional
+        if supplied volume used as initial value to compute fugacities
 
     Returns
     -------
@@ -235,7 +245,7 @@ def lle_init(Z, T, P, model, v0=None):
         Two minimized phase molar fractions
 
     """
-    x0s, tpd0 = tpd_minimas(2, Z, T, P, model, 'L', 'L', v0, v0)
+    x0s, tpd0 = tpd_minimas(2, Z, T, P, model, 'L', 'L', vw, vz)
     return x0s
 
 

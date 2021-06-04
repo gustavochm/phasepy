@@ -123,7 +123,7 @@ def dgibbs_hess(v, phases, Z, temp_aux, P, model):
 
 
 def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
-               K_tol=1e-10, full_output=False):
+               K_tol=1e-10, nacc=5, full_output=False):
     """
     multiflash (z,T,P) -> (x,w,y,beta)
 
@@ -147,6 +147,8 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
         if supplied volume used as initial value to compute fugacities
     K_tol : float, optional
         Desired accuracy of K (= X/Xr) vector
+    nacc : int, optional
+        number of accelerated successive substitution cycles to perform
     full_output: bool, optional
         wheter to outputs all calculation info
 
@@ -173,8 +175,8 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
     it = 0
     itacc = 0
     ittotal = 0
-    n = 4
-    nacc = 3
+    n = 5
+    # nacc = 3
 
     X = X0.copy()
     lnphi = np.zeros_like(X)
@@ -221,6 +223,7 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
         for i, state in enumerate(equilibrium):
             lnphi[i], v[i] = model.logfugef_aux(X[i], temp_aux, P, state, v[i])
         lnK = lnphi[0] - lnphi[1:]
+        error = np.sum((lnK - lnK_old)**2)
 
         # Accelerate succesive sustitution
         if it == (n-3):
@@ -237,8 +240,8 @@ def multiflash(X0, betatetha, equilibrium, z, T, P, model, v0=[None],
             lnK += dacc
 
         K = np.exp(lnK)
-        error = np.linalg.norm(lnK - lnK_old)
-    #
+        # error = np.linalg.norm(lnK - lnK_old)
+
     if error > K_tol and itacc == nacc and ef < 1e-8 and np.all(tetha == 0):
         if model.secondorder:
             fobj = dgibbs_obj

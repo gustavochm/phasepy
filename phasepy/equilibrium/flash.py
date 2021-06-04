@@ -102,7 +102,7 @@ def dGibbs_hess(v, phases, Z, temp_aux, P, model):
 
 
 def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
-          v0=[None, None], K_tol=1e-8, full_output=False):
+          v0=[None, None], K_tol=1e-8, nacc=5, full_output=False):
     """
     Isobaric isothermic (PT) flash: (Z, T, P) -> (x, y, beta)
 
@@ -126,6 +126,8 @@ def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
         Liquid and vapor phase molar volume used as initial values to compute fugacities
     K_tol : float, optional
         Tolerance for equilibrium constant values
+    nacc : int, optional
+        number of accelerated successive substitution cycles to perform
     full_output: bool, optional
         Flag to return a dictionary of all calculation info
 
@@ -150,8 +152,7 @@ def flash(x_guess, y_guess, equilibrium, Z, T, P, model,
     itacc = 0
     it = 0
     it2 = 0
-    n = 4
-    nacc = 3
+    n = 5
     X = x_guess
     Y = y_guess
 

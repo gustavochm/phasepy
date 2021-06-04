@@ -3,8 +3,8 @@ import numpy as np
 from scipy.optimize import root
 from .equilibriumresult import EquilibriumResult
 
-
-def haz_objb(inc, T_P, type, model, v0):
+'''
+def haz_objb(inc, T_P, type, model):
 
     X, W, Y, P_T = np.array_split(inc, 4)
 
@@ -18,7 +18,30 @@ def haz_objb(inc, T_P, type, model, v0):
     temp_aux = model.temperature_aux(T)
 
     global vx, vw, vy
-    vx, vw, vy = v0
+
+    fugX, vx = model.logfugef_aux(X, temp_aux, P, 'L')
+    fugW, vw = model.logfugef_aux(W, temp_aux, P, 'L')
+    fugY, vy = model.logfugef_aux(Y, temp_aux, P, 'V')
+
+    K1 = np.exp(fugX-fugY)
+    K2 = np.exp(fugX-fugW)
+    return np.hstack([K1*X-Y, K2*X-W, X.sum()-1, Y.sum()-1, W.sum()-1])
+'''
+
+def haz_objb(inc, T_P, type, model):
+
+    X, W, Y, P_T = np.array_split(inc, 4)
+    # P_T = P_T[0]
+    if type == 'T':
+        P = P_T
+        temp_aux = T_P
+    elif type == 'P':
+        T = P_T
+        temp_aux = model.temperature_aux(T)
+        P = T_P
+
+    global vx, vw, vy
+    global Xassx, Xassw, Xassy
 
     fugX, vx = model.logfugef_aux(X, temp_aux, P, 'L', vx)
     fugW, vw = model.logfugef_aux(W, temp_aux, P, 'L', vw)
@@ -78,9 +101,21 @@ def vlleb(X0, W0, Y0, P_T, T_P, spec, model, v0=[None, None, None],
         raise Exception('Composition vector lenght must be equal to nc')
 
     global vx, vw, vy
-
+    vx, vw, vy = v0
+    '''
     sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),
                 args=(T_P, spec, model, v0))
+    '''
+    if spec == 'T':
+        temp_aux = model.temperature_aux(T_P)
+        sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),
+                    args=(temp_aux, spec, model))
+    elif spec == 'P':
+        sol1 = root(haz_objb, np.hstack([X0, W0, Y0, P_T]),
+                    args=(T_P, spec, model))
+    else:
+        raise Exception('Specification not known')
+
     error = np.linalg.norm(sol1.fun)
     nfev = sol1.nfev
     sol = sol1.x
