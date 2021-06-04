@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from ..constants import R, r
+from scipy.optimize import brentq, newton
 
 
 def psat(T, cubic, P0=None):
@@ -72,6 +73,71 @@ def psat(T, cubic, P0=None):
     return P, vl, vv
 
 
+def fobj_tsat(T, P, cubic):
+
+    a = cubic.a_eos(T)
+    b = cubic.b
+    c = cubic.c
+    RT = R*T
+    A = a*P/(RT)**2
+    B = b*P/(RT)
+    C = c*P/RT
+    Z = cubic._Zroot(A, B, C)
+    Zl = min(Z)
+    Zv = max(Z)
+    fugL = cubic._logfug_aux(Zl, A, B, C)
+    fugV = cubic._logfug_aux(Zv, A, B, C)
+    FO = fugV-fugL
+
+    return FO
+
+
+def tsat(cubic, P, T0=None, Tbounds=None):
+    """
+    Computes saturation temperature with cubic eos
+
+    Parameters
+    ----------
+    cubic: object
+        cubic eos object
+    P: float
+        saturation pressure [bar]
+    T0 : float, optional
+         Temperature to start iterations [K]
+    Tbounds : tuple, optional
+            (Tmin, Tmax) Temperature interval to start iterations [K]
+
+    Returns
+    -------
+    T : float
+        saturation temperature [K]
+    vl: float
+        saturation liquid volume [cm3/mol]
+    vv: float
+        saturation vapor volume [cm3/mol]
+
+    """
+    bool1 = T0 is None
+    bool2 = Tbounds is None
+
+    if bool1 and bool2:
+        raise Exception('You must provide either Tbounds or T0')
+
+    if not bool1:
+        sol = newton(fobj_tsat, x0=T0, args=(P, cubic),
+                     full_output=False)
+        Tsat = sol[0]
+    elif not bool2:
+        sol = brentq(fobj_tsat, Tbounds[0], Tbounds[1], args=(P, cubic),
+                     full_output=False)
+        Tsat = sol
+
+    vl = 1./cubic.density(Tsat, P, 'L')
+    vv = 1./cubic.density(Tsat, P, 'V')
+    out = (Tsat, vl, vv)
+    return out
+
+
 class vtcpure():
     '''
     Pure component Cubic EoS Object
@@ -107,6 +173,7 @@ class vtcpure():
     -------
     a_eos : computes the attractive term of cubic eos.
     psat : computes saturation pressure.
+    tsat : computes saturation temperature
     density : computes density of mixture.
     logfug : computes fugacity coefficient.
     a0ad : computes adimentional Helmholtz density energy
@@ -188,6 +255,33 @@ class vtcpure():
         """
         p0, vl, vv = psat(T, self, P0)
         return p0, vl, vv
+
+    def tsat(self, P, T0=None, Tbounds=None):
+        """
+        tsat(P, T0, Tbounds)
+
+        Method that computes saturation temperature at given pressure
+
+        Parameters
+        ----------
+        P : float
+            pressure [bar]
+        T0 : float, optional
+             Temperature to start iterations [K]
+        Tbounds : tuple, optional
+                (Tmin, Tmax) Temperature interval to start iterations [K]
+
+        Returns
+        -------
+        tsat : float
+            saturation pressure [bar]
+        vl: float
+            saturation liquid volume [cm3/mol]
+        vv: float
+            saturation vapor volume [cm3/mol]
+        """
+        Tsat, vl, vv = tsat(self, P, T0, Tbounds)
+        return Tsat, vl, vv
 
     def _Zroot(self, A, B, C):
         a1 = (self.c1+self.c2-1)*B-1 + 3 * C

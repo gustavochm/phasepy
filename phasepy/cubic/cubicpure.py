@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .alphas import alpha_soave, alpha_sv, alpha_rk
 from .psatpure import psat
+from .tsatpure import tsat
 from ..constants import R, r
 
 
@@ -41,6 +42,7 @@ class cpure():
     -------
     a_eos : computes the attractive term of cubic eos.
     psat : computes saturation pressure.
+    tsat : computes saturation temperature
     density : computes density of mixture.
     logfug : computes fugacity coefficient.
     a0ad : computes adimentional Helmholtz density energy
@@ -144,9 +146,40 @@ class cpure():
         -------
         psat : float
             saturation pressure [bar]
+        vl: float
+            saturation liquid volume [cm3/mol]
+        vv: float
+            saturation vapor volume [cm3/mol]
         """
         p0, vl, vv = psat(T, self, P0)
         return p0, vl, vv
+
+    def tsat(self, P, T0=None, Tbounds=None):
+        """
+        tsat(P, T0, Tbounds)
+
+        Method that computes saturation temperature at given pressure
+
+        Parameters
+        ----------
+        P : float
+            pressure [bar]
+        T0 : float, optional
+             Temperature to start iterations [K]
+        Tbounds : tuple, optional
+                (Tmin, Tmax) Temperature interval to start iterations [K]
+
+        Returns
+        -------
+        tsat : float
+            saturation pressure [bar]
+        vl: float
+            saturation liquid volume [cm3/mol]
+        vv: float
+            saturation vapor volume [cm3/mol]
+        """
+        Tsat, vl, vv = tsat(self, P, T0, Tbounds)
+        return Tsat, vl, vv
 
     def _Zroot(self, A, B):
         a1 = (self.c1+self.c2-1)*B-1

@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .alphas import alpha_vdw
 from .psatpure import psat
+from .tsatpure import tsat
 from ..constants import R, r
 
 
@@ -33,6 +34,8 @@ class vdwpure():
     Methods
     -------
     a_eos : computes the attractive term of cubic eos.
+    psat : computes saturation pressure.
+    tsat : computes saturation temperature
     Zmix : computes the roots of compressibility factor polynomial.
     density : computes density of mixture.
     logfugef : computes effective fugacity coefficients.
@@ -138,6 +141,33 @@ class vdwpure():
             saturation pressure [bar]
         """
         return psat(T, self, P0)
+
+    def tsat(self, P, T0=None, Tbounds=None):
+        """
+        tsat(P, T0, Tbounds)
+
+        Method that computes saturation temperature at given pressure
+
+        Parameters
+        ----------
+        P : float
+            pressure [bar]
+        T0 : float, optional
+             Temperature to start iterations [K]
+        Tbounds : tuple, optional
+                (Tmin, Tmax) Temperature interval to start iterations [K]
+
+        Returns
+        -------
+        tsat : float
+            saturation pressure [bar]
+        vl: float
+            saturation liquid volume [cm3/mol]
+        vv: float
+            saturation vapor volume [cm3/mol]
+        """
+        Tsat, vl, vv = tsat(self, P, T0, Tbounds)
+        return Tsat, vl, vv
 
     def _Zroot(self, A, B):
         a1 = (self.c1+self.c2-1)*B-1

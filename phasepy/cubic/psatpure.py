@@ -10,13 +10,17 @@ def psat(T, cubic, P0=None):
     Parameters
     ----------
     T : float,
-        temperatura a la que se evalua la presion, en kelvin
+        saturation temperature [K]
     cubic : object
-          objeto creado a partir de puro y ecuacion de estado
+          cubic eos object
     Returns
     -------
     P : float
-       saturation pressure
+       saturation pressure [bar]
+    vl: float,
+        saturation liquid volume [cm3/mol]
+    vv: float,
+        saturation vapor volume [cm3/mol]
     """
     a = cubic.a_eos(T)
     b = cubic.b
