@@ -12,5 +12,8 @@ from .wilson import wilson_aux, dwilson_aux
 from .unifac import unifac, dunifac
 from .unifac import unifac_aux, dunifac_aux
 
+from .uniquac import uniquac, duniquac
+from .uniquac import uniquac_aux, duniquac_aux
+
 from .virial import ideal_gas, Tsonopoulos, Abbott, virial
 from .virialgama import virialgamma

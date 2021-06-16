@@ -4,6 +4,7 @@ from ..actmodels import nrtl_aux, dnrtl_aux, nrtlter_aux, dnrtlter_aux
 from ..actmodels import wilson_aux, dwilson_aux
 from ..actmodels import rk_aux, drk_aux
 from ..actmodels import unifac_aux, dunifac_aux
+from ..actmodels import uniquac_aux, duniquac_aux
 
 
 def ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
@@ -68,6 +69,7 @@ def d2ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
     ei = ai/(bi*RT)
     biaiRT = bi - ai/RT
     abij = np.add.outer(biaiRT, biaiRT)/2
+    abij *= (1. - Kij)
     xbi_ai = X*abij
     Q = np.sum(xbi_ai.T*X)
     D = Gex/C + np.dot(X, ei)
@@ -100,20 +102,69 @@ def d2ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
     return am, da_dn, da_dnij, bm, db_dn, db_dnij
 
 
-def ws_nrtl(X, T, ai, bi, order, C, Kij, tau, G):
+def ws_nrtl(X, RT, ai, bi, order, C, Kij, tau, G):
+    '''
+    Wons-Sandler mixrule with nrtl model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    tau, G : array_like, parameters to evaluate nrtl model
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
     parameter = (tau, G)
     if order == 0:
-        mixparameters = ws(X, T, ai, bi, C, Kij, nrtl_aux, parameter)
+        mixparameters = ws(X, RT, ai, bi, C, Kij, nrtl_aux, parameter)
     elif order == 1:
-        mixparameters = dws(X, T, ai, bi, C, Kij, nrtl_aux, parameter)
+        mixparameters = dws(X, RT, ai, bi, C, Kij, nrtl_aux, parameter)
     elif order == 2:
-        mixparameters = d2ws(X, T, ai, bi, C, Kij, dnrtl_aux, parameter)
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, dnrtl_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
 
 
 def ws_nrtlt(X, RT, ai, bi, order, C, Kij, tau, G, D):
+    '''
+    Wons-Sandler mixrule with modified ternary nrtl model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    tau, G : array_like, parameters to evaluate nrtl model
+    D : array_like, parameter to evaluate ternary term.
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
     parameter = (tau, G, D)
     if order == 0:
         mixparameters = ws(X, RT, ai, bi, C, Kij, nrtlter_aux, parameter)
@@ -127,6 +178,30 @@ def ws_nrtlt(X, RT, ai, bi, order, C, Kij, tau, G, D):
 
 
 def ws_wilson(X, RT, ai, bi, order, C, Kij, M):
+    '''
+    Wons-Sandler mixrule with wilson model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    M : array_like, parameters to evaluate wilson model
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
     parameter = (M, )
     if order == 0:
         mixparameters = ws(X, RT, ai, bi, C, Kij, wilson_aux, parameter)
@@ -140,6 +215,32 @@ def ws_wilson(X, RT, ai, bi, order, C, Kij, M):
 
 
 def ws_rk(X, RT, ai, bi, order, C, Kij, G, combinatory):
+    '''
+    Wons-Sandler mixrule with Redlich Kister model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    G : array_like, parameters to evaluate Redlich Kister polynomial
+    combinatory: array_like, array_like, contains info of the order of
+                 polynomial coefficients by pairs.
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
     parameter = (G, combinatory)
     if order == 0:
         mixparameters = ws(X, RT, ai, bi, C, Kij, rk_aux, parameter)
@@ -154,6 +255,31 @@ def ws_rk(X, RT, ai, bi, order, C, Kij, G, combinatory):
 
 def ws_unifac(X, RT, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
               tethai, amn, psi):
+    '''
+    Wons-Sandler mixrule with UNIFAC model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    qi, ri, ri34, Vk, Qk, tethai, amn, psi: parameters to evaluae modified
+                                            Dortmund UNIFAC.
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
     parameter = (qi, ri, ri34, Vk, Qk, tethai, amn, psi)
     if order == 0:
         mixparameters = ws(X, RT, ai, bi, C, Kij, unifac_aux, parameter)
@@ -161,6 +287,43 @@ def ws_unifac(X, RT, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
         mixparameters = dws(X, RT, ai, bi, C, Kij, unifac_aux, parameter)
     elif order == 2:
         mixparameters = d2ws(X, RT, ai, bi, C, Kij, dunifac_aux, parameter)
+    else:
+        raise Exception('Derivative order not valid')
+    return mixparameters
+
+
+def ws_uniquac(X, RT, ai, bi, order, C, Kij, ri, qi, tau):
+    '''
+    Wons-Sandler mixrule with UNIQUAC model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    qi, ri, tau : array_like, parameters to evaluate UNIQUAC model
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
+    parameter = (ri, qi, tau)
+    if order == 0:
+        mixparameters = ws(X, RT, ai, bi, C, Kij, uniquac_aux, parameter)
+    elif order == 1:
+        mixparameters = dws(X, RT, ai, bi, C, Kij, uniquac_aux, parameter)
+    elif order == 2:
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, duniquac_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters

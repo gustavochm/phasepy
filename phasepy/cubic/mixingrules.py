@@ -1,8 +1,9 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from .qmr import qmr
-from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk
+from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk, ws_uniquac
 from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
+from .mhv import mhv_uniquac
 
 
 def mixingrule_fcn(self, mix, mixrule):
@@ -103,6 +104,28 @@ def mixingrule_fcn(self, mix, mixrule):
 
         else:
             raise Exception('Unifac parameters needed')
+
+    elif mixrule == 'mhv_uniquac':
+        bool1 = hasattr(mix, 'ri')
+        bool2 = hasattr(mix, 'qi')
+        bool3 = hasattr(mix, 'a0') and hasattr(mix, 'a1')
+        if bool1 and bool2 and bool3:
+            self.uniquac = (mix.ri, mix.qi, mix.a0, mix.a1)
+            self.mixruleparameter = (self.c1, self.c2, mix.ri, mix.qi,
+                                     mix.a0, mix.a1)
+            self.mixrule = mhv_uniquac
+            self.secondorder = True
+            self.secondordersgt = True
+
+            def mixrule_temp(self, T):
+                ri, qi, a0, a1 = self.uniquac
+                Aij = a0 + a1 * T
+                tau = np.exp(-Aij/T)
+                aux = (self.c1, self.c2, ri, qi, tau)
+                return aux
+            self.mixrule_temp = mixrule_temp.__get__(self)
+        else:
+            raise Exception('NRTL parameters needed')
 
     elif mixrule == 'mhv_rk':
 
@@ -226,5 +249,36 @@ def mixingrule_fcn(self, mix, mixrule):
                    amn, psi)
             return aux
         self.mixrule_temp = mixrule_temp.__get__(self)
+
+    elif mixrule == 'ws_uniquac':
+        if hasattr(mix, 'Kijws'):
+            self.Kijws = mix.Kijws
+        else:
+            self.Kijws = np.zeros([self.nc, self.nc])
+
+        bool1 = hasattr(mix, 'ri')
+        bool2 = hasattr(mix, 'qi')
+        bool3 = hasattr(mix, 'a0') and hasattr(mix, 'a1')
+        if bool1 and bool2 and bool3:
+            c1, c2 = self.c1, self.c2
+            C = np.log((1+c1)/(1+c2))/(c1-c2)
+            self.Cws = C
+            self.uniquac = (mix.ri, mix.qi, mix.a0, mix.a1)
+            self.mixruleparameter = (C, self.Kijws, mix.ri, mix.qi,
+                                     mix.a0, mix.a1)
+            self.mixrule = ws_uniquac
+            self.secondorder = True
+            self.secondordersgt = True
+
+            def mixrule_temp(self, T):
+                ri, qi, a0, a1 = self.uniquac
+                Aij = a0 + a1 * T
+                tau = np.exp(-Aij/T)
+                aux = (self.Cws, self.Kijws, ri, qi, tau)
+                return aux
+            self.mixrule_temp = mixrule_temp.__get__(self)
+        else:
+            raise Exception('UNIQUAC parameters needed')
+
     else:
         raise Exception('Mixrule not valid')

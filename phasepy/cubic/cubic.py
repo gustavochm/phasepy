@@ -35,8 +35,8 @@ def preos(mix_or_component, mixrule='qmr', volume_translation=False):
         :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
         Mixing rule specification. Available opitions include 'qmr',
-        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
-        'ws_wilson', 'ws_rk', 'ws_unifac'.
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'mhv_uniquac',
+        'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac', 'ws_uniquac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
 
@@ -65,8 +65,8 @@ def prsveos(mix_or_component, mixrule='qmr', volume_translation=False):
         :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
         Mixing rule specification. Available opitions include 'qmr',
-        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
-        'ws_wilson', 'ws_rk', 'ws_unifac'.
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'mhv_uniquac',
+        'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac', 'ws_uniquac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
     '''
@@ -94,8 +94,8 @@ def rkeos(mix_or_component, mixrule='qmr', volume_translation=False):
         :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
         Mixing rule specification. Available opitions include 'qmr',
-        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
-        'ws_wilson', 'ws_rk', 'ws_unifac'.
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'mhv_uniquac',
+        'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac', 'ws_uniquac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
     '''
@@ -123,8 +123,8 @@ def rkseos(mix_or_component, mixrule='qmr', volume_translation=False):
         :class:`phasepy.mixture` or :class:`phasepy.component` object
     mixrule : str
         Mixing rule specification. Available opitions include 'qmr',
-        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'ws_nrtl',
-        'ws_wilson', 'ws_rk', 'ws_unifac'.
+        'mhv_nrtl', 'mhv_unifac', 'mhv_rk', 'mhv_wilson', 'mhv_uniquac',
+        'ws_nrtl', 'ws_wilson', 'ws_rk', 'ws_unifac', 'ws_uniquac'.
     volume_translation: bool
         If True, the volume translated version of this EoS will be used.
     '''

@@ -41,12 +41,17 @@ class component(object):
         <http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups>`_.
     Mw : float
         molar weight of the fluid [g/mol]
+    ri : float
+        Component molecular volume for UNIQUAC model
+    qi : float
+        Component molecular surface for UNIQUAC model
+
     '''
 
     def __init__(self, name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0,
                  cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None, Mw=1.,
-                 ms=1, sigma=0, eps=0, lambda_r=12., lambda_a=6.,
-                 eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
+                 ri=0., qi=0., ms=1, sigma=0, eps=0, lambda_r=12.,
+                 lambda_a=6., eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
 
         self.name = name
         self.Tc = Tc  # Critical Temperature in K
@@ -65,6 +70,9 @@ class component(object):
         self.GC = GC  # Dict, Group contribution info
         self.nc = 1
         self.Mw = Mw  # molar weight in g/mol
+        self.ri = ri  # Component molecular volume for UNIQUAC model
+        self.qi = qi  # Component molecular surface for UNIQUAC model
+
         # Saft Parameters
 
         self.ms = ms
@@ -186,6 +194,12 @@ class mixture(object):
         Group contribution information used in Modified-UNIFAC
         activity coefficient model. Group definitions can be found `here
         <http://www.ddbst.com/PublishedParametersUNIFACDO.html#ListOfMainGroups>`_.
+    Mw : list[dict]
+        molar weights of the fluids in the mixture [g/mol]
+    qi: list[dict]
+        Component molecular surface used in UNIQUAC model
+    ri: list[dict]
+        Component molecular volume used in UNIQUAC model
     '''
 
     def __init__(self, component1, component2):
@@ -202,6 +216,8 @@ class mixture(object):
         self.nc = 2
         self.GC = [component1.GC,  component2.GC]
         self.Mw = [component1.Mw,  component2.Mw]
+        self.ri = [component1.ri, component2.ri]
+        self.qi = [component1.qi, component2.qi]
 
         self.lr = [component1.lambda_r, component2.lambda_r]
         self.la = [component1.lambda_a, component2.lambda_a]
@@ -229,6 +245,8 @@ class mixture(object):
         self.ksv.append(component.ksv)
         self.GC.append(component.GC)
         self.Mw.append(component.Mw)
+        self.ri.append(component.ri)
+        self.qi.append(component.qi)
 
         self.lr.append(component.lambda_r)
         self.la.append(component.lambda_a)
@@ -411,6 +429,59 @@ class mixture(object):
             g1 = np.zeros_like(g)
         self.g1 = g1
         self.actmodelp = (self.alpha, self.g, self.g1)
+
+    def uniquac(self, a0, a1=None):
+        r'''
+        Adds UNIQUAC interaction energies to the mixture.
+
+        Parameters
+        ----------
+        a0: array
+            Matrix of energy interactions [K]
+        a1: array, optional
+            Matrix of energy interactions [Adim.]
+
+        Note
+        ----
+        Parameters are evaluated as a function of temperature:
+        :math:`a_{ij} = a_0 + a_1 T`
+        '''
+        ri = np.asarray(self.ri)
+        qi = np.asarray(self.qi)
+
+        self.ri = ri
+        self.qi = qi
+
+        bool1 = np.all(ri != 0)
+        bool2 = np.all(qi != 0)
+        if not bool1:
+            raise Exception('A component molecular volume -ri- has not been set')
+        if not bool2:
+            raise Exception('A component molecular surface -qi- has not been set')
+
+        a0 = np.asarray(a0)
+        shape = a0.shape
+        nc = self.nc
+        isSquare = shape == (nc, nc)
+
+        if isSquare:
+            self.a0 = a0
+        else:
+            raise Exception('a0 matrix is not square (nc, nc)')
+
+        if a1 is None:
+            a1 = np.zeros_like(a0)
+            self.a1 = a1
+        else:
+            a1 = np.asarray(a1)
+            shape2 = a1.shape
+            isSquare2 = shape2 == (nc, nc)
+            if isSquare2:
+                self.a1 = a1
+            else:
+                raise Exception('a1 matrix is not square (nc, nc)')
+
+        self.actmodelp = (self.ri, self.qi, self.a0, self.a1)
 
     def rkt(self, D):
         '''

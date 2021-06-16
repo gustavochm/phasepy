@@ -9,6 +9,8 @@ from .wilson import wilson, dwilson
 from .wilson import wilson_aux, dwilson_aux
 from .unifac import unifac, dunifac
 from .unifac import unifac_aux, dunifac_aux
+from .uniquac import uniquac, duniquac
+from .uniquac import uniquac_aux, duniquac_aux
 from ..constants import R
 
 
@@ -27,16 +29,16 @@ class virialgamma():
         'Tsonopoulos', 'Abbott' or 'ideal_gas'
     actmodel : string
         function to compute activity coefficients, available optiones are
-        'nrtl', 'wilson', 'unifac', 'rkb' or 'rk'
+        'nrtl', 'wilson', 'unifac', 'uniquac', 'rkb' or 'rk'
 
     Methods
     -------
     temperature_aux: computes temperature dependent parameters.
     logfugef: computes effective fugacity coefficients.
-    dlogfugef: computes effective fugacity coefficients and it
+    dlogfugef: computes effective fugacity coefficients and its
         composition derivatives.
     lngama: computes activity coefficients.
-    dlngama: computes activity coefficients and it
+    dlngama: computes activity coefficients and its
         composition derivatives.
     '''
 
@@ -117,6 +119,27 @@ class virialgamma():
                 self.actm_temp = actm_temp.__get__(self)
             else:
                 raise Exception('Wilson parameters needed')
+        elif actmodel == 'uniquac':
+            bool1 = hasattr(mix, 'ri')
+            bool2 = hasattr(mix, 'qi')
+            bool3 = hasattr(mix, 'a0') and hasattr(mix, 'a1')
+            if bool1 and bool2 and bool3:
+                self.actmodelp = (mix.ri, mix.qi, mix.a0, mix.a1)
+                self.actmodel = uniquac
+                self.dactmodel = duniquac
+                self.actmodel_aux = uniquac_aux
+                self.dactmodel_aux = duniquac_aux
+                self.secondorder = True
+
+                def actm_temp(self, T):
+                    ri, qi, a0, a1 = self.actmodelp
+                    Aij = a0 + a1 * T
+                    tau = np.exp(-Aij/T)
+                    aux = (ri, qi, tau)
+                    return aux
+                self.actm_temp = actm_temp.__get__(self)
+            else:
+                raise Exception('UNIQUAC parameters needed')
 
         elif actmodel == 'rk':
             if hasattr(mix, 'rkp') and hasattr(mix, 'rkpT'):

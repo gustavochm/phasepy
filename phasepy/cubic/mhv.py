@@ -4,6 +4,7 @@ from ..actmodels import nrtl_aux, dnrtl_aux, nrtlter_aux, dnrtlter_aux
 from ..actmodels import wilson_aux, dwilson_aux
 from ..actmodels import rk_aux, drk_aux
 from ..actmodels import unifac_aux, dunifac_aux
+from ..actmodels import uniquac_aux, duniquac_aux
 
 
 # Modified Huron Vidal Mixrule
@@ -441,7 +442,7 @@ def mhv_unifac(X, RT, ai, bi, order, c1, c2, qi, ri, ri34, Vk, Qk,
     bi :  pure component cohesive term in cm3/mol
     c1, c2: cubic eos constants
     qi, ri, ri34, Vk, Qk, tethai, amn, psi: parameters to evaluae modified
-        Dortmund UNIFAC.
+                                            Dortmund UNIFAC.
 
     Out :
     D (mixture a term)
@@ -458,6 +459,42 @@ def mhv_unifac(X, RT, ai, bi, order, c1, c2, qi, ri, ri34, Vk, Qk,
         mixparameters = dmhv(X, RT, ai, bi, c1, c2, unifac_aux, parameter)
     elif order == 2:
         mixparameters = d2mhv(X, RT, ai, bi, c1, c2, dunifac_aux, parameter)
+    else:
+        raise Exception('Derivative order not valid')
+    return mixparameters
+
+
+def mhv_uniquac(X, RT, ai, bi, order, c1, c2, ri, qi, tau):
+    '''
+    Modified Huron vidal mixrule with UNIQUAC model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    c1, c2: cubic eos constants
+    qi, ri, tau : array_like, parameters to evaluate UNIQUAC model
+
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
+    parameter = (ri, qi, tau)
+    if order == 0:
+        mixparameters = mhv(X, RT, ai, bi, c1, c2, uniquac_aux, parameter)
+    elif order == 1:
+        mixparameters = dmhv(X, RT, ai, bi, c1, c2, uniquac_aux, parameter)
+    elif order == 2:
+        mixparameters = d2mhv(X, RT, ai, bi, c1, c2, duniquac_aux, parameter)
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
