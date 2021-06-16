@@ -22,7 +22,7 @@ def fobj_vle(model, Xexp, Yexp, Texp, Pexp, weights_vle=[1., 1.]):
 
     error = weights_vle[0] * np.sum((Y-Yexp)**2)
     error += weights_vle[1] * np.sum((P/Pexp-1)**2)
-    # error /= n
+    error /= n
     return error
 
 
@@ -51,7 +51,7 @@ def fobj_lle(model, Xexp, Wexp, Texp, Pexp, tpd=True, weights_lle=[1., 1.]):
 
     error = weights_lle[0] * np.sum((X-Xexp)**2)
     error += weights_lle[1] * np.sum((W-Wexp)**2)
-    # error /= n
+    error /= n
     return error
 
 
@@ -88,7 +88,7 @@ def fobj_vlleb(model, Xellv, Wellv, Yellv, Tellv, Pellv,
     error += weights_vlleb[1] * np.sum((W-Wellv)**2)
     error += weights_vlleb[2] * np.sum((Y-Yellv)**2)
     error += weights_vlleb[3] * np.sum((P/Pellv-1)**2)
-    # error /= n
+    error /= n
 
     return error
 
@@ -125,5 +125,5 @@ def fobj_vllet(model, Xellv, Wellv, Yellv, Tellv, Pellv,
     error += weights_vlle[0] * np.sum((np.nan_to_num(X)-Xellv)**2)
     error += weights_vlle[1] * np.sum((np.nan_to_num(Y)-Yellv)**2)
     error += weights_vlle[2] * np.sum((np.nan_to_num(W)-Wellv)**2)
-    # error /= n
+    error /= n
     return error
