@@ -3,9 +3,9 @@ import numpy as np
 from ..equilibrium import bubblePy, lle, tpd_min, vlleb, haz
 
 
-def fobj_elv(model, Xexp, Yexp, Texp, Pexp):
+def fobj_vle(model, Xexp, Yexp, Texp, Pexp, weights_vle=[1., 1.]):
     """
-    Objective function to fit parameters for ELV in multicomponent mixtures
+    Objective function to fit parameters for VLE in multicomponent mixtures
     """
 
     n = Pexp.shape[0]
@@ -20,15 +20,15 @@ def fobj_elv(model, Xexp, Yexp, Texp, Pexp):
     for i in range(n):
         Y[i], P[i] = bubblePy(Yexp[i], Pexp[i], Xexp[i], Texp[i], model)
 
-    error = ((Y-Yexp)**2).sum()
-    error += ((P/Pexp-1)**2).sum()
-    error /= n
+    error = weights_vle[0] * np.sum((Y-Yexp)**2)
+    error += weights_vle[1] * np.sum((P/Pexp-1)**2)
+    # error /= n
     return error
 
 
-def fobj_ell(model, Xexp, Wexp, Texp, Pexp, tpd=True):
+def fobj_lle(model, Xexp, Wexp, Texp, Pexp, tpd=True, weights_lle=[1., 1.]):
     """
-    Objective function to fit parameters for ELL in multicomponent mixtures
+    Objective function to fit parameters for LLE in multicomponent mixtures
     """
     n = Pexp.shape[0]
     n1, n2 = Xexp.shape
@@ -49,15 +49,16 @@ def fobj_ell(model, Xexp, Wexp, Texp, Pexp, tpd=True):
             W0 = Wexp[i]
         X[i], W[i], beta = lle(X0, W0, Z[i], Texp[i], Pexp[i], model)
 
-    error = ((X-Xexp)**2).sum()
-    error += ((W-Wexp)**2).sum()
-    error /= n
+    error = weights_lle[0] * np.sum((X-Xexp)**2)
+    error += weights_lle[1] * np.sum((W-Wexp)**2)
+    # error /= n
     return error
 
 
-def fobj_hazb(model, Xellv, Wellv, Yellv, Tellv, Pellv, info=[1, 1, 1]):
+def fobj_vlleb(model, Xellv, Wellv, Yellv, Tellv, Pellv,
+               weights_vlleb=[1., 1., 1., 1.]):
     """
-    Objective function to fit parameters for ELLV in binary mixtures
+    Objective function to fit parameters for VLLE in binary mixtures
     """
     n = len(Tellv)
     n1, n2 = Xellv.shape
@@ -83,18 +84,19 @@ def fobj_hazb(model, Xellv, Wellv, Yellv, Tellv, Pellv, info=[1, 1, 1]):
         except:
             pass
 
-    error = info[0]*((X-Xellv)**2).sum()
-    error += info[1]*((W-Wellv)**2).sum()
-    error += info[2]*((Y-Yellv)**2).sum()
-    error += ((P/Pellv-1)**2).sum()
-    error /= n
+    error = weights_vlleb[0] * np.sum((X-Xellv)**2)
+    error += weights_vlleb[1] * np.sum((W-Wellv)**2)
+    error += weights_vlleb[2] * np.sum((Y-Yellv)**2)
+    error += weights_vlleb[3] * np.sum((P/Pellv-1)**2)
+    # error /= n
 
     return error
 
 
-def fobj_hazt(model, Xellv, Wellv, Yellv, Tellv, Pellv):
+def fobj_vllet(model, Xellv, Wellv, Yellv, Tellv, Pellv,
+               weights_vlle=[1., 1., 1.]):
     """
-    Objective function to fit parameters for ELLV in multicomponent mixtures
+    Objective function to fit parameters for VLLE in multicomponent mixtures
     """
 
     n = len(Tellv)
@@ -120,8 +122,8 @@ def fobj_hazt(model, Xellv, Wellv, Yellv, Tellv, Pellv):
         except:
             pass
 
-    error += ((np.nan_to_num(X)-Xellv)**2).sum()
-    error += ((np.nan_to_num(Y)-Yellv)**2).sum()
-    error += ((np.nan_to_num(W)-Wellv)**2).sum()
-    error /= n
+    error += weights_vlle[0] * np.sum((np.nan_to_num(X)-Xellv)**2)
+    error += weights_vlle[1] * np.sum((np.nan_to_num(Y)-Yellv)**2)
+    error += weights_vlle[2] * np.sum((np.nan_to_num(W)-Wellv)**2)
+    # error /= n
     return error

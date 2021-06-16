@@ -2,15 +2,15 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..equilibrium import haz
 from ..actmodels import virialgamma
-from .fitmulticomponent import fobj_elv, fobj_ell, fobj_hazt
+from .fitmulticomponent import fobj_vle, fobj_lle, fobj_vllet
 
 
-def fobj_nrtlrkt(D, Xexp, Wexp, Yexp, Texp, Pexp, mezcla, good_initial=True):
+def fobj_nrtlrkt(D, Xexp, Wexp, Yexp, Texp, Pexp, mix, good_initial=True):
 
     n = len(Pexp)
-    mezcla.rkt(D)
+    mix.rkt(D)
 
-    vg = virialgamma(mezcla, actmodel='nrtlt')
+    vg = virialgamma(mix, actmodel='nrtlt')
     x = np.zeros_like(Xexp)
     w = np.zeros_like(Wexp)
     y = np.zeros_like(Yexp)
@@ -26,7 +26,7 @@ def fobj_nrtlrkt(D, Xexp, Wexp, Yexp, Texp, Pexp, mezcla, good_initial=True):
     return error
 
 
-def fobj_nrtlt(inc, mezcla, datavle=None, datalle=None, datavlle=None,
+def fobj_nrtlt(inc, mix, datavle=None, datalle=None, datavlle=None,
                alpha_fixed=False, Tdep=False):
 
     if alpha_fixed:
@@ -57,35 +57,35 @@ def fobj_nrtlt(inc, mezcla, datavle=None, datalle=None, datavlle=None,
                       [a12, 0, a23],
                       [a13, a23, 0]])
 
-    mezcla.NRTL(alpha, g, gT)
-    modelo = virialgamma(mezcla)
+    mix.NRTL(alpha, g, gT)
+    model = virialgamma(mix)
 
     error = 0
 
     if datavle is not None:
-        error += fobj_elv(modelo, *datavle)
+        error += fobj_vle(model, *datavle)
     if datalle is not None:
-        error += fobj_ell(modelo, *datalle)
+        error += fobj_lle(model, *datalle)
     if datavlle is not None:
-        error += fobj_hazt(modelo, *datavlle)
+        error += fobj_vllet(model, *datavlle)
     return error
 
 
-def fobj_kijt(inc, eos, mezcla, datavle=None, datalle=None, datavlle=None):
+def fobj_kijt(inc, eos, mix, datavle=None, datalle=None, datavlle=None):
 
     k12, k13, k23 = inc
     Kij = np.array([[0, k12, k13],
                    [k12, 0, k23],
                    [k13, k23, 0]])
-    mezcla.kij_cubica(Kij)
-    modelo = eos(mezcla)
+    mix.kij_cubic(Kij)
+    model = eos(mix)
 
     error = 0
 
     if datavle is not None:
-        error += fobj_elv(modelo, *datavle)
+        error += fobj_vle(model, *datavle)
     if datalle is not None:
-        error += fobj_ell(modelo, *datalle)
+        error += fobj_lle(model, *datalle)
     if datavlle is not None:
-        error += fobj_hazt(modelo, *datavlle)
+        error += fobj_vllet(model, *datavlle)
     return error
