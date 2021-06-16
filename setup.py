@@ -43,7 +43,8 @@ setup(
   install_requires=['numpy', 'scipy', 'pandas'],
   platforms=["Windows", "Linux", "Mac OS", "Unix"],
   keywords=['Phase Equilibrium', 'Cubic EOS', 'QMR', 'MHV', 'WS', 'NRTL',
-            'Wilson', 'UNIFAC', 'Flash', 'VLE', 'LLE', 'VLLE', 'SGT'],
+            'Wilson', 'UNIFAC', 'UNIQUAC', 'Flash', 'VLE', 'LLE', 'VLLE',
+            'SGT'],
   package_data={'phasepy': ['database/*']},
   zip_safe=False
 )

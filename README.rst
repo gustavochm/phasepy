@@ -22,7 +22,7 @@ e.g. Van der Waals, Peng-Robinson, Redlich-Kwong, or their
 derivatives) model and a mixing rule (Quadratic, Modified Huron-Vidal
 or Wong-Sandler) for all phases, or *the discontinuous approach* using
 a virial equation for the vapor phase and an activity coefficient model
-(NRTL, Wilson, Redlich-Kister or Dortmund Modified UNIFAC) for the
+(NRTL, Wilson, Redlich-Kister, UNIQUAC or Dortmund Modified UNIFAC) for the
 liquid phase(s).
 
 Interfacial property estimation using the continuous phase equilibrium
@@ -120,5 +120,5 @@ any changes you make back, and benefit the community.
 
 
 Chaparro, G., Mejía, A. Phasepy: A Python based framework for fluid phase
-equilibria and interfacial properties computation.
-J Comput Chem. 2020; 1– 23. `https://doi.org/10.1002/jcc.26405 <https://doi.org/10.1002/jcc.26405>`_.
+equilibria and interfacial properties computation. J Comput Chem. 2020, 41, 29,
+2504-2526. `https://doi.org/10.1002/jcc.26405 <https://doi.org/10.1002/jcc.26405>`_.
