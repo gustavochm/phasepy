@@ -40,6 +40,10 @@ class cubicm():
         number of components of mixture
     Mw : array_like
         molar weight of the fluids [g mol-1]
+    secondorder: bool
+        True if dlogfugef and dlogfugef_aux methods are available
+    secondordersgt: bool
+        True if dmuad and dmuad_aux methods are available
 
     Methods
     -------
@@ -49,13 +53,15 @@ class cubicm():
     density : computes density of mixture.
     logfugef : computes effective fugacity coefficients.
     logfugmix : computes mixture fugacity coeficcient.
-    dlogfugef: computes effective fugacity coefficients and it
+    dlogfugef: computes effective fugacity coefficients and its
         composition derivatives.
-    a0ad : computes adimentional Helmholtz density energy.
-    muad : computes adimentional chemical potential.
-    dOm : computes adimentional Thermodynamic Grand Potential.
+    a0ad : computes dimensionless Helmholtz density energy.
+    muad : computes dimensionless chemical potential.
+    dmuad : computes dimensionless chemical potential and its
+            composition derivatives.
+    dOm : computes dimensionless Thermodynamic Grand Potential.
     ci :  computes influence parameters matrix for SGT.
-    sgt_adim : computes adimentional factors for SGT.
+    sgt_adim : computes dimensionless factors for SGT.
     beta_sgt : method that incorporates the beta correction for SGT.
     EntropyR : computes residual Entropy.
     EnthalpyR: computes residual Enthalpy.
@@ -507,21 +513,21 @@ class cubicm():
         """
         a0ad(roa, T)
 
-        Method that computes the adimenstional Helmholtz density energy at
+        Method that computes the dimensionless Helmholtz density energy at
         given density and temperature.
 
         Parameters
         ----------
 
         rhoa : array_like
-            adimentional density vector [rhoa = rho * b[0]]
+            dimensionless density vector [rhoa = rho * b[0]]
         T : float
             absolute temperature [K]
 
         Returns
         -------
         a0ad: float
-            adimenstional Helmholtz density energy
+            dimensionless Helmholtz density energy
         """
 
         temp_aux = self.temperature_aux(T)
@@ -533,21 +539,21 @@ class cubicm():
         """
         muad(roa, T)
 
-        Method that computes the adimenstional chemical potential at given
+        Method that computes the dimensionless chemical potential at given
         density and temperature.
 
         Parameters
         ----------
 
         rhoa : array_like
-            adimentional density vector [rhoa = rho * b[0]]
+            dimensionless density vector [rhoa = rho * b[0]]
         T : float
             absolute temperature [K]
 
         Returns
         -------
         muad : array_like
-            adimentional chemical potential vector
+            dimensionless chemical potential vector
         """
 
         RT, T, ai, mixingrulep = temp_aux
@@ -594,21 +600,21 @@ class cubicm():
         """
         muad(roa, T)
 
-        Method that computes the adimenstional chemical potential at given
+        Method that computes the dimensionless chemical potential at given
         density and temperature.
 
         Parameters
         ----------
 
         rhoa : array_like
-            adimentional density vector [rhoa = rho * b[0]]
+            dimensionless density vector [rhoa = rho * b[0]]
         T : float
             absolute temperature [K]
 
         Returns
         -------
         muad : array_like
-            adimentional chemical potential vector
+            dimensionless chemical potential vector
         """
 
         temp_aux = self.temperature_aux(T)
@@ -691,23 +697,23 @@ class cubicm():
         """
         muad(roa, T)
 
-        Method that computes the adimenstional chemical potential and
+        Method that computes the dimensionless chemical potential and
         its derivatives at given density and temperature.
 
         Parameters
         ----------
 
         rhoa : array_like
-            adimentional density vector [rhoa = rho * b[0]]
+            dimensionless density vector [rhoa = rho * b[0]]
         T : float
             absolute temperature [K]
 
         Returns
         -------
         muad : array_like
-            adimentional chemical potential vector
-        muad : array_like
-            adimentional derivatives of chemical potential vector
+            dimensionless chemical potential vector
+        dmuad : array_like
+            dimensionless derivatives of chemical potential vector
         """
 
         temp_aux = self.temperature_aux(T)
@@ -724,25 +730,25 @@ class cubicm():
         """
         dOm(roa, T, mu, Psat)
 
-        Method that computes the adimenstional Thermodynamic Grand potential
+        Method that computes the dimensionless Thermodynamic Grand potential
         at given density and temperature.
 
         Parameters
         ----------
 
         rhoa : array_like
-            adimentional density vector [rhoa = rho * b[0]]
+            dimensionless density vector [rhoa = rho * b[0]]
         T : float
             absolute temperature [K]
         mu : array_like
-            adimentional chemical potential at equilibrium [adim]
+            dimensionless chemical potential at equilibrium [adim]
         Psat : float
-            adimentional pressure at equilibrium [adim]
+            dimensionless pressure at equilibrium [adim]
 
         Returns
         -------
         dom: float
-            Thermodynamic Grand potential
+            Thermodynamic Grand potential [Adim]
         """
         temp_aux = self.temperature_aux(T)
         dom = self.dOm_aux(rhoa, temp_aux, mu, Psat)
@@ -827,7 +833,7 @@ class cubicm():
         '''
         sgt_adim(T)
 
-        Method that evaluates adimentional factor for temperature, pressure,
+        Method that evaluates dimensionless factors for temperature, pressure,
         density, tension and distance for interfacial properties computations
         with SGT.
 
@@ -1274,8 +1280,8 @@ class cubicm():
 
 
 # Peng Robinson EoS
-c1pr = 1-np.sqrt(2)
-c2pr = 1+np.sqrt(2)
+c1pr = 1.-np.sqrt(2.)
+c2pr = 1.+np.sqrt(2.)
 omapr = 0.4572355289213825
 ombpr = 0.07779607390388854
 
@@ -1301,8 +1307,8 @@ class prsvmix(cubicm):
 
 
 # RK - EoS
-c1rk = 0
-c2rk = 1
+c1rk = 0.
+c2rk = 1.
 omark = 0.42748
 ombrk = 0.08664
 

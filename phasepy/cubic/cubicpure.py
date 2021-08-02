@@ -45,11 +45,11 @@ class cpure():
     tsat : computes saturation temperature
     density : computes density of mixture.
     logfug : computes fugacity coefficient.
-    a0ad : computes adimentional Helmholtz density energy
-    muad : computes adimentional chemical potential.
-    dOm : computes adimentional Thermodynamic Grand Potential.
+    a0ad : computes dimensionless Helmholtz density energy
+    muad : computes dimensionless chemical potential.
+    dOm : computes dimensionless Thermodynamic Grand Potential.
     ci :  computes influence parameters matrix for SGT.
-    sgt_adim : computes adimentional factors for SGT.
+    sgt_adim : computes dimensionless factors for SGT.
     EntropyR : computes residual Entropy.
     EnthalpyR: computes residual Enthalpy.
     CvR : computes residual isochoric heat capacity.
@@ -282,21 +282,21 @@ class cpure():
         """
         a0ad(ro, T)
 
-        Method that computes the adimenstional Helmholtz density energy at
+        Method that computes the dimensionless Helmholtz density energy at
         given density and temperature.
 
         Parameters
         ----------
 
         ro : float
-            adimentional density vector [rho = rho * b]
+            dimensionless density vector [rho = rho * b]
         T : float
-            absolute adimentional temperature [Adim]
+            absolute dimensionless temperature [Adim]
 
         Returns
         -------
         a0ad: float
-            adimenstional Helmholtz density energy [Adim]
+            dimensionless Helmholtz density energy [Adim]
         """
         Pref = 1.
         a0 = -T*ro*np.log(1-ro)
@@ -309,16 +309,16 @@ class cpure():
         """
         muad(ro, T)
 
-        Method that computes the adimenstional chemical potential at given
+        Method that computes the dimensionless chemical potential at given
         density and temperature.
 
         Parameters
         ----------
 
         roa : float
-            adimentional density vector [rho = rho * b]
+            dimensionless density vector [rho = rho * b]
         T : float
-            absolute adimentional temperature [adim]
+            absolute dimensionless temperature [adim]
 
         Returns
         -------
@@ -339,20 +339,20 @@ class cpure():
         r"""
         dOm(roa, T, mu, Psat)
 
-        Method that computes the adimenstional Thermodynamic Grand potential
+        Method that computes the dimensionless Thermodynamic Grand potential
         at given density and temperature.
 
         Parameters
         ----------
 
         roa : float
-            adimentional density vector [rho = rho * b]
+            dimensionless density vector [rho = rho * b]
         T : floar
-            absolute adimentional temperature [Adim]
+            absolute dimensionless temperature [Adim]
         mu : float
-            adimentional chemical potential at equilibrium [Adim]
+            dimensionless chemical potential at equilibrium [Adim]
         Psat : float
-            adimentional pressure at equilibrium [Adim]
+            dimensionless pressure at equilibrium [Adim]
 
         Returns
         -------
@@ -394,7 +394,7 @@ class cpure():
         '''
         sgt_adim(T)
 
-        Method that evaluates adimentional factor for temperature, pressure,
+        Method that evaluates dimensionless factors for temperature, pressure,
         density, tension and distance for interfacial properties computations
         with SGT.
 

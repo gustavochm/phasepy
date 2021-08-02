@@ -20,10 +20,8 @@ def ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
     abij *= (1. - Kij)
     xbi_ai = X*abij
     Q = np.sum(xbi_ai.T*X)
-    # dQ = 2*np.sum(xbi_ai, axis=1)
     D = Gex/C + np.dot(X, ei)
     D1 = 1. - D
-    # dD = ei + lngama/C
 
     # Mixture parameters
     bm = Q/D1
@@ -114,7 +112,7 @@ def ws_nrtl(X, RT, ai, bi, order, C, Kij, tau, G):
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     tau, G : array_like, parameters to evaluate nrtl model
 
@@ -151,7 +149,7 @@ def ws_nrtlt(X, RT, ai, bi, order, C, Kij, tau, G, D):
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     tau, G : array_like, parameters to evaluate nrtl model
     D : array_like, parameter to evaluate ternary term.
@@ -189,7 +187,7 @@ def ws_wilson(X, RT, ai, bi, order, C, Kij, M):
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     M : array_like, parameters to evaluate wilson model
 
@@ -226,7 +224,7 @@ def ws_rk(X, RT, ai, bi, order, C, Kij, G, combinatory):
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     G : array_like, parameters to evaluate Redlich Kister polynomial
     combinatory: array_like, array_like, contains info of the order of
@@ -266,7 +264,7 @@ def ws_unifac(X, RT, ai, bi, order, C, Kij, qi, ri, ri34, Vk, Qk,
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     qi, ri, ri34, Vk, Qk, tethai, amn, psi: parameters to evaluae modified
                                             Dortmund UNIFAC.
@@ -304,7 +302,7 @@ def ws_uniquac(X, RT, ai, bi, order, C, Kij, ri, qi, tau):
     bi :  pure component cohesive term in cm3/mol
     order : 0 for mixture a, b, 1 for a and b and its first composition
             derivatives and 2 for a and b and its first a second derivatives.
-    C: cubic eos constant, np.log((1+c1)/(1+c2))/(c1-c2)
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
     Kij: array_like, correction to cross (b - a/RT)ij
     qi, ri, tau : array_like, parameters to evaluate UNIQUAC model
 

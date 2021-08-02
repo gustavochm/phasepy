@@ -384,3 +384,70 @@ def fit_uniquac(x0, mix, datavle=None, datalle=None, datavlle=None,
                    Tdep, virialmodel, weights_vle, weights_lle, weights_vlle),
                    **minimize_options)
     return fit
+
+
+def fobj_kij_ws(kij, eos, mix, mixingrule, datavle=None, datalle=None,
+                datavlle=None, weights_vle=[1., 1.], weights_lle=[1., 1.],
+                weights_vlle=[1., 1., 1., 1.]):
+
+    Kij_ws = np.array([[0, kij], [kij, 0]])
+    mix.kij_ws(Kij_ws)
+    model = eos(mix, mixingrule)
+
+    error = 0.
+    if datavle is not None:
+        error += fobj_vle(model, *datavle, weights_vle=weights_vle)
+    if datalle is not None:
+        error += fobj_lle(model, *datalle, weights_lle=weights_lle)
+    if datavlle is not None:
+        error += fobj_vlleb(model, *datavlle, weights_vlleb=weights_vlle)
+    return error
+
+
+def fit_kij_ws(kij_bounds, eos, mix, mixingrule, datavle=None, datalle=None,
+               datavlle=None, weights_vle=[1., 1.], weights_lle=[1., 1.],
+               weights_vlle=[1., 1., 1., 1.], minimize_options={}):
+    """
+    fit_kij_ws: attemps to fit kij for Wong-Sandler mixing rule to VLE, LLE, VLLE
+
+    Parameters
+    ----------
+    kij_bounds : tuple
+        bounds for kij correction
+    eos : function
+        cubic eos to fit kij for Wong-Sandler mixing rule
+    mix: object
+        binary mixture
+    mixingrule: string
+        'ws_nrtl', 'ws_wilson', 'ws_unifac', 'ws_rk' or 'ws_uniquac'
+        mix must have included the activity coefficient model parameters
+    datavle: tuple, optional
+        (Xexp, Yexp, Texp, Pexp)
+    datalle: tuple, optional
+        (Xexp, Wexp, Texp, Pexp)
+    datavlle: tuple, optional
+        (Xexp, Wexp, Yexp, Texp, Pexp)
+    weights_vle: list or array_like, optional
+        weights_vle[0] = weight for Y composition error, default to 1.
+        weights_vle[1] = weight for bubble pressure error, default to 1.
+    weights_lle: list or array_like, optional
+        weights_lle[0] = weight for X (liquid 1) composition error, default to 1.
+        weights_lle[1] = weight for W (liquid 2) composition error, default to 1.
+    weights_vlle: list or array_like, optional
+        weights_vlle[0] = weight for X (liquid 1) composition error, default to 1.
+        weights_vlle[1] = weight for W (liquid 2) composition error, default to 1.
+        weights_vlle[2] = weight for Y (vapor) composition error, default to 1.
+        weights_vlle[3] = weight for equilibrium pressure error, default to 1.
+    minimize_options: dict
+        Dictionary of any additional spefication for scipy minimize_scalar
+
+    Returns
+    -------
+    fit : OptimizeResult
+        Result of SciPy minimize
+
+    """
+    fit = minimize_scalar(fobj_kij_ws, kij_bounds, args=(eos, mix, mixingrule,
+                          datavle, datalle, datavlle, weights_vle, weights_lle,
+                          weights_vlle), **minimize_options)
+    return fit
