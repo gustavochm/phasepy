@@ -94,7 +94,7 @@ class cubicm():
         """
         a_eos(T)
 
-        Method that computes atractive term of cubic eos at fixed T (in K)
+        Method that computes attractive term of cubic eos at fixed T (in K)
 
         Parameters
         ----------
@@ -105,7 +105,7 @@ class cubicm():
         Returns
         -------
         a : array_like
-            atractive term array [bar cm6 mol-2]
+            attractive term array [bar cm6 mol-2]
         """
         alpha = self.alpha_eos(T, self.k, self.Tc)
         a = self.oma*(R*self.Tc)**2*alpha/self.Pc
@@ -232,7 +232,7 @@ class cubicm():
         P : float
             pressure [bar]
         state : string
-            'L' for liquid phase and 'V' for vapour phase
+            'L' for liquid phase and 'V' for vapor phase
 
         Returns
         -------
