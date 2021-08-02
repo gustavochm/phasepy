@@ -88,10 +88,20 @@ class component(object):
         self.rdAB = rdAB * self.sigma
         self.sites = sites
 
+    def __add__(self, component2):
+        '''
+        Methods to add two components and create a mixture with them.
+        '''
+        return mixture(self, component2)
+
     def psat(self, T):
         """
-        Returns vapour saturation pressure [bar] at a given temperature
+        Returns vapor saturation pressure [bar] at a given temperature
         using Antoine equation. Exponential base is :math:`e`.
+
+        The following Antoine's equation is used:
+
+        :math:`\ln (P /bar) = A - \frac{B}{T/K + C}`
 
         Parameters
         ----------
@@ -104,8 +114,12 @@ class component(object):
 
     def tsat(self, P):
         """
-        Returns vapour saturation temperature [K] at a given pressure using
+        Returns vapor saturation temperature [K] at a given pressure using
         Antoine equation. Exponential base is :math:`e`.
+
+        The following Antoine's equation is used:
+
+        :math:`\ln (P /bar) = A - \frac{B}{T/K + C}`
 
         Parameters
         ----------
@@ -122,6 +136,8 @@ class component(object):
         """
         Returns liquid molar volume [:math:`\mathrm{cm^3/mol}`] at a given
         temperature using the Rackett equation.
+
+        :math:`v = v_c Z_c^{(1 - T_r)^{2/7}}`
 
         Parameters
         ----------
@@ -260,10 +276,21 @@ class mixture(object):
 
         self.nc += 1
 
+    def __add__(self, new_component):
+        if isinstance(new_component, component):
+            self.add_component(new_component)
+        else:
+            raise Exception('You can only add components objects to an existing mixture')
+        return self
+
     def psat(self, T):
         """
         Returns array of vapour saturation pressures [bar] at a given
         temperature using Antoine equation. Exponential base is :math:`e`.
+
+        The following Antoine's equation is used:
+
+        :math:`\ln (P /bar) = A - \frac{B}{T/K + C}`
 
         Parameters
         ----------
@@ -284,6 +311,10 @@ class mixture(object):
         Returns array of vapour saturation temperatures [K] at a given pressure
         using Antoine equation. Exponential base is :math:`e`.
 
+        The following Antoine's equation is used:
+
+        :math:`\ln (P /bar) = A - \frac{B}{T/K + C}`
+
         Parameters
         ----------
         Psat : float
@@ -303,6 +334,8 @@ class mixture(object):
         """
         Returns array of liquid molar volumes [:math:`\mathrm{cm^3/mol}`] at a
         given temperature using the Rackett equation.
+
+        :math:`v = v_c Z_c^{(1 - T_r)^{2/7}}`
 
         Parameters
         ----------
@@ -574,13 +607,13 @@ class mixture(object):
 
         # UNIFAC database reading
         database = os.path.join(os.path.dirname(__file__), 'database')
-        database += '/dortmund.xlsx'
-        qkrk = read_excel(database, 'RkQk', index_col='Especie', engine='openpyxl')
-        a0 = read_excel(database, 'A0', index_col='Grupo', engine='openpyxl')
+        database += '/dortmund-2021.xlsx'
+        qkrk = read_excel(database, 'RkQk', index_col='subgroup', engine='openpyxl')
+        a0 = read_excel(database, 'A0', index_col='GroupID', engine='openpyxl')
         a0.fillna(0, inplace=True)
-        a1 = read_excel(database, 'A1', index_col='Grupo', engine='openpyxl')
+        a1 = read_excel(database, 'A1', index_col='GroupID', engine='openpyxl')
         a1.fillna(0, inplace=True)
-        a2 = read_excel(database, 'A2', index_col='Grupo', engine='openpyxl')
+        a2 = read_excel(database, 'A2', index_col='GroupID', engine='openpyxl')
         a2.fillna(0, inplace=True)
 
         # Reading pure component and mixture group contribution info
@@ -601,7 +634,7 @@ class mixture(object):
             vk.append(list(d.values()))
         Vk = np.array(vk)
 
-        groups = qkrk.loc[subgroups, 'Grupo ID'].values
+        groups = qkrk.loc[subgroups, 'MainGroupID'].values
 
         a = a0.loc[groups, groups].values
         b = a1.loc[groups, groups].values

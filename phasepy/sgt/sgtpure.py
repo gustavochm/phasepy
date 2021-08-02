@@ -25,7 +25,12 @@ def ten_fit(T, model, roots, weigths, P0=None):
     roi = (rola-rova)*roots+rova
     wreal = (rola-rova)*weigths
 
-    dOm = model.dOm(roi, Tad, mu0, Pad)
+    # dOm = model.dOm(roi, Tad, mu0, Pad)
+    n = len(weigths)
+    dOm = np.zeros(n)
+    for i in range(n):
+        dOm[i] = model.dOm(roi[i], Tad, mu0, Pad)
+
     tenint = np.nan_to_num(np.sqrt(2*dOm))
     ten = np.dot(wreal, tenint)
     ten *= tenfactor
