@@ -40,7 +40,7 @@ setup(
             'phasepy.sgt', 'phasepy.actmodels'],
   cmdclass=cmdclass,
   ext_modules=ext_modules,
-  install_requires=['numpy', 'scipy', 'pandas'],
+  install_requires=['numpy', 'scipy', 'pandas', 'openpyxl'],
   platforms=["Windows", "Linux", "Mac OS", "Unix"],
   keywords=['Phase Equilibrium', 'Cubic EOS', 'QMR', 'MHV', 'WS', 'NRTL',
             'Wilson', 'UNIFAC', 'UNIQUAC', 'Flash', 'VLE', 'LLE', 'VLLE',

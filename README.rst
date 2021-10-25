@@ -54,6 +54,8 @@ files:
 
     $ git clone https://github.com/gustavochm/phasepy
 
+**Note for Apple Silicon users:** It is recommended to install python and phasepy dependencies (numpy, scipy, cython, pandas) through conda miniforge, then you can install phasepy running ``pip install phasepy``.
+
 
 Documentation
 -------------
