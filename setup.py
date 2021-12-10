@@ -7,9 +7,7 @@ except ImportError:
 else:
     use_cython = True
 
-cmdclass = {}
-ext_modules = []
-
+"""
 if use_cython:
     ext_modules += [Extension('phasepy.coloc_cy',
                               ['phasepy/src/coloc_cy.pyx']),
@@ -24,7 +22,17 @@ else:
                               ['phasepy/src/actmodels_cy.c']),
                     Extension('phasepy.sgt.cijmix_cy',
                               ['phasepy/src/cijmix_cy.c'])]
+"""
+cmdclass = {}
+ext_modules = []
 
+ext_modules += [Extension('phasepy.coloc_cy',
+                          ['phasepy/src/coloc_cy.pyx']),
+                Extension('phasepy.actmodels.actmodels_cy',
+                          ['phasepy/src/actmodels_cy.pyx']),
+                Extension('phasepy.sgt.cijmix_cy',
+                          ['phasepy/src/cijmix_cy.pyx'])]
+cmdclass.update({'build_ext': build_ext})
 
 setup(
   name='phasepy',
