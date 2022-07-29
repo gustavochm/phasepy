@@ -15,5 +15,8 @@ from .unifac import unifac_aux, dunifac_aux
 from .uniquac import uniquac, duniquac
 from .uniquac import uniquac_aux, duniquac_aux
 
+from .original_unifac import unifac_original, dunifac_original
+from .original_unifac import unifac_original_aux, dunifac_original_aux
+
 from .virial import ideal_gas, Tsonopoulos, Abbott, virial
 from .virialgama import virialgamma

@@ -5,6 +5,7 @@ from ..actmodels import wilson_aux, dwilson_aux
 from ..actmodels import rk_aux, drk_aux
 from ..actmodels import unifac_aux, dunifac_aux
 from ..actmodels import uniquac_aux, duniquac_aux
+from ..actmodels import unifac_original_aux, dunifac_original_aux
 
 
 def ws(X, RT, ai, bi, C, Kij, ActModel, parameter):
@@ -325,3 +326,44 @@ def ws_uniquac(X, RT, ai, bi, order, C, Kij, ri, qi, tau):
     else:
         raise Exception('Derivative order not valid')
     return mixparameters
+
+
+def ws_unifac_original(X, RT, ai, bi, order, C, Kij, qi, ri, Vk, Qk,
+                       tethai, psi):
+    '''
+    Wons-Sandler mixrule with Original-UNIFAC model
+
+    Inputs
+    ----------
+    X : molar fraction array [x1, x2, ..., xc]
+    RT: Absolute temperature in K plus R
+    ai :  pure component attrative term in bar cm6/mol2
+    bi :  pure component cohesive term in cm3/mol
+    order : 0 for mixture a, b, 1 for a and b and its first composition
+            derivatives and 2 for a and b and its first a second derivatives.
+    C: cubic eos constant, -np.log((1+c1)/(1+c2))/(c1-c2)
+    Kij: array_like, correction to cross (b - a/RT)ij
+    qi, ri, Vk, Qk, tethai, amn: parameters to evaluate original UNIFAC.
+
+    Out :
+    D (mixture a term)
+    Di (mixture a term first derivative)
+    Dij (mixture a term second derivative)
+    B (mixture b term)
+    Bi (mixture b term first derivative)
+    Bij (mixture a term second derivative)
+    '''
+    parameter = (qi, ri, Vk, Qk, tethai, psi)
+    if order == 0:
+        mixparameters = ws(X, RT, ai, bi, C, Kij, unifac_original_aux,
+                           parameter)
+    elif order == 1:
+        mixparameters = dws(X, RT, ai, bi, C, Kij, unifac_original_aux,
+                            parameter)
+    elif order == 2:
+        mixparameters = d2ws(X, RT, ai, bi, C, Kij, dunifac_original_aux,
+                             parameter)
+    else:
+        raise Exception('Derivative order not valid')
+    return mixparameters
+    

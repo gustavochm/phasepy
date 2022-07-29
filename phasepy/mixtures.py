@@ -653,6 +653,56 @@ class mixture(object):
 
         self.actmodelp = (qi, ri, ri34, Vk, Qk, tethai, a, b, c)
 
+    def original_unifac(self):
+        """
+        Reads database for Original-UNIFAC model
+        to the mixture for calculation of activity coefficients.
+
+        Group definitions can be found `here
+        <http://www.ddbst.com/published-parameters-unifac.html#ListOfMainGroups>`_.
+        """
+
+        # UNIFAC database reading
+        database = os.path.join(os.path.dirname(__file__), 'database')
+        database += '/original-unifac.xlsx'
+        qkrk = read_excel(database, 'RkQk', index_col='subgroup', engine='openpyxl')
+        a0 = read_excel(database, 'A0', index_col='GroupID', engine='openpyxl')
+        a0.fillna(0, inplace=True)
+
+        # Reading pure component and mixture group contribution info
+        puregc = self.GC
+        mix = Counter()
+        for i in puregc:
+            mix += Counter(i)
+
+        subgroups = list(mix.keys())
+
+        # Dicts created for each component
+        vk = []
+        dics = []
+        for i in puregc:
+            d = dict.fromkeys(subgroups, 0)
+            d.update(i)
+            dics.append(d)
+            vk.append(list(d.values()))
+        Vk = np.array(vk)
+
+        groups = qkrk.loc[subgroups, 'MainGroupID'].values
+
+        anm = a0.loc[groups, groups].values
+
+        # Reading info of present groups
+        rq = qkrk.loc[subgroups, ['Rk', 'Qk']].values
+        Qk = rq[:, 1]
+
+        ri, qi = (Vk@rq).T
+ 
+        Xmi = (Vk.T/Vk.sum(axis=1)).T
+        t = Xmi*Qk
+        tethai = (t.T/t.sum(axis=1)).T
+
+        self.actmodelp = (qi, ri, Vk, Qk, tethai, anm)
+
     def ci(self, T):
         """
         Returns the matrix of cij interaction parameters for SGT model at

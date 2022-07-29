@@ -9,6 +9,8 @@ from .wilson import wilson, dwilson
 from .wilson import wilson_aux, dwilson_aux
 from .unifac import unifac, dunifac
 from .unifac import unifac_aux, dunifac_aux
+from .original_unifac import unifac_original, dunifac_original
+from .original_unifac import unifac_original_aux, dunifac_original_aux
 from .uniquac import uniquac, duniquac
 from .uniquac import uniquac_aux, duniquac_aux
 from ..constants import R
@@ -195,6 +197,24 @@ class virialgamma():
                 self.actm_temp = actm_temp.__get__(self)
             else:
                 raise Exception('Unifac parameters needed')
+        elif actmodel == 'original_unifac':
+            mix.original_unifac()
+            if hasattr(mix, 'actmodelp'):
+                self.actmodel = unifac_original
+                self.dactmodel = dunifac_original
+                self.actmodel_aux = unifac_original_aux
+                self.dactmodel_aux = dunifac_original_aux
+                self.actmodelp = mix.actmodelp
+                self.secondorder = True
+
+                def actm_temp(self, T):
+                    qi, ri, Vk, Qk, tethai, amn = self.actmodelp
+                    psi = np.exp(-amn/T)
+                    aux = (qi, ri, Vk, Qk, tethai, psi)
+                    return aux
+                self.actm_temp = actm_temp.__get__(self)
+            else:
+                raise Exception('Original-Unifac parameters needed')
         else:
             raise Exception('Activity Coefficient Model not implemented')
 

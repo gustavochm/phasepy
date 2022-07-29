@@ -2,10 +2,11 @@ from __future__ import division, print_function, absolute_import
 import numpy as np
 from .qmr import qmr
 from .wongsandler import ws_nrtl, ws_wilson, ws_unifac, ws_rk, ws_uniquac
+from .wongsandler import ws_unifac_original
 from .mhv import mhv_nrtl, mhv_wilson, mhv_nrtlt, mhv_unifac, mhv_rk
-from .mhv import mhv_uniquac
+from .mhv import mhv_uniquac, mhv_unifac_original
 from .mhv1 import mhv1_nrtl, mhv1_wilson, mhv1_nrtlt, mhv1_unifac, mhv1_rk
-from .mhv1 import mhv1_uniquac
+from .mhv1 import mhv1_uniquac, mhv1_unifac_original
 
 
 def mixingrule_fcn(self, mix, mixrule):
@@ -106,6 +107,24 @@ def mixingrule_fcn(self, mix, mixrule):
 
         else:
             raise Exception('Unifac parameters needed')
+    
+    elif mixrule == 'mhv_original_unifac':
+        mix.original_unifac()
+        if hasattr(mix, 'actmodelp'):
+            self.unifac = mix.actmodelp
+            self.mixruleparameter = (self.c1, self.c2, *mix.actmodelp)
+            self.mixrule = mhv_unifac_original
+            self.secondorder = True
+            self.secondordersgt = True
+
+            def mixrule_temp(self, T):
+                qi, ri, Vk, Qk, tethai, amn = self.unifac
+                psi = np.exp(-amn/T)
+                aux = (self.c1, self.c2, qi, ri, Vk, Qk, tethai, psi)
+                return aux
+            self.mixrule_temp = mixrule_temp.__get__(self)
+        else:
+            raise Exception('Original-Unifac parameters needed')
 
     elif mixrule == 'mhv_uniquac':
         bool1 = hasattr(mix, 'ri')
@@ -255,6 +274,34 @@ def mixingrule_fcn(self, mix, mixrule):
                    amn, psi)
             return aux
         self.mixrule_temp = mixrule_temp.__get__(self)
+
+    elif mixrule == 'ws_original_unifac':
+        mix.original_unifac()
+        if hasattr(mix, 'actmodelp'):
+            if hasattr(mix, 'Kijws'):
+                self.Kijws = mix.Kijws
+            else:
+                self.Kijws = np.zeros([self.nc, self.nc])
+
+            c1, c2 = self.c1, self.c2
+            #C = np.log((1+c1)/(1+c2))/(c1-c2)
+            C = - np.log((1+c1)/(1+c2))/(c1-c2)
+            self.Cws = C
+
+            self.unifac = mix.actmodelp
+            self.mixruleparameter = (C, self.Kijws, *self.unifac)
+            self.mixrule = ws_unifac_original
+            self.secondorder = True
+            self.secondordersgt = True
+
+            def mixrule_temp(self, T):
+                qi, ri, Vk, Qk, tethai, amn = self.unifac
+                psi = np.exp(-amn/T)
+                aux = (self.Cws, self.Kijws, qi, ri, Vk, Qk, tethai, psi)
+                return aux
+            self.mixrule_temp = mixrule_temp.__get__(self)
+        else:
+            raise Exception('Original-Unifac parameters needed')
 
     elif mixrule == 'ws_uniquac':
         if hasattr(mix, 'Kijws'):
@@ -409,6 +456,36 @@ def mixingrule_fcn(self, mix, mixrule):
 
         else:
             raise Exception('Unifac parameters needed')
+
+    elif mixrule == 'mhv1_original_unifac':
+        mix.original_unifac()
+        if hasattr(mix, 'actmodelp'):
+            if self.c1 == 0. and self.c2 == 1.:
+                q1 = -0.593
+            elif self.c1 == 1. and self.c2 == 0.:
+                q1 = -0.593
+            elif self.c1 == 1-np.sqrt(2) and self.c2 == 1+np.sqrt(2):
+                q1 = -0.53
+            elif self.c2 == 1-np.sqrt(2) and self.c1 == 1+np.sqrt(2):
+                q1 = -0.53
+            else:
+                raise Exception('Unkmown q1 value for MHV1 mixing-rule')
+
+            self.q1 = q1
+            self.unifac = mix.actmodelp
+            self.mixruleparameter = (self.q1, *mix.actmodelp)
+            self.mixrule = mhv1_unifac_original
+            self.secondorder = True
+            self.secondordersgt = True
+
+            def mixrule_temp(self, T):
+                qi, ri, Vk, Qk, tethai, amn = self.unifac
+                psi = np.exp(-amn/T)
+                aux = (self.q1, qi, ri, Vk, Qk, tethai, psi)
+                return aux
+            self.mixrule_temp = mixrule_temp.__get__(self)
+        else:
+            raise Exception('Original-Unifac parameters needed')
 
     elif mixrule == 'mhv1_uniquac':
         bool1 = hasattr(mix, 'ri')
