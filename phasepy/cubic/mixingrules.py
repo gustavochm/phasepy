@@ -50,20 +50,20 @@ def mixingrule_fcn(self, mix, mixrule):
     elif mixrule == 'mhv_nrtlt':
         bool1 = hasattr(mix, 'g')
         bool2 = hasattr(mix, 'alpha')
-        bool3 = hasattr(mix, 'rkternario')
+        bool3 = hasattr(mix, 'rkternary')
         if bool1 and bool2 and bool3:
-            self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternario)
+            self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternary)
             self.mixruleparameter = (self.c1, self.c2, mix.alpha, mix.g,
-                                     mix.g1, mix.rkternario)
+                                     mix.g1, mix.rkternary)
             self.mixrule = mhv_nrtlt
             self.secondorder = True
             self.secondordersgt = True
 
             def mixrule_temp(self, T):
-                alpha, g, g1, rkternario = self.nrtlt
+                alpha, g, g1, rkternary = self.nrtlt
                 tau = g/T + g1
                 G = np.exp(-alpha*tau)
-                aux = (self.c1, self.c2, tau, G, rkternario)
+                aux = (self.c1, self.c2, tau, G, rkternary)
                 return aux
             self.mixrule_temp = mixrule_temp.__get__(self)
         else:
@@ -107,7 +107,7 @@ def mixingrule_fcn(self, mix, mixrule):
 
         else:
             raise Exception('Unifac parameters needed')
-    
+
     elif mixrule == 'mhv_original_unifac':
         mix.original_unifac()
         if hasattr(mix, 'actmodelp'):
@@ -366,7 +366,7 @@ def mixingrule_fcn(self, mix, mixrule):
     elif mixrule == 'mhv1_nrtlt':
         bool1 = hasattr(mix, 'g')
         bool2 = hasattr(mix, 'alpha')
-        bool3 = hasattr(mix, 'rkternario')
+        bool3 = hasattr(mix, 'rkternary')
         if bool1 and bool2 and bool3:
             if self.c1 == 0. and self.c2 == 1.:
                 q1 = -0.593
@@ -379,18 +379,18 @@ def mixingrule_fcn(self, mix, mixrule):
             else:
                 raise Exception('Unkmown q1 value for MHV1 mixing-rule')
             self.q1 = q1
-            self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternario)
+            self.nrtlt = (mix.alpha, mix.g, mix.g1, mix.rkternary)
             self.mixruleparameter = (self.q1, mix.alpha, mix.g,
-                                     mix.g1, mix.rkternario)
+                                     mix.g1, mix.rkternary)
             self.mixrule = mhv1_nrtlt
             self.secondorder = True
             self.secondordersgt = True
 
             def mixrule_temp(self, T):
-                alpha, g, g1, rkternario = self.nrtlt
+                alpha, g, g1, rkternary = self.nrtlt
                 tau = g/T + g1
                 G = np.exp(-alpha*tau)
-                aux = (self.q1, tau, G, rkternario)
+                aux = (self.q1, tau, G, rkternary)
                 return aux
             self.mixrule_temp = mixrule_temp.__get__(self)
         else:

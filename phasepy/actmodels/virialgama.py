@@ -83,20 +83,20 @@ class virialgamma():
         elif actmodel == 'nrtlt':
             bool1 = hasattr(mix, 'g')
             bool2 = hasattr(mix, 'alpha')
-            bool3 = hasattr(mix, 'rkternario')
+            bool3 = hasattr(mix, 'rkternary')
             if bool1 and bool2 and bool3:
                 self.actmodel = nrtlter
                 self.dactmodel = dnrtlter
                 self.actmodel_aux = nrtlter_aux
                 self.dactmodel_aux = dnrtlter_aux
-                self.actmodelp = (mix.alpha, mix.g, mix.g1, mix.rkternario)
+                self.actmodelp = (mix.alpha, mix.g, mix.g1, mix.rkternary)
                 self.secondorder = True
 
                 def actm_temp(self, T):
-                    alpha, g, g1, rkternario = self.actmodelp
+                    alpha, g, g1, rkternary = self.actmodelp
                     tau = g/T + g1
                     G = np.exp(-alpha*tau)
-                    aux = (tau, G, rkternario)
+                    aux = (tau, G, rkternary)
                     return aux
                 self.actm_temp = actm_temp.__get__(self)
             else:

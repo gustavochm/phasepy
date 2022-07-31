@@ -526,8 +526,8 @@ class mixture(object):
             Ternary interaction parameter values
         '''
 
-        self.rkternario = D
-        self.actmodelp = (self.alpha, self.g, self.g1, self.rkternario)
+        self.rkternary = D
+        self.actmodelp = (self.alpha, self.g, self.g1, self.rkternary)
 
     def wilson(self, A):
         '''
@@ -689,19 +689,19 @@ class mixture(object):
 
         groups = qkrk.loc[subgroups, 'MainGroupID'].values
 
-        anm = a0.loc[groups, groups].values
+        amn = a0.loc[groups, groups].values
 
         # Reading info of present groups
         rq = qkrk.loc[subgroups, ['Rk', 'Qk']].values
         Qk = rq[:, 1]
 
         ri, qi = (Vk@rq).T
- 
+
         Xmi = (Vk.T/Vk.sum(axis=1)).T
         t = Xmi*Qk
         tethai = (t.T/t.sum(axis=1)).T
 
-        self.actmodelp = (qi, ri, Vk, Qk, tethai, anm)
+        self.actmodelp = (qi, ri, Vk, Qk, tethai, amn)
 
     def ci(self, T):
         """
