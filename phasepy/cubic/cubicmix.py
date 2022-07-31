@@ -122,7 +122,7 @@ class cubicm():
         a1 = (self.c1+self.c2-1)*B-1
         a2 = self.c1*self.c2*B**2-(self.c1+self.c2)*(B**2+B)+A
         a3 = -B*(self.c1*self.c2*(B**2+B)+A)
-        Zpol = [1., a1, a2, a3]
+        Zpol = np.hstack([1., a1, a2, a3])
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots > B]

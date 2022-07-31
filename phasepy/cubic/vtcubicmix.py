@@ -122,7 +122,7 @@ class vtcubicm():
         a2 += 3*C**2 + 2*C*(-1 + B*(-1 + self.c1 + self.c2))
         a3 = A*(-B+C) + (-1-B+C)*(C+self.c1*B)*(C+self.c2*B)
 
-        Zpol = [1, a1, a2, a3]
+        Zpol = np.hstack([1., a1, a2, a3])
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots > (B - C)]

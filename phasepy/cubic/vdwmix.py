@@ -128,7 +128,7 @@ class vdwm():
         a2 = +A
         a3 = -B*A
 
-        Zpol = [1, a1, a2, a3]
+        Zpol = np.hstack([1., a1, a2, a3])
         Zroots = np.roots(Zpol)
         Zroots = np.real(Zroots[np.imag(Zroots) == 0])
         Zroots = Zroots[Zroots > B]
