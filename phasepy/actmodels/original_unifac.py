@@ -3,7 +3,7 @@ import numpy as np
 
 
 def unifac_original_aux(x, qi, ri, Vk, Qk, tethai, psi):
-    
+
     # Combinatory part
     rx = np.dot(x, ri)
     qx = np.dot(x, qi)
@@ -111,7 +111,7 @@ def unifac_original(x, T, qi, ri, Vk, Qk, tethai, amn):
     tethai : array_like
         surface fraction array
     amn : array_like
-        energy interactions polynomial coefficient
+        energy interactions coefficient
 
     Returns
     -------
@@ -173,7 +173,7 @@ def dunifac_original(x, T, qi, ri, Vk, Qk, tethai, amn):
     tethai : array_like
         surface fraction array
     amn : array_like
-        energy interactions polynomial coefficient
+        energy interactions coefficient
 
     Returns
     -------
