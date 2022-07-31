@@ -31,7 +31,7 @@ class virialgamma():
         'Tsonopoulos', 'Abbott' or 'ideal_gas'
     actmodel : string
         function to compute activity coefficients, available optiones are
-        'nrtl', 'wilson', 'unifac', 'uniquac', 'rkb' or 'rk'
+        'nrtl', 'wilson', 'original_unifac', 'unifac', 'uniquac', 'rkb' or 'rk'
 
     Methods
     -------
