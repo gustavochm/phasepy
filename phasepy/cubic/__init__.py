@@ -23,7 +23,15 @@ ws_nrtl : Wong-Sandler mixing rule with NRTL model
 ws_wilson :  Wong-Sandler mixing rule with Wilson model
 ws_unifac :  Wong-Sandler mixing rule with Wilson model
 ws_rk :  Wong-Sandler mixing rule with Redlich-Kister model
+
+Alpha functions
+---------------
+alpha_vdw : van der Waals alpha function
+alpha_soave : Soave's alpha function
+alpha_sv : Stryjek-Vera's alpha function
+alpha_aat : AAT's alpha function
 """
 
 from __future__ import division, print_function, absolute_import
 from .cubic import *
+from .alphas import alpha_vdw, alpha_rk, alpha_soave, alpha_sv, alpha_aat
