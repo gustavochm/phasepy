@@ -162,9 +162,11 @@ def rkseos(mix_or_component, mixrule='qmr', volume_translation=False):
 # generic object for any cubic eos
 c1pr = 1.-np.sqrt(2.)
 c2pr = 1.+np.sqrt(2.)
+
+
 def cubiceos(mix_or_component, c1=c1pr, c2=c2pr, alpha_eos=alpha_soave,
              mixrule='qmr', volume_translation=False):
-    '''Returns cubic EoS object. with custom c1, c2, alpha function and 
+    '''Returns cubic EoS object. with custom c1, c2, alpha function and
     mixing rule.
 
     Parameters
@@ -196,20 +198,20 @@ def cubiceos(mix_or_component, c1=c1pr, c2=c2pr, alpha_eos=alpha_soave,
     roots = np.real(roots)
     roots = roots[roots > 0.]
     omb = np.min(roots)
-    oma = (1 + omb * (2 + c1 + c2 + (1 + c1 + c2 + c1**2 - c1*c2 + c2**2) * omb)) / 3
+    oma = (1 + omb * (2.+c1+c2+(1.+c1+c2+c1**2.-c1*c2+c2**2.) * omb)) / 3
 
     nc = mix_or_component.nc
     if nc == 1:
         if volume_translation:
-            eos = vtcpure(pure=mix_or_component, c1=c1, c2=c2, oma=oma, omb=omb,
-                          alpha_eos=alpha_eos)
+            eos = vtcpure(pure=mix_or_component, c1=c1, c2=c2, oma=oma, 
+                          omb=omb, alpha_eos=alpha_eos)
         else:
             eos = cpure(pure=mix_or_component, c1=c1, c2=c2, oma=oma, omb=omb,
                         alpha_eos=alpha_eos)
     else:  # mixture
         if volume_translation:
-            eos = vtcubicm(mix=mix_or_component, c1=c1, c2=c2, oma=oma, omb=omb,
-                           alpha_eos=alpha_eos, mixrule=mixrule)
+            eos = vtcubicm(mix=mix_or_component, c1=c1, c2=c2, oma=oma,
+                           omb=omb, alpha_eos=alpha_eos, mixrule=mixrule)
         else:
             eos = cubicm(mix=mix_or_component, c1=c1, c2=c2, oma=oma, omb=omb,
                          alpha_eos=alpha_eos, mixrule=mixrule)

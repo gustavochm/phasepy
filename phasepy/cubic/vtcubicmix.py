@@ -62,7 +62,7 @@ class vtcubicm():
     '''
 
     def __init__(self, mix, c1, c2, oma, omb, alpha_eos, mixrule):
-        
+
         self.c1 = c1
         self.c2 = c2
         self.oma = oma
@@ -78,7 +78,7 @@ class vtcubicm():
         self.cii = np.array(mix.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.c = np.array(mix.c, ndmin=1)
-        
+
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
         mixingrule_fcn(self, mix, mixrule)
