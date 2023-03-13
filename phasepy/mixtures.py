@@ -45,12 +45,15 @@ class component(object):
         Component molecular volume for UNIQUAC model
     qi : float
         Component molecular surface for UNIQUAC model
+    alpha_params : Any
+        Parameters for alpha function used in cubic EoS
 
     '''
 
     def __init__(self, name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0,
                  cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None, Mw=1.,
-                 ri=0., qi=0., ms=1, sigma=0, eps=0, lambda_r=12.,
+                 ri=0., qi=0., alpha_params=0., 
+                 ms=1, sigma=0, eps=0, lambda_r=12.,
                  lambda_a=6., eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
 
         self.name = name
@@ -72,6 +75,7 @@ class component(object):
         self.Mw = Mw  # molar weight in g/mol
         self.ri = ri  # Component molecular volume for UNIQUAC model
         self.qi = qi  # Component molecular surface for UNIQUAC model
+        self.alpha_params = alpha_params  # alpha parameters for cubic EoS
 
         # Saft Parameters
 
@@ -216,6 +220,8 @@ class mixture(object):
         Component molecular surface used in UNIQUAC model
     ri: list[dict]
         Component molecular volume used in UNIQUAC model
+    alpha_params: list[Any]
+        parameters for custom cubic alpha functions
     '''
 
     def __init__(self, component1, component2):
@@ -234,6 +240,7 @@ class mixture(object):
         self.Mw = [component1.Mw,  component2.Mw]
         self.ri = [component1.ri, component2.ri]
         self.qi = [component1.qi, component2.qi]
+        self.alpha_params = [component1.alpha_params, component2.alpha_params]
 
         self.lr = [component1.lambda_r, component2.lambda_r]
         self.la = [component1.lambda_a, component2.lambda_a]
@@ -263,6 +270,7 @@ class mixture(object):
         self.Mw.append(component.Mw)
         self.ri.append(component.ri)
         self.qi.append(component.qi)
+        self.alpha_params.append(component.alpha_params)
 
         self.lr.append(component.lambda_r)
         self.la.append(component.lambda_a)
