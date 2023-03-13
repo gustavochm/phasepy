@@ -85,6 +85,8 @@ class cubicm():
         self.w = np.array(mix.w, ndmin=1)
         self.cii = np.array(mix.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
+        self.k = np.array(mix.alpha_params, ndmin=1)
+
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
         mixingrule_fcn(self, mix, mixrule)

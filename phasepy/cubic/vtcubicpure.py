@@ -198,6 +198,7 @@ class vtcpure():
         self.alpha_eos = alpha_eos
         self.emin = 2+self.c1+self.c2+2*np.sqrt((1+self.c1)*(1+self.c2))
 
+        
         self.Mw = pure.Mw
         self.Tc = np.array(pure.Tc, ndmin=1)  # Critical temperature in K
         self.Pc = np.array(pure.Pc, ndmin=1)  # Critical Pressure in bar
@@ -205,6 +206,7 @@ class vtcpure():
         self.cii = np.array(pure.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
         self.c = np.array(pure.c, ndmin=1)
+        self.k = np.array(pure.alpha_params, ndmin=1)
 
     def __call__(self, T, v):
         b = self.b

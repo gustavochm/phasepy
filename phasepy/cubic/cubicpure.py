@@ -72,6 +72,7 @@ class cpure():
         self.w = np.array(pure.w, ndmin=1)
         self.cii = np.array(pure.cii, ndmin=1)
         self.b = self.omb*R*self.Tc/self.Pc
+        self.k = np.array(pure.alpha_params, ndmin=1)
 
         self.Mw = pure.Mw
 
