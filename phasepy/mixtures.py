@@ -47,12 +47,16 @@ class component(object):
         Component molecular surface for UNIQUAC model
     alpha_params : Any
         Parameters for alpha function used in cubic EoS
-
+    dHf : float
+        Enthalpy of fusion [J/mol]
+    Tf : float
+        Temperature of fusion [K]
     '''
 
     def __init__(self, name='None', Tc=0, Pc=0, Zc=0, Vc=0, w=0, c=0,
                  cii=0, ksv=[0, 0], Ant=[0, 0, 0],  GC=None, Mw=1.,
-                 ri=0., qi=0., alpha_params=0., 
+                 ri=0., qi=0., alpha_params=0.,
+                 dHf=0., Tf=0.,
                  ms=1, sigma=0, eps=0, lambda_r=12.,
                  lambda_a=6., eAB=0., rcAB=1., rdAB=0.4, sites=[0, 0, 0]):
 
@@ -76,9 +80,10 @@ class component(object):
         self.ri = ri  # Component molecular volume for UNIQUAC model
         self.qi = qi  # Component molecular surface for UNIQUAC model
         self.alpha_params = alpha_params  # alpha parameters for cubic EoS
+        self.dHf = dHf  # Enthalpy of fusion [J/mol]
+        self.Tf = Tf  # Temperature of fusion [K]
 
         # Saft Parameters
-
         self.ms = ms
         self.sigma = sigma * 1e-10
         self.eps = eps * kb
@@ -222,6 +227,10 @@ class mixture(object):
         Component molecular volume used in UNIQUAC model
     alpha_params: list[Any]
         parameters for custom cubic alpha functions
+    dHf : list[float]
+        Enthalpy of fusion [J/mol]
+    Tf : list[float]
+        Temperature of fusion [K]
     '''
 
     def __init__(self, component1, component2):
@@ -241,6 +250,8 @@ class mixture(object):
         self.ri = [component1.ri, component2.ri]
         self.qi = [component1.qi, component2.qi]
         self.alpha_params = [component1.alpha_params, component2.alpha_params]
+        self.dHf = [component1.dHf, component2.dHf]
+        self.Tf = [component1.Tf, component2.Tf]
 
         self.lr = [component1.lambda_r, component2.lambda_r]
         self.la = [component1.lambda_a, component2.lambda_a]
@@ -271,6 +282,8 @@ class mixture(object):
         self.ri.append(component.ri)
         self.qi.append(component.qi)
         self.alpha_params.append(component.alpha_params)
+        self.dHf.append(component.dHf)
+        self.Tf.append(component.Tf)
 
         self.lr.append(component.lambda_r)
         self.la.append(component.lambda_a)
