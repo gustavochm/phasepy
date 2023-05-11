@@ -8,7 +8,7 @@ def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     """
     Michelsen's Adimentional tangent plane function
 
-    tpd (x, state, z, T, P, model)
+    tpd_val (W, z, T, P, model, stateW, stateZ)
 
 
     Parameters
