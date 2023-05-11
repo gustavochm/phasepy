@@ -32,5 +32,7 @@ from .flash import flash
 from .multiflash import multiflash
 from .hazt import haz, vlle
 from .hazb import vlleb
-from .stability import tpd_min, tpd_minimas, lle_init, gmix
+from .stability import tpd_min, tpd_minimas, lle_init
+from .stability import tpd_val, gmix
 from .lle import lle
+from .solidequilibria import slle, sle
