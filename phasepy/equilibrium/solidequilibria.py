@@ -50,11 +50,60 @@ def gibbs_obj(ind0, n_fluid, n_solid, solid_phases_index,
 
 def multiflash_solid(Z, T, P, model,
                      X_fluid, n_fluid, equilibrium_fluid,
-                     X_solid, n_solid, lnphi_sol, solid_phases_index,
+                     X_solid, n_solid, solid_phases_index,
                      beta0=None, v0=[None],
                      K_tol=1e-10, nacc=5, full_output=False):
+    """
+    Multiflash algorithm for equilibrium considering solid phases
+    
+    The solid phases are considered as pure phases, so the composition
+    of the solid phases is not updated in the equilibrium calculation.
+
+    Parameters
+    ----------
+    Z : array_like
+        Overall composition
+    T : float
+        Temperature [K]
+    P : float
+        Pressure [bar]
+    model : object
+        created with eos and mixing rules
+    X_fluid : array_like
+        Composition of the fluid phases
+    n_fluid : int
+        Number of fluid phases
+    equilibrium_fluid : list
+        List of strings with the state of each fluid phase. 'L' for liquid
+        'V' for vapor.
+    X_solid : array_like
+        Composition of the solid phases
+    n_solid : int
+        Number of solid phases
+    solid_phases_index : list   
+        List of indices of species allowed to solify.
+    beta0 : array_like, optional
+        Initial guess for the phase fraction of the phases.
+        If None, the initial guess is 1/n_phases for each phase.
+    v0 : array_like, optional
+        Initial guess for the molar volume of the fluid phases.
+    K_tol : float, optional
+        Tolerance for the K factor.
+    nacc : int, optional   
+        Number of accelerated sustitution steps.
+    full_output : bool, optional
+        If True, the output is a dictionary with all the information of the
+        equilibrium. If False, the output is a tuple with the fluid and solid
+        phases compositions, the phase fractions and the stability variables.
+    """
+
     nc = model.nc
     temp_aux = model.temperature_aux(T)
+
+    # the fugacity coefficients are directly computed for the pure solid
+    # so the given composition does not make any impact of the output logfug_sol
+    # for simplicity I'm just using the global composition
+    lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
 
     if len(v0) == 1 and len(v0) != n_fluid:
         v0 *= n_fluid
@@ -216,6 +265,40 @@ def slle(Z, T, P, model,
          beta0=None, v0=[None],
          K_tol=1e-10, nacc=5, full_output=False):
 
+    """
+    Solid-liquid-liquid equilibrium (SLLE) calculation for a mixture.
+    Function to compute the solid-liquid-liquid equilibrium of a mixture
+    at given temperature, pressure and global composition. 
+    
+    Parameters
+    ----------
+    Z : array_like
+        Global composition of the mixture.
+    T : float
+        Temperature of the mixture [K].
+    P : float
+        Pressure of the mixture [bar].
+    model : object
+        created from mixture, eos and mixrule
+    solid_phases_index : array_like
+        Indexes of the solid phases to be considered in the equilibrium.
+    X_fluid0 : array_like, optional
+        Initial guess for the fluid phases compositions.
+        If not given, the initial guess is same as the global composition.
+    beta0 : array_like, optional
+        Initial guess for the phase fractions.
+        If not given, all phases are assumed to have the same fraction.
+    v0 : array_like, optional
+        Initial guess for the molar volumes of the fluid phases.
+    K_tol : float, optional
+        Tolerance for the phase equilibrium.
+    nacc : int, optional
+        Number of accelerated successive substitution cycles.
+    full_output : bool, optional
+        If True, the output is a dictionary with all the information of the
+        equilibrium. If False, the output is a tuple with the fluid and solid
+        phases compositions, the phase fractions and the stability variables.
+    """
     if len(solid_phases_index) < 1:
         raise Exception('At least one solid phase must be given')
 
@@ -225,7 +308,7 @@ def slle(Z, T, P, model,
         X_fluid = np.stack([wll, xll])
     n_fluid = len(X_fluid)
     equilibrium_fluid = n_fluid * ['L']
-    
+
     # solid phase set up
     nc = model.nc
     eye = np.eye(nc)
@@ -236,16 +319,10 @@ def slle(Z, T, P, model,
 
     n_solid = len(solid_phases_index) # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
-    
-    temp_aux = model.temperature_aux(T)
-    # the fugacity coefficients are directly computed for the pure solid
-    # so the given composition does not make any impact of the output logfug_sol
-    # for simplicity I'm just using the global composition
-    lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
-    
+
     out = multiflash_solid(Z, T, P, model,
                            X_fluid, n_fluid, equilibrium_fluid,
-                           X_solid, n_solid, lnphi_sol, solid_phases_index,
+                           X_solid, n_solid, solid_phases_index,
                            beta0=beta0, v0=v0,
                            K_tol=K_tol, nacc=nacc, full_output=full_output)
     return out
@@ -256,6 +333,40 @@ def sle(Z, T, P, model,
         solid_phases_index=[],
         beta0=None, v0=[None],
         K_tol=1e-10, nacc=5, full_output=False):
+    """
+    Solid-liquid equilibrium
+    Function to compute the solid-liquid equilibrium of a mixture
+    at given temperature, pressure and global composition. 
+    
+    Parameters
+    ----------
+    Z : array_like
+        Global composition of the mixture.
+    T : float
+        Temperature of the mixture [K].
+    P : float
+        Pressure of the mixture [bar].
+    model : object
+        created from mixture, eos and mixrule
+    solid_phases_index : array_like
+        Indexes of the solid phases to be considered in the equilibrium.
+    X_fluid0 : array_like, optional
+        Initial guess for the fluid phases compositions.
+        If not given, the initial guess is same as the global composition.
+    beta0 : array_like, optional
+        Initial guess for the phase fractions.
+        If not given, all phases are assumed to have the same fraction.
+    v0 : array_like, optional
+        Initial guess for the molar volumes of the fluid phases.
+    K_tol : float, optional
+        Tolerance for the phase equilibrium.
+    nacc : int, optional
+        Number of accelerated successive substitution cycles.
+    full_output : bool, optional
+        If True, the output is a dictionary with all the information of the
+        equilibrium. If False, the output is a tuple with the fluid and solid
+        phases compositions, the phase fractions and the stability variables.
+    """
 
     if len(solid_phases_index) < 1:
         raise Exception('At least one solid phase must be given')
@@ -278,21 +389,11 @@ def sle(Z, T, P, model,
 
     n_solid = len(solid_phases_index) # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
-    
-    temp_aux = model.temperature_aux(T)
-    # the fugacity coefficients are directly computed for the pure solid
-    # so the given composition does not make any impact of the output logfug_sol
-    # for simplicity I'm just using the global composition
-    lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
-    
+
     out = multiflash_solid(Z, T, P, model,
                            X_fluid, n_fluid, equilibrium_fluid,
-                           X_solid, n_solid, lnphi_sol, solid_phases_index,
+                           X_solid, n_solid, solid_phases_index,
                            beta0=beta0, v0=v0,
                            K_tol=K_tol, nacc=nacc, full_output=full_output)
     return out
-
-
-
-
 
