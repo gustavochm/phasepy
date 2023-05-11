@@ -38,4 +38,11 @@ def gdem(X, X1, X2, X3):
     return np.nan_to_num(dacc)
 
 
-__all__ = ['gauss', 'lobatto', 'colocAB', 'colocA', 'colocB', 'gdem']
+def dem(X, X1, X2):
+    dX1 = X1 - X2
+    dX = X - X1
+    lbda = np.dot(dX1, dX) / np.dot(dX, dX)
+    dacc = dX / (1. - lbda)
+    return np.nan_to_num(dacc)
+
+__all__ = ['gauss', 'lobatto', 'colocAB', 'colocA', 'colocB', 'gdem', 'dem']
