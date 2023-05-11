@@ -4,7 +4,7 @@ from scipy.optimize import minimize
 from copy import copy
 
 
-def tpd(X, state, Z, T, P, model, v0=[None, None]):
+def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     """
     Michelsen's Adimentional tangent plane function
 
@@ -13,10 +13,8 @@ def tpd(X, state, Z, T, P, model, v0=[None, None]):
 
     Parameters
     ----------
-    X : array_like
+    W : array_like
         mole fraction array of trial fase
-    state : string
-        'L' for liquid phase, 'V' for vapour phase
     Z : array_like
         mole fraction array of overall mixture
     T :  float
@@ -25,8 +23,12 @@ def tpd(X, state, Z, T, P, model, v0=[None, None]):
         absolute pressure in bar
     model : object
         create from mixture, eos and mixrule
-    v0 : list, optional
-        values to solve fugacity, if supplied
+    stateW : string
+        Trial phase type. 'L' for liquid phase, 'V' for vapor phase
+    stateZ : string
+        Reference phase type. 'L' for liquid phase, 'V' for vapor phase
+    vw, vz: float, optional
+        Phase molar volume used as initial value to compute fugacities
 
     Returns
     -------
@@ -34,12 +36,11 @@ def tpd(X, state, Z, T, P, model, v0=[None, None]):
         tpd distance
 
     """
-    v1, v2 = v0
     temp_aux = model.temperature_aux(T)
-    logfugX, v1 = model.logfugef_aux(X, temp_aux, P, state, v1)
-    logfugZ, v2 = model.logfugef_aux(Z, temp_aux, P, 'L', v2)
+    logfugW, v1 = model.logfugef_aux(W, temp_aux, P, stateW, vw)
+    logfugZ, v2 = model.logfugef_aux(Z, temp_aux, P, stateZ, vz)
     di = np.log(Z) + logfugZ
-    tpdi = X*(np.log(X) + logfugX - di)
+    tpdi = W*(np.log(W) + logfugW - di)
     return np.sum(np.nan_to_num(tpdi))
 
 
