@@ -13,7 +13,7 @@ from .original_unifac import unifac_original, dunifac_original
 from .original_unifac import unifac_original_aux, dunifac_original_aux
 from .uniquac import uniquac, duniquac
 from .uniquac import uniquac_aux, duniquac_aux
-from ..constants import R
+from ..constants import R, r
 
 
 class virialgamma():
@@ -51,6 +51,8 @@ class virialgamma():
         self.mezcla = mix
         self.nc = mix.nc
         self.Tij, self.Pij, self.Zij, self.wij = Virialmix(mix)
+        self.dHf = np.asarray(mix.dHf)
+        self.Tf = np.asarray(mix.Tf)
 
         if virialmodel == 'Tsonopoulos':
             self.virialmodel = Tsonopoulos
@@ -224,11 +226,11 @@ class virialgamma():
         psat = self.psat(T)
         vl = self.vl(T)
         actmp = self.actm_temp(T)
-        aux = (RT, Bij, psat, vl, actmp)
+        aux = (RT, Bij, psat, vl, actmp, T)
         return aux
 
     def logfugef_aux(self, X, temp_aux, P, state, v0=None):
-        (RT, Bij, psat, vl, actmp) = temp_aux
+        (RT, Bij, psat, vl, actmp, T) = temp_aux
 
         if state == 'L':
             Bi = np.diag(Bij)
@@ -242,9 +244,21 @@ class virialgamma():
             Bm = np.sum(Bx.T*X)
             Bp = 2*np.sum(Bx, axis=1) - Bm
             return Bp*P/(RT), v0
+        elif state == 'S':
+            Bi = np.diag(Bij)
+            pointing = vl*(P-psat)/(RT)
+            fugPsat = Bi*psat/(RT)
+            eye = np.eye(self.nc)
+            act = np.zeros(self.nc)
+            for i in range(self.nc):
+                act[i] = self.actmodel_aux(eye[i], *actmp)[i]
+            lnfug_liq = act+np.log(psat/P)+pointing+fugPsat
+            with np.errstate(all='ignore'):
+                logfug = lnfug_liq - (self.dHf / r) * (1. / T - 1. / self.Tf)
+            return logfug, v0
 
     def dlogfugef_aux(self, X, temp_aux, P, state, v0=None):
-        RT, Bij, psat, vl, actmp = temp_aux
+        RT, Bij, psat, vl, actmp, T = temp_aux
 
         if state == 'L':
             Bi = np.diag(Bij)
@@ -261,6 +275,20 @@ class virialgamma():
             Bp = 2*np.sum(Bx, axis=1) - Bm
             logfug = Bp*P/RT
             dlogfug = (2*Bij - np.add.outer(Bp, Bp))*P/RT
+
+        elif state == 'S':
+            Bi = np.diag(Bij)
+            pointing = vl*(P-psat)/(RT)
+            fugPsat = Bi*psat/(RT)
+            eye = np.eye(self.nc)
+            act = np.zeros(self.nc)
+            for i in range(self.nc):
+                act[i] = self.actmodel_aux(eye[i], *actmp)[i]
+            lnfug_liq = act+np.log(psat/P)+pointing+fugPsat
+            with np.errstate(all='ignore'):
+                logfug = lnfug_liq - (self.dHf / r) * (1. / T - 1. / self.Tf)
+            dlogfug = np.zeros([self.nc, self.nc])
+        
         return logfug, dlogfug, v0
 
     def logfugef(self, X, T, P, state, v0=None):
@@ -291,18 +319,32 @@ class virialgamma():
             volume of phase, if calculated
         """
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
+        RT = R*T
         if state == 'L':
             Bi = np.diag(Bij)
             psat = self.psat(T)
-            pointing = self.vl(T)*(P-psat)/(R*T)
-            fugPsat = Bi*psat/(R*T)
+            pointing = self.vl(T)*(P-psat)/(RT)
+            fugPsat = Bi*psat/(RT)
             act = self.actmodel(X, T, *self.actmodelp)
             return act+np.log(psat/P)+pointing+fugPsat, v0
         elif state == 'V':
             Bx = Bij*X
             Bm = np.sum(Bx.T*X)
             Bp = 2*np.sum(Bx, axis=1) - Bm
-            return Bp*P/(R*T), v0
+            return Bp*P/(RT), v0
+        elif state == 'S':
+            Bi = np.diag(Bij)
+            psat = self.psat(T)
+            pointing = self.vl(T)*(P-psat)/(RT)
+            fugPsat = Bi*psat/(RT)
+            eye = np.eye(self.nc)
+            act = np.zeros(self.nc)
+            for i in range(self.nc):
+                act[i] = self.actmodel(eye[i], T, *self.actmodelp)[i]
+            lnfug_liq = act+np.log(psat/P)+pointing+fugPsat
+            with np.errstate(all='ignore'):
+                logfug = lnfug_liq - (self.dHf / r) * (1. / T - 1. / self.Tf)
+            return logfug, v0
 
     def dlogfugef(self, X, T, P, state, v0=None):
         """
@@ -334,6 +376,7 @@ class virialgamma():
         v0 : float
             volume of phase, if calculated
         """
+        RT = R*T
         Bij = self.virialmodel(T, self.Tij, self.Pij, self.wij)
         if state == 'L':
             Bi = np.diag(Bij)
@@ -351,6 +394,20 @@ class virialgamma():
             Bp = 2*np.sum(Bx, axis=1) - Bm
             logfug = Bp*P/(R*T)
             dlogfug = (2*Bij - np.add.outer(Bp, Bp))*P/(R*T)
+
+        elif state == 'S':
+            Bi = np.diag(Bij)
+            psat = self.psat(T)
+            pointing = self.vl(T)*(P-psat)/(RT)
+            fugPsat = Bi*psat/(RT)
+            eye = np.eye(self.nc)
+            act = np.zeros(self.nc)
+            for i in range(self.nc):
+                act[i] = self.actmodel(eye[i], T, *self.actmodelp)[i]
+            lnfug_liq = act+np.log(psat/P)+pointing+fugPsat
+            with np.errstate(all='ignore'):
+                logfug = lnfug_liq - (self.dHf / r) * (1. / T - 1. / self.Tf)
+            dlogfug = np.zeros([self.nc, self.nc])
 
         return logfug, dlogfug, v0
 
