@@ -251,7 +251,7 @@ def multiflash_solid(Z, T, P, model,
         error = np.linalg.norm(min_sol.jac)
 
     X_fluid = X[:n_fluid]
-    X_solid = X[n_fluid:]
+    # X_solid = X[n_fluid:]
 
     if full_output:
         sol = {'T': T, 'P': P, 'error_outer': error, 'error_inner': ef,
@@ -305,6 +305,17 @@ def slle(Z, T, P, model,
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
+
+    Returns
+    -------
+    X_fluid : ndarray
+        Fluid phases compositions.
+    X_solid : ndarray
+        Solid phases compositions.
+    beta : ndarray
+        Phase fractions [fluid phases, solid phases].
+    tetha : ndarray
+        Stability variables [fluid phases[1:], solid phases].
     """
     if len(solid_phases_index) < 1:
         raise Exception('At least one solid phase must be given')
@@ -324,6 +335,12 @@ def slle(Z, T, P, model,
     solid_phases_index = solid_phases_index[solid_phases_index <= (nc - 1)] # to avoid index bigger than nc
     solid_phases_index = np.unique(solid_phases_index) # to avoid duplicated same phases
 
+    if len(solid_phases_index) < 1:
+        raise Exception('Valid solid phase indexes must be given (0 to nc-1)')
+
+    if np.any(model.Tf[solid_phases_index] == 0.) or np.any(model.dHf[solid_phases_index] == 0.):
+        raise Exception('The solid phase(s) must have a valid melting temperature and heat of fusion')
+    
     n_solid = len(solid_phases_index) # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
 
@@ -373,6 +390,17 @@ def sle(Z, T, P, model,
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
+
+    Returns
+    -------
+    X_fluid : ndarray
+        Fluid phases compositions.
+    X_solid : ndarray
+        Solid phases compositions.
+    beta : ndarray
+        Phase fractions [fluid phases, solid phases].
+    tetha : ndarray
+        Stability variables [fluid phases[1:], solid phases].
     """
 
     if len(solid_phases_index) < 1:
@@ -393,6 +421,13 @@ def sle(Z, T, P, model,
     solid_phases_index = solid_phases_index[solid_phases_index >= 0] # to avoid negative indexes
     solid_phases_index = solid_phases_index[solid_phases_index <= (nc - 1)] # to avoid index bigger than nc
     solid_phases_index = np.unique(solid_phases_index) # to avoid duplicated same phases
+
+    if len(solid_phases_index) < 1:
+        raise Exception('Valid solid phase indexes must be given (0 to nc-1)')
+    
+    if np.any(model.Tf[solid_phases_index] == 0.) or np.any(model.dHf[solid_phases_index] == 0.):
+        raise Exception('The solid phase(s) must have a valid melting temperature and heat of fusion')
+
 
     n_solid = len(solid_phases_index) # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
