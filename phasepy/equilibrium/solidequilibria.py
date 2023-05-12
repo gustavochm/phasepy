@@ -96,14 +96,19 @@ def multiflash_solid(Z, T, P, model,
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
     """
+    # to make sure the compositions are arrays
+    X_solid = np.asarray(X_solid)
+    X_fluid = np.asarray(X_fluid)
 
     nc = model.nc
     temp_aux = model.temperature_aux(T)
 
     # the fugacity coefficients are directly computed for the pure solid
-    # so the given composition does not make any impact of the output logfug_sol
-    # for simplicity I'm just using the global composition
-    lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
+    lnphi_sol = np.zeros([n_solid, nc])
+    for i in range(n_solid):
+        lnphi_sol[i] = model.logfugef_aux(X_solid[i], temp_aux, P, 'L')[0]
+        lnphi_sol[i] -= (model.dHf_r) * (1. / T - 1. / model.Tf)
+    # lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
 
     if len(v0) == 1 and len(v0) != n_fluid:
         v0 *= n_fluid
@@ -239,9 +244,10 @@ def multiflash_solid(Z, T, P, model,
         # betas_fluid = np.hstack([nc*[b] for b in beta[1:n_fluid]])
         # betas_opti = np.hstack([betas_fluid, beta[n_fluid:]])
         # error = np.linalg.norm(min_sol.jac * betas_opti)
+
+        # The jacobian might not be zero for phases not present in the
+        # equilibrium result
         error = np.linalg.norm(min_sol.jac)
-        # return min_sol.jac, beta
-        # return min_sol
 
     X_fluid = X[:n_fluid]
     X_solid = X[n_fluid:]
@@ -268,8 +274,8 @@ def slle(Z, T, P, model,
     """
     Solid-liquid-liquid equilibrium (SLLE) calculation for a mixture.
     Function to compute the solid-liquid-liquid equilibrium of a mixture
-    at given temperature, pressure and global composition. 
-    
+    at given temperature, pressure and global composition.
+
     Parameters
     ----------
     Z : array_like
@@ -336,8 +342,8 @@ def sle(Z, T, P, model,
     """
     Solid-liquid equilibrium
     Function to compute the solid-liquid equilibrium of a mixture
-    at given temperature, pressure and global composition. 
-    
+    at given temperature, pressure and global composition.
+
     Parameters
     ----------
     Z : array_like
@@ -378,7 +384,7 @@ def sle(Z, T, P, model,
         X_fluid = 1. * X_fluid0
     n_fluid = 1
     equilibrium_fluid = ['L']
-    
+
     # solid phase set up
     nc = model.nc
     eye = np.eye(nc)
@@ -396,4 +402,3 @@ def sle(Z, T, P, model,
                            beta0=beta0, v0=v0,
                            K_tol=K_tol, nacc=nacc, full_output=full_output)
     return out
-
