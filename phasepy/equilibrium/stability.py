@@ -48,6 +48,8 @@ def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
         with np.errstate(all='ignore'):
             logfugW_liq, v1 = model.logfugef_aux(W, temp_aux, P, 'L', vw)
             logfugW = logfugW_liq - model.dHf_r * (1. / T - 1. / model.Tf)
+            # This is needed just in case any dHf_r or Tf is zero
+            logfugW = np.nan_to_num(logfugW)
     else: 
         logfugW, v1 = model.logfugef_aux(W, temp_aux, P, stateW, vw)
 
