@@ -424,10 +424,9 @@ def sle(Z, T, P, model,
 
     if len(solid_phases_index) < 1:
         raise Exception('Valid solid phase indexes must be given (0 to nc-1)')
-    
+
     if np.any(model.Tf[solid_phases_index] == 0.) or np.any(model.dHf[solid_phases_index] == 0.):
         raise Exception('The solid phase(s) must have a valid melting temperature and heat of fusion')
-
 
     n_solid = len(solid_phases_index) # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
