@@ -3,7 +3,6 @@ import numpy as np
 from scipy.optimize import minimize
 from copy import copy
 
-
 def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     """
     Michelsen's Adimentional tangent plane function
@@ -24,7 +23,8 @@ def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
     model : object
         create from mixture, eos and mixrule
     stateW : string
-        Trial phase type. 'L' for liquid phase, 'V' for vapor phase
+        Trial phase type. 'L' for liquid phase, 'V' for vapor phase and 'S' for
+        solid phase
     stateZ : string
         Reference phase type. 'L' for liquid phase, 'V' for vapor phase
     vw, vz: float, optional
@@ -37,8 +37,20 @@ def tpd_val(W, Z, T, P, model, stateW, stateZ, vw=None, vz=None):
 
     """
     temp_aux = model.temperature_aux(T)
-    logfugW, v1 = model.logfugef_aux(W, temp_aux, P, stateW, vw)
+
     logfugZ, v2 = model.logfugef_aux(Z, temp_aux, P, stateZ, vz)
+
+    if stateW == 'S':
+        is_pure = np.sum(W == 1.) + np.sum(W == 0.)
+        if is_pure != model.nc:
+            raise Exception('Trial solid phase must be pure')
+
+        with np.errstate(all='ignore'):
+            logfugW_liq, v1 = model.logfugef_aux(W, temp_aux, P, 'L', vw)
+            logfugW = logfugW_liq - model.dHf_r * (1. / T - 1. / model.Tf)
+    else: 
+        logfugW, v1 = model.logfugef_aux(W, temp_aux, P, stateW, vw)
+
     di = np.log(Z) + logfugZ
     tpdi = W*(np.log(W) + logfugW - di)
     return np.sum(np.nan_to_num(tpdi))
