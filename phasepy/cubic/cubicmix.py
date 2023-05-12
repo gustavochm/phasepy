@@ -87,6 +87,11 @@ class cubicm():
         self.b = self.omb*R*self.Tc/self.Pc
         self.k = np.array(mix.alpha_params, ndmin=1)
 
+        # fusion and melting point (needed for SLE and SLLE)
+        self.dHf = np.asarray(mix.dHf)
+        self.Tf = np.asarray(mix.Tf)
+        self.dHf_r = np.asarray(mix.dHf) / r
+
         self.nc = mix.nc
         self.beta = np.zeros([self.nc, self.nc])
         mixingrule_fcn(self, mix, mixrule)
@@ -304,7 +309,7 @@ class cubicm():
         P : float
             pressure [bar]
         state : string
-            'L' for liquid phase and 'V' for vapour phase
+            'L' for liquid phase, 'V' for vapour phase 
         v0 : float, optional
             initial volume to iterate [cm3/mol]
 
@@ -408,7 +413,7 @@ class cubicm():
         P : float
             pressure [bar]
         state : string
-            'L' for liquid phase and 'V' for vapour phase
+            'L' for liquid phase, 'V' for vapour phase
         v0 : float, optional
             initial volume to iterate [cm3/mol]
 

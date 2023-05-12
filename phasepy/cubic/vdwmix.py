@@ -74,6 +74,11 @@ class vdwm():
             self.kij = np.zeros([mix.nc, mix.nc])
         self.mixruleparameter = (self.kij,)
 
+        # fusion and melting point (needed for SLE and SLLE)
+        self.dHf = np.asarray(mix.dHf)
+        self.Tf = np.asarray(mix.Tf)
+        self.dHf_r = np.asarray(mix.dHf) / r
+
     # EoS methods
     def a_eos(self, T):
         """
