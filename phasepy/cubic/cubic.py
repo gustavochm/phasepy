@@ -188,6 +188,9 @@ def cubiceos(mix_or_component, c1=c1pr, c2=c2pr, alpha_eos=alpha_soave,
         If True, the volume translated version of this EoS will be used.
     '''
     # Getting oma and omb for the given c1 and c2 constants of the cubic EoS
+    if c1 == 0. and c2 == 0.:
+        raise ValueError('For c1 and c2 equal to zero use vdweos function')
+
     a0 = (2. + c1 + c2)**3
     a1 = -3 * (-5 + c1**2 - 5*c2 + c2**2 - c1 * (5 + 7*c2))
     a2 = 3*(2 + c1 + c2)
