@@ -40,7 +40,6 @@ def gibbs_obj(ind0, n_fluid, n_solid, solid_phases_index,
 
     solid_list = []
     for i in range(n_solid):
-        # print(n_fluid+i-1, solid_phases_index[i])
         solid_list.append(dfug[n_fluid-1+i, solid_phases_index[i]])
 
     G = np.sum(fug * mole_number)
@@ -106,9 +105,11 @@ def multiflash_solid(Z, T, P, model,
     # the fugacity coefficients are directly computed for the pure solid
     lnphi_sol = np.zeros([n_solid, nc])
     for i in range(n_solid):
-        lnphi_sol[i] = model.logfugef_aux(X_solid[i], temp_aux, P, 'L')[0]
-        lnphi_sol[i] -= (model.dHf_r) * (1. / T - 1. / model.Tf)
-    # lnphi_sol = model.logfugef_aux(Z, temp_aux, P, state='S')[0]
+        with np.errstate(all='ignore'):
+            lnphi_sol[i] = model.logfugef_aux(X_solid[i], temp_aux, P, 'L')[0]
+            lnphi_sol[i] -= (model.dHf_r) * (1. / T - 1. / model.Tf)
+    # This is needed just in case any dHf_r or Tf is zero
+    lnphi_sol = np.nan_to_num(lnphi_sol)
 
     if len(v0) == 1 and len(v0) != n_fluid:
         v0 *= n_fluid
