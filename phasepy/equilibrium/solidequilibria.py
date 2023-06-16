@@ -1,7 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from scipy.optimize import minimize
-from ..math import gdem
+from ..math import gdem, dem
 from .equilibriumresult import EquilibriumResult
 from .multiflash import multiflash_obj
 from .stability import lle_init
@@ -51,7 +51,7 @@ def multiflash_solid(Z, T, P, model,
                      X_fluid, n_fluid, equilibrium_fluid,
                      X_solid, n_solid, solid_phases_index,
                      beta0=None, v0=[None],
-                     K_tol=1e-10, nacc=5, full_output=False):
+                     K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False):
     """
     Multiflash algorithm for equilibrium considering solid phases
     
@@ -90,15 +90,20 @@ def multiflash_solid(Z, T, P, model,
         Tolerance for the K factor.
     nacc : int, optional   
         Number of accelerated sustitution steps.
+    accelerate_every : int, optional
+        Number of iterations before to accelerate the sustitution.
+        Mus be greater than or equal to 4. Set to zero to deactivate the
+        acceleration.
     full_output : bool, optional
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
     """
+
     # to make sure the compositions are arrays
     X_solid = np.asarray(X_solid)
     X_fluid = np.asarray(X_fluid)
-
+    # print(X_fluid)
     nc = model.nc
     temp_aux = model.temperature_aux(T)
 
@@ -141,7 +146,7 @@ def multiflash_solid(Z, T, P, model,
     it = 0
     itacc = 0
     ittotal = 0
-    n = 5  # number of iterations to accumulate before ASS
+    n = accelerate_every  # number of iterations to accumulate before ASS
     while error > K_tol and itacc < nacc:
         ittotal += 1
         it += 1
@@ -175,6 +180,7 @@ def multiflash_solid(Z, T, P, model,
         error = np.sum((lnK - lnK_old)**2)
 
         # Accelerate succesive sustitution
+
         if it == (n-3):
             lnK3 = lnK.flatten()
         elif it == (n-2):
@@ -187,6 +193,7 @@ def multiflash_solid(Z, T, P, model,
             lnKf = lnK.flatten()
             dacc = gdem(lnKf, lnK1, lnK2, lnK3).reshape(lnK.shape)
             lnK += dacc
+            #  print('The mixture was accelerated')
         """
         if it == (n-2):
             lnK2 = lnK.flatten()
@@ -270,7 +277,7 @@ def slle(Z, T, P, model,
          X_fluid0=None,  
          solid_phases_index=[], 
          beta0=None, v0=[None],
-         K_tol=1e-10, nacc=5, full_output=False):
+         K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False):
 
     """
     Solid-liquid-liquid equilibrium (SLLE) calculation for a mixture.
@@ -301,6 +308,10 @@ def slle(Z, T, P, model,
         Tolerance for the phase equilibrium.
     nacc : int, optional
         Number of accelerated successive substitution cycles.
+    accelerate_every : int, optional
+        Number of iterations before to accelerate the sustitution.
+        Mus be greater than or equal to 4. Set to zero to deactivate the
+        acceleration.
     full_output : bool, optional
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
@@ -323,7 +334,9 @@ def slle(Z, T, P, model,
     # fluid phase set up
     if X_fluid0 is None:
         xll, wll = lle_init(Z, T, P, model)
-        X_fluid = np.stack([wll, xll])
+        X_fluid = np.stack([xll, wll])
+    else:
+        X_fluid = np.asarray(X_fluid0)
     n_fluid = len(X_fluid)
     equilibrium_fluid = n_fluid * ['L']
 
@@ -340,23 +353,44 @@ def slle(Z, T, P, model,
 
     if np.any(model.Tf[solid_phases_index] == 0.) or np.any(model.dHf[solid_phases_index] == 0.):
         raise Exception('The solid phase(s) must have a valid melting temperature and heat of fusion')
-    
-    n_solid = len(solid_phases_index) # number of solid phases
+
+    n_solid = len(solid_phases_index)  # number of solid phases
     X_solid = [eye[index] for index in solid_phases_index]
 
     out = multiflash_solid(Z, T, P, model,
                            X_fluid, n_fluid, equilibrium_fluid,
                            X_solid, n_solid, solid_phases_index,
                            beta0=beta0, v0=v0,
-                           K_tol=K_tol, nacc=nacc, full_output=full_output)
+                           K_tol=K_tol, nacc=nacc,
+                           accelerate_every=accelerate_every,
+                           full_output=True)
+
+    # if the mass balanced failed it is likely the reference phase is not
+    # the stable phase, so we try again with the second liquid as reference
+    # phase
+    if out.error_inner > 1e-6:
+        X_fluid = X_fluid[::-1]
+        out = multiflash_solid(Z, T, P, model,
+                               X_fluid, n_fluid, equilibrium_fluid,
+                               X_solid, n_solid, solid_phases_index,
+                               beta0=beta0, v0=v0,
+                               K_tol=K_tol, nacc=nacc,
+                               accelerate_every=accelerate_every,
+                               full_output=True)
+
+    if not full_output:
+        out = out.X_fluid, out.X_solid, out.beta, out.tetha
+
     return out
 
 
 def sle(Z, T, P, model,
-        X_fluid0=None,  
+        X_fluid0=None,
         solid_phases_index=[],
         beta0=None, v0=[None],
-        K_tol=1e-10, nacc=5, full_output=False):
+        K_tol=1e-10, nacc=5,
+        accelerate_every=5,
+        full_output=False):
     """
     Solid-liquid equilibrium
     Function to compute the solid-liquid equilibrium of a mixture
@@ -386,6 +420,10 @@ def sle(Z, T, P, model,
         Tolerance for the phase equilibrium.
     nacc : int, optional
         Number of accelerated successive substitution cycles.
+    accelerate_every : int, optional
+        Number of iterations before to accelerate the sustitution.
+        Mus be greater than or equal to 4. Set to zero to deactivate the
+        acceleration.
     full_output : bool, optional
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
@@ -410,7 +448,7 @@ def sle(Z, T, P, model,
     if X_fluid0 is None:
         X_fluid = 1. * Z
     else:
-        X_fluid = 1. * X_fluid0
+        X_fluid = 1. * np.asarray(X_fluid0)
     n_fluid = 1
     equilibrium_fluid = ['L']
 
@@ -435,5 +473,8 @@ def sle(Z, T, P, model,
                            X_fluid, n_fluid, equilibrium_fluid,
                            X_solid, n_solid, solid_phases_index,
                            beta0=beta0, v0=v0,
-                           K_tol=K_tol, nacc=nacc, full_output=full_output)
+                           K_tol=K_tol, nacc=nacc,
+                           accelerate_every=accelerate_every,
+                           full_output=full_output)
+
     return out
