@@ -179,8 +179,9 @@ def multiflash_solid(Z, T, P, model,
         lnK = lnphi[0] - lnphi[1:]
         error = np.sum((lnK - lnK_old)**2)
 
-        # Accelerate succesive sustitution
 
+        # Accelerate succesive sustitution
+        
         if it == (n-3):
             lnK3 = lnK.flatten()
         elif it == (n-2):
@@ -192,7 +193,12 @@ def multiflash_solid(Z, T, P, model,
             itacc += 1
             lnKf = lnK.flatten()
             dacc = gdem(lnKf, lnK1, lnK2, lnK3).reshape(lnK.shape)
-            lnK += dacc
+            if np.all(np.logical_not(np.isnan(dacc))):
+                lnK += dacc
+            #     print(lnK)
+            # else:
+            #    print("The mixture was not accelerated")
+
             #  print('The mixture was accelerated')
         """
         if it == (n-2):
@@ -204,8 +210,11 @@ def multiflash_solid(Z, T, P, model,
             itacc += 1
             lnKf = lnK.flatten()
             dacc = dem(lnKf, lnK1, lnK2).reshape(lnK.shape)
-            lnK += dacc
-        # itacc += 1
+            if np.all(np.logical_not(np.isnan(dacc))):
+                lnK += dacc
+            #     print(lnK)
+            # else:
+            #    print("The mixture was not accelerated")
         """
 
         # Updating K values
@@ -368,8 +377,10 @@ def slle(Z, T, P, model,
     # if the mass balanced failed it is likely the reference phase is not
     # the stable phase, so we try again with the second liquid as reference
     # phase
-    if out.error_inner > 1e-6:
+    if out.error_inner > 1e-6 or np.isnan(out.error_inner):
+        # print("order changed")
         X_fluid = X_fluid[::-1]
+        v0 = v0[::-1]
         out = multiflash_solid(Z, T, P, model,
                                X_fluid, n_fluid, equilibrium_fluid,
                                X_solid, n_solid, solid_phases_index,
