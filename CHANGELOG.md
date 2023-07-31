@@ -4,6 +4,8 @@
 
 * Initial support for perfomning solid-liquid and solid-liquid-liquid equilibria. `component` function accepts now the enthalpy and temperature of fusion. These are needed to compute the solid phase fugacity coefficient.
 * Functions `sle` and `slle` to compute solid-liquid and solid-liquid-liquid equilibria. Both function solve a flash that checks for phase stability.
+* Fix bug in van der Waals EoS for mixtures. The object didn't have implemented methods for computing properties using `eos.temperature_aux`. 
+* Added option to have an unbalanced `kij` matrix for QMR.
 
 ## v0.0.51
 

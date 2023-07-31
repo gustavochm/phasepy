@@ -37,7 +37,7 @@ cmdclass.update({'build_ext': build_ext})
 setup(
   name='phasepy',
   license='MIT',
-  version='0.0.51',
+  version='0.0.52',
   description='Multiphase multicomponent Equilibria',
   author='Gustavo Chaparro Maldonado, Andres Mejia Matallana',
   author_email='gustavochaparro@udec.cl',
