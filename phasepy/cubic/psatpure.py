@@ -1,6 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from ..constants import R
+from warnings import warn
 
 
 def psat(T, cubic, P0=None):
@@ -22,6 +23,13 @@ def psat(T, cubic, P0=None):
     vv: float,
         saturation vapor volume [cm3/mol]
     """
+
+    if T >= cubic.Tc:
+        warn('Temperature is greater than critical temperature, returning critical point')
+        vc = 1. / cubic.density(cubic.Tc, cubic.Pc, 'L')
+        out = cubic.Pc, vc, vc
+        return out
+
     a = cubic.a_eos(T)
     b = cubic.b
     c1 = cubic.c1
