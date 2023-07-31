@@ -100,6 +100,12 @@ class vdwm():
         alpha = self.alpha_eos()
         return self.oma*(R*self.Tc)**2*alpha/self.Pc
 
+    def temperature_aux(self, T):
+        RT = R*T
+        ai = self.a_eos(T)
+        temp_aux = (RT, T, ai, self.mixruleparameter)
+        return temp_aux
+
     def pressure(self, X, v, T):
         """
         pressure(X, v, T)
@@ -210,6 +216,28 @@ class vdwm():
             Z = max(self.Zmix(X, T, P))
         return P/(R*T*Z)
 
+    def logfugef_aux(self, X, temp_aux, P, state, v0=None):
+
+        RT, T, a, mixruleparameter = temp_aux
+
+        am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1,
+                                      *mixruleparameter)
+
+        if state == 'V':
+            Z = max(self.Zmix(X, T, P))
+        elif state == 'L':
+            Z = min(self.Zmix(X, T, P))
+
+        V = Z * RT / P
+
+        B = (bm*P)/(RT)
+        A = (am*P)/(RT)**2
+
+        logfug = (Z-1)*(bp/bm)-np.log(Z-B)
+        logfug -= A*(ai/am - bp/bm)/Z
+
+        return logfug, V
+
     def logfugef(self, X, T, P, state, v0=None):
         """
         logfugef(X, T, P, state)
@@ -238,24 +266,29 @@ class vdwm():
         v : float
             volume of the mixture [cm3/mol]
         """
-        a = self.a_eos(T)
-        am, ai, bm, bp = self.mixrule(X, T, a, self.b, 1,
-                                      *self.mixruleparameter)
+        temp_aux = self.temperature_aux(T)
+        logfug, V = self.logfugef_aux(X, temp_aux, P, state, v0)
+        return logfug, V
+
+    def logfugmix_aux(self, X, temp_aux, P, state, v0=None):
+        RT, T, a, mixruleparameter = temp_aux
+        am, bm = self.mixrule(X, T, a, self.b, 0, *mixruleparameter)
 
         if state == 'V':
             Z = max(self.Zmix(X, T, P))
         elif state == 'L':
             Z = min(self.Zmix(X, T, P))
 
-        B = (bm*P)/(R*T)
-        A = (am*P)/(R*T)**2
+        V = Z * RT / P
+        B = (bm*P)/(RT)
+        A = (am*P)/(RT)**2
 
-        logfug = (Z-1)*(bp/bm)-np.log(Z-B)
-        logfug -= A*(ai/am - bp/bm)/Z
+        logfug = Z-1-np.log(Z-B)
+        logfug -= A/Z
 
-        return logfug, v0
+        return logfug, V
 
-    def logfugmix(self, X, T, P, estado, v0=None):
+    def logfugmix(self, X, T, P, state, v0=None):
         """
         logfugmix(X, T, P, state)
 
@@ -281,21 +314,31 @@ class vdwm():
         v : float
             volume of phase [cm3/mol]
         """
+        temp_aux = self.temperature_aux(T)
+        logfug, V = self.logfugmix_aux(X, temp_aux, P, state, v0)
 
-        a = self.a_eos(T)
-        am, bm = self.mixrule(X, T, a, self.b, 0, *self.mixruleparameter)
-        if estado == 'V':
-            Z = max(self.Zmix(X, T, P))
-        elif estado == 'L':
-            Z = min(self.Zmix(X, T, P))
+        return logfug, V
 
-        B = (bm*P)/(R*T)
-        A = (am*P)/(R*T)**2
+    def a0ad_aux(self, rhoa, temp_aux):
+        RT, T, ai, mixruleparameter = temp_aux
+        bi = self.b
+        a = ai[0]
+        b = bi[0]
+        ro = np.sum(rhoa)
+        X = rhoa/ro
 
-        logfug = Z-1-np.log(Z-B)
-        logfug -= A/Z
+        am, bm = self.mixrule(X, T, ai, bi, 0, *mixruleparameter)
+        Prefa = 1*b**2/a
+        Tad = RT*b/a
+        ama = am/a
+        bma = bm/b
 
-        return logfug, v0
+        a0 = np.sum(np.nan_to_num(Tad*rhoa*np.log(rhoa)))
+        a0 += -Tad*ro*np.log(1-bma*ro)
+        a0 += -Tad*ro*np.log(Prefa/Tad)
+        a0 += -ama*ro**2
+
+        return a0
 
     def a0ad(self, rhoa, T):
         """
@@ -317,7 +360,10 @@ class vdwm():
         a0ad: float
             adimenstional Helmholtz density energy
         """
+        temp_aux = self.temperature_aux(T)
+        a0 = self.a0ad_aux(rhoa, temp_aux)
 
+        """
         ai = self.a_eos(T)
         bi = self.b
         a = ai[0]
@@ -335,8 +381,35 @@ class vdwm():
         a0 += -Tad*ro*np.log(1-bma*ro)
         a0 += -Tad*ro*np.log(Prefa/Tad)
         a0 += -ama*ro**2
-
+        """
         return a0
+
+    def muad_aux(self, rhoa, temp_aux):
+        RT, T, ai, mixruleparameter = temp_aux
+        bi = self.b
+
+        ro = np.sum(rhoa)
+        X = rhoa/ro
+
+        am, aip, bm, bp = self.mixrule(X, T, ai, bi, 1, *mixruleparameter)
+
+        a = ai[0]
+        b = bi[0]
+
+        ap = aip - am
+
+        Prefa = 1.*b**2/a
+        Tad = R*T*b/a
+        apa = ap/a
+        ama = am/a
+        bma = bm/b
+        bad = bp/b
+
+        mui = -Tad*np.log(1-bma*ro)
+        mui += -Tad*np.log(Prefa/(Tad*rhoa))+Tad
+        mui += bad*Tad*ro/(1-bma*ro)
+        mui -= ro*(apa+ama)
+        return mui
 
     def muad(self, rhoa, T):
         """
@@ -358,7 +431,10 @@ class vdwm():
         muad : array_like
             adimentional chemical potential vector
         """
+        temp_aux = self.temperature_aux(T)
+        mui = self.muad_aux(rhoa, temp_aux)
 
+        """
         ai = self.a_eos(T)
         bi = self.b
 
@@ -383,10 +459,15 @@ class vdwm():
         mui += -Tad*np.log(Prefa/(Tad*rhoa))+Tad
         mui += bad*Tad*ro/(1-bma*ro)
         mui -= ro*(apa+ama)
-
+        """
         return mui
 
-    def dOm(self, roa, T, mu, Psat):
+    def dOm_aux(self, rhoa, temp_aux, mu, Psat):
+        a0ad = self.a0ad_aux(rhoa, temp_aux)
+        dom = a0ad - np.sum(np.nan_to_num(rhoa*mu)) + Psat
+        return dom
+
+    def dOm(self, rhoa, T, mu, Psat):
         """
         dOm(roa, T, mu, Psat)
 
@@ -411,7 +492,10 @@ class vdwm():
             Thermodynamic Grand potential
         """
 
-        return self.a0ad(roa, T) - np.sum(np.nan_to_num(roa*mu)) + Psat
+        temp_aux = self.temperature_aux(T)
+        dom = self.dOm_aux(rhoa, temp_aux, mu, Psat)
+
+        return dom
 
     def lnphi0(self, T, P):
 
