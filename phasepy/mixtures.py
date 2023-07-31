@@ -425,7 +425,7 @@ class mixture(object):
         else:
             raise Exception('kij matrix is not square or symmetric')
 
-    def kij_cubic(self, kij):
+    def kij_cubic(self, kij, balanced=True):
         '''
         Adds kij matrix coefficients for QMR mixing rule to the
         mixture. Matrix must be symmetrical and the main diagonal must
@@ -435,6 +435,8 @@ class mixture(object):
         ----------
         kij: array_like
             Matrix of interaction parameters
+        balanced: bool, optional
+            If True, the kij matrix must be symmetrical
         '''
         nc = self.nc
         KIJ = np.asarray(kij)
@@ -442,11 +444,18 @@ class mixture(object):
 
         isSquare = shape == (nc, nc)
         isSymmetric = np.allclose(KIJ, KIJ.T)
+        isDiagonalZero = np.all(np.diag(KIJ) == 0.)
 
-        if isSquare and isSymmetric:
-            self.kij = kij
+        if isDiagonalZero:
+            if isSquare and isSymmetric and balanced:
+                self.kij = KIJ
+            elif isSquare and not isSymmetric and not balanced:
+                self.kij = KIJ
+            else:
+                raise Exception('kij matrix is not square or symmetric')
         else:
-            raise Exception('kij matrix is not square or symmetric')
+            raise Exception('kij matrix diagonal must be zero')
+
 
     def NRTL(self, alpha, g, g1=None):
         r'''
