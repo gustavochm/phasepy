@@ -116,8 +116,8 @@ def dgibbs_hess(v, phases, Z, temp_aux, P, model):
 
     d2G = np.block((nfase - 1) * [(nfase - 1)*[1. * dfugdep]])
     for i in range(0, (nfase-1)):
-        index0 = np.int(i*nc)
-        index1 = np.int((i+1)*nc)
+        index0 = int(i*nc)
+        index1 = int((i+1)*nc)
         d2G[index0:index1, index0:index1] += dfugind[i]
     return d2G
 

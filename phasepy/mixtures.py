@@ -616,7 +616,7 @@ class mixture(object):
         '''
 
         nc = self.nc
-        combinatory = np.array(list(combinations(range(nc), 2)), dtype=np.int)
+        combinatory = np.array(list(combinations(range(nc), 2)), dtype=int)
         self.combinatory = combinatory
         c = np.atleast_2d(c)
         self.rkp = c

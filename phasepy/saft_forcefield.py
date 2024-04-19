@@ -51,7 +51,7 @@ k = np.array([[0, -1.6205, -0.8019, 1.7086, -0.5333, 1.0536],
 # from a Corresponding States Correlation. Mejia et al, 2014
 def saft_forcefield(ms, Tc, w, rhol07):
     lambda_a = 6.
-    index = np.int(ms-1)
+    index = int(ms-1)
     ai = a[index]
     bi = b[index]
     ci = c[index]
