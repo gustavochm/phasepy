@@ -1,5 +1,8 @@
 # Phasepy Changelog
 
+## v0.0.53
+* Changed `np.int` to `int` (due to deprecation of `np.int`)
+
 ## v0.0.52
 
 * Initial support for perfomning solid-liquid and solid-liquid-liquid equilibria. `component` function accepts now the enthalpy and temperature of fusion. These are needed to compute the solid phase fugacity coefficient.
