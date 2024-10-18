@@ -43,6 +43,45 @@ def gibbs_obj(ind0, n_fluid, n_solid, solid_phases_index,
         solid_list.append(dfug[n_fluid-1+i, solid_phases_index[i]])
 
     G = np.sum(fug * mole_number)
+    return G
+
+
+def dgibbs_obj(ind0, n_fluid, n_solid, solid_phases_index,
+               lnphi_sol, Z, temp_aux, P, model, equilibrium_fluid):
+
+    nc = model.nc
+    n_phases = n_fluid + n_solid
+
+    n_fluid_ind = ind0[:nc*(n_fluid-1)].reshape(n_fluid-1, nc)
+    n_solid_ind = np.zeros([n_solid, nc])
+    for i in range(n_solid):
+        n_solid_ind[i, solid_phases_index[i]] = ind0[nc*(n_fluid-1) + i]
+    n_ind = np.vstack([n_fluid_ind, n_solid_ind])
+    n_dep = Z - np.sum(n_ind, axis=0)
+
+    X = np.zeros([n_phases, nc])
+    X[0] = n_dep
+    X[1:] = n_ind
+    mole_number = X.copy()
+    X[X < 1e-8] = 1e-8
+    X = (X.T/X.sum(axis=1)).T
+
+    lnphi = np.zeros_like(X)
+    lnphi[n_fluid:] = lnphi_sol
+
+    global vg
+    for i, state in enumerate(equilibrium_fluid):
+        lnphi[i], vg[i] = model.logfugef_aux(X[i], temp_aux, P, state, vg[i])
+
+    with np.errstate(all='ignore'):
+        fug = np.nan_to_num(np.log(X) + lnphi)
+        dfug = fug[1:] - fug[0]
+
+    solid_list = []
+    for i in range(n_solid):
+        solid_list.append(dfug[n_fluid-1+i, solid_phases_index[i]])
+
+    G = np.sum(fug * mole_number)
     dG = np.hstack([dfug[:(n_fluid-1)].flatten(), solid_list])
     return G, dG
 
@@ -51,10 +90,11 @@ def multiflash_solid(Z, T, P, model,
                      X_fluid, n_fluid, equilibrium_fluid,
                      X_solid, n_solid, solid_phases_index,
                      beta0=None, v0=[None],
-                     K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False):
+                     K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False,
+                     tetha_max=10., beta_min=1e-6):
     """
     Multiflash algorithm for equilibrium considering solid phases
-    
+
     The solid phases are considered as pure phases, so the composition
     of the solid phases is not updated in the equilibrium calculation.
 
@@ -98,12 +138,19 @@ def multiflash_solid(Z, T, P, model,
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
+    tetha_max : float, optional
+        Maximum value for the stability variable. Needed to avoid overflow.
+        Default is 10.
+    beta_min : float, optional
+        Minimum value for the phase fraction. Default is 1e-6.
+        Phases with fraction below this value are considered not present
+        in the equilibrium.
     """
 
     # to make sure the compositions are arrays
     X_solid = np.asarray(X_solid)
     X_fluid = np.asarray(X_fluid)
-    # print(X_fluid)
+
     nc = model.nc
     temp_aux = model.temperature_aux(T)
 
@@ -133,21 +180,22 @@ def multiflash_solid(Z, T, P, model,
 
     n_phases = n_fluid + n_solid
     if beta0 is None:
-        betas = np.ones(n_phases)/n_phases
-        tethas = np.zeros(n_phases-1)
-        betatetha = np.hstack([betas, tethas])
+        beta = np.ones(n_phases)/n_phases
+        tetha = np.zeros(n_phases-1)
+        betatetha = np.hstack([beta, tetha])
     else:
         betatetha = np.hstack([beta0, np.zeros(n_phases-1)])
 
     # x is the iteration variable; x = [beta, theta]
     x = betatetha
     # start iterations
-    error = 1
+    error_outer = 1.
     it = 0
     itacc = 0
     ittotal = 0
     n = accelerate_every  # number of iterations to accumulate before ASS
-    while error > K_tol and itacc < nacc:
+    method = "ASS"
+    while error_outer > K_tol and itacc < nacc:
         ittotal += 1
         it += 1
         lnK_old = lnK.copy()
@@ -162,8 +210,10 @@ def multiflash_solid(Z, T, P, model,
             x += dx
             ef = np.linalg.norm(f)
             ex = np.linalg.norm(dx)
+            x[x < beta_min] = 0.
+            x[x > tetha_max] = tetha_max
+        error_inner = ef
 
-        x[x <= 1e-10] = 0.
         beta, tetha = np.array_split(x, 2)
         beta /= beta.sum()
 
@@ -177,11 +227,9 @@ def multiflash_solid(Z, T, P, model,
             lnphi[i], v[i] = model.logfugef_aux(X[i], temp_aux, P, state, v[i])
 
         lnK = lnphi[0] - lnphi[1:]
-        error = np.sum((lnK - lnK_old)**2)
-
+        error_outer = np.sum((lnK - lnK_old)**2)
 
         # Accelerate succesive sustitution
-        
         if it == (n-3):
             lnK3 = lnK.flatten()
         elif it == (n-2):
@@ -195,27 +243,6 @@ def multiflash_solid(Z, T, P, model,
             dacc = gdem(lnKf, lnK1, lnK2, lnK3).reshape(lnK.shape)
             if np.all(np.logical_not(np.isnan(dacc))):
                 lnK += dacc
-            #     print(lnK)
-            # else:
-            #    print("The mixture was not accelerated")
-
-            #  print('The mixture was accelerated')
-        """
-        if it == (n-2):
-            lnK2 = lnK.flatten()
-        elif it == (n-1):
-            lnK1 = lnK.flatten()
-        elif it == n:
-            it = 0
-            itacc += 1
-            lnKf = lnK.flatten()
-            dacc = dem(lnKf, lnK1, lnK2).reshape(lnK.shape)
-            if np.all(np.logical_not(np.isnan(dacc))):
-                lnK += dacc
-            #     print(lnK)
-            # else:
-            #    print("The mixture was not accelerated")
-        """
 
         # Updating K values
         K = np.exp(lnK)
@@ -223,8 +250,9 @@ def multiflash_solid(Z, T, P, model,
         K[(n_fluid-1):][X[n_fluid:] == 0.] = 0.
 
     # if error > K_tol and itacc == nacc and np.all(tetha == 0):
-    if error > K_tol and itacc == nacc and ef < 1e-8:
     # if True:
+    if error_outer > K_tol and itacc == nacc:
+        method = "Gibbs minimization"
         global vg
         vg = v.copy()
 
@@ -236,15 +264,41 @@ def multiflash_solid(Z, T, P, model,
         args = (n_fluid, n_solid, solid_phases_index,
                 lnphi_sol, Z, temp_aux, P, model, equilibrium_fluid)
         bounds = len(ind0) * [(0, None)]
-        min_sol = minimize(gibbs_obj, ind0, jac=True, args=args,
-                           method='L-BFGS-B', bounds=bounds, tol=K_tol,
-                           options={'gtol': K_tol, 'ftol': K_tol})
+
+        # If the initial guess is "poor" the jacobian might suggest a wrong direction
+        # This is just to improve the initial guess without any derivative information
+        Gsol_init = minimize(gibbs_obj, ind0, args=args, method='SLSQP', bounds=bounds,
+                             tol=K_tol, options={'maxiter': 15})
+        ittotal += Gsol_init.nit
+        Gsol = Gsol_init
+        jac = Gsol_init.jac
+
+        # Now that we have a better initial guess, we can use the jacobian
+        # L-BFGS-B method seems to work well after this step but the final solution might not be super accurate
+        Gsol_LBFGSB = minimize(dgibbs_obj, Gsol_init.x, jac=True, args=args,
+                               method='L-BFGS-B', bounds=bounds, tol=K_tol,
+                               options={'gtol': K_tol, 'ftol': K_tol})
+
+        if Gsol_LBFGSB.fun < Gsol.fun:
+            ittotal += Gsol_LBFGSB.nit
+            Gsol = Gsol_LBFGSB
+            jac = Gsol_LBFGSB.jac
+
+        # Refinining the solution. SLSQP works well when there is a very good initial guess
+        if np.mean(jac**2) > K_tol:
+            Gsol_slsqp = minimize(dgibbs_obj, Gsol.x, jac=True, args=args,
+                                  method='SLSQP', bounds=bounds, tol=K_tol)
+            if Gsol_slsqp.fun < Gsol.fun:
+                ittotal += Gsol_slsqp.nit
+                Gsol = Gsol_slsqp
+                jac = Gsol_slsqp.jac
 
         # reconstructing the compositions vectors
-        n_fluid_ind = ind0[:nc*(n_fluid-1)].reshape(n_fluid-1, nc)
+        ind_sol = Gsol.x
+        n_fluid_ind = ind_sol[:nc*(n_fluid-1)].reshape(n_fluid-1, nc)
         n_solid_ind = np.zeros([n_solid, nc])
         for i in range(n_solid):
-            n_solid_ind[i, solid_phases_index[i]] = ind0[nc*(n_fluid-1) + i]
+            n_solid_ind[i, solid_phases_index[i]] = ind_sol[nc*(n_fluid-1) + i]
         n_ind = np.vstack([n_fluid_ind, n_solid_ind])
         n_dep = Z - np.sum(n_ind, axis=0)
 
@@ -253,29 +307,48 @@ def multiflash_solid(Z, T, P, model,
         X[1:n_fluid] = n_fluid_ind
         X[n_fluid:] = n_solid_ind
         beta = np.sum(X, axis=1)
+
         with np.errstate(all='ignore'):
             X = (X.T/beta).T
 
-        # updating errors and iterations
-        ittotal += min_sol.nit
-        # betas_fluid = np.hstack([nc*[b] for b in beta[1:n_fluid]])
-        # betas_opti = np.hstack([betas_fluid, beta[n_fluid:]])
-        # error = np.linalg.norm(min_sol.jac * betas_opti)
+        # deleting phases that are below the threshold
+        beta[beta <= beta_min] = 0.
+        beta /= np.sum(beta)
+
+        # if any fluid phase has been deleted the it is set to the reference fluid phase
+        beta_fluid_zero = beta == 0
+        beta_fluid_zero[n_fluid:] = False  # do not change the composition of solid phases
+        X[beta_fluid_zero] = X[0]
+
+        # minimization should have eliminated unstable phases, setting
+        # the stability variables to zero
+        tetha = np.zeros(n_phases-1)
+
+        # Inner error is related to mass balance
+        error_inner = np.linalg.norm(Z - np.nansum(X.T*beta, axis=1))
 
         # The jacobian might not be zero for phases not present in the
         # equilibrium result
-        error = np.linalg.norm(min_sol.jac)
+        where_beta_bools = beta > 0
+        where_beta_bools_fluid = where_beta_bools[:n_fluid]
+        where_beta_bools_solid = where_beta_bools[(n_fluid):]
+
+        where_jac_fluid = [nc * [x] for x in where_beta_bools_fluid][1:]
+        where_jac_fluid = [x for xs in where_jac_fluid for x in xs]
+        where_jac = np.hstack([where_jac_fluid, where_beta_bools_solid]).astype(bool)
+
+        error_outer = np.linalg.norm(jac[where_jac])
 
     X_fluid = X[:n_fluid]
     # X_solid = X[n_fluid:]
 
     if full_output:
-        sol = {'T': T, 'P': P, 'error_outer': error, 'error_inner': ef,
+        sol = {'T': T, 'P': P, 'error_outer': error_outer,
+               'error_inner': error_inner,
                'iter': ittotal, 'beta': beta, 'tetha': tetha,
                'X_fluid': X_fluid, 'v_fluid': v,
                'states_fluid': equilibrium_fluid,
-               'X_solid': X_solid,
-               }
+               'X_solid': X_solid, 'method': method}
         out = EquilibriumResult(sol)
     else: 
         out = X_fluid, X_solid, beta, tetha
@@ -283,10 +356,11 @@ def multiflash_solid(Z, T, P, model,
 
 
 def slle(Z, T, P, model,
-         X_fluid0=None,  
-         solid_phases_index=[], 
+         X_fluid0=None,
+         solid_phases_index=[],
          beta0=None, v0=[None],
-         K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False):
+         K_tol=1e-10, nacc=5, accelerate_every=5, full_output=False,
+         tetha_max=10., beta_min=1e-6):
 
     """
     Solid-liquid-liquid equilibrium (SLLE) calculation for a mixture.
@@ -325,6 +399,13 @@ def slle(Z, T, P, model,
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
+    tetha_max : float, optional
+        Maximum value for the stability variable. Needed to avoid overflow.
+        Default is 10.
+    beta_min : float, optional
+        Minimum value for the phase fraction. Default is 1e-6.
+        Phases with fraction below this value are considered not present
+        in the equilibrium.
 
     Returns
     -------
@@ -372,13 +453,13 @@ def slle(Z, T, P, model,
                            beta0=beta0, v0=v0,
                            K_tol=K_tol, nacc=nacc,
                            accelerate_every=accelerate_every,
-                           full_output=True)
+                           full_output=True, tetha_max=tetha_max,
+                           beta_min=beta_min)
 
     # if the mass balanced failed it is likely the reference phase is not
     # the stable phase, so we try again with the second liquid as reference
     # phase
     if out.error_inner > 1e-6 or np.isnan(out.error_inner):
-        # print("order changed")
         X_fluid = X_fluid[::-1]
         v0 = v0[::-1]
         out = multiflash_solid(Z, T, P, model,
@@ -387,7 +468,8 @@ def slle(Z, T, P, model,
                                beta0=beta0, v0=v0,
                                K_tol=K_tol, nacc=nacc,
                                accelerate_every=accelerate_every,
-                               full_output=True)
+                               full_output=True, tetha_max=tetha_max,
+                               beta_min=beta_min)
 
     if not full_output:
         out = out.X_fluid, out.X_solid, out.beta, out.tetha
@@ -401,7 +483,8 @@ def sle(Z, T, P, model,
         beta0=None, v0=[None],
         K_tol=1e-10, nacc=5,
         accelerate_every=5,
-        full_output=False):
+        full_output=False,
+        tetha_max=10., beta_min=1e-6):
     """
     Solid-liquid equilibrium
     Function to compute the solid-liquid equilibrium of a mixture
@@ -439,6 +522,13 @@ def sle(Z, T, P, model,
         If True, the output is a dictionary with all the information of the
         equilibrium. If False, the output is a tuple with the fluid and solid
         phases compositions, the phase fractions and the stability variables.
+    tetha_max : float, optional
+        Maximum value for the stability variable. Needed to avoid overflow.
+        Default is 10.
+    beta_min : float, optional
+        Minimum value for the phase fraction. Default is 1e-6.
+        Phases with fraction below this value are considered not present
+        in the equilibrium.
 
     Returns
     -------
@@ -486,6 +576,7 @@ def sle(Z, T, P, model,
                            beta0=beta0, v0=v0,
                            K_tol=K_tol, nacc=nacc,
                            accelerate_every=accelerate_every,
-                           full_output=full_output)
+                           full_output=full_output,
+                           tetha_max=tetha_max, beta_min=beta_min)
 
     return out
