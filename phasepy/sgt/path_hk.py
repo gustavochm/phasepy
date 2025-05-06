@@ -1,7 +1,7 @@
 from __future__ import division, print_function, absolute_import
 import numpy as np
 from scipy.optimize import fsolve
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 from .cijmix_cy import cmix_cy
 from .tensionresult import TensionResult
 
@@ -127,7 +127,7 @@ def ten_beta0_hk(rho1, rho2, Tsat, Psat, model, n=1000, full_output=False):
         with np.errstate(divide='ignore'):
             intz = (np.sqrt(suma/(2*dom)))
         intz[np.isinf(intz)] = 0
-        z = np.abs(cumtrapz(intz, Hi, initial=0))
+        z = np.abs(cumulative_trapezoid(intz, Hi, initial=0))
         z /= zfactor
         ro2 /= rofactor
         dictresult = {'tension': ten, 'rho': ro2, 'z': z,
