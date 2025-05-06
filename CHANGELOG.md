@@ -1,5 +1,9 @@
 # Phasepy Changelog
 
+## v0.0.55
+* Changed `cumtrapz` to `cumulative_trapezoid` function in the `path_sk` solver for SGT. (due to scipy deprecation)
+
+
 ## v0.0.54
 * Updated the function `multiflash_solid` function used for both `sle` and `slle` solvers. The updated version allows controlings thresholds for the values of phase fractions (beta) and phase stability variables (tetha). The updated version also modified the Gibbs minimization step, to first do some iterations without derivative information. The errors from the minimization step now are consistent with the ASS step (`error_inner` refers to the mass balance and `error_outer` refers to the phase equilibria error). The `full_output` option now returns the method used to compute equilibria.
 
