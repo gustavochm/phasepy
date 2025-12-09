@@ -1,0 +1,68 @@
+name: Build Wheels
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.16.5
+        env:
+          CIBW_BUILD: cp39-* cp310-* cp311-* cp312-* cp313-*
+          CIBW_SKIP: "*-musllinux_*"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
+          CIBW_ARCHS_LINUX: "x86_64"
+          CIBW_ARCHS_WINDOWS: "AMD64"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  publish_pypi:
+    name: Publish to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # For trusted publishing (optional but recommended)
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}

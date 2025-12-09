@@ -1,58 +1,33 @@
 from setuptools import setup, Extension
+import numpy
 
 try:
-    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
+    use_cython = True
 except ImportError:
     use_cython = False
-else:
-    use_cython = True
 
-"""
-if use_cython:
-    ext_modules += [Extension('phasepy.coloc_cy',
-                              ['phasepy/src/coloc_cy.pyx']),
-                    Extension('phasepy.actmodels.actmodels_cy',
-                              ['phasepy/src/actmodels_cy.pyx']),
-                    Extension('phasepy.sgt.cijmix_cy',
-                              ['phasepy/src/cijmix_cy.pyx'])]
-    cmdclass.update({'build_ext': build_ext})
-else:
-    ext_modules += [Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c']),
-                    Extension('phasepy.actmodels.actmodels_cy',
-                              ['phasepy/src/actmodels_cy.c']),
-                    Extension('phasepy.sgt.cijmix_cy',
-                              ['phasepy/src/cijmix_cy.c'])]
-"""
-cmdclass = {}
 ext_modules = []
-
-ext_modules += [Extension('phasepy.coloc_cy',
-                          ['phasepy/src/coloc_cy.pyx']),
-                Extension('phasepy.actmodels.actmodels_cy',
-                          ['phasepy/src/actmodels_cy.pyx']),
-                Extension('phasepy.sgt.cijmix_cy',
-                          ['phasepy/src/cijmix_cy.pyx'])]
-cmdclass.update({'build_ext': build_ext})
+if use_cython:
+    ext_modules = cythonize([
+        Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.pyx'],
+                  include_dirs=[numpy.get_include()]),
+        Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.pyx'],
+                  include_dirs=[numpy.get_include()]),
+        Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.pyx'],
+                  include_dirs=[numpy.get_include()])
+    ])
+else:
+    ext_modules = [
+        Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c'],
+                  include_dirs=[numpy.get_include()]),
+        Extension('phasepy.actmodels.actmodels_cy', ['phasepy/src/actmodels_cy.c'],
+                  include_dirs=[numpy.get_include()]),
+        Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.c'],
+                  include_dirs=[numpy.get_include()])
+    ]
 
 setup(
-  name='phasepy',
-  license='MIT',
-  version='0.0.55',
-  description='Multiphase multicomponent Equilibria',
-  author='Gustavo Chaparro Maldonado, Andres Mejia Matallana',
-  author_email='gustavochaparro@udec.cl',
-  url='https://github.com/gustavochm/phasepy',
-  download_url='https://github.com/gustavochm/phasepy.git',
-  long_description=open('long_description.rst').read(),
-  packages=['phasepy', 'phasepy.cubic', 'phasepy.equilibrium', 'phasepy.fit',
-            'phasepy.sgt', 'phasepy.actmodels'],
-  cmdclass=cmdclass,
-  ext_modules=ext_modules,
-  install_requires=['numpy', 'scipy', 'pandas', 'openpyxl'],
-  platforms=["Windows", "Linux", "Mac OS", "Unix"],
-  keywords=['Phase Equilibrium', 'Cubic EOS', 'QMR', 'MHV', 'WS', 'NRTL',
-            'Wilson', 'UNIFAC', 'UNIQUAC', 'Flash', 'VLE', 'LLE', 'VLLE',
-            'SGT'],
-  package_data={'phasepy': ['database/*']},
-  zip_safe=False
+    ext_modules=ext_modules,
+    zip_safe=False
 )
