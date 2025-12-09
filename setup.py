@@ -1,5 +1,6 @@
 from setuptools import setup, Extension, find_packages
 import numpy
+import os
 
 try:
     from Cython.Build import cythonize
@@ -16,7 +17,7 @@ if use_cython:
                   include_dirs=[numpy.get_include()]),
         Extension('phasepy.sgt.cijmix_cy', ['phasepy/src/cijmix_cy.pyx'],
                   include_dirs=[numpy.get_include()])
-    ])
+    ], compiler_directives={'language_level': '3'})
 else:
     ext_modules = [
         Extension('phasepy.coloc_cy', ['phasepy/src/coloc_cy.c'],
@@ -28,8 +29,14 @@ else:
     ]
 
 setup(
-    packages=find_packages(),
+    packages=find_packages(include=['phasepy', 'phasepy.*']),
     ext_modules=ext_modules,
     include_package_data=True,
-    zip_safe=False
+    zip_safe=False,
+    # This is critical - tells setuptools where to put the compiled extensions
+    options={
+        'build': {
+            'build_lib': 'build/lib',
+        },
+    }
 )
