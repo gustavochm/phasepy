@@ -3,7 +3,7 @@ requires = [
     "setuptools>=61",
     "wheel",
     "cython>=3.0",
-    "numpy>=1.21,<2.0"
+    "numpy>=1.21"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -23,7 +23,7 @@ keywords = [
     "Wilson", "UNIFAC", "UNIQUAC", "Flash", "VLE", "LLE", "VLLE", "SGT"
 ]
 dependencies = [
-    "numpy>=1.21,<2.0",
+    "numpy>=1.21",
     "scipy>=1.5.0",
     "pandas>=1.0.0",
     "openpyxl>=3.0.0"
