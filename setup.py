@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 import numpy
 
 try:
@@ -28,6 +28,7 @@ else:
     ]
 
 setup(
+    packages=find_packages(),
     ext_modules=ext_modules,
     zip_safe=False
 )

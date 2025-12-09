@@ -40,9 +40,6 @@ dev = [
     "build"
 ]
 
-[tool.setuptools.packages.find]
-include = ["phasepy*"]
-
 [tool.setuptools.package-data]
 phasepy = ["database/*"]
 
