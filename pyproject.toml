@@ -53,8 +53,5 @@ phasepy = ["database/*"]
 
 [tool.cibuildwheel]
 build-verbosity = 3
-before-build = [
-    "pip install --upgrade pip setuptools wheel",
-    "pip install numpy>=1.21,<2.0 cython>=3.0"
-]
+before-build = "pip install numpy cython"
 test-skip = "*"
