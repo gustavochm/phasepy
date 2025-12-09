@@ -48,5 +48,4 @@ phasepy = ["database/*"]
 
 [tool.cibuildwheel]
 build-verbosity = 1
-# Basic smoke test - just import the package
-test-command = "python -c 'import phasepy'"
+test-skip = "*"  # Skip cibuildwheel tests, we'll test in the workflow
