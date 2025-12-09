@@ -45,8 +45,5 @@ phasepy = ["database/*"]
 
 [tool.cibuildwheel]
 build-verbosity = 3
+before-build = "pip install numpy cython"
 test-skip = "*"
-# Ensure build dependencies are available
-before-build = "pip install numpy>=1.19 cython>=3.0"
-# Set environment to ensure numpy is found
-environment = { SETUPTOOLS_USE_DISTUTILS="stdlib" }
